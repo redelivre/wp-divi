@@ -1,0 +1,6196 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Divi 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/framework\n"
+"POT-Creation-Date: 2016-01-25 12:19:12+00:00\n"
+"PO-Revision-Date: 2016-01-25 17:26+0300\n"
+"Last-Translator: \n"
+"Language-Team: Elegant Themes\n"
+"Language: ar_EG\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n"
+"%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPathExcluded-0: ../node_modules\n"
+
+#: class-et-builder-element.php:477 class-et-builder-element.php:871
+msgid "%1$s Font"
+msgstr "‏%1$s الخط"
+
+#: class-et-builder-element.php:487
+msgid "%1$s Font Size"
+msgstr "%1$s حجم الخط"
+
+#: class-et-builder-element.php:509 class-et-builder-element.php:518
+#: class-et-builder-element.php:807
+msgid "%1$s Text Color"
+msgstr "%1$s لون الخط"
+
+#: class-et-builder-element.php:528 class-et-builder-element.php:860
+msgid "%1$s Letter Spacing"
+msgstr "%1$s التباعد بين الحروف"
+
+#: class-et-builder-element.php:551
+msgid "%1$s Line Height"
+msgstr "%1$s  ارتفاع السطر"
+
+#: class-et-builder-element.php:582
+msgid "%1$s All Caps"
+msgstr "%1$s  استخدام الحروف الكبيرة"
+
+#: class-et-builder-element.php:586 main-modules.php:146 main-modules.php:598
+#: main-modules.php:2424 main-modules.php:2445 main-modules.php:3770
+#: main-modules.php:3791 main-modules.php:7876 main-modules.php:8281
+#: main-modules.php:8494 main-modules.php:10600 main-modules.php:10667
+#: main-modules.php:10724 main-modules.php:11729 main-modules.php:12009
+#: main-modules.php:14890 main-modules.php:14911 main-modules.php:15361
+#: main-modules.php:15635 main-modules.php:16008 main-modules.php:17047
+#: main-modules.php:17068
+msgid "Off"
+msgstr "إيقاف"
+
+#: class-et-builder-element.php:587 main-modules.php:147 main-modules.php:599
+#: main-modules.php:2425 main-modules.php:2446 main-modules.php:3771
+#: main-modules.php:3792 main-modules.php:7875 main-modules.php:8280
+#: main-modules.php:8493 main-modules.php:10601 main-modules.php:10668
+#: main-modules.php:10725 main-modules.php:11728 main-modules.php:12010
+#: main-modules.php:14891 main-modules.php:14912 main-modules.php:15362
+#: main-modules.php:15634 main-modules.php:16009 main-modules.php:17048
+#: main-modules.php:17069
+msgid "On"
+msgstr "تشغيل"
+
+#: class-et-builder-element.php:614 class-et-builder-element.php:3573
+#: main-modules.php:2915 main-modules.php:3607 main-modules.php:4396
+#: main-modules.php:5527 main-modules.php:5965 main-modules.php:6279
+#: main-modules.php:6711 main-modules.php:7861 main-modules.php:8057
+#: main-modules.php:9608 main-modules.php:11547 main-modules.php:12563
+#: main-modules.php:13964 main-modules.php:14443 main-modules.php:16442
+#: main-modules.php:16884 main-structure-elements.php:127
+#: main-structure-elements.php:1083
+msgid "Background Color"
+msgstr "لون خلفية"
+
+#: class-et-builder-element.php:624 class-et-builder-element.php:3569
+#: main-modules.php:2878 main-modules.php:3613 main-modules.php:16890
+#: main-structure-elements.php:105 main-structure-elements.php:1074
+msgid "Background Image"
+msgstr "صورة خلفية"
+
+#: class-et-builder-element.php:627 class-et-builder-element.php:3570
+#: main-modules.php:88 main-modules.php:876 main-modules.php:1255
+#: main-modules.php:1736 main-modules.php:2881 main-modules.php:2923
+#: main-modules.php:3616 main-modules.php:4367 main-modules.php:5959
+#: main-modules.php:10218 main-modules.php:13958 main-modules.php:14000
+#: main-modules.php:14033 main-modules.php:15950 main-modules.php:16893
+#: main-structure-elements.php:108 main-structure-elements.php:1077
+msgid "Upload an image"
+msgstr "تحميل صورة"
+
+#: class-et-builder-element.php:628 class-et-builder-element.php:3571
+#: main-modules.php:2882 main-structure-elements.php:109
+#: main-structure-elements.php:1078
+msgid "Choose a Background Image"
+msgstr "اختيار صورة خلفية"
+
+#: class-et-builder-element.php:629 class-et-builder-element.php:3572
+#: main-modules.php:2883 main-modules.php:3618 main-modules.php:16895
+#: main-structure-elements.php:110 main-structure-elements.php:1079
+msgid "Set As Background"
+msgstr "إعداد كخلفية"
+
+#: class-et-builder-element.php:647
+msgid "Use Border"
+msgstr "استخدام حد الصفحة"
+
+#: class-et-builder-element.php:651 class-et-builder-element.php:767
+#: class-et-builder-element.php:885 class-et-builder-element.php:940
+#: class-et-builder-element.php:3582 functions.php:3725 main-modules.php:110
+#: main-modules.php:193 main-modules.php:222 main-modules.php:233 main-modules.php:569
+#: main-modules.php:579 main-modules.php:1663 main-modules.php:1696
+#: main-modules.php:1717 main-modules.php:1805 main-modules.php:2415
+#: main-modules.php:2455 main-modules.php:2481 main-modules.php:2534
+#: main-modules.php:2544 main-modules.php:2554 main-modules.php:3037
+#: main-modules.php:3540 main-modules.php:3584 main-modules.php:3666
+#: main-modules.php:3733 main-modules.php:3817 main-modules.php:3827
+#: main-modules.php:3837 main-modules.php:4388 main-modules.php:4871
+#: main-modules.php:4897 main-modules.php:4908 main-modules.php:5278
+#: main-modules.php:5519 main-modules.php:6271 main-modules.php:6336
+#: main-modules.php:6692 main-modules.php:6703 main-modules.php:6768
+#: main-modules.php:7087 main-modules.php:7097 main-modules.php:7107
+#: main-modules.php:7492 main-modules.php:7502 main-modules.php:7512
+#: main-modules.php:9197 main-modules.php:9224 main-modules.php:9593
+#: main-modules.php:9603 main-modules.php:9809 main-modules.php:10008
+#: main-modules.php:10578 main-modules.php:10612 main-modules.php:10622
+#: main-modules.php:10632 main-modules.php:10642 main-modules.php:10652
+#: main-modules.php:11539 main-modules.php:11738 main-modules.php:12394
+#: main-modules.php:12404 main-modules.php:12420 main-modules.php:12431
+#: main-modules.php:12454 main-modules.php:12465 main-modules.php:12476
+#: main-modules.php:12504 main-modules.php:12549 main-modules.php:12852
+#: main-modules.php:12862 main-modules.php:12885 main-modules.php:13232
+#: main-modules.php:13241 main-modules.php:13250 main-modules.php:13475
+#: main-modules.php:13495 main-modules.php:13508 main-modules.php:13845
+#: main-modules.php:13858 main-modules.php:13976 main-modules.php:14479
+#: main-modules.php:14921 main-modules.php:14945 main-modules.php:15010
+#: main-modules.php:15020 main-modules.php:15030 main-modules.php:15332
+#: main-modules.php:15342 main-modules.php:15972 main-modules.php:16273
+#: main-modules.php:16283 main-modules.php:16299 main-modules.php:16310
+#: main-modules.php:16333 main-modules.php:16344 main-modules.php:16355
+#: main-modules.php:16383 main-modules.php:16428 main-modules.php:16817
+#: main-modules.php:16861 main-modules.php:16943 main-modules.php:17010
+#: main-modules.php:17094 main-modules.php:17104 main-modules.php:17114
+#: main-structure-elements.php:118 main-structure-elements.php:170
+#: main-structure-elements.php:180 main-structure-elements.php:190
+#: main-structure-elements.php:227 main-structure-elements.php:237
+#: main-structure-elements.php:248 main-structure-elements.php:305
+#: main-structure-elements.php:315 main-structure-elements.php:957
+#: main-structure-elements.php:968 main-structure-elements.php:1024
+#: main-structure-elements.php:1062 main-structure-elements.php:1125
+#: main-structure-elements.php:1135 main-structure-elements.php:1159
+#: main-structure-elements.php:1176 main-structure-elements.php:1870
+#: main-structure-elements.php:1880 main-structure-elements.php:1905
+#: main-structure-elements.php:1921
+msgid "No"
+msgstr "لا"
+
+#: class-et-builder-element.php:652 class-et-builder-element.php:768
+#: class-et-builder-element.php:884 class-et-builder-element.php:939
+#: class-et-builder-element.php:3581 functions.php:3726 functions.php:5081
+#: main-modules.php:111 main-modules.php:194 main-modules.php:223 main-modules.php:232
+#: main-modules.php:568 main-modules.php:578 main-modules.php:1664
+#: main-modules.php:1697 main-modules.php:1718 main-modules.php:1806
+#: main-modules.php:2414 main-modules.php:2456 main-modules.php:2482
+#: main-modules.php:2535 main-modules.php:2545 main-modules.php:2555
+#: main-modules.php:3038 main-modules.php:3539 main-modules.php:3583
+#: main-modules.php:3667 main-modules.php:3734 main-modules.php:3818
+#: main-modules.php:3828 main-modules.php:3838 main-modules.php:4387
+#: main-modules.php:4870 main-modules.php:4898 main-modules.php:4909
+#: main-modules.php:5279 main-modules.php:5518 main-modules.php:6270
+#: main-modules.php:6337 main-modules.php:6693 main-modules.php:6702
+#: main-modules.php:6769 main-modules.php:7086 main-modules.php:7096
+#: main-modules.php:7106 main-modules.php:7491 main-modules.php:7501
+#: main-modules.php:7511 main-modules.php:9196 main-modules.php:9225
+#: main-modules.php:9592 main-modules.php:9602 main-modules.php:9810
+#: main-modules.php:10007 main-modules.php:10577 main-modules.php:10611
+#: main-modules.php:10621 main-modules.php:10631 main-modules.php:10641
+#: main-modules.php:10651 main-modules.php:11538 main-modules.php:11739
+#: main-modules.php:12393 main-modules.php:12403 main-modules.php:12419
+#: main-modules.php:12430 main-modules.php:12453 main-modules.php:12464
+#: main-modules.php:12475 main-modules.php:12503 main-modules.php:12550
+#: main-modules.php:12853 main-modules.php:12863 main-modules.php:12886
+#: main-modules.php:13231 main-modules.php:13240 main-modules.php:13249
+#: main-modules.php:13476 main-modules.php:13496 main-modules.php:13509
+#: main-modules.php:13846 main-modules.php:13859 main-modules.php:13977
+#: main-modules.php:14480 main-modules.php:14922 main-modules.php:14946
+#: main-modules.php:15011 main-modules.php:15021 main-modules.php:15031
+#: main-modules.php:15331 main-modules.php:15341 main-modules.php:15973
+#: main-modules.php:16272 main-modules.php:16282 main-modules.php:16298
+#: main-modules.php:16309 main-modules.php:16332 main-modules.php:16343
+#: main-modules.php:16354 main-modules.php:16382 main-modules.php:16429
+#: main-modules.php:16816 main-modules.php:16860 main-modules.php:16944
+#: main-modules.php:17011 main-modules.php:17095 main-modules.php:17105
+#: main-modules.php:17115 main-structure-elements.php:119
+#: main-structure-elements.php:171 main-structure-elements.php:181
+#: main-structure-elements.php:191 main-structure-elements.php:228
+#: main-structure-elements.php:238 main-structure-elements.php:249
+#: main-structure-elements.php:306 main-structure-elements.php:316
+#: main-structure-elements.php:958 main-structure-elements.php:969
+#: main-structure-elements.php:1025 main-structure-elements.php:1063
+#: main-structure-elements.php:1126 main-structure-elements.php:1136
+#: main-structure-elements.php:1160 main-structure-elements.php:1175
+#: main-structure-elements.php:1871 main-structure-elements.php:1881
+#: main-structure-elements.php:1906 main-structure-elements.php:1920
+msgid "Yes"
+msgstr "نعم"
+
+#: class-et-builder-element.php:664
+msgid "Border Color"
+msgstr "تحديد لون حد الصفحة"
+
+#: class-et-builder-element.php:674
+msgid "Border Width"
+msgstr "تحديد عرض حد الصفحة"
+
+#: class-et-builder-element.php:684
+msgid "Border Style"
+msgstr "تحديد نمط حد الصفحة"
+
+#: class-et-builder-element.php:711 main-structure-elements.php:1068
+msgid "Custom Margin"
+msgstr "تخصيص الهامش"
+
+#: class-et-builder-element.php:732 main-structure-elements.php:210
+#: main-structure-elements.php:1045 main-structure-elements.php:1853
+msgid "Custom Padding"
+msgstr "تخصيص التباعد"
+
+#: class-et-builder-element.php:763
+msgid "Use Custom Styles for %1$s "
+msgstr "استخدام الأنماط المخصصة لـ %1$s "
+
+#: class-et-builder-element.php:792
+msgid "%1$s Text Size"
+msgstr "%1$s حجم النص"
+
+#: class-et-builder-element.php:818
+msgid "%1$s Background Color"
+msgstr "%1$s لون الخلفية"
+
+#: class-et-builder-element.php:829
+msgid "%1$s Border Width"
+msgstr "%1$s عرض الحدود"
+
+#: class-et-builder-element.php:839
+msgid "%1$s Border Color"
+msgstr "%1$s لون الحدود"
+
+#: class-et-builder-element.php:850
+msgid "%1$s Border Radius"
+msgstr "%1$s نصف قطرها الحدود"
+
+#: class-et-builder-element.php:879
+msgid "Add %1$s Icon"
+msgstr "إضافة %1$s رمز"
+
+#: class-et-builder-element.php:883 functions.php:1036 main-modules.php:2490
+#: main-modules.php:2507 main-modules.php:2891 main-modules.php:2908
+#: main-modules.php:3742 main-modules.php:3759 main-modules.php:14954
+#: main-modules.php:14971 main-modules.php:17019 main-modules.php:17036
+msgid "Default"
+msgstr "افتراضي"
+
+#: class-et-builder-element.php:899
+msgid "%1$s Icon"
+msgstr "%1$s رمز"
+
+#: class-et-builder-element.php:911
+msgid "%1$s Icon Color"
+msgstr "%1$s رمز اللون"
+
+#: class-et-builder-element.php:922
+msgid "%1$s Icon Placement"
+msgstr "%1$s رمز التنسيب"
+
+#: class-et-builder-element.php:926 class-et-builder-element.php:1634
+#: class-et-builder-element.php:3577 functions.php:339 functions.php:345
+#: main-modules.php:205 main-modules.php:1632 main-modules.php:3651
+#: main-modules.php:5746 main-modules.php:9784 main-modules.php:12530
+#: main-modules.php:12842 main-modules.php:16409 main-modules.php:16928
+msgid "Right"
+msgstr "يمين"
+
+#: class-et-builder-element.php:927 class-et-builder-element.php:1648
+#: class-et-builder-element.php:3579 functions.php:337 main-modules.php:203
+#: main-modules.php:1630 main-modules.php:3650 main-modules.php:5744
+#: main-modules.php:9783 main-modules.php:12528 main-modules.php:12841
+#: main-modules.php:16407 main-modules.php:16927
+msgid "Left"
+msgstr "يسار"
+
+#: class-et-builder-element.php:935
+msgid "Only Show Icon On Hover for %1$s"
+msgstr "فقط تظهر أيقونة على تحوم لـ %1$s"
+
+#: class-et-builder-element.php:948
+msgid "%1$s Hover Text Color"
+msgstr "%1$s تحوم لون النص"
+
+#: class-et-builder-element.php:959
+msgid "%1$s Hover Background Color"
+msgstr "%1$s تحوم لون الخلفية"
+
+#: class-et-builder-element.php:970
+msgid "%1$s Hover Border Color"
+msgstr "%1$s تحوم لون الحدود"
+
+#: class-et-builder-element.php:981
+msgid "%1$s Hover Border Radius"
+msgstr "%1$s تحوم نصف قطرها الحدود"
+
+#: class-et-builder-element.php:991
+msgid "%1$s Hover Letter Spacing"
+msgstr "%1$s تحوم حرف تباعد"
+
+#: class-et-builder-element.php:1036 class-et-builder-element.php:3654
+msgid "Before"
+msgstr "قبل"
+
+#: class-et-builder-element.php:1041 class-et-builder-element.php:3655
+msgid "Main Element"
+msgstr "العنصر الرئيسي"
+
+#: class-et-builder-element.php:1044 class-et-builder-element.php:3656
+msgid "After"
+msgstr "بعد"
+
+#: class-et-builder-element.php:1478 class-et-builder-element.php:3574
+msgid "Hex Value"
+msgstr "رقم لون"
+
+#: class-et-builder-element.php:1489
+msgid "Choose Custom Color"
+msgstr "اختيار لون التخصيص"
+
+#: class-et-builder-element.php:1499
+msgid "Upload"
+msgstr "تحميل"
+
+#: class-et-builder-element.php:1500
+msgid "Choose image"
+msgstr "اختيار صورة"
+
+#: class-et-builder-element.php:1501
+msgid "Set image"
+msgstr "تعيين صورة"
+
+#: class-et-builder-element.php:1627 class-et-builder-element.php:3576
+#: main-modules.php:1626 main-modules.php:3652 main-modules.php:9988
+#: main-modules.php:16929
+msgid "Top"
+msgstr "القمة"
+
+#: class-et-builder-element.php:1641 class-et-builder-element.php:3578
+#: main-modules.php:2974 main-modules.php:3653 main-modules.php:9990
+#: main-modules.php:14023 main-modules.php:14044 main-modules.php:16930
+msgid "Bottom"
+msgstr "القاع"
+
+#: class-et-builder-element.php:1879 class-et-builder-element.php:2087
+#: functions.php:4850
+msgid "General Settings"
+msgstr "الاعدادات العامة"
+
+#: class-et-builder-element.php:1880
+msgid "Advanced Design Settings"
+msgstr "إعدادات التصميم المُتقدِمة"
+
+#: class-et-builder-element.php:1881 functions.php:4858
+msgid "Custom CSS"
+msgstr "‏CSS الخاص"
+
+#: class-et-builder-element.php:2036
+msgid "You don't have sufficient permissions to access the settings"
+msgstr "ليس لديك أذونات كافية للوصول إلى إعدادات"
+
+#: class-et-builder-element.php:2061 main-modules.php:1428 main-modules.php:1787
+#: main-modules.php:2259 main-modules.php:3043 main-modules.php:4419
+#: main-modules.php:5326 main-modules.php:5550 main-modules.php:6302
+#: main-modules.php:6734 main-modules.php:8841 main-modules.php:8972
+#: main-modules.php:10583 main-modules.php:11888 main-modules.php:12201
+#: main-modules.php:13731 main-modules.php:14049 main-modules.php:15728
+#: main-modules.php:15837
+msgid "Content"
+msgstr "المحتوى"
+
+#: class-et-builder-element.php:2062 main-modules.php:2261 main-modules.php:8844
+#: main-modules.php:9574
+msgid "Here you can define the content that will be placed within the current tab."
+msgstr "يمكنك هنا تعريف المحتوى الذي سيُضع في التبويب الحالي."
+
+#: class-et-builder-element.php:2075
+msgid "Add New Item"
+msgstr "إضافة بنود جديدة"
+
+#: class-et-builder-element.php:2075
+msgid "Add New %s"
+msgstr "إضافة عنصر %s جديد"
+
+#: class-et-builder-element.php:2177
+msgid "%1$s %2$s Settings"
+msgstr "%1$s %2$s صندوق الإعدادات"
+
+#: class-et-builder-element.php:2179
+msgid "Item"
+msgstr "المادة"
+
+#: class-et-builder-element.php:2179 functions.php:1898 functions.php:2398
+#: functions.php:2444
+msgid "Module"
+msgstr "الوحدة"
+
+#: class-et-builder-element.php:3568 class-et-builder-element.php:3653
+#: class-et-builder-element.php:3705 functions.php:2441
+#: main-structure-elements.php:2322
+msgid "Column"
+msgstr "العمود"
+
+#: class-et-builder-element.php:3575
+msgid "Padding"
+msgstr "التباعد"
+
+#: class-et-builder-element.php:3580
+msgid "Parallax Effect"
+msgstr "أثر اختلاف المنظر"
+
+#: class-et-builder-element.php:3583 main-modules.php:12513 main-modules.php:16392
+#: main-structure-elements.php:199 main-structure-elements.php:1144
+msgid "Parallax Method"
+msgstr "طريقة تزيح المنظر"
+
+#: class-et-builder-element.php:3584 main-modules.php:2470 main-modules.php:3682
+#: main-modules.php:12517 main-modules.php:13989 main-modules.php:14934
+#: main-modules.php:16396 main-modules.php:16959 main-structure-elements.php:203
+#: main-structure-elements.php:1148
+msgid "CSS"
+msgstr "‏CSS"
+
+#: class-et-builder-element.php:3585 main-modules.php:2471 main-modules.php:3683
+#: main-modules.php:12518 main-modules.php:13990 main-modules.php:14935
+#: main-modules.php:16397 main-modules.php:16960 main-structure-elements.php:204
+#: main-structure-elements.php:1149
+msgid "True Parallax"
+msgstr "اختلاف المنظر الحقيقي"
+
+#: class-et-builder-element.php:3706 main-modules.php:261 main-modules.php:655
+#: main-modules.php:910 main-modules.php:1114 main-modules.php:1465
+#: main-modules.php:1857 main-modules.php:2107 main-modules.php:2589
+#: main-modules.php:3884 main-modules.php:4476 main-modules.php:4931
+#: main-modules.php:5587 main-modules.php:5778 main-modules.php:5997
+#: main-modules.php:6369 main-modules.php:6801 main-modules.php:7160
+#: main-modules.php:7565 main-modules.php:7931 main-modules.php:8335
+#: main-modules.php:8531 main-modules.php:8700 main-modules.php:9013
+#: main-modules.php:9281 main-modules.php:9832 main-modules.php:10030
+#: main-modules.php:10307 main-modules.php:10748 main-modules.php:11276
+#: main-modules.php:11570 main-modules.php:11770 main-modules.php:12032
+#: main-modules.php:12586 main-modules.php:12945 main-modules.php:13293
+#: main-modules.php:13548 main-modules.php:14072 main-modules.php:14550
+#: main-modules.php:15053 main-modules.php:15416 main-modules.php:15657
+#: main-modules.php:15765 main-modules.php:15860 main-modules.php:16075
+#: main-modules.php:16465 main-modules.php:17161 main-structure-elements.php:482
+#: main-structure-elements.php:1383 main-structure-elements.php:2078
+msgid "CSS ID"
+msgstr "هوية CSS"
+
+#: class-et-builder-element.php:3707 main-modules.php:268 main-modules.php:662
+#: main-modules.php:917 main-modules.php:1121 main-modules.php:1472
+#: main-modules.php:1864 main-modules.php:2114 main-modules.php:2596
+#: main-modules.php:3891 main-modules.php:4483 main-modules.php:4938
+#: main-modules.php:5594 main-modules.php:5785 main-modules.php:6004
+#: main-modules.php:6376 main-modules.php:6808 main-modules.php:7167
+#: main-modules.php:7572 main-modules.php:7938 main-modules.php:8342
+#: main-modules.php:8538 main-modules.php:8707 main-modules.php:9020
+#: main-modules.php:9288 main-modules.php:9839 main-modules.php:10037
+#: main-modules.php:10314 main-modules.php:10755 main-modules.php:11283
+#: main-modules.php:11577 main-modules.php:11777 main-modules.php:12039
+#: main-modules.php:12593 main-modules.php:12952 main-modules.php:13300
+#: main-modules.php:13555 main-modules.php:14079 main-modules.php:14557
+#: main-modules.php:15060 main-modules.php:15423 main-modules.php:15664
+#: main-modules.php:15772 main-modules.php:15867 main-modules.php:16082
+#: main-modules.php:16472 main-modules.php:17168 main-structure-elements.php:489
+#: main-structure-elements.php:1390 main-structure-elements.php:2085
+msgid "CSS Class"
+msgstr "فئة CSS"
+
+#: comments_template.php:4
+msgid "This post is password protected. Enter the password to view comments."
+msgstr "هذا المقال محمي بكلمة مرور. أدخل كلمة المرور لرؤية التعليقات."
+
+#: comments_template.php:12
+msgid "0 Comments"
+msgstr "0 تعليق"
+
+#: comments_template.php:12 functions.php:2511
+msgid "1 Comment"
+msgstr "1 تعليق"
+
+#: comments_template.php:12 main-modules.php:13077
+msgid "Comments"
+msgstr "التعليقات"
+
+#: comments_template.php:16 comments_template.php:29
+msgid "<span class=\"meta-nav\">&larr;</span> Older Comments"
+msgstr "<span class=\"meta-nav\">&larr;</span> التعليقات الأقدم"
+
+#: comments_template.php:17 comments_template.php:30
+msgid "Newer Comments <span class=\"meta-nav\">&rarr;</span>"
+msgstr "التعليقات الأحدث <span class=\"meta-nav\">&rarr;</span>"
+
+#: comments_template.php:36
+msgid "Trackbacks/Pingbacks"
+msgstr "Trackbacks/Pingbacks"
+
+#: comments_template.php:54
+msgid "Submit Comment"
+msgstr "إرسال التعليق"
+
+#: comments_template.php:54
+msgid "Submit a Comment"
+msgstr "إرسال تعليق"
+
+#: comments_template.php:54
+msgid "Leave a Reply to %s"
+msgstr "اترك رد لـ %s"
+
+#: framework.php:35
+msgid ""
+"Please, check the fields below to make sure you entered the correct information."
+msgstr "يرجى التحقق من الحقول أدناه تأكد من إدخال المعلومات الصحيحة."
+
+#: framework.php:36
+msgid "Please, fill in the following fields:"
+msgstr "من فضلك، املأ الحقول التالية:"
+
+#: framework.php:37
+msgid "Please, fix the following errors:"
+msgstr "يُرجى إصلاح الأخطاء التالية:"
+
+#: framework.php:38
+msgid "Invalid email"
+msgstr "البريد الإلكتروني غير صالح"
+
+#: framework.php:39
+msgid "Captcha"
+msgstr "كابتشا"
+
+#: framework.php:40
+msgid "Prev"
+msgstr "السابق"
+
+#: framework.php:41
+msgid "Previous"
+msgstr "السابقة"
+
+#: framework.php:42
+msgid "Next"
+msgstr "القادم"
+
+#: framework.php:43
+msgid "You entered the wrong number in captcha."
+msgstr "أدخلت رقم غير صحيح في الكابتشا."
+
+#: framework.php:82
+msgid "Unauthorized access. Preview cannot be accessed outside %1$s."
+msgstr "الوصول غير المصرح به. معاينة لا يمكن الوصول إليها من خارج %1$s."
+
+#: functions.php:88 functions.php:2407 functions.php:4308
+msgid "All Categories"
+msgstr "كل الفئات"
+
+#: functions.php:97 layouts.php:10
+msgid "All Layouts"
+msgstr "كل المخططات"
+
+#: functions.php:98 functions.php:1427
+msgid "Modules"
+msgstr "الوحدات"
+
+#: functions.php:99 functions.php:1426
+msgid "Rows"
+msgstr "الصفوف"
+
+#: functions.php:100 functions.php:1425
+msgid "Sections"
+msgstr "الأقسام"
+
+#: functions.php:101 functions.php:1424
+msgid "Layouts"
+msgstr "التخطيطات"
+
+#: functions.php:105
+msgid "Global/not Global"
+msgstr "عمومي / غير عمومي"
+
+#: functions.php:106 functions.php:1949
+msgid "Global"
+msgstr "عمومي"
+
+#: functions.php:107
+msgid "not Global"
+msgstr "غير عمومي"
+
+#: functions.php:160 functions.php:175 functions.php:2323
+msgid "you don't have sufficient permissions to access this page"
+msgstr "ليس لديك الصلاحيات الكافية لدخول هذه الصفحة"
+
+#: functions.php:338 functions.php:346 main-modules.php:204 main-modules.php:2892
+#: main-modules.php:2973 main-modules.php:5745 main-modules.php:12529
+#: main-modules.php:12843 main-modules.php:14022 main-modules.php:16408
+msgid "Center"
+msgstr "وسط"
+
+#: functions.php:340
+msgid "Justified"
+msgstr "مضبوط"
+
+#: functions.php:358
+msgid "Update Gallery"
+msgstr "تحديث المعرض"
+
+#: functions.php:367
+msgid "Select a menu"
+msgstr "اختيار قائمة"
+
+#: functions.php:408
+msgid "You currently don't have any projects assigned to a category."
+msgstr "ليس لديك حالياً أي مشروعات مسندة إلى أحد التصنيفات."
+
+#: functions.php:522
+msgid "Solid"
+msgstr "صلب"
+
+#: functions.php:523
+msgid "Dotted"
+msgstr "مُنقَط"
+
+#: functions.php:524
+msgid "Dashed"
+msgstr "مُتقطِع"
+
+#: functions.php:525
+msgid "Double"
+msgstr "مُزدوَج"
+
+#: functions.php:526
+msgid "Groove"
+msgstr "حَزّ"
+
+#: functions.php:527
+msgid "Ridge"
+msgstr "حافة"
+
+#: functions.php:528
+msgid "Inset"
+msgstr "داخل حدود العنصر"
+
+#: functions.php:529
+msgid "Outset"
+msgstr "خارج حدود العنصر"
+
+#: functions.php:1384
+msgid ""
+"<strong>%1$s</strong> widget area has been created. You can create more areas, once "
+"you finish update the page to see all the areas."
+msgstr ""
+"‏<strong>%1$s</strong> تم إنشاء منطقة ودجة. يمكنك إنشاء المزيد من المناطق، وبمجرد "
+"الانتهاء، حدث الصفحة لرؤية كل المناطق."
+
+#: functions.php:1408
+msgid "You do not have sufficient permissions to export the content of this site."
+msgstr "ليست لديك رخص كافية لتصدير محتوى هذا الموقع."
+
+#: functions.php:1412
+msgid "Export Divi Builder Layouts"
+msgstr "تصدير تصاميم بناء Divi"
+
+#: functions.php:1413
+msgid ""
+"When you click the button below WordPress will create an XML file for you to save "
+"to your computer."
+msgstr "عندما تنقر على الزر أدناه، سينشيء WordPress ملف XML لتحفظه في حاسوبك."
+
+#: functions.php:1414
+msgid ""
+"This format, which we call WordPress eXtended RSS or WXR, will contain all layouts "
+"you created using the Page Builder."
+msgstr ""
+"هذه الصيغة، والتي نسميها WordPress eXtended RSS أو WXR ، ستحتوي كل المخططات التي "
+"أنشأتها باستخدام بنّاء الصفحة."
+
+#: functions.php:1415
+msgid ""
+"Once you&#8217;ve saved the download file, you can use the Import function in "
+"another WordPress installation to import all layouts from this site."
+msgstr ""
+"بمجرد حفظك الملف الذي تم إنزاله، يمكنك استخدام وظيفة الإستيراد في تثبيت آخر "
+"لـWordPress لإستيراد كل المخططات من هذا الموقع."
+
+#: functions.php:1416
+msgid "Select Templates you want to export:"
+msgstr "حَدِّد النماذج التي تريد تصديرها:"
+
+#: functions.php:1449
+msgid "Download Export File"
+msgstr "تنزيل ملف التصدير"
+
+#: functions.php:1454
+msgid "Export Divi Layouts"
+msgstr "تصدير تصاميم Divi"
+
+#: functions.php:1458
+msgid "Manage Categories"
+msgstr "إدارة التصنيفات"
+
+#: functions.php:1593 functions.php:1595
+msgid "Use Default Editor"
+msgstr "استخدام المحرر الافتراضي"
+
+#: functions.php:1593 functions.php:1594
+msgid "Use The Divi Builder"
+msgstr "استخدام مُصمِم Divi"
+
+#: functions.php:1636
+msgid "Here you can create new widget areas for use in the Sidebar module"
+msgstr "يمكنك هنا أن تنشئ مناطق ودجات جديدة للاستعمال في وحدة الشريط الجانبي"
+
+#: functions.php:1637
+msgid ""
+"Note: Naming your widget area \"sidebar 1\", \"sidebar 2\", \"sidebar 3\", "
+"\"sidebar 4\" or \"sidebar 5\" will cause conflicts with this theme"
+msgstr ""
+"ملاحظة:تسمية منطقة الودجة الخاصة بك \"sidebar 1\"، \"sidebar 2\"، \"sidebar 3\"، "
+"\"sidebar 4\" أو \"sidebar 5\"سيؤدي إلى تضارب مع هذه السمة."
+
+#: functions.php:1638
+msgid "Widget Name"
+msgstr "اسم الودجة"
+
+#: functions.php:1639
+msgid "Create"
+msgstr "إنشاء"
+
+#: functions.php:1641 functions.php:1759 functions.php:3499
+msgid "Delete"
+msgstr "حذف"
+
+#: functions.php:1708
+msgid "Replace the existing content with loaded layout"
+msgstr "استبدال المحتوى الحالي بالتخطيط الجديد"
+
+#: functions.php:1756
+msgid "Load"
+msgstr "تحميل"
+
+#: functions.php:1868
+msgid ""
+"You have not saved any items to your Divi Library yet. Once an item has been saved "
+"to your library, it will appear here for easy use."
+msgstr ""
+"أنت لم تقم بحفظ أي عنصرٍ من عناصر مكتبة Divi الخاصة بك حتى الآن. وبمجرد أن يتم حفظ "
+"عنصر إلى مكتبك، سوف يظهر هنا لسهولة استخدامه."
+
+#: functions.php:1899
+msgid "Fullwidth Module"
+msgstr "جعل الوحدة بكامل عرض الصفحة"
+
+#: functions.php:1900 functions.php:2442 main-structure-elements.php:821
+#: main-structure-elements.php:1741
+msgid "Row"
+msgstr "الصف"
+
+#: functions.php:1901 functions.php:2437 main-structure-elements.php:5
+msgid "Section"
+msgstr "القسم"
+
+#: functions.php:1902 functions.php:2439 functions.php:3067
+msgid "Fullwidth Section"
+msgstr "قسم عرض كامل الصفحة"
+
+#: functions.php:1903 functions.php:2440 functions.php:3073
+msgid "Specialty Section"
+msgstr "القسم الخاص"
+
+#: functions.php:1904 functions.php:2447 main-modules.php:538 main-modules.php:7060
+#: main-modules.php:7465 main-modules.php:10537 main-modules.php:15302
+msgid "Layout"
+msgstr "تخطيط"
+
+#: functions.php:1908
+msgid "Include General Settings"
+msgstr "دمج الإعدادات العامة"
+
+#: functions.php:1909
+msgid "Include Advanced Design Settings"
+msgstr "دمج إعدادات التصميم المُتقدِمة"
+
+#: functions.php:1910 functions.php:3651
+msgid "Include Custom CSS"
+msgstr "دمج لغة  CSSالمُخصَّصة"
+
+#: functions.php:1918
+msgid "Template Type"
+msgstr "نوع القالب"
+
+#: functions.php:1955
+msgid "Select category(ies) for new template or type a new name ( optional )"
+msgstr "قم باختيار تصنيف (تصنيفات) لنموذج جديد أو اكتب اسماً جديداً (اختياري)"
+
+#: functions.php:1998
+msgid "New Template Settings"
+msgstr "إعدادات النموذج الجديدة"
+
+#: functions.php:1999 functions.php:3700
+msgid "Template Name"
+msgstr "اسم النموذج"
+
+#: functions.php:2394
+msgid "The section should have at least one row."
+msgstr "يجب أن يكون في هذا الجزء صف واحد على الأقل."
+
+#: functions.php:2395
+msgid "Fullwidth module can't be used outside of the Fullwidth Section."
+msgstr "لا يمكن استخدام وحدة العرض الكامل خارج قسم العرض الكامل."
+
+#: functions.php:2396
+msgid "3 column row can't be used in this column."
+msgstr "لا يمكن استخدام صف من 3 أعمدة في هذا العمود."
+
+#: functions.php:2397 functions.php:2920 functions.php:3306
+msgid "Preview"
+msgstr "معاينة"
+
+#: functions.php:2399
+msgid ""
+"Still images cannot be generated from this video service and/or this video format"
+msgstr "لا يمكن توليد الصور الثابتة من خدمة الفيديو هذه و/ أو صيغة الفيديو هذه"
+
+#: functions.php:2400
+msgid "Geocode was not successful for the following reason"
+msgstr "لم ينجح الترميز الجغرافي للسبب التالي"
+
+#: functions.php:2401
+msgid "Geocoder failed due to"
+msgstr "فشل الترميز الجغرافي نتيجة"
+
+#: functions.php:2402
+msgid "No results found"
+msgstr "لم يتم العثور على نتائج"
+
+#: functions.php:2403
+msgid "No available options for this configuration."
+msgstr "لا توجد خيارات مُتاحة لهذه التهيئة"
+
+#: functions.php:2404
+msgid ""
+"You're about to update global module. This change will be applied to all pages "
+"where you use this module. Press OK if you want to update this module"
+msgstr ""
+"أنت على وشك أن تقوم بتحديث الوحدة العمومية. سوف يتم تطبيق هذا التغيير على كافة "
+"الصفحات حيث يمكنك استخدام هذه الوحدة. اِضغط مُوافِق إذا كنت ترغب في تحديث هذه الوحدة"
+
+#: functions.php:2405
+msgid "You cannot add global rows into global sections"
+msgstr "لا يُمكِنك إضافة صفوف عمومية داخل الأقسام العمومية"
+
+#: functions.php:2406
+msgid "You cannot add global modules into global sections or rows"
+msgstr "لا يُمكِنك إضافة وحدات عمومية داخل الأقسام أو الصفوف العمومية"
+
+#: functions.php:2411
+msgid "Map Pin Address cannot be empty"
+msgstr "لا يمكن ترك عنوان مُحدد الموقع على الخريطة فارغاً"
+
+#: functions.php:2412
+msgid "Invalid Pin and address data. Please try again."
+msgstr "رمز Pin وبيانات عنوان غير صالحين. يُرجى المحاولة مرة أخرى."
+
+#: functions.php:2413
+msgid "You do not have permission to unlock this section."
+msgstr "ليس لديك الإذن لفتح هذا الباب."
+
+#: functions.php:2414
+msgid "You do not have permission to unlock this row."
+msgstr "ليس لديك الإذن لفتح هذا الصف."
+
+#: functions.php:2415
+msgid "You do not have permission to unlock this module."
+msgstr "ليس لديك الإذن لفتح هذه الوحدة."
+
+#: functions.php:2416
+msgid "You do not have permission to perform this task."
+msgstr "ليس لديك الإذن لتنفيذ هذه المهمة."
+
+#: functions.php:2417
+msgid ""
+"Unable to perform copy/paste process due to inavailability of localStorage feature "
+"in your browser. Please use latest modern browser (Chrome, Firefox, or Safari) to "
+"perform copy/paste process"
+msgstr ""
+"غير قادر على إجراء نسخ/لصق العملية بسبب inavailability من localStorage الميزة في "
+"المتصفح الخاص بك. الرجاء استخدام أحدث متصفح الحديثة (كروم, فايرفوكس أو سفاري) إجراء "
+"نسخ/لصق العملية"
+
+#: functions.php:2419
+msgid "Did"
+msgstr "هل"
+
+#: functions.php:2420
+msgid "Added"
+msgstr "وأضاف"
+
+#: functions.php:2421
+msgid "Edited"
+msgstr "تحرير"
+
+#: functions.php:2422
+msgid "Removed"
+msgstr "إزالة"
+
+#: functions.php:2423
+msgid "Moved"
+msgstr "انتقلت"
+
+#: functions.php:2424
+msgid "Expanded"
+msgstr "توسيع"
+
+#: functions.php:2425
+msgid "Collapsed"
+msgstr "انهار"
+
+#: functions.php:2426
+msgid "Locked"
+msgstr "مغلق"
+
+#: functions.php:2427
+msgid "Unlocked"
+msgstr "مقفلة"
+
+#: functions.php:2428
+msgid "Cloned"
+msgstr "المستنسخة"
+
+#: functions.php:2429
+msgid "Cleared"
+msgstr "مسح"
+
+#: functions.php:2430
+msgid "Enabled"
+msgstr "تمكين"
+
+#: functions.php:2431
+msgid "Disabled"
+msgstr "تعطيل"
+
+#: functions.php:2432
+msgid "Copied"
+msgstr "نسخ"
+
+#: functions.php:2433
+msgid "Renamed"
+msgstr "إعادة تسمية"
+
+#: functions.php:2434
+msgid "Loaded"
+msgstr "تحميل"
+
+#: functions.php:2438
+msgid "Saved Section"
+msgstr "حفظ المقطع"
+
+#: functions.php:2443
+msgid "Saved Row"
+msgstr "أنقذت الصف"
+
+#: functions.php:2445
+msgid "Saved Module"
+msgstr "حفظ الوحدة النمطية"
+
+#: functions.php:2446
+msgid "Page"
+msgstr "الصفحة"
+
+#: functions.php:2450
+msgid "on Phone"
+msgstr "على الهاتف"
+
+#: functions.php:2451
+msgid "on Tablet"
+msgstr "على الجهاز اللوحي"
+
+#: functions.php:2452
+msgid "on Desktop"
+msgstr "على جهاز الحاسوب الشخصي"
+
+#: functions.php:2454
+msgid "Invalid Color"
+msgstr "لون غير صالحة"
+
+#: functions.php:2471
+msgid "The Divi Builder"
+msgstr "مُصمِم Divi"
+
+#: functions.php:2492
+msgid "Posts by %s"
+msgstr "نُشِرت بواسطة %s"
+
+#: functions.php:2507
+msgid "% Comments"
+msgstr "% تعليقات"
+
+#: functions.php:2509
+msgid "No Comments"
+msgstr "ليست هناك تعليقات"
+
+#: functions.php:2522
+msgid "by"
+msgstr "بواسطة"
+
+#: functions.php:2819 functions.php:2948
+msgid "Rename"
+msgstr "إعادة تسمية"
+
+#: functions.php:2825
+msgid "Copy"
+msgstr "نسخة"
+
+#: functions.php:2831
+msgid "Paste After"
+msgstr "بعد لصق"
+
+#: functions.php:2837 functions.php:2843
+msgid "Paste"
+msgstr "لصق"
+
+#: functions.php:2849 functions.php:2956 functions.php:2957
+msgid "Save to Library"
+msgstr "الحفظ إلى المكتبة"
+
+#: functions.php:2855
+msgid "Unlock"
+msgstr "فتح"
+
+#: functions.php:2856
+msgid "Lock"
+msgstr "قفل"
+
+#: functions.php:2864 functions.php:5048
+msgid "Enable"
+msgstr "تمكين"
+
+#: functions.php:2865 functions.php:5049
+msgid "Disable"
+msgstr "تعطيل"
+
+#: functions.php:2910 main-modules.php:14514
+msgid "Expand"
+msgstr "توسيع"
+
+#: functions.php:2911
+msgid "Collapse"
+msgstr "انهيار"
+
+#: functions.php:2915 functions.php:3004 functions.php:3005
+msgid "Undo"
+msgstr "تراجع"
+
+#: functions.php:2916 functions.php:3002 functions.php:3003
+msgid "Redo"
+msgstr "إعادة"
+
+#: functions.php:2936 functions.php:3329 functions.php:3519 functions.php:3574
+msgid "Cancel"
+msgstr "إلغاء"
+
+#: functions.php:2937 functions.php:3520 functions.php:3575
+msgid "Save"
+msgstr "حفظ"
+
+#: functions.php:2949
+msgid "Enter a new name for this module"
+msgstr "أدخل اسما جديدا لهذه الوحدة"
+
+#: functions.php:2963 functions.php:2964
+msgid "Load From Library"
+msgstr "التحميل من المكتبة"
+
+#: functions.php:2970 functions.php:2971 functions.php:3544
+msgid "Clear Layout"
+msgstr "إزالة التخطيط"
+
+#: functions.php:3006 functions.php:3007
+msgid "See History"
+msgstr "انظر التاريخ"
+
+#: functions.php:3014 functions.php:3015 functions.php:3114 functions.php:3115
+#: functions.php:3500
+msgid "Settings"
+msgstr "الإعدادات"
+
+#: functions.php:3020 functions.php:3021
+msgid "Clone Section"
+msgstr "استنساخ قسم"
+
+#: functions.php:3025 functions.php:3026
+msgid "Delete Section"
+msgstr "حذف قسم"
+
+#: functions.php:3030 functions.php:3031
+msgid "Unlock Section"
+msgstr "فتح الباب"
+
+#: functions.php:3049 functions.php:3050
+msgid "Expand Section"
+msgstr "قم بتوسيع القسم"
+
+#: functions.php:3056 functions.php:3356 functions.php:3399 functions.php:3462
+#: functions.php:4837
+msgid "Add From Library"
+msgstr "إضافة من المكتبة"
+
+#: functions.php:3061
+msgid "Standard Section"
+msgstr "القسم الأساسي"
+
+#: functions.php:3122 functions.php:3123
+msgid "Clone Row"
+msgstr "استنساخ صف"
+
+#: functions.php:3131 functions.php:3132
+msgid "Delete Row"
+msgstr "حذف صف"
+
+#: functions.php:3140 functions.php:3141
+msgid "Change Structure"
+msgstr "تغيير البنية"
+
+#: functions.php:3147 functions.php:3148
+msgid "Unlock Row"
+msgstr "فتح صف"
+
+#: functions.php:3173 functions.php:3174
+msgid "Expand Row"
+msgstr "توسيع الصف"
+
+#: functions.php:3194
+msgid "Add Row"
+msgstr "إضافة صف"
+
+#: functions.php:3202
+msgid "Insert Column(s)"
+msgstr "إدراج عمود (أعمدة)"
+
+#: functions.php:3232 functions.php:3233 functions.php:3501
+msgid "Clone Module"
+msgstr "استنساخ وحدة"
+
+#: functions.php:3243 functions.php:3244
+msgid "Remove Module"
+msgstr "إزالة الوحدة"
+
+#: functions.php:3254 functions.php:3255
+msgid "Unlock Module"
+msgstr "فتح وحدة نمطية"
+
+#: functions.php:3263 functions.php:3264
+msgid "Module Settings"
+msgstr "إعدادات وحدة"
+
+#: functions.php:3289
+msgid "Save & Exit"
+msgstr "الحفظ و الخروج"
+
+#: functions.php:3298
+msgid "Save & Add To Library"
+msgstr "الحفظ والإضافة إلى المكتبة"
+
+#: functions.php:3384
+msgid "Insert Columns"
+msgstr "إدراج أعمدة"
+
+#: functions.php:3386
+msgid "New Row"
+msgstr "صف جديد"
+
+#: functions.php:3428
+msgid "Insert Module"
+msgstr "إدراج وحدة"
+
+#: functions.php:3429
+msgid "New Module"
+msgstr "وحدة جديدة"
+
+#: functions.php:3460 functions.php:4824
+msgid "Load Layout"
+msgstr "تحميل التخطيط"
+
+#: functions.php:3461
+msgid "Predefined Layouts"
+msgstr "التصميمات المُعرَّفة مُسبقاً"
+
+#: functions.php:3471
+msgid "Insert Module(s)"
+msgstr "إدراج وحدة (وحدات)"
+
+#: functions.php:3531
+msgid "Disable Builder"
+msgstr "تعطيل المُصمِم"
+
+#: functions.php:3532
+msgid ""
+"All content created in the Divi Builder will be lost. Previous content will be "
+"restored."
+msgstr ""
+"سوف يتم فقدان جميع المُحتويات التي تم إنشاؤها في  مُصمِم Divi. و سوف يتم استعادة "
+"المُحتوى السابق."
+
+#: functions.php:3533 functions.php:3546 functions.php:3557
+msgid "Do you wish to proceed?"
+msgstr "هل ترغب في المُتابَعة؟"
+
+#: functions.php:3545
+msgid "All of your current page content will be lost."
+msgstr "سوف يتم فقدان جميع مُحتويات صفحتك الحالية."
+
+#: functions.php:3556
+msgid "All advanced module settings in will be lost."
+msgstr "سوف يتم فقدان جميع إعدادات الوحدة المُتقدِمة."
+
+#: functions.php:3588 functions.php:4833
+msgid "Save To Library"
+msgstr "الحفظ إلى المكتبة"
+
+#: functions.php:3589
+msgid "Save your current page to the Divi Library for later use."
+msgstr "اِحفظ صفحتك الحالية إلى مكتبة Divi لاستخدامها لاحقاً."
+
+#: functions.php:3590
+msgid "Layout Name:"
+msgstr "اسم التصميم:"
+
+#: functions.php:3604
+msgid "Save And Add To Library"
+msgstr "الحفظ و الإضافة الى المكتبة"
+
+#: functions.php:3611
+msgid "Add To Categories:"
+msgstr "إضافة إلى التصنيفات"
+
+#: functions.php:3632
+msgid "Create New Category"
+msgstr "إنشاء تنصيف جديد"
+
+#: functions.php:3639
+msgid "Include General settings"
+msgstr "دمج الإعدادات العامة"
+
+#: functions.php:3645
+msgid "Include Advanced Design settings"
+msgstr "دمج إعدادات التصميم المُتقدِمة"
+
+#: functions.php:3699
+msgid ""
+"Here you can save the current item and add it to your Divi Library for later use as "
+"well."
+msgstr ""
+"هنا يُمكِنك حفظ العنصر الحالي وإضافته إلى المكتبة Divi الخاصة بك لاستخدامها في وقت "
+"لاحق كذلك."
+
+#: functions.php:3701
+msgid "Selective Sync"
+msgstr "تزامن انتقائي"
+
+#: functions.php:3705
+msgid "Please select at least 1 tab to save"
+msgstr "يُرجَى اختيار علامة تبويبٍ واحدةٍ على الأقل لحفظها"
+
+#: functions.php:3706
+msgid "Save as Global:"
+msgstr "الحفظ كعنصر عمومي:"
+
+#: functions.php:3707
+msgid "Make this a global item"
+msgstr "جعل هذا العنصر عمومي"
+
+#: functions.php:3735
+msgid "Add Specialty Section"
+msgstr "إضافة قسم تخصص"
+
+#: functions.php:3793
+msgid "Mobile"
+msgstr "الجوال"
+
+#: functions.php:3794 functions.php:3825 main-modules.php:248 main-modules.php:642
+#: main-modules.php:897 main-modules.php:1101 main-modules.php:1452
+#: main-modules.php:1844 main-modules.php:2094 main-modules.php:2576
+#: main-modules.php:3871 main-modules.php:4463 main-modules.php:4918
+#: main-modules.php:5574 main-modules.php:5765 main-modules.php:5984
+#: main-modules.php:6356 main-modules.php:6788 main-modules.php:7147
+#: main-modules.php:7552 main-modules.php:7918 main-modules.php:8322
+#: main-modules.php:8518 main-modules.php:8687 main-modules.php:9000
+#: main-modules.php:9268 main-modules.php:9819 main-modules.php:10017
+#: main-modules.php:10294 main-modules.php:10735 main-modules.php:11263
+#: main-modules.php:11557 main-modules.php:11757 main-modules.php:12019
+#: main-modules.php:12573 main-modules.php:12932 main-modules.php:13280
+#: main-modules.php:13535 main-modules.php:14059 main-modules.php:14537
+#: main-modules.php:15040 main-modules.php:15403 main-modules.php:15644
+#: main-modules.php:15752 main-modules.php:15847 main-modules.php:16062
+#: main-modules.php:16452 main-modules.php:17148 main-structure-elements.php:474
+#: main-structure-elements.php:1375 main-structure-elements.php:2070
+msgid "Tablet"
+msgstr "جهاز لوحي"
+
+#: functions.php:3795 functions.php:3824 main-modules.php:249 main-modules.php:643
+#: main-modules.php:898 main-modules.php:1102 main-modules.php:1453
+#: main-modules.php:1845 main-modules.php:2095 main-modules.php:2577
+#: main-modules.php:3872 main-modules.php:4464 main-modules.php:4919
+#: main-modules.php:5575 main-modules.php:5766 main-modules.php:5985
+#: main-modules.php:6357 main-modules.php:6789 main-modules.php:7148
+#: main-modules.php:7553 main-modules.php:7919 main-modules.php:8323
+#: main-modules.php:8519 main-modules.php:8688 main-modules.php:9001
+#: main-modules.php:9269 main-modules.php:9820 main-modules.php:10018
+#: main-modules.php:10295 main-modules.php:10736 main-modules.php:11264
+#: main-modules.php:11558 main-modules.php:11758 main-modules.php:12020
+#: main-modules.php:12574 main-modules.php:12933 main-modules.php:13281
+#: main-modules.php:13536 main-modules.php:14060 main-modules.php:14538
+#: main-modules.php:15041 main-modules.php:15404 main-modules.php:15645
+#: main-modules.php:15753 main-modules.php:15848 main-modules.php:16063
+#: main-modules.php:16453 main-modules.php:17149 main-structure-elements.php:475
+#: main-structure-elements.php:1376 main-structure-elements.php:2071
+msgid "Desktop"
+msgstr "سطح المكتب"
+
+#: functions.php:3826
+msgid "Smartphone"
+msgstr "الهاتف الذكي"
+
+#: functions.php:4055
+msgid "Configuration error"
+msgstr "خطأ في التكوين"
+
+#: functions.php:4065
+msgid "Please enter first name"
+msgstr "الرجاء إدخال الاسم الأول"
+
+#: functions.php:4067
+msgid "Incorrect email"
+msgstr "غير صحيحة البريد الإلكتروني"
+
+#: functions.php:4069
+msgid "Configuration error: List is not defined"
+msgstr "خطأ تكوين: قائمة غير معرف"
+
+#: functions.php:4071
+msgid ""
+"<h2 class=\"et_pb_subscribed\">Subscribed - look for the confirmation email!</h2>"
+msgstr ""
+"<h2 class=\"et_pb_subscribed\">الاشتراك - ابحث عن رسالة البريد الإلكتروني!</h2>"
+
+#: functions.php:4088
+msgid "Configuration error: api key is not defined"
+msgstr "خطأ تكوين: مفتاح api غير معرف"
+
+#: functions.php:4124
+msgid "Aweber: Wrong configuration data"
+msgstr "أوبر: خطأ بيانات التكوين"
+
+#: functions.php:4155
+msgid "Connecting..."
+msgstr "ربط..."
+
+#: functions.php:4156
+msgid "Connection failed"
+msgstr "فشل الاتصال"
+
+#: functions.php:4157
+msgid "Removing connection..."
+msgstr "إزالة اتصال..."
+
+#: functions.php:4158
+msgid "Done"
+msgstr "فعلت"
+
+#: functions.php:4187
+msgid "Step 1: <a href=\"%1$s\" target=\"_blank\">Generate authorization code</a>"
+msgstr "الخطوة 1: <a href=\"%1$s\" target=\"_blank\">Generate auth code</a>"
+
+#: functions.php:4188
+msgid ""
+"Step 2: Paste in the authorization code and click \"Make a connection\" button: "
+msgstr "الخطوة 2: لصق في تصريح التعليمات البرمجية ثم انقر فوق \"اتصال\" الزر: "
+
+#: functions.php:4189
+msgid "Make a connection"
+msgstr "إجراء اتصال"
+
+#: functions.php:4192
+msgid "Aweber is set up properly. You can remove connection here if you wish."
+msgstr "أوبر يتم تعيين بشكل صحيح. يمكنك إزالة الرابط هنا إذا كنت ترغب في ذلك."
+
+#: functions.php:4193
+msgid "Remove the connection"
+msgstr "إزالة اتصال"
+
+#: functions.php:4201
+msgid "Nonce failed."
+msgstr "حالية فشلت."
+
+#: functions.php:4207
+msgid "Authorization code is empty."
+msgstr "إذن رمز فارغة."
+
+#: functions.php:4218
+msgid "Authorization code is invalid. Try regenerating it and paste in the new code."
+msgstr "إذن رمز غير صالح. محاولة تجديد و لصق في القانون الجديد."
+
+#: functions.php:4240
+msgid "Aweber API Exception"
+msgstr "أوبر API استثناء"
+
+#: functions.php:4241 main-modules.php:9577 main-modules.php:11169
+msgid "Type"
+msgstr "النوع"
+
+#: functions.php:4242 main-modules.php:9303
+msgid "Message"
+msgstr "رسالة"
+
+#: functions.php:4243
+msgid "Documentation"
+msgstr "الوثائق"
+
+#: functions.php:4253
+msgid "Nonce failed"
+msgstr "حالية فشل"
+
+#: functions.php:4268
+msgid "Projects"
+msgstr "المشاريع"
+
+#: functions.php:4269
+msgid "Project"
+msgstr "المشروع"
+
+#: functions.php:4270
+msgid "Add New"
+msgstr "إضافة جديد"
+
+#: functions.php:4271
+msgid "Add New Project"
+msgstr "إضافة مشروع جديد"
+
+#: functions.php:4272
+msgid "Edit Project"
+msgstr "تحرير المشروع"
+
+#: functions.php:4273
+msgid "New Project"
+msgstr "مشروع جديد"
+
+#: functions.php:4274
+msgid "All Projects"
+msgstr "جميع المشاريع"
+
+#: functions.php:4275
+msgid "View Project"
+msgstr "عرض المشروع"
+
+#: functions.php:4276
+msgid "Search Projects"
+msgstr "البحث المشاريع"
+
+#: functions.php:4277 layouts.php:13
+msgid "Nothing found"
+msgstr "لم يتم العثور على شيء"
+
+#: functions.php:4278 layouts.php:14
+msgid "Nothing found in Trash"
+msgstr "لم يتم العثور على شيء في المهملات"
+
+#: functions.php:4305
+msgid "Project Categories"
+msgstr "فئات المشاريع"
+
+#: functions.php:4306
+msgid "Project Category"
+msgstr "فئة المشروع"
+
+#: functions.php:4307
+msgid "Search Categories"
+msgstr "فئات البحث"
+
+#: functions.php:4309
+msgid "Parent Category"
+msgstr "الفئة الأصل"
+
+#: functions.php:4310
+msgid "Parent Category:"
+msgstr "الفئة الأصل:"
+
+#: functions.php:4311
+msgid "Edit Category"
+msgstr "تحرير الفئة"
+
+#: functions.php:4312
+msgid "Update Category"
+msgstr "التحديث الفئة"
+
+#: functions.php:4313
+msgid "Add New Category"
+msgstr "إضافة فئة جديدة"
+
+#: functions.php:4314
+msgid "New Category Name"
+msgstr "الفئة الجديدة اسم"
+
+#: functions.php:4315
+msgid "Categories"
+msgstr "فئات"
+
+#: functions.php:4327
+msgid "Project Tags"
+msgstr "المشروع العلامات"
+
+#: functions.php:4328
+msgid "Project Tag"
+msgstr "مشروع العلامة"
+
+#: functions.php:4329
+msgid "Search Tags"
+msgstr "البحث العلامات"
+
+#: functions.php:4330
+msgid "All Tags"
+msgstr "جميع العلامات"
+
+#: functions.php:4331
+msgid "Parent Tag"
+msgstr "الوالد العلامة"
+
+#: functions.php:4332
+msgid "Parent Tag:"
+msgstr "الوالد العلامة:"
+
+#: functions.php:4333
+msgid "Edit Tag"
+msgstr "تحرير العلامة"
+
+#: functions.php:4334
+msgid "Update Tag"
+msgstr "تحديث العلامة"
+
+#: functions.php:4335
+msgid "Add New Tag"
+msgstr "إضافة علامة جديدة"
+
+#: functions.php:4336
+msgid "New Tag Name"
+msgstr "الجديد اسم العلامة"
+
+#: functions.php:4337
+msgid "Tags"
+msgstr "علامات"
+
+#: functions.php:4397
+msgid "Read more"
+msgstr "قراءة المزيد"
+
+#: functions.php:4765
+msgid "Theme Customizer"
+msgstr "مُخصِّص المواضيع"
+
+#: functions.php:4770
+msgid "Module Customizer"
+msgstr "مُخصِّص الوحدات"
+
+#: functions.php:4775
+msgid "Page Options"
+msgstr "خيارات الصفحة"
+
+#: functions.php:4786
+msgid "Plugin Options"
+msgstr "خيارات البرنامج المساعد"
+
+#: functions.php:4786
+msgid "Theme Options"
+msgstr "خيارات الموضوع"
+
+#: functions.php:4791
+msgid "Divi Library"
+msgstr "مكتبة Divi"
+
+#: functions.php:4797
+msgid "Builder Interface"
+msgstr "منشئ واجهة"
+
+#: functions.php:4800
+msgid "Add/Delete Item"
+msgstr "إضافة/حذف البند"
+
+#: functions.php:4804
+msgid "Edit Item"
+msgstr "تعديل البند"
+
+#: functions.php:4808
+msgid "Move Item"
+msgstr "تحرك البند"
+
+#: functions.php:4812
+msgid "Disable Item"
+msgstr "تعطيل البند"
+
+#: functions.php:4816
+msgid "Lock Item"
+msgstr "قفل البند"
+
+#: functions.php:4820
+msgid "Toggle Divi Builder"
+msgstr "تبديل ديفي باني"
+
+#: functions.php:4830
+msgid "Library Settings"
+msgstr "إعدادات مكتبة"
+
+#: functions.php:4841
+msgid "Edit Global Items"
+msgstr "تحرير العالمية البنود"
+
+#: functions.php:4847
+msgid "Settings Tabs"
+msgstr "علامات التبويب الإعدادات"
+
+#: functions.php:4854
+msgid "Advanced Settings"
+msgstr "إعدادات متقدمة"
+
+#: functions.php:4864
+msgid "Settings Types"
+msgstr "إعدادات أنواع"
+
+#: functions.php:4867
+msgid "Edit Colors"
+msgstr "تحرير الألوان"
+
+#: functions.php:4871
+msgid "Edit Content"
+msgstr "تحرير المحتوى"
+
+#: functions.php:4875
+msgid "Edit Fonts"
+msgstr "تحرير الخطوط"
+
+#: functions.php:4879
+msgid "Edit Buttons"
+msgstr "تحرير أزرار"
+
+#: functions.php:4883 layouts.php:8
+msgid "Edit Layout"
+msgstr "تحرير تخطيط"
+
+#: functions.php:4887
+msgid "Edit Configuration"
+msgstr "تحرير التكوين"
+
+#: functions.php:4893
+msgid "Module Use"
+msgstr "استخدام وحدة نمطية"
+
+#: functions.php:4933
+msgid "Administrator"
+msgstr "مدير"
+
+#: functions.php:4934
+msgid "Editor"
+msgstr "محرر"
+
+#: functions.php:4935
+msgid "Author"
+msgstr "المؤلف"
+
+#: functions.php:4936
+msgid "Contributor"
+msgstr "مساهم"
+
+#: functions.php:4971
+msgid "Divi Role Editor"
+msgstr "ديفي دور محرر"
+
+#: functions.php:4972
+msgid "Save Divi Roles"
+msgstr "حفظ ديفي الأدوار"
+
+#: functions.php:5011
+msgid ""
+"Using the Divi Role Editor, you can limit the types of actions that can be taken by "
+"WordPress users of different roles. This is a great way to limit the functionality "
+"available to your customers or guest authors to ensure that they only have the "
+"necessary options available to them."
+msgstr ""
+"باستخدام ديفي دور محرر يمكنك تحديد أنواع الإجراءات التي يمكن اتخاذها من قبل "
+"المستخدمين وورد من الأدوار المختلفة. هذا هو وسيلة رائعة للحد من الوظائف المتاحة "
+"للعملاء أو الكتاب الضيف لضمان أن لديهم ما يلزم من الخيارات المتاحة لهم."
+
+#: functions.php:5079
+msgid "Reset Roles"
+msgstr "إعادة تعيين الأدوار"
+
+#: functions.php:5080
+msgid ""
+"All of your current role settings will be set to defaults. Do you wish to proceed?"
+msgstr ""
+"كل ما تبذلونه من الدور الحالي إعدادات تعيين إلى الإعدادات الافتراضية. هل تريد أن "
+"نبدأ ؟ "
+
+#: functions.php:5082 main-modules.php:2933 main-modules.php:2953
+#: main-modules.php:3530 main-modules.php:3550 main-modules.php:3602
+#: main-modules.php:3637 main-modules.php:3694 main-modules.php:3713
+#: main-modules.php:16807 main-modules.php:16827 main-modules.php:16879
+#: main-modules.php:16914 main-modules.php:16971 main-modules.php:16990
+msgid "no"
+msgstr "لا"
+
+#. translators: 1: date, 2: time
+#: functions.php:5424
+msgid "on %1$s at %2$s"
+msgstr "على %1$s في %2$s"
+
+#: functions.php:5427
+msgid "(Edit)"
+msgstr "(التعديل)"
+
+#: functions.php:5430
+msgid "Reply"
+msgstr "الرد"
+
+#: functions.php:5439
+msgid "Your comment is awaiting moderation."
+msgstr "تعليقك في انتظار الموافقة عليه."
+
+#: layouts.php:7
+msgid "Add New Layout"
+msgstr "إضافة تخطيط جديد"
+
+#: layouts.php:9
+msgid "New Layout"
+msgstr "تخطيط جديد"
+
+#: layouts.php:11
+msgid "View Layout"
+msgstr "استعراض التخطيط"
+
+#: layouts.php:12
+msgid "Search Layouts"
+msgstr "البحث في المخططات"
+
+#: layouts.php:40
+msgid "Scope"
+msgstr "مجال"
+
+#: layouts.php:53
+msgid "Layout Type"
+msgstr "نوع التصميم"
+
+#: layouts.php:66
+msgid "Module Width"
+msgstr "عرض الوحدة"
+
+#: layouts.php:79
+msgid "Category"
+msgstr "فئة"
+
+#: layouts.php:142
+msgid "Built For Any"
+msgstr "أنشئ من أجل أي"
+
+#: layouts.php:167
+msgid "Built For"
+msgstr "أنشئ من أجل"
+
+#: layouts.php:168
+msgid "Global Layout"
+msgstr "التخطيط العام"
+
+#: layouts.php:180
+msgid "Standard"
+msgstr "معياري"
+
+#: layouts.php:421
+msgid "Homepage Basic"
+msgstr "صفحة رئيسية أساسية"
+
+#: layouts.php:429
+msgid "Homepage Shop"
+msgstr "صفحة رئيسية متجر"
+
+#: layouts.php:439
+msgid "Homepage Portfolio"
+msgstr "صفحة رئيسية محفظة"
+
+#: layouts.php:447
+msgid "Homepage Company"
+msgstr "صفحة رئيسية شركة"
+
+#: layouts.php:455
+msgid "Homepage Corporate"
+msgstr "صفحة رئيسية مؤسسة"
+
+#: layouts.php:466
+msgid "Homepage Extended"
+msgstr "صفحة رئيسية ممتدة"
+
+#: layouts.php:475
+msgid "Page Fullwidth"
+msgstr "صفحة باتساع كامل"
+
+#: layouts.php:509
+msgid "Page Right Sidebar"
+msgstr "صفحة بشريط جانبي أيمن"
+
+#: layouts.php:543
+msgid "Page Left Sidebar"
+msgstr "صفحة بشريط جانبي أيسر"
+
+#: layouts.php:577
+msgid "Page Dual Sidebars"
+msgstr "صفحة بشريطين جانبيين"
+
+#: layouts.php:599
+msgid "Portfolio Grid"
+msgstr "محفظة شبكية"
+
+#: layouts.php:607
+msgid "Portfolio 1 Column"
+msgstr "محفظة بعمود واحد"
+
+#: layouts.php:615
+msgid "Portfolio Fullwidth Carousel"
+msgstr "محفظة بخزانة دوارة باتساع كامل"
+
+#: layouts.php:623
+msgid "Portfolio Fullwidth Grid"
+msgstr "محفظة شبكة باتساع كامل"
+
+#: layouts.php:631
+msgid "Project Extended"
+msgstr "مشروع ممتد"
+
+#: layouts.php:641
+msgid "Project Extended 2"
+msgstr "مشروع ممتد 2"
+
+#: layouts.php:654
+msgid "Blog Masonry"
+msgstr "بناء مدونة"
+
+#: layouts.php:662
+msgid "Blog Standard"
+msgstr "معيار مدونة"
+
+#: layouts.php:670
+msgid "Shop Basic"
+msgstr "متجر أساسي"
+
+#: layouts.php:678
+msgid "Shop Extended"
+msgstr "متجر ممتد"
+
+#: layouts.php:686
+msgid "Splash Page"
+msgstr "صفحة بداية"
+
+#: layouts.php:697
+msgid "Maintenance Mode"
+msgstr "نمط الصيانة"
+
+#: layouts.php:706
+msgid "Coming Soon"
+msgstr "قادم قريباً"
+
+#: layouts.php:714
+msgid "Landing Page"
+msgstr "صفحة الهبوط"
+
+#: layouts.php:723
+msgid "About Me"
+msgstr "نبذة عني"
+
+#: layouts.php:732
+msgid "About Us"
+msgstr "نبذة عنا"
+
+#: layouts.php:741
+msgid "Contact Us"
+msgstr "اتصل بنا"
+
+#: layouts.php:757
+msgid "Our Team"
+msgstr "فريقنا"
+
+#: layouts.php:870
+msgid "Creative Agency"
+msgstr "الوكالة المبدعة"
+
+#: layouts.php:879
+msgid "Sales Page"
+msgstr "صفحة مبيعات"
+
+#: layouts.php:915
+msgid "Case Study"
+msgstr "دراسة حالة"
+
+#: layouts.php:925
+msgid "Product Features"
+msgstr "ميزات المنتج"
+
+#: main-modules.php:4 main-modules.php:1733 main-modules.php:11140
+msgid "Image"
+msgstr "الصورة"
+
+#: main-modules.php:56 main-modules.php:1762 main-modules.php:10230
+#: main-modules.php:16048
+msgid "Left To Right"
+msgstr "من اليسار إلى اليمين"
+
+#: main-modules.php:57 main-modules.php:1763 main-modules.php:10231
+#: main-modules.php:16049
+msgid "Right To Left"
+msgstr "من اليمين إلى اليسار"
+
+#: main-modules.php:58 main-modules.php:1761 main-modules.php:10232
+#: main-modules.php:16050
+msgid "Top To Bottom"
+msgstr "من أعلي إلى أسفل"
+
+#: main-modules.php:59 main-modules.php:1764 main-modules.php:10233
+#: main-modules.php:16051
+msgid "Bottom To Top"
+msgstr "من أسفل إلى أعلى"
+
+#: main-modules.php:60 main-modules.php:10229 main-modules.php:16052
+msgid "Fade In"
+msgstr "تلاشي"
+
+#: main-modules.php:61 main-modules.php:1765 main-modules.php:10228
+#: main-modules.php:16053
+msgid "No Animation"
+msgstr "لا صور متحركة"
+
+#: main-modules.php:85 main-modules.php:10215 main-modules.php:15947
+msgid "Image URL"
+msgstr "‏URL الصورة"
+
+#: main-modules.php:89 main-modules.php:877 main-modules.php:1256
+#: main-modules.php:1737 main-modules.php:4368 main-modules.php:5960
+#: main-modules.php:10219 main-modules.php:13959 main-modules.php:14001
+#: main-modules.php:14034 main-modules.php:15951
+msgid "Choose an Image"
+msgstr "اختيار صورة"
+
+#: main-modules.php:90 main-modules.php:878 main-modules.php:1257
+#: main-modules.php:1738 main-modules.php:4369 main-modules.php:5961
+#: main-modules.php:10220 main-modules.php:13960 main-modules.php:14002
+#: main-modules.php:14035 main-modules.php:15952
+msgid "Set As Image"
+msgstr "الإعداد كصورة"
+
+#: main-modules.php:91 main-modules.php:4370 main-modules.php:5962
+#: main-modules.php:10221 main-modules.php:13961 main-modules.php:14003
+#: main-modules.php:14036 main-modules.php:15953
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"display."
+msgstr "حمل الصورة التي ترغبها، أو اطبع الـ URL الخاص بالصورة التي تود إظهارها."
+
+#: main-modules.php:94 main-modules.php:2985 main-modules.php:15956
+msgid "Image Alternative Text"
+msgstr "النص البديل عن الصورة"
+
+#: main-modules.php:97 main-modules.php:14009 main-modules.php:15959
+msgid ""
+"This defines the HTML ALT text. A short description of your image can be placed "
+"here."
+msgstr "يعرف هذا النص البديل عن الصورة. يمكن وضع وصف قصير للصورة الخاصة بك هنا."
+
+#: main-modules.php:100 main-modules.php:15962
+msgid "Image Title Text"
+msgstr "نص عنوان الصورة"
+
+#: main-modules.php:103 main-modules.php:14015 main-modules.php:15965
+msgid "This defines the HTML Title text."
+msgstr "يُعِّرف هذا نص عنوان الـ HTML"
+
+#: main-modules.php:106
+msgid "Open in Lightbox"
+msgstr "الفتح في صندوق الصور"
+
+#: main-modules.php:118 main-modules.php:15980
+msgid ""
+"Here you can choose whether or not the image should open in Lightbox. Note: if you "
+"select to open the image in Lightbox, url options below will be ignored."
+msgstr ""
+"يمكنك هنا أن تختار فتح الصورة في صندوق الضوء أو لا. ملاحظة: إذا اخترت فتح الصورة في "
+"صندوق الضوء، سيتم إهمال خيارات URL أدناه."
+
+#: main-modules.php:121 main-modules.php:15983
+msgid "Link URL"
+msgstr "وصلة URL"
+
+#: main-modules.php:128 main-modules.php:15990
+msgid ""
+"If you would like your image to be a link, input your destination URL here. No link "
+"will be created if this field is left blank."
+msgstr ""
+"إذا كنت تود أن تكون الصورة الخاصة بك وصلة، أدخل الـ URL الوجهة هنا. لن يتم إنشاء "
+"وصلة إذا تُرك هذا الحقل فارغاً."
+
+#: main-modules.php:131 main-modules.php:1649 main-modules.php:5498
+#: main-modules.php:5724 main-modules.php:11995 main-modules.php:15993
+msgid "Url Opens"
+msgstr "فتح URL"
+
+#: main-modules.php:135 main-modules.php:1653 main-modules.php:4358
+#: main-modules.php:5502 main-modules.php:5728 main-modules.php:11999
+#: main-modules.php:15997
+msgid "In The Same Window"
+msgstr "في النافذة نفسها"
+
+#: main-modules.php:136 main-modules.php:1654 main-modules.php:4359
+#: main-modules.php:5503 main-modules.php:5729 main-modules.php:12000
+#: main-modules.php:15998
+msgid "In The New Tab"
+msgstr "في تبويب جديد"
+
+#: main-modules.php:139 main-modules.php:1656 main-modules.php:5505
+#: main-modules.php:5731 main-modules.php:12002 main-modules.php:16001
+msgid "Here you can choose whether or not your link opens in a new window"
+msgstr "يمكنك هنا أن تختار أن تفتح وصلتك في نافذة جديدة أو لا"
+
+#: main-modules.php:142 main-modules.php:16004
+msgid "Image Overlay"
+msgstr "تراكب الصورة"
+
+#: main-modules.php:155 main-modules.php:16017
+msgid ""
+"If enabled, an overlay color and icon will be displayed when a visitors hovers over "
+"the image"
+msgstr ""
+"إذا تم تمكينه، فسيتم عرض أيقونة ولون متراكبين، حينما يمرر أحد الزائرين مؤشر الفأرة "
+"فوق الصورة"
+
+#: main-modules.php:158 main-modules.php:10678 main-modules.php:16020
+msgid "Overlay Icon Color"
+msgstr "لون الأيقونة المتراكبة"
+
+#: main-modules.php:162 main-modules.php:10682 main-modules.php:16024
+msgid "Here you can define a custom color for the overlay icon"
+msgstr "يمكنك هنا تحديد لون مُخصص للأيقونة المتراكبة"
+
+#: main-modules.php:165 main-modules.php:622 main-modules.php:7128
+#: main-modules.php:7542 main-modules.php:10685 main-modules.php:11244
+#: main-modules.php:15384 main-modules.php:16027
+msgid "Hover Overlay Color"
+msgstr "تغيير لون أيقونة التراكب بالتأشير بالفأرة"
+
+#: main-modules.php:169 main-modules.php:10689 main-modules.php:16031
+msgid "Here you can define a custom color for the overlay"
+msgstr "يمكنك هنا تحديد لون مُخصص للتراكب"
+
+#: main-modules.php:172 main-modules.php:629 main-modules.php:7134
+#: main-modules.php:7527 main-modules.php:10692 main-modules.php:11250
+#: main-modules.php:15390 main-modules.php:16034
+msgid "Hover Icon Picker"
+msgstr "تحديد أيقونة الالتقاط بالتأشير بالفأرة"
+
+#: main-modules.php:179 main-modules.php:10699 main-modules.php:16041
+msgid "Here you can define a custom icon for the overlay"
+msgstr "يمكنك هنا تحديد أيقونة مُخصصة للتراكب"
+
+#: main-modules.php:182 main-modules.php:10224 main-modules.php:16044
+msgid "Animation"
+msgstr "صور متحركة"
+
+#: main-modules.php:186 main-modules.php:1767 main-modules.php:10235
+#: main-modules.php:16055
+msgid "This controls the direction of the lazy-loading animation."
+msgstr "يتحكم هذا في اتجاه الصور المتحركة."
+
+#: main-modules.php:189
+msgid "Remove Space Below The Image"
+msgstr "إزالة الفراغ أسفل الصورة"
+
+#: main-modules.php:196
+msgid "Here you can choose whether or not the image should have a space below it."
+msgstr "يمكنك هنا أن تختار أن يكون هناك فراغ أسفل الصورة أو لا."
+
+#: main-modules.php:199
+msgid "Image Alignment"
+msgstr "محاذاة الصورة"
+
+#: main-modules.php:207
+msgid "Here you can choose the image alignment."
+msgstr "هنا يُمكِنك اختيار محاذاة الصورة."
+
+#: main-modules.php:210 main-modules.php:1793
+msgid "Image Max Width"
+msgstr "الصورة بكامل عرض الصفحة"
+
+#: main-modules.php:218
+msgid "Force Fullwidth"
+msgstr "جعل الصورة بكامل عرض الصفحة"
+
+#: main-modules.php:228
+msgid "Always Center Image On Mobile"
+msgstr "توسيط الصورة على الهاتف المحمول دائماً"
+
+#: main-modules.php:244 main-modules.php:638 main-modules.php:893
+#: main-modules.php:1097 main-modules.php:1448 main-modules.php:1840
+#: main-modules.php:2090 main-modules.php:2572 main-modules.php:3867
+#: main-modules.php:4459 main-modules.php:4914 main-modules.php:5570
+#: main-modules.php:5761 main-modules.php:5980 main-modules.php:6352
+#: main-modules.php:6784 main-modules.php:7143 main-modules.php:7548
+#: main-modules.php:7914 main-modules.php:8318 main-modules.php:8514
+#: main-modules.php:8683 main-modules.php:8996 main-modules.php:9264
+#: main-modules.php:9815 main-modules.php:10013 main-modules.php:10290
+#: main-modules.php:10731 main-modules.php:11259 main-modules.php:11553
+#: main-modules.php:11753 main-modules.php:12015 main-modules.php:12569
+#: main-modules.php:12928 main-modules.php:13276 main-modules.php:13531
+#: main-modules.php:14055 main-modules.php:14533 main-modules.php:15036
+#: main-modules.php:15399 main-modules.php:15640 main-modules.php:15748
+#: main-modules.php:15843 main-modules.php:16058 main-modules.php:16448
+#: main-modules.php:17144 main-structure-elements.php:470
+#: main-structure-elements.php:1371 main-structure-elements.php:2066
+msgid "Disable on"
+msgstr "تعطيل"
+
+#: main-modules.php:247 main-modules.php:641 main-modules.php:896
+#: main-modules.php:1100 main-modules.php:1451 main-modules.php:1843
+#: main-modules.php:2093 main-modules.php:2575 main-modules.php:3870
+#: main-modules.php:4462 main-modules.php:4917 main-modules.php:5573
+#: main-modules.php:5764 main-modules.php:5983 main-modules.php:6355
+#: main-modules.php:6787 main-modules.php:7146 main-modules.php:7551
+#: main-modules.php:7917 main-modules.php:8321 main-modules.php:8517
+#: main-modules.php:8686 main-modules.php:8999 main-modules.php:9267
+#: main-modules.php:9818 main-modules.php:10016 main-modules.php:10293
+#: main-modules.php:10734 main-modules.php:11262 main-modules.php:11556
+#: main-modules.php:11756 main-modules.php:12018 main-modules.php:12572
+#: main-modules.php:12931 main-modules.php:13279 main-modules.php:13534
+#: main-modules.php:14058 main-modules.php:14536 main-modules.php:15039
+#: main-modules.php:15402 main-modules.php:15643 main-modules.php:15751
+#: main-modules.php:15846 main-modules.php:16061 main-modules.php:16451
+#: main-modules.php:17147 main-structure-elements.php:473
+#: main-structure-elements.php:1374 main-structure-elements.php:2069
+msgid "Phone"
+msgstr "الهاتف"
+
+#: main-modules.php:253 main-modules.php:647 main-modules.php:902
+#: main-modules.php:1106 main-modules.php:1457 main-modules.php:1849
+#: main-modules.php:2099 main-modules.php:2581 main-modules.php:3876
+#: main-modules.php:4468 main-modules.php:4923 main-modules.php:5579
+#: main-modules.php:5770 main-modules.php:5989 main-modules.php:6361
+#: main-modules.php:6793 main-modules.php:7152 main-modules.php:7557
+#: main-modules.php:7923 main-modules.php:8327 main-modules.php:8523
+#: main-modules.php:8692 main-modules.php:9005 main-modules.php:9273
+#: main-modules.php:9824 main-modules.php:10022 main-modules.php:10299
+#: main-modules.php:10740 main-modules.php:11268 main-modules.php:11562
+#: main-modules.php:11762 main-modules.php:12024 main-modules.php:12578
+#: main-modules.php:12937 main-modules.php:13285 main-modules.php:13540
+#: main-modules.php:14064 main-modules.php:14542 main-modules.php:15045
+#: main-modules.php:15408 main-modules.php:15649 main-modules.php:15757
+#: main-modules.php:15852 main-modules.php:16067 main-modules.php:16457
+#: main-modules.php:17153 main-structure-elements.php:479
+#: main-structure-elements.php:1380 main-structure-elements.php:2075
+msgid "This will disable the module on selected devices"
+msgstr "سيُعَطِّل هذا الإجراء هذه الوحدة النمطية على الأجهزة المُحددة."
+
+#: main-modules.php:256 main-modules.php:650 main-modules.php:905
+#: main-modules.php:1109 main-modules.php:1227 main-modules.php:1460
+#: main-modules.php:1852 main-modules.php:2102 main-modules.php:2584
+#: main-modules.php:3061 main-modules.php:3879 main-modules.php:4471
+#: main-modules.php:4926 main-modules.php:5582 main-modules.php:5773
+#: main-modules.php:5992 main-modules.php:6364 main-modules.php:6796
+#: main-modules.php:7155 main-modules.php:7560 main-modules.php:7926
+#: main-modules.php:8330 main-modules.php:8526 main-modules.php:8695
+#: main-modules.php:9008 main-modules.php:9276 main-modules.php:9827
+#: main-modules.php:10025 main-modules.php:10302 main-modules.php:10743
+#: main-modules.php:11271 main-modules.php:11565 main-modules.php:11765
+#: main-modules.php:12027 main-modules.php:12581 main-modules.php:12940
+#: main-modules.php:13288 main-modules.php:13543 main-modules.php:14067
+#: main-modules.php:14545 main-modules.php:15048 main-modules.php:15411
+#: main-modules.php:15652 main-modules.php:15760 main-modules.php:15855
+#: main-modules.php:16070 main-modules.php:16460 main-modules.php:17156
+#: main-structure-elements.php:1180
+msgid "Admin Label"
+msgstr "علامة مدير"
+
+#: main-modules.php:258 main-modules.php:652 main-modules.php:907
+#: main-modules.php:1111 main-modules.php:1462 main-modules.php:1854
+#: main-modules.php:2104 main-modules.php:2586 main-modules.php:3881
+#: main-modules.php:4473 main-modules.php:4928 main-modules.php:5584
+#: main-modules.php:5775 main-modules.php:5994 main-modules.php:6366
+#: main-modules.php:6798 main-modules.php:7157 main-modules.php:7562
+#: main-modules.php:7928 main-modules.php:8332 main-modules.php:8528
+#: main-modules.php:8697 main-modules.php:9010 main-modules.php:9278
+#: main-modules.php:9829 main-modules.php:10027 main-modules.php:10304
+#: main-modules.php:10745 main-modules.php:11273 main-modules.php:11567
+#: main-modules.php:11767 main-modules.php:12029 main-modules.php:12583
+#: main-modules.php:12942 main-modules.php:13290 main-modules.php:13545
+#: main-modules.php:14069 main-modules.php:14547 main-modules.php:15050
+#: main-modules.php:15413 main-modules.php:15654 main-modules.php:15762
+#: main-modules.php:15857 main-modules.php:16072 main-modules.php:16462
+#: main-modules.php:17158
+msgid ""
+"This will change the label of the module in the builder for easy identification."
+msgstr "ستغير هذا علامة الوحدة في أداة البناء لسهولة التعرف عليها."
+
+#: main-modules.php:426
+msgid "Gallery"
+msgstr "المعرض"
+
+#: main-modules.php:462 main-modules.php:5870
+msgid "Caption"
+msgstr "تعليق"
+
+#: main-modules.php:476 main-modules.php:1637 main-modules.php:2254
+#: main-modules.php:5284 main-modules.php:5486 main-modules.php:5864
+#: main-modules.php:5938 main-modules.php:6254 main-modules.php:6682
+#: main-modules.php:7013 main-modules.php:7392 main-modules.php:7811
+#: main-modules.php:8045 main-modules.php:8230 main-modules.php:8263
+#: main-modules.php:8436 main-modules.php:8477 main-modules.php:8835
+#: main-modules.php:8908 main-modules.php:8956 main-modules.php:9135
+#: main-modules.php:9208 main-modules.php:9572 main-modules.php:9770
+#: main-modules.php:10186 main-modules.php:10512 main-modules.php:11110
+#: main-modules.php:11148 main-modules.php:11499 main-modules.php:11853
+#: main-modules.php:12356 main-modules.php:12372 main-modules.php:13700
+#: main-modules.php:13786 main-modules.php:13811 main-modules.php:15231
+#: main-modules.php:16249
+msgid "Title"
+msgstr "العنوان"
+
+#: main-modules.php:491
+msgid "Gallery Item"
+msgstr "عرض العنصر في المعرض"
+
+#: main-modules.php:495 main-modules.php:7039 main-modules.php:7436
+#: main-modules.php:11144
+msgid "Overlay"
+msgstr "التراكب"
+
+#: main-modules.php:499 main-modules.php:7043 main-modules.php:7440
+msgid "Overlay Icon"
+msgstr "أيقونة التراكب"
+
+#: main-modules.php:503
+msgid "Gallery Item Title"
+msgstr "عنوان عنصر المعرض"
+
+#: main-modules.php:507
+msgid "Gallery Item Caption"
+msgstr "تعليقات عناصر المعرض"
+
+#: main-modules.php:511
+msgid "Gallery Pagination"
+msgstr "فواصل المعرض"
+
+#: main-modules.php:515 main-modules.php:7456
+msgid "Pagination Active Page"
+msgstr "الصفحة النشطة للحدود الفاصلة"
+
+#: main-modules.php:524 main-modules.php:533
+msgid "Gallery Images"
+msgstr "صور المعرض"
+
+#: main-modules.php:542 main-modules.php:2296
+msgid "Slider"
+msgstr "شريط التمرير"
+
+#: main-modules.php:543 main-modules.php:7065 main-modules.php:7470
+#: main-modules.php:10542 main-modules.php:15307
+msgid "Grid"
+msgstr "شبكة"
+
+#: main-modules.php:545 main-modules.php:10549
+msgid "Toggle between the various blog layout types."
+msgstr "التبديل بين الأنواع المختلفة لشكل المدونة."
+
+#: main-modules.php:557
+msgid "Images Number"
+msgstr "رقم الصور"
+
+#: main-modules.php:560
+msgid "Define the number of images that should be displayed per page."
+msgstr "حدد عدد الصور التي يجب إظهارها في كل صفحة."
+
+#: main-modules.php:564
+msgid "Show Title and Caption"
+msgstr "إظهار العنوان والتعليق"
+
+#: main-modules.php:571
+msgid ""
+"Here you can choose whether to show the images title and caption, if the image has "
+"them."
+msgstr ""
+"يمكنك هنا أن تختار إظهار عنوان الصورة والتعليق الخاص بها أو لا، إذا وجدا للصورة."
+
+#: main-modules.php:574 main-modules.php:7102 main-modules.php:7507
+#: main-modules.php:10647
+msgid "Show Pagination"
+msgstr "إظهار التصفيح"
+
+#: main-modules.php:581 main-modules.php:7109 main-modules.php:7514
+msgid "Enable or disable pagination for this feed."
+msgstr "تمكين أو تعطيل التصفيح لهذه التغذية."
+
+#: main-modules.php:584 main-modules.php:1411 main-modules.php:1770
+#: main-modules.php:2991 main-modules.php:3622 main-modules.php:4402
+#: main-modules.php:5533 main-modules.php:5751 main-modules.php:5970
+#: main-modules.php:6285 main-modules.php:6717 main-modules.php:7112
+#: main-modules.php:7517 main-modules.php:7851 main-modules.php:8286
+#: main-modules.php:8504 main-modules.php:9795 main-modules.php:10238
+#: main-modules.php:10702 main-modules.php:11524 main-modules.php:11985
+#: main-modules.php:12535 main-modules.php:12827 main-modules.php:13254
+#: main-modules.php:13823 main-modules.php:14448 main-modules.php:15347
+#: main-modules.php:16414 main-modules.php:16899
+msgid "Text Color"
+msgstr "لون النص"
+
+#: main-modules.php:588 main-modules.php:1080 main-modules.php:1271
+#: main-modules.php:1415 main-modules.php:1774 main-modules.php:2996
+#: main-modules.php:3627 main-modules.php:4406 main-modules.php:5538
+#: main-modules.php:5755 main-modules.php:5975 main-modules.php:6290
+#: main-modules.php:6722 main-modules.php:7116 main-modules.php:7521
+#: main-modules.php:7855 main-modules.php:8290 main-modules.php:8508
+#: main-modules.php:9799 main-modules.php:10242 main-modules.php:10706
+#: main-modules.php:11528 main-modules.php:11989 main-modules.php:12539
+#: main-modules.php:12831 main-modules.php:13258 main-modules.php:13827
+#: main-modules.php:14452 main-modules.php:15351 main-modules.php:16418
+#: main-modules.php:16904
+msgid "Dark"
+msgstr "داكن"
+
+#: main-modules.php:589 main-modules.php:1079 main-modules.php:1270
+#: main-modules.php:1416 main-modules.php:1775 main-modules.php:2995
+#: main-modules.php:3626 main-modules.php:4407 main-modules.php:5537
+#: main-modules.php:5756 main-modules.php:5974 main-modules.php:6289
+#: main-modules.php:6721 main-modules.php:7117 main-modules.php:7522
+#: main-modules.php:7856 main-modules.php:8291 main-modules.php:8509
+#: main-modules.php:9800 main-modules.php:10243 main-modules.php:10707
+#: main-modules.php:11529 main-modules.php:11990 main-modules.php:12540
+#: main-modules.php:12832 main-modules.php:13259 main-modules.php:13828
+#: main-modules.php:14453 main-modules.php:15352 main-modules.php:16419
+#: main-modules.php:16903
+msgid "Light"
+msgstr "فاتح"
+
+#: main-modules.php:591 main-modules.php:1777 main-modules.php:4409
+#: main-modules.php:5540 main-modules.php:5758 main-modules.php:5977
+#: main-modules.php:6292 main-modules.php:6724 main-modules.php:7119
+#: main-modules.php:7524 main-modules.php:7858 main-modules.php:8293
+#: main-modules.php:9802 main-modules.php:10710 main-modules.php:11531
+#: main-modules.php:11992 main-modules.php:15354
+msgid ""
+"Here you can choose whether your text should be light or dark. If you are working "
+"with a dark background, then your text should be light. If your background is "
+"light, then your text should be set to dark."
+msgstr ""
+"يمكنك هنا أن تختار أن يكون نصك فاتح اللون أو داكن اللون. إذا كنت تعمل مع خلفية "
+"داكنة، يجب أن يكون نصك بلون فاتح. وإذا كانت خلفيتك فاتحة اللون، يجب أن يكون نصك "
+"داكن اللون."
+
+#: main-modules.php:594 main-modules.php:2420 main-modules.php:3766
+#: main-modules.php:14886 main-modules.php:17043
+msgid "Automatic Animation"
+msgstr "الصور المتحركة الآلية"
+
+#: main-modules.php:605 main-modules.php:2430 main-modules.php:3776
+#: main-modules.php:14896 main-modules.php:17053
+msgid ""
+"If you would like the slider to slide automatically, without the visitor having to "
+"click the next button, enable this option and then adjust the rotation speed below "
+"if desired."
+msgstr ""
+"إذا أردت أن ينزلق شريط التمرير آلياً، دون أن ينقر الزائر زر التالي، مكِّن هذا الخيار "
+"ثم عدِّل سرعة الدوران بأسفل إذا أردت."
+
+#: main-modules.php:608 main-modules.php:2433 main-modules.php:3779
+#: main-modules.php:14899 main-modules.php:17056
+msgid "Automatic Animation Speed (in ms)"
+msgstr "سرعة الصور المتحركة الآلية (مللي ثانية)"
+
+#: main-modules.php:612 main-modules.php:2437 main-modules.php:3783
+#: main-modules.php:14903 main-modules.php:17060
+msgid ""
+"Here you can designate how fast the slider fades between each slide, if 'Automatic "
+"Animation' option is enabled above. The higher the number the longer the pause "
+"between each rotation."
+msgstr ""
+"يمكنك هنا تحديد سرعة اختفاء شريط التمرير بين كل تمريرة، إذا كان خيار \"صور متحركة "
+"آلية\" مُمكّناً بأعلى. وكلما كان الرقم أكبر، كلما كانت المهلة بين كل دوران أطول."
+
+#: main-modules.php:615 main-modules.php:7122 main-modules.php:7536
+#: main-modules.php:15378
+msgid "Zoom Icon Color"
+msgstr "لون أيقونة التكبير"
+
+#: main-modules.php:829 main-modules.php:1006 main-modules.php:1203
+msgid "Video"
+msgstr "الفيديو"
+
+#: main-modules.php:844
+msgid "Video Icon"
+msgstr "أيقونة الفيديو"
+
+#: main-modules.php:853 main-modules.php:1232
+msgid "Video MP4/URL"
+msgstr "فيديو .MP4 URL"
+
+#: main-modules.php:857 main-modules.php:867 main-modules.php:1236
+#: main-modules.php:1246 main-modules.php:3005 main-modules.php:3015
+#: main-structure-elements.php:138 main-structure-elements.php:148
+#: main-structure-elements.php:1093 main-structure-elements.php:1103
+msgid "Upload a video"
+msgstr "تحميل فيديو"
+
+#: main-modules.php:858 main-modules.php:1237
+msgid "Choose a Video MP4 File"
+msgstr "اختيار ملف فيديو .MP4"
+
+#: main-modules.php:859 main-modules.php:869 main-modules.php:1238
+#: main-modules.php:1248
+msgid "Set As Video"
+msgstr "الإعداد كفيديو"
+
+#: main-modules.php:860 main-modules.php:1239
+msgid ""
+"Upload your desired video in .MP4 format, or type in the URL to the video you would "
+"like to display"
+msgstr "حمل الفيديو الذي ترغبه في صيغة .MP4، أو اطبع URL الفيديو الذي تود إظهاره."
+
+#: main-modules.php:863 main-modules.php:1242
+msgid "Video Webm"
+msgstr "ملف فيديو .WEBM"
+
+#: main-modules.php:868 main-modules.php:1247
+msgid "Choose a Video WEBM File"
+msgstr "اختيار ملف فيديو .WEBM"
+
+#: main-modules.php:870 main-modules.php:1249
+msgid ""
+"Upload the .WEBM version of your video here. All uploaded videos should be in both ."
+"MP4 .WEBM formats to ensure maximum compatibility in all browsers."
+msgstr ""
+"حمل نسخة .WEBM من الفيديو الخاص بك هنا. يجب أن تكون كل الفيديوهات المحملة بصيغتي ."
+"MP4 و.WEBM لضمان أقصى توافق في كل المتصفحات."
+
+#: main-modules.php:873 main-modules.php:1252
+msgid "Image Overlay URL"
+msgstr "‏URL إحلال الصورة"
+
+#: main-modules.php:881 main-modules.php:1260
+msgid "Generate From Video"
+msgstr "التوليد من الفيديو"
+
+#: main-modules.php:884 main-modules.php:1263
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"display over your video. You can also generate a still image from your video."
+msgstr ""
+"حمل الصورة الذي ترغبها، أو اطبع URL الصورة التي تود إظهاره على الفيديو الخاص بك. "
+"يمكنك أيضاً توليد صورة ثابتة من الفيديو الخاص بك."
+
+#: main-modules.php:887 main-modules.php:1085
+msgid "Play Icon Color"
+msgstr "لون أيقونة التشغيل"
+
+#: main-modules.php:1003
+msgid "Video Slider"
+msgstr "شريط تمرير الفيديو"
+
+#: main-modules.php:1028
+msgid "Play Button"
+msgstr "زر التشغيل"
+
+#: main-modules.php:1032
+msgid "Thumbnail Item"
+msgstr "الصورة المُصغَّرة"
+
+#: main-modules.php:1036
+msgid "Slider Arrows"
+msgstr "أسهم شريط التمرير"
+
+#: main-modules.php:1045
+msgid "Display Image Overlays on Main Video"
+msgstr "إظهار إحلالات الصور على الفيديو الرئيسي"
+
+#: main-modules.php:1049
+msgid "Hide"
+msgstr "إخفاء"
+
+#: main-modules.php:1050
+msgid "Show"
+msgstr "إظهار"
+
+#: main-modules.php:1052
+msgid ""
+"This option will cover the player UI on the main video. This image can either be "
+"uploaded in each video setting or auto-generated by Divi."
+msgstr ""
+"سيغطي هذا الخيار واجهة برنامج العرض في الفيديو الرئيسي. ويمكن تحميل هذه الصورة في "
+"كل إعداد للفيديو أو توليدها ذاتياً عن طريق Divi ."
+
+#: main-modules.php:1055 main-modules.php:2400 main-modules.php:14866
+msgid "Arrows"
+msgstr "الأسهم"
+
+#: main-modules.php:1059 main-modules.php:2404 main-modules.php:3525
+#: main-modules.php:14870 main-modules.php:16802
+msgid "Show Arrows"
+msgstr "إظهار الأسهم"
+
+#: main-modules.php:1060 main-modules.php:2405 main-modules.php:14871
+msgid "Hide Arrows"
+msgstr "إخفاء الأسهم"
+
+#: main-modules.php:1062 main-modules.php:2407 main-modules.php:3532
+#: main-modules.php:16809
+msgid "This setting will turn on and off the navigation arrows."
+msgstr "هذا الإعداد سيشغل ويوقف أسهم التصفح."
+
+#: main-modules.php:1065
+msgid "Slider Controls"
+msgstr "ضوابط شريط التمرير"
+
+#: main-modules.php:1069
+msgid "Use Thumbnail Track"
+msgstr "استعمال مسار الصور المصغرة"
+
+#: main-modules.php:1070
+msgid "Use Dot Navigation"
+msgstr "استعمال التصفح النقطي"
+
+#: main-modules.php:1072
+msgid ""
+"This setting will let you choose to use the thumbnail track controls below the "
+"slider or dot navigation at the bottom of the slider."
+msgstr ""
+"سيتيح لك هذا الإعداد أن تختار استعمال ضوابط مسار الصور المصغرة أسفل شريط التمرير أو "
+"التصفح النقطي في أسفل شريط التمرير."
+
+#: main-modules.php:1075
+msgid "Slider Controls Color"
+msgstr "ألوان ضوابط شريط التمرير"
+
+#: main-modules.php:1082
+msgid ""
+"This setting will make your slider controls either light or dark in color. Slider "
+"controls are either the arrows on the thumbnail track or the circles in dot "
+"navigation."
+msgstr ""
+"سيجعل هذا الإعداد ضوابط شريط التمرير الخاص بك إما فاتح اللون أو داكن اللون. ضوابط "
+"شريط التمرير هي إما الأسهم على مسار الصور المصغرة أو الدوائر في التصفيح النقطي."
+
+#: main-modules.php:1091
+msgid "Thumbnail Overlay Color"
+msgstr "تحديد لون الصورة المُصغَّرة"
+
+#: main-modules.php:1208
+msgid "New Video"
+msgstr "فيديو جديد"
+
+#: main-modules.php:1209
+msgid "Video Settings"
+msgstr "إعدادات الفيديو"
+
+#: main-modules.php:1229
+msgid ""
+"This will change the label of the video in the builder for easy identification."
+msgstr "سيغير هذا علامة الفيديو في أداة البناء لتسهيل التعرف عليه."
+
+#: main-modules.php:1266
+msgid "Slider Arrows Color"
+msgstr "لون أسهم شريط التمرير"
+
+#: main-modules.php:1273
+msgid "This setting will make your slider arrows either light or dark in color."
+msgstr "سيجعل هذا الإعداد أسهم شريط التمرير الخاص بك فاتحة أو داكنة اللون."
+
+#: main-modules.php:1364 main-modules.php:1388
+msgid "Text"
+msgstr "النص"
+
+#: main-modules.php:1418 main-modules.php:10245 main-modules.php:12834
+#: main-modules.php:13261 main-modules.php:13830 main-modules.php:14455
+msgid ""
+"Here you can choose the value of your text. If you are working with a dark "
+"background, then your text should be set to light. If you are working with a light "
+"background, then your text should be dark."
+msgstr ""
+"يمكنك هنا أن تختار قيمة النص الخاص بك. إذا كنت تعمل مع خلفية داكنة، يجب أن يُعد نصك "
+"بلون فاتح. وإذا كانت خلفيتك فاتحة اللون، يجب أن يكون نصك داكن اللون."
+
+#: main-modules.php:1421 main-modules.php:1780 main-modules.php:4412
+#: main-modules.php:5543 main-modules.php:6295 main-modules.php:6727
+#: main-modules.php:12524 main-modules.php:12837 main-modules.php:14458
+#: main-modules.php:16403
+msgid "Text Orientation"
+msgstr "توجيه النص"
+
+#: main-modules.php:1425 main-modules.php:12845 main-modules.php:13837
+#: main-modules.php:14462
+msgid "This controls the how your text is aligned within the module."
+msgstr "يتحكم هذا في طريقة توجيه النص في الوحدة."
+
+#: main-modules.php:1431 main-modules.php:15731 main-modules.php:15840
+msgid "Here you can create the content that will be used within the module."
+msgstr "يمكنك هنا إنشاء المحتوى الذي سيُستعمل في الوحدة."
+
+#: main-modules.php:1434 main-modules.php:5556 main-modules.php:12896
+#: main-modules.php:15734
+msgid "Max Width"
+msgstr "أقصى عرض"
+
+#: main-modules.php:1528
+msgid "Blurb"
+msgstr "المقدمة"
+
+#: main-modules.php:1582 main-modules.php:2346 main-modules.php:2798
+#: main-modules.php:3426 main-modules.php:4730 main-modules.php:5146
+#: main-modules.php:5439 main-modules.php:6140 main-modules.php:6634
+#: main-modules.php:9750 main-modules.php:10152 main-modules.php:10489
+#: main-modules.php:11452 main-modules.php:14809 main-modules.php:16703
+msgid "Header"
+msgstr "مقدمة الصفحة"
+
+#: main-modules.php:1588 main-modules.php:2038 main-modules.php:2226
+#: main-modules.php:2352 main-modules.php:2812 main-modules.php:3432
+#: main-modules.php:4287 main-modules.php:4771 main-modules.php:5191
+#: main-modules.php:5446 main-modules.php:6147 main-modules.php:6641
+#: main-modules.php:8612 main-modules.php:8914 main-modules.php:9756
+#: main-modules.php:10158 main-modules.php:10502 main-modules.php:14818
+#: main-modules.php:16709
+msgid "Body"
+msgstr "قلب الصفحة"
+
+#: main-modules.php:1608
+msgid "Blurb Image"
+msgstr "صورة الدعاية"
+
+#: main-modules.php:1612
+msgid "Blurb Title"
+msgstr "عنوان الدعاية"
+
+#: main-modules.php:1616
+msgid "Blurb Content"
+msgstr "مُحتوى الدعاية"
+
+#: main-modules.php:1640
+msgid "The title of your blurb will appear in bold below your blurb image."
+msgstr "سيظهر عنوان مقدمتك بالبنط العريض أسفل صورة مقدمتك."
+
+#: main-modules.php:1643
+msgid "Url"
+msgstr "‏URL"
+
+#: main-modules.php:1646
+msgid "If you would like to make your blurb a link, input your destination URL here."
+msgstr "إذا كنت تود جعل مقدمتك وصلة، أدخل URL الوجهة هنا."
+
+#: main-modules.php:1659
+msgid "Use Icon"
+msgstr "استعمال أيقونة"
+
+#: main-modules.php:1673
+msgid "Here you can choose whether icon set below should be used."
+msgstr "يمكنك هنا أن تختار استعمال الأيقونة الموضوعة بأسفل أو لا."
+
+#: main-modules.php:1676 main-modules.php:13867
+msgid "Icon"
+msgstr "أيقونة"
+
+#: main-modules.php:1682
+msgid "Choose an icon to display with your blurb."
+msgstr "اختيار أيقونة لإظهارها مع مقدمتك."
+
+#: main-modules.php:1686 main-modules.php:8677 main-modules.php:8871
+#: main-modules.php:8990 main-modules.php:10278 main-modules.php:12230
+msgid "Icon Color"
+msgstr "لون الأيقونة"
+
+#: main-modules.php:1688
+msgid "Here you can define a custom color for your icon."
+msgstr "يمكنك هنا تحديد لون مخصص لأيقونتك."
+
+#: main-modules.php:1692
+msgid "Circle Icon"
+msgstr "دائرة للأيقونة"
+
+#: main-modules.php:1703
+msgid "Here you can choose whether icon set above should display within a circle."
+msgstr "يمكنك هنا أن تختار وضع الأيقونة المحددة أعلاه داخل دائرة أو لا."
+
+#: main-modules.php:1707 main-modules.php:8301
+msgid "Circle Color"
+msgstr "لون الدائرة"
+
+#: main-modules.php:1709
+msgid "Here you can define a custom color for the icon circle."
+msgstr "يمكنك هنا تحديد لون مخصص لدائرة الأيقونة."
+
+#: main-modules.php:1713
+msgid "Show Circle Border"
+msgstr "إظهار حد الدائرة"
+
+#: main-modules.php:1723
+msgid "Here you can choose whether if the icon circle border should display."
+msgstr "يمكنك هنا أن تختار إظهار حد دائرة الأيقونة أو لا."
+
+#: main-modules.php:1727
+msgid "Circle Border Color"
+msgstr "لون حد الدائرة"
+
+#: main-modules.php:1729
+msgid "Here you can define a custom color for the icon circle border."
+msgstr "يمكنك هنا تحديد لون مخصص لحد دائرة الأيقونة."
+
+#: main-modules.php:1740
+msgid "Upload an image to display at the top of your blurb."
+msgstr "حمّل صورة لإظهارها على قمة مقدمتك."
+
+#: main-modules.php:1743
+msgid "Image Alt Text"
+msgstr "النص البديل للصورة"
+
+#: main-modules.php:1746
+msgid "Define the HTML ALT text for your image here."
+msgstr "عرِّف نص البديل للصورة لصورتك هنا."
+
+#: main-modules.php:1750
+msgid "Image/Icon Placement"
+msgstr "تنسيب صورة / أيقونة"
+
+#: main-modules.php:1754
+msgid "Here you can choose where to place the icon."
+msgstr "يمكنك هنا أن تختار مكان وضع الأيقونة."
+
+#: main-modules.php:1757
+msgid "Image/Icon Animation"
+msgstr "صورة / أيقونة متحركة"
+
+#: main-modules.php:1784
+msgid "This will control how your blurb text is aligned."
+msgstr "سيتحكم هذا في اصطفاف نص مقدمتك."
+
+#: main-modules.php:1790 main-modules.php:4422 main-modules.php:5553
+#: main-modules.php:6305 main-modules.php:6737 main-modules.php:8975
+#: main-modules.php:10275
+msgid "Input the main text content for your module here."
+msgstr "أدخل محتوى النص الرئيسي لوحدتك هنا."
+
+#: main-modules.php:1801
+msgid "Use Icon Font Size"
+msgstr "استخدام حجم خط الأيقونة"
+
+#: main-modules.php:1814
+msgid "Icon Font Size"
+msgstr "تحديد حجم خط الأيقونة"
+
+#: main-modules.php:2014
+msgid "Tabs"
+msgstr "التبويبات"
+
+#: main-modules.php:2017 main-modules.php:2031 main-modules.php:2061
+#: main-modules.php:2195 main-modules.php:2211 main-modules.php:2277
+msgid "Tab"
+msgstr "علامة"
+
+#: main-modules.php:2057
+msgid "Tabs Controls"
+msgstr "عناصر تحكم علامات التبويب"
+
+#: main-modules.php:2065
+msgid "Active Tab"
+msgstr "علامة تبويب نشطة"
+
+#: main-modules.php:2069
+msgid "Tabs Content"
+msgstr "محتوى علامات التبويب"
+
+#: main-modules.php:2078
+msgid "Active Tab Background Color"
+msgstr "لون خلفية علامة التبويب النشطة"
+
+#: main-modules.php:2084
+msgid "Inactive Tab Background Color"
+msgstr "لون خلفية علامة التبويب غير النشطة"
+
+#: main-modules.php:2205
+msgid "New Tab"
+msgstr "تبويب جديد"
+
+#: main-modules.php:2206
+msgid "Tab Settings"
+msgstr "إعدادات التبويب"
+
+#: main-modules.php:2256 main-modules.php:11856
+msgid "The title will be used within the tab button for this tab."
+msgstr "سيُستعمل العنوان في زر التبويب لهذا التبويب."
+
+#: main-modules.php:2299 main-modules.php:2747 main-modules.php:14515
+#: main-modules.php:14761
+msgid "Slide"
+msgstr "شريحة"
+
+#: main-modules.php:2361 main-modules.php:2829 main-modules.php:3458
+#: main-modules.php:4809 main-modules.php:5215 main-modules.php:5463
+#: main-modules.php:5682 main-modules.php:5706 main-modules.php:6161
+#: main-modules.php:6655 main-modules.php:9157 main-modules.php:12789
+#: main-modules.php:12818 main-modules.php:13166 main-modules.php:13749
+#: main-modules.php:14827 main-modules.php:16735
+msgid "Button"
+msgstr "زر"
+
+#: main-modules.php:2367 main-modules.php:2843 main-modules.php:3464
+#: main-modules.php:14833 main-modules.php:16741
+msgid "Slide Description"
+msgstr "وصف الشريحة"
+
+#: main-modules.php:2371 main-modules.php:2839 main-modules.php:3468
+#: main-modules.php:14837 main-modules.php:16745
+msgid "Slide Title"
+msgstr "عنوان الشريحة"
+
+#: main-modules.php:2375 main-modules.php:2847 main-modules.php:3472
+#: main-modules.php:14841 main-modules.php:16749
+msgid "Slide Button"
+msgstr "زر الشريحة"
+
+#: main-modules.php:2379 main-modules.php:3476 main-modules.php:14845
+#: main-modules.php:16753
+msgid "Slide Controllers"
+msgstr "عناصر التحكم في عرض الشرائح"
+
+#: main-modules.php:2383 main-modules.php:3480 main-modules.php:14849
+#: main-modules.php:16757
+msgid "Slide Active Controller"
+msgstr "مُتحكِم عرض الشرائح النشط"
+
+#: main-modules.php:2387 main-modules.php:2851 main-modules.php:2920
+#: main-modules.php:3484 main-modules.php:14853 main-modules.php:16761
+msgid "Slide Image"
+msgstr "صورة الشريحة"
+
+#: main-modules.php:2391 main-modules.php:3488 main-modules.php:14857
+#: main-modules.php:16765
+msgid "Slide Arrows"
+msgstr "أسهم التمرير"
+
+#: main-modules.php:2410 main-modules.php:3535 main-modules.php:16812
+msgid "Show Controls"
+msgstr "إظهار عناصر التحكم"
+
+#: main-modules.php:2417 main-modules.php:3542 main-modules.php:16819
+msgid ""
+"This setting will turn on and off the circle buttons at the bottom of the slider."
+msgstr "ستشغل وتوقف هذه الإعدادات الأزرار الدائرية في أسفل شريط التمرير."
+
+#: main-modules.php:2440 main-modules.php:3786 main-modules.php:14906
+#: main-modules.php:17063
+msgid "Continue Automatic Slide on Hover"
+msgstr "تواصل شريحة التلقائي على التحويم"
+
+#: main-modules.php:2448 main-modules.php:3794 main-modules.php:14914
+#: main-modules.php:17071
+msgid "Turning this on will allow automatic sliding to continue on mouse hover."
+msgstr "تحول هذا سوف يسمح التلقائي انزلاق الاستمرار على الماوس تحوم."
+
+#: main-modules.php:2451 main-modules.php:3662 main-modules.php:13972
+#: main-modules.php:14917 main-modules.php:16939
+msgid "Use Parallax effect"
+msgstr "استخدام تأثير تزيح المنظر"
+
+#: main-modules.php:2463 main-modules.php:3675 main-modules.php:16952
+msgid ""
+"Enabling this option will give your background images a fixed position as you "
+"scroll."
+msgstr "يعطي تمكين هذا الخيار لصور الخلفية الخاصة بك موقعاً ثابتاً بينما تتنقل أنت."
+
+#: main-modules.php:2466 main-modules.php:3678 main-modules.php:13985
+#: main-modules.php:14930 main-modules.php:16955
+msgid "Parallax method"
+msgstr "طريقة اختلاف المنظر"
+
+#: main-modules.php:2474 main-modules.php:3686 main-modules.php:13993
+#: main-modules.php:14938 main-modules.php:16963 main-structure-elements.php:207
+msgid "Define the method, used for the parallax effect."
+msgstr "تعريف الطريقة المستعملة لتأثير اختلاف المنظر."
+
+#: main-modules.php:2477 main-modules.php:3729 main-modules.php:14941
+#: main-modules.php:17006
+msgid "Remove Inner Shadow"
+msgstr "إزالة الظل الداخلي"
+
+#: main-modules.php:2486 main-modules.php:2887 main-modules.php:3738
+#: main-modules.php:14950 main-modules.php:17015
+msgid "Background Image Position"
+msgstr "صورة خلفية الموقف"
+
+#: main-modules.php:2491 main-modules.php:2893 main-modules.php:3743
+#: main-modules.php:14955 main-modules.php:17020
+msgid "Top Left"
+msgstr "أعلى اليسار"
+
+#: main-modules.php:2492 main-modules.php:2894 main-modules.php:3744
+#: main-modules.php:14956 main-modules.php:17021
+msgid "Top Center"
+msgstr "أعلى مركز"
+
+#: main-modules.php:2493 main-modules.php:2895 main-modules.php:3745
+#: main-modules.php:14957 main-modules.php:17022
+msgid "Top Right"
+msgstr "أعلى اليمين"
+
+#: main-modules.php:2494 main-modules.php:2896 main-modules.php:3746
+#: main-modules.php:14958 main-modules.php:17023
+msgid "Center Right"
+msgstr "مركز الحق"
+
+#: main-modules.php:2495 main-modules.php:2897 main-modules.php:3747
+#: main-modules.php:14959 main-modules.php:17024
+msgid "Center Left"
+msgstr "مركز اليسار"
+
+#: main-modules.php:2496 main-modules.php:2898 main-modules.php:3748
+#: main-modules.php:14960 main-modules.php:17025
+msgid "Bottom Left"
+msgstr "أسفل اليسار"
+
+#: main-modules.php:2497 main-modules.php:2899 main-modules.php:3749
+#: main-modules.php:14961 main-modules.php:17026
+msgid "Bottom Center"
+msgstr "مركز السفلي"
+
+#: main-modules.php:2498 main-modules.php:2900 main-modules.php:3750
+#: main-modules.php:14962 main-modules.php:17027
+msgid "Bottom Right"
+msgstr "أسفل اليمين"
+
+#: main-modules.php:2503 main-modules.php:2904 main-modules.php:3755
+#: main-modules.php:14967 main-modules.php:17032
+msgid "Background Image Size"
+msgstr "حجم الصورة الخلفية"
+
+#: main-modules.php:2508 main-modules.php:2910 main-modules.php:3760
+#: main-modules.php:14972 main-modules.php:17037
+msgid "Fit"
+msgstr "صالح"
+
+#: main-modules.php:2509 main-modules.php:2911 main-modules.php:3761
+#: main-modules.php:14973 main-modules.php:17038
+msgid "Actual Size"
+msgstr "الحجم الفعلي"
+
+#: main-modules.php:2514 main-modules.php:3797 main-modules.php:14978
+#: main-modules.php:17074
+msgid "Top Padding"
+msgstr "ضبط تباعد الجزء العلوي"
+
+#: main-modules.php:2522 main-modules.php:3805 main-modules.php:14986
+#: main-modules.php:17082
+msgid "Bottom Padding"
+msgstr "ضبط تباعد الجزء السفلي"
+
+#: main-modules.php:2530 main-modules.php:3813 main-modules.php:15006
+#: main-modules.php:17090
+msgid "Hide Content On Mobile"
+msgstr "إخفاء المُحتويات على الهاتف المحمول"
+
+#: main-modules.php:2540 main-modules.php:3823 main-modules.php:15016
+#: main-modules.php:17100
+msgid "Hide CTA On Mobile"
+msgstr "إخفاء  CTA على الهاتف المحمول"
+
+#: main-modules.php:2550 main-modules.php:15026
+msgid "Show Image / Video On Mobile"
+msgstr "عرض الصور / الفيديو على الهاتف المحمول"
+
+#: main-modules.php:2792
+msgid "New Slide"
+msgstr "شريحة جديدة"
+
+#: main-modules.php:2793
+msgid "Slide Settings"
+msgstr "إعدادات الشرائح"
+
+#: main-modules.php:2860
+msgid "Heading"
+msgstr "العنوان"
+
+#: main-modules.php:2863
+msgid "Define the title text for your slide."
+msgstr "تعريف نص عنوان الشريحة الخاصة بك"
+
+#: main-modules.php:2866 main-modules.php:3558 main-modules.php:5320
+#: main-modules.php:5508 main-modules.php:5734 main-modules.php:6260
+#: main-modules.php:16835
+msgid "Button Text"
+msgstr "نص الزر"
+
+#: main-modules.php:2869
+msgid "Define the text for the slide button"
+msgstr "تعريف نص زر الشريحة"
+
+#: main-modules.php:2872 main-modules.php:5314 main-modules.php:5492
+#: main-modules.php:5718
+msgid "Button URL"
+msgstr "زر URL"
+
+#: main-modules.php:2875
+msgid "Input a destination URL for the slide button."
+msgstr "إدخال URL وجهة زر الشريحة."
+
+#: main-modules.php:2884 main-structure-elements.php:111
+msgid ""
+"If defined, this image will be used as the background for this module. To remove a "
+"background image, simply delete the URL from the settings field."
+msgstr ""
+"إذا عُرِّفت، ستستخدم هذه الصورة كخلفية لهذه الوحدة. لإزالة صورة خلفية، احذف الـ URL من "
+"حقل الإعدادات."
+
+#: main-modules.php:2909
+msgid "Cover"
+msgstr "تغطية"
+
+#: main-modules.php:2917 main-modules.php:3610 main-modules.php:14445
+#: main-modules.php:16887
+msgid "Use the color picker to choose a background color for this module."
+msgstr "استعمل انتقاء اللون لاختيار لون لخلفية هذه الوحدة."
+
+#: main-modules.php:2924
+msgid "Choose a Slide Image"
+msgstr "اختيار صورة شريحة"
+
+#: main-modules.php:2925
+msgid "Set As Slide Image"
+msgstr "الإعداد كصورة شريحة"
+
+#: main-modules.php:2926
+msgid ""
+"If defined, this slide image will appear to the left of your slide text. Upload an "
+"image, or leave blank for a text-only slide."
+msgstr ""
+"إذا عُرِّفت، ستظهر هذه صورة الشريحة هذه إلى يسار النص الخاص بالشريحة. حمِّل صورة، أو "
+"اتركها فارغة من أجل شريحة بنص فقط."
+
+#: main-modules.php:2929 main-modules.php:3689 main-modules.php:16966
+msgid "Use Background Overlay"
+msgstr "استخدام تراكب الخلفية"
+
+#: main-modules.php:2934 main-modules.php:2954 main-modules.php:3529
+#: main-modules.php:3549 main-modules.php:3601 main-modules.php:3636
+#: main-modules.php:3693 main-modules.php:3714 main-modules.php:16806
+#: main-modules.php:16826 main-modules.php:16878 main-modules.php:16913
+#: main-modules.php:16970 main-modules.php:16991
+msgid "yes"
+msgstr "نعم"
+
+#: main-modules.php:2939 main-modules.php:3699 main-modules.php:16976
+msgid ""
+"When enabled, a custom overlay color will be added above your background image and "
+"behind your slider content."
+msgstr ""
+"عند تمكين هذا الخيار، سيتم إضافة لون مُخصص متراكب فوق صورة الخلفية وخلف محتوى مربع "
+"التمرير الخاص بك."
+
+#: main-modules.php:2942 main-modules.php:3702 main-modules.php:13968
+#: main-modules.php:16979
+msgid "Background Overlay Color"
+msgstr "لون خلفية التراكب"
+
+#: main-modules.php:2946 main-modules.php:3706 main-modules.php:16983
+msgid "Use the color picker to choose a color for the background overlay."
+msgstr "استخدم مُلتقط الألوان لاختيار لون لتراكب الخلفية."
+
+#: main-modules.php:2949 main-modules.php:3709 main-modules.php:16986
+msgid "Use Text Overlay"
+msgstr "استخدام تراكب نصي"
+
+#: main-modules.php:2959 main-modules.php:3719 main-modules.php:16996
+msgid ""
+"When enabled, a background color is added behind the slider text to make it more "
+"readable atop background images."
+msgstr ""
+"عند تمكين هذا الخيار، يتم إضافة لون خلفية خلف النص بمربع التمرير لجعله أسهل في "
+"القراءة، أمام صور الخلفية."
+
+#: main-modules.php:2962 main-modules.php:3722 main-modules.php:16999
+msgid "Text Overlay Color"
+msgstr "لون التراكب النصي"
+
+#: main-modules.php:2966 main-modules.php:3726 main-modules.php:17003
+msgid "Use the color picker to choose a color for the text overlay."
+msgstr "استخدم مُلتقط الألوان لتحديد لون للتراكب النصي."
+
+#: main-modules.php:2969
+msgid "Slide Image Vertical Alignment"
+msgstr "الاصطفاف العمودي لصورة شريحة"
+
+#: main-modules.php:2976
+msgid ""
+"This setting determines the vertical alignment of your slide image. Your image can "
+"either be vertically centered, or aligned to the bottom of your slide."
+msgstr ""
+"يحدد هذا الإعداد الاصطفاف العمودي لصورة الشريحة الخاصة بك. يمكن وضع صورتك عمودياً في "
+"المركز، أو صفها عند قاع الشريحة."
+
+#: main-modules.php:2979
+msgid "Slide Video"
+msgstr "فيديو الشريحة"
+
+#: main-modules.php:2982
+msgid ""
+"If defined, this video will appear to the left of your slide text. Enter youtube or "
+"vimeo page url, or leave blank for a text-only slide."
+msgstr ""
+"إذا عُرِّف، سيظهر هذا الفيديو إلى يسار نص الشريحة الخاص بك. أدخل URL صفحة Youtube "
+"أوVimeo، أو اتركها فارغة من أجل شريحة بنص فقط."
+
+#: main-modules.php:2988
+msgid ""
+"If you have a slide image defined, input your HTML ALT text for the image here."
+msgstr "إذا كان لديك صورة شريحة معرّفة، أدخل النص البديل لصورتك هنا."
+
+#: main-modules.php:2998 main-modules.php:3629 main-modules.php:16906
+msgid ""
+"Here you can choose whether your text is light or dark. If you have a slide with a "
+"dark background, then choose light text. If you have a light background, then use "
+"dark text."
+msgstr ""
+"يمكنك هنا أن تختار أن يكون نصك فاتح اللون أو داكن اللون. إذا كانت لديك شريحة بخلفية "
+"داكنة، فاختيار نصاً بلون فاتح. وإذا كانت خلفيتك فاتحة اللون، استعمل نصاً داكن اللون."
+
+#: main-modules.php:3001 main-structure-elements.php:134
+#: main-structure-elements.php:1089
+msgid "Background Video MP4"
+msgstr "فيديو الخلفية .MP4"
+
+#: main-modules.php:3006 main-structure-elements.php:139
+#: main-structure-elements.php:1094
+msgid "Choose a Background Video MP4 File"
+msgstr "اختيار ملف .MP4 كفيديو خلفية"
+
+#: main-modules.php:3007 main-modules.php:3017 main-structure-elements.php:140
+#: main-structure-elements.php:150 main-structure-elements.php:1095
+#: main-structure-elements.php:1105
+msgid "Set As Background Video"
+msgstr "الإعداد كفيديو خلفية"
+
+#: main-modules.php:3008 main-structure-elements.php:141
+msgid ""
+"All videos should be uploaded in both .MP4 .WEBM formats to ensure maximum "
+"compatibility in all browsers. Upload the .MP4 version here. <b>Important Note: "
+"Video backgrounds are disabled from mobile devices. Instead, your background image "
+"will be used. For this reason, you should define both a background image and a "
+"background video to ensure best results.</b>"
+msgstr ""
+"يجب تحميل كل الفيديوهات في صيغتي .MP4 و.WEBM لضمان أقصى توافق في كل المتصفحات. حمل "
+"صيغة .MP4 هنا. ملاحظة مهمة: خلفيات الفيديو معطلة في الأجهزة النقالة. ستستخدم صورة "
+"الخلفية الخاصة بك بدلاً من ذلك. لهذا السبب، يجب أن تُعرِّف صورة خلفية وفيديو خلفية "
+"لضمان أفضل النتائج."
+
+#: main-modules.php:3011 main-structure-elements.php:144
+#: main-structure-elements.php:1099
+msgid "Background Video Webm"
+msgstr "فيديو خلفية .WEBM"
+
+#: main-modules.php:3016 main-structure-elements.php:149
+#: main-structure-elements.php:1104
+msgid "Choose a Background Video WEBM File"
+msgstr "اختيار ملف .WEBM كفيديو للخلفية"
+
+#: main-modules.php:3018 main-structure-elements.php:151
+msgid ""
+"All videos should be uploaded in both .MP4 .WEBM formats to ensure maximum "
+"compatibility in all browsers. Upload the .WEBM version here. <b>Important Note: "
+"Video backgrounds are disabled from mobile devices. Instead, your background image "
+"will be used. For this reason, you should define both a background image and a "
+"background video to ensure best results.</b>"
+msgstr ""
+"يجب تحميل كل الفيديوهات في صيغتي .MP4و.WEBMلضمان أقصى توافق في كل المتصفحات. حمل "
+"صيغة .WEBMهنا. ملاحظة مهمة: خلفيات الفيديو معطلة في الأجهزة النقالة. ستستخدم صورة "
+"الخلفية الخاصة بك بدلاً من ذلك. لهذا السبب، يجب أن تُعرِّف صورة خلفية وفيديو خلفية "
+"لضمان أفضل النتائج."
+
+#: main-modules.php:3021 main-structure-elements.php:154
+#: main-structure-elements.php:1109
+msgid "Background Video Width"
+msgstr "عرض فيديو الخلفية"
+
+#: main-modules.php:3024 main-structure-elements.php:157
+msgid ""
+"In order for videos to be sized correctly, you must input the exact width (in "
+"pixels) of your video here."
+msgstr ""
+"لتحجيم الفيديوهات بشكل صحيح، يجب أن تدخل العرض المضبوط (بالبكسل) للفيديو الخاص بك "
+"هنا."
+
+#: main-modules.php:3027 main-structure-elements.php:160
+#: main-structure-elements.php:1115
+msgid "Background Video Height"
+msgstr "ارتفاع فيديو الخلفية"
+
+#: main-modules.php:3030 main-structure-elements.php:163
+msgid ""
+"In order for videos to be sized correctly, you must input the exact height (in "
+"pixels) of your video here."
+msgstr ""
+"للتحجيم الفيديوهات بشكل صحيح، يجب أن تدخل الارتفاع المضبوط (بالبكسل) للفيديو الخاص "
+"بك هنا.ب"
+
+#: main-modules.php:3033 main-structure-elements.php:166
+#: main-structure-elements.php:1121
+msgid "Pause Video"
+msgstr "إيقاف مؤقت للفيديو"
+
+#: main-modules.php:3040 main-structure-elements.php:173
+msgid "Allow video to be paused by other players when they begin playing"
+msgstr "يسمح بالإيقاف المؤقت للفيديو من قبل مشغلين آخرين عندما يبدءون في التشغيل"
+
+#: main-modules.php:3046
+msgid "Input your main slide text content here."
+msgstr "أدخل محتوى نص شريحتك الرئيسية هنا."
+
+#: main-modules.php:3049 main-modules.php:3855 main-modules.php:17132
+msgid "Arrows Custom Color"
+msgstr "تحديد لون الأسهم المُخصَّص"
+
+#: main-modules.php:3055 main-modules.php:3861 main-modules.php:17138
+msgid "Dot Nav Custom Color"
+msgstr "تحديد لون شريط التصفُّح المُخصَّص"
+
+#: main-modules.php:3063
+msgid ""
+"This will change the label of the slide in the builder for easy identification."
+msgstr "سيؤدي ذلك إلى تغيير تسمية الشريحة في البناء لسهولة تحديد."
+
+#: main-modules.php:3066 main-modules.php:3843 main-modules.php:17120
+msgid "Text Overlay Border Radius"
+msgstr "نصف قطر حدود التراكب النصي"
+
+#: main-modules.php:3347
+msgid "Post Slider"
+msgstr "شريط تمرير المنشور"
+
+#: main-modules.php:3440 main-modules.php:7020 main-modules.php:7399
+#: main-modules.php:10496 main-modules.php:12363 main-modules.php:12376
+#: main-modules.php:13107 main-modules.php:15238 main-modules.php:15274
+#: main-modules.php:16256 main-modules.php:16717
+msgid "Meta"
+msgstr "ميتا"
+
+#: main-modules.php:3497 main-modules.php:7070 main-modules.php:7475
+#: main-modules.php:10552 main-modules.php:11186 main-modules.php:15321
+#: main-modules.php:16774
+msgid "Posts Number"
+msgstr "عدد المقالات"
+
+#: main-modules.php:3500 main-modules.php:16777
+msgid "Choose how many posts you would like to display in the slider."
+msgstr "حدد عدد المنشورات التي تود عرضها في مربع التمرير."
+
+#: main-modules.php:3503 main-modules.php:7076 main-modules.php:7481
+#: main-modules.php:10558 main-modules.php:11192 main-modules.php:15315
+#: main-modules.php:16780
+msgid "Include Categories"
+msgstr "تضمين الفئات"
+
+#: main-modules.php:3509 main-modules.php:16786
+msgid "Choose which categories you would like to include in the slider."
+msgstr "حدد أي التصنيفات تريد تضمينها في مربع التمرير."
+
+#: main-modules.php:3512 main-modules.php:11218 main-modules.php:16789
+msgid "Order By"
+msgstr "الترتيب حسب"
+
+#: main-modules.php:3516 main-modules.php:16793
+msgid "Date: new to old"
+msgstr "التاريخ: من الأحدث للأقدم"
+
+#: main-modules.php:3517 main-modules.php:16794
+msgid "Date: old to new"
+msgstr "التاريخ: من الأقدم للأحدث"
+
+#: main-modules.php:3518 main-modules.php:16795
+msgid "Title: a-z"
+msgstr "العنوان: أ-ي"
+
+#: main-modules.php:3519 main-modules.php:16796
+msgid "Title: z-a"
+msgstr "العنوان: ي-أ"
+
+#: main-modules.php:3520 main-modules.php:16797
+msgid "Random"
+msgstr "عشوائي"
+
+#: main-modules.php:3522 main-modules.php:16799
+msgid "Here you can adjust the order in which posts are displayed."
+msgstr "يمكنك هنا ضبط الترتيب الذي تُعرض به المنشورات."
+
+#: main-modules.php:3545 main-modules.php:16822
+msgid "Show Read More Button"
+msgstr "إظهار زر قراءة المزيد"
+
+#: main-modules.php:3555 main-modules.php:16832
+msgid "This setting will turn on and off the read more button."
+msgstr "هذا الخيار في الإعدادات سيشغل ويوقف زر قراءة المزيد."
+
+#: main-modules.php:3562
+msgid ""
+"Define the text which will be displayed on \"Read More\" button. leave blank for "
+"default ( Read More )"
+msgstr ""
+"حدد النص الذي سيتم عرضه على زر \\\"قراءة المزيد\\\". اترك هذا فارغاً لاستخدام النص "
+"الافتراضي ( قراءة المزيد )"
+
+#: main-modules.php:3565 main-modules.php:16842
+msgid "Content Display"
+msgstr "عرض المحتويات"
+
+#: main-modules.php:3569 main-modules.php:10587 main-modules.php:16846
+msgid "Show Excerpt"
+msgstr "إظهار مقتطف"
+
+#: main-modules.php:3570 main-modules.php:10588 main-modules.php:16847
+msgid "Show Content"
+msgstr "إظهار محتوى"
+
+#: main-modules.php:3576 main-modules.php:16853
+msgid ""
+"Showing the full content will not truncate your posts in the slider. Showing the "
+"excerpt will only display excerpt text."
+msgstr ""
+"عرض كامل المحتوى لن يظهر منشوراتك مُقلصة داخل مربع التمرير. عرض المقتطف سيعرض مقتطف "
+"من النص فقط."
+
+#: main-modules.php:3579 main-modules.php:16856
+msgid "Use Post Excerpt if Defined"
+msgstr "استخدام مقتطف من المنشور إذا تم تحديده"
+
+#: main-modules.php:3587 main-modules.php:16864
+msgid ""
+"Disable this option if you want to ignore manually defined excerpts and always "
+"generate it automatically."
+msgstr ""
+"قُم بتعطيل هذا الخيار إذا أردت تجاهل المقتطفات المُحددة يدوياً، وأردت إنشاءها تلقائياً "
+"دائماً."
+
+#: main-modules.php:3590 main-modules.php:16867
+msgid "Automatic Excerpt Length"
+msgstr "طول المقتطفات المُنشأة تلقائياً"
+
+#: main-modules.php:3594 main-modules.php:16871
+msgid ""
+"Define the length of automatically generated excerpts. Leave blank for default "
+"( 270 ) "
+msgstr ""
+"حدد طول المقتطفات المُنشأة تلقائياً. اترك هذا فارغاً لاستخدام الطول الافتراضي ( 270 ) "
+
+#: main-modules.php:3597 main-modules.php:16874
+msgid "Show Post Meta"
+msgstr "عرض بيانات تعريف المنشور"
+
+#: main-modules.php:3604 main-modules.php:16881
+msgid "This setting will turn on and off the meta section."
+msgstr "سيقوم هذا الخيار من الإعدادات بإظهار وإخفاء قسم بيانات التعريف."
+
+#: main-modules.php:3617 main-modules.php:16894
+msgid "Choose a Background"
+msgstr "اختر خلفية"
+
+#: main-modules.php:3619 main-modules.php:16896
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to use as "
+"the background for the slider."
+msgstr ""
+"قُم بتحميل الصورة التي ترغبها، أو اكتب رابط URL الخاص بالصورة التي تود استخدامها "
+"كخلفية لمربع التمرير."
+
+#: main-modules.php:3632 main-modules.php:10573 main-modules.php:12471
+#: main-modules.php:16350 main-modules.php:16909
+msgid "Show Featured Image"
+msgstr "إظهار الصورة المعرضة"
+
+#: main-modules.php:3642 main-modules.php:16919
+msgid "This setting will turn on and off the featured image in the slider."
+msgstr "هذا الخيار من الإعدادات سيُظهر ويُخفي الصورة المُمَيزَة في مربع التمرير."
+
+#: main-modules.php:3645 main-modules.php:16922
+msgid "Image Placement"
+msgstr "تحديد موضع الصورة"
+
+#: main-modules.php:3649 main-modules.php:16926
+msgid "Background"
+msgstr "الخلفية"
+
+#: main-modules.php:3659 main-modules.php:16936
+msgid "Select how you would like to display the featured image in slides"
+msgstr "حدد الكيفية التي تريد بها عرض الصورة المُمَيزَة في مربعات التمرير"
+
+#: main-modules.php:3833 main-modules.php:17110
+msgid "Show Image On Mobile"
+msgstr "عرض الصورة على المحمول"
+
+#: main-modules.php:4163 main-modules.php:10954 main-modules.php:17440
+msgid "by %s"
+msgstr "بواسطة ‪%s"
+
+#: main-modules.php:4164 main-modules.php:10964 main-modules.php:17441
+msgid "%s"
+msgstr "‏%s"
+
+#: main-modules.php:4248
+msgid "Testimonial"
+msgstr "التزكية"
+
+#: main-modules.php:4309
+msgid "Testimonial Portrait"
+msgstr "صورة الشهادة"
+
+#: main-modules.php:4313
+msgid "Testimonial Description"
+msgstr "وصف الشهادة"
+
+#: main-modules.php:4317
+msgid "Testimonial Author"
+msgstr "مؤلف الشهادة"
+
+#: main-modules.php:4321
+msgid "Testimonial Meta"
+msgstr "بيانات ميتا"
+
+#: main-modules.php:4330
+msgid "Author Name"
+msgstr "اسم الكاتب"
+
+#: main-modules.php:4333
+msgid "Input the name of the testimonial author."
+msgstr "إدخال اسم كاتب التزكية"
+
+#: main-modules.php:4336
+msgid "Job Title"
+msgstr "اللقب الوظيفي"
+
+#: main-modules.php:4339
+msgid "Input the job title."
+msgstr "إدخال اللقب الوظيفي"
+
+#: main-modules.php:4342
+msgid "Company Name"
+msgstr "اسم الشركة"
+
+#: main-modules.php:4345
+msgid "Input the name of the company."
+msgstr "إدخال اسم الشركة."
+
+#: main-modules.php:4348
+msgid "Author/Company URL"
+msgstr "‏URL الكاتب / الشركة"
+
+#: main-modules.php:4351
+msgid "Input the website of the author or leave blank for no link."
+msgstr "أدخل موقع الويب الخاص بالكاتب أو اتركه فارغاً من أجل لا وصلة."
+
+#: main-modules.php:4354
+msgid "URLs Open"
+msgstr "فتح URLs"
+
+#: main-modules.php:4361
+msgid "Choose whether or not the URL should open in a new window."
+msgstr "اختيار أن يفتح URLs في نافذة جديدة أو لا."
+
+#: main-modules.php:4364
+msgid "Portrait Image URL"
+msgstr "‏URL صورة شخصية"
+
+#: main-modules.php:4373
+msgid "Quote Icon"
+msgstr "أيقونة اقتباس"
+
+#: main-modules.php:4377
+msgid "Visible"
+msgstr "مرئي"
+
+#: main-modules.php:4378
+msgid "Hidden"
+msgstr "مخفي"
+
+#: main-modules.php:4380
+msgid "Choose whether or not the quote icon should be visible."
+msgstr "اختيار رؤية أو إخفاء أيقونة الاقتباس."
+
+#: main-modules.php:4383 main-modules.php:5514 main-modules.php:6266
+#: main-modules.php:6698 main-modules.php:11534
+msgid "Use Background Color"
+msgstr "استخدام لون خلفية"
+
+#: main-modules.php:4393 main-modules.php:5524 main-modules.php:6276
+#: main-modules.php:6708 main-modules.php:11544
+msgid ""
+"Here you can choose whether background color setting below should be used or not."
+msgstr "يمكنك هنا أن تختار استعمال إعداد لون الخلفية أو لا."
+
+#: main-modules.php:4398 main-modules.php:5530
+msgid "Here you can define a custom background color for your CTA."
+msgstr "يمكنك هنا أن تحدد لون خلفية مخصص من أجل نداءاتك لاتخاذ إجراء."
+
+#: main-modules.php:4416 main-modules.php:5547
+msgid "This will adjust the alignment of the module text."
+msgstr "سيعدل هذا اصطفاف نص الوحدة."
+
+#: main-modules.php:4425
+msgid "Quote Icon Color"
+msgstr "تغيير لون أيقونة التسعير"
+
+#: main-modules.php:4431
+msgid "Portrait Border Radius"
+msgstr "تحديد نصف قطر حد الصورة"
+
+#: main-modules.php:4437
+msgid "Portrait Width"
+msgstr "ضبط عرض الصورة"
+
+#: main-modules.php:4448
+msgid "Portrait Height"
+msgstr "ضبط ارتفاع الصورة"
+
+#: main-modules.php:4645
+msgid "Pricing Tables"
+msgstr "جداول التسعير"
+
+#: main-modules.php:4649 main-modules.php:5118
+msgid "Pricing Table"
+msgstr "جدول التسعير"
+
+#: main-modules.php:4679 main-modules.php:5225
+msgid "Pricing Heading"
+msgstr "العنوان الفرعي للتسعير"
+
+#: main-modules.php:4683 main-modules.php:5229
+msgid "Pricing Title"
+msgstr "عنوان التسعير"
+
+#: main-modules.php:4687 main-modules.php:5233
+msgid "Pricing Subtitle"
+msgstr "العنوان الفرعي للتسعير"
+
+#: main-modules.php:4691 main-modules.php:5237
+msgid "Pricing Top"
+msgstr "الجزء العلوي من جدول التسعير"
+
+#: main-modules.php:4695 main-modules.php:4758 main-modules.php:5178
+#: main-modules.php:5241 main-modules.php:5308 main-modules.php:11116
+#: main-modules.php:11156
+msgid "Price"
+msgstr "السعر"
+
+#: main-modules.php:4699 main-modules.php:5245 main-modules.php:5296
+msgid "Currency"
+msgstr "العملة"
+
+#: main-modules.php:4703 main-modules.php:5249
+msgid "Frequency"
+msgstr "التكرار"
+
+#: main-modules.php:4707 main-modules.php:5253
+msgid "Pricing Content"
+msgstr "مُحتوى التسعير"
+
+#: main-modules.php:4711 main-modules.php:5257
+msgid "Pricing Item"
+msgstr "بند التسعير"
+
+#: main-modules.php:4715 main-modules.php:5261
+msgid "Excluded Item"
+msgstr "استثناء بند"
+
+#: main-modules.php:4719 main-modules.php:5265
+msgid "Pricing Button"
+msgstr "زر التسعير"
+
+#: main-modules.php:4723
+msgid "Featured Table"
+msgstr "جدول مُميز"
+
+#: main-modules.php:4740 main-modules.php:5159
+msgid "Subheader"
+msgstr "العنوان الفرعي"
+
+#: main-modules.php:4752 main-modules.php:5172
+msgid "Currency &amp; Frequency"
+msgstr "العملة &amp; تردد"
+
+#: main-modules.php:4818
+msgid "Featured Table Background Color"
+msgstr "تغيير لون خلفية الجدول المُميز"
+
+#: main-modules.php:4825
+msgid "Table Header Background Color"
+msgstr "ضبط لون خلفية مقدمة صفحة الجدول"
+
+#: main-modules.php:4831
+msgid "Featured Table Header Background Color"
+msgstr "ضبط لون خلفية مقدمة صفحة الجدول المُميز"
+
+#: main-modules.php:4838
+msgid "Featured Table Header Text Color"
+msgstr "ضبط لون نص مقدمة صفحة الجدول المُميز"
+
+#: main-modules.php:4845
+msgid "Featured Table Subheader Text Color"
+msgstr "ضبط لون نص العنوان الفرعي للجدول المُميز"
+
+#: main-modules.php:4852
+msgid "Featured Table Price Color"
+msgstr "ضبط لون سعر الجدول المُميز"
+
+#: main-modules.php:4859
+msgid "Featured Table Body Text Color"
+msgstr "ضبط لون نص قلب صفحة الجدول المُميز"
+
+#: main-modules.php:4866
+msgid "Show Bullet"
+msgstr "عرض النقطة"
+
+#: main-modules.php:4879
+msgid "Bullet Color"
+msgstr "ضبط لون النقطة"
+
+#: main-modules.php:4886
+msgid "Featured Table Bullet Color"
+msgstr "ضبط لون نقطة الجدول المُميز"
+
+#: main-modules.php:4893
+msgid "Remove Featured Table Drop Shadow"
+msgstr "إزالة ظل إفلات الجدول المُميز"
+
+#: main-modules.php:4904
+msgid "Center List Items"
+msgstr "بنود القائمة المركزية"
+
+#: main-modules.php:5140
+msgid "New Pricing Table"
+msgstr "جدول تسعير جديد"
+
+#: main-modules.php:5141
+msgid "Pricing Table Settings"
+msgstr "إعدادات جدول التسعير"
+
+#: main-modules.php:5274
+msgid "Make This Table Featured"
+msgstr "أبرز هذا الجدول"
+
+#: main-modules.php:5281
+msgid "Featuring a table will make it stand out from the rest."
+msgstr "إبراز جدول يجعله يغلب على البقية."
+
+#: main-modules.php:5287
+msgid "Define a title for the pricing table."
+msgstr "تحديد عنوان لجدول التسعير."
+
+#: main-modules.php:5290 main-modules.php:13790
+msgid "Subtitle"
+msgstr "العنوان الثانوي"
+
+#: main-modules.php:5293
+msgid "Define a sub title for the table if desired."
+msgstr "تحديد عنوان ثانوي للجدول في حال الرغبة."
+
+#: main-modules.php:5299
+msgid "Input your desired currency symbol here."
+msgstr "أدخل رمز عملتك المطلوب هنا."
+
+#: main-modules.php:5302
+msgid "Per"
+msgstr "لكل"
+
+#: main-modules.php:5305
+msgid ""
+"If your pricing is subscription based, input the subscription payment cycle here."
+msgstr "إذا كان تسعيرك قائماً على الاشتراك، أدخل دورة سداد الاشتراك هنا."
+
+#: main-modules.php:5311
+msgid "Input the value of the product here."
+msgstr "أدخل قيمة المنتج هنا."
+
+#: main-modules.php:5317
+msgid "Input the destination URL for the signup button."
+msgstr "أدخل URL وجهة زر الاشتراك."
+
+#: main-modules.php:5323
+msgid "Adjust the text used from the signup button."
+msgstr "تعديل النص المستعمل في زر الاشتراك."
+
+#: main-modules.php:5331
+msgid ""
+"Input a list of features that are/are not included in the product. Separate items "
+"on a new line, and begin with either a + or - symbol: "
+msgstr ""
+"أدخل قائمة الميزات المتضمنة / غير المتضمنة في المنتج. ضع المواد منفصلة، كل على سطر "
+"جديد، وابدأ بعلامة + أو علامة - "
+
+#: main-modules.php:5332
+msgid "Included option"
+msgstr "خيار متضمن"
+
+#: main-modules.php:5333
+msgid "Excluded option"
+msgstr "خيار مستثنى"
+
+#: main-modules.php:5406
+msgid "Call To Action"
+msgstr "نداء لاتخاذ إجراء"
+
+#: main-modules.php:5469
+msgid "Promo Description"
+msgstr "الوصف"
+
+#: main-modules.php:5473
+msgid "Promo Button"
+msgstr "زر"
+
+#: main-modules.php:5477
+msgid "Promo Title"
+msgstr "عنوان العرض الترويجي"
+
+#: main-modules.php:5489
+msgid "Input your value to action title here."
+msgstr "أدخل القيمة الخاصة بك لعنوان إجراء هنا."
+
+#: main-modules.php:5495
+msgid "Input the destination URL for your CTA button."
+msgstr "أدخل URL وجهة زر نداءاتك لاتخاذ إجراء."
+
+#: main-modules.php:5511
+msgid "Input your desired button text, or leave blank for no button."
+msgstr "أدخل نص الزر الذي تريده، أو اتركه فارغاً من أجل لا زر."
+
+#: main-modules.php:5721
+msgid "Input the destination URL for your button."
+msgstr "أدخل رابط URL المراد التوجه إليه، الخاصة بالزر الخاص بك."
+
+#: main-modules.php:5737
+msgid "Input your desired button text."
+msgstr "أدخل النص الذي ترغبه للزر الخاص بك."
+
+#: main-modules.php:5740
+msgid "Button alignment"
+msgstr ""
+
+#: main-modules.php:5748
+msgid "Here you can define the alignemnt of Button"
+msgstr ""
+
+#: main-modules.php:5839 main-modules.php:5928
+msgid "Audio"
+msgstr "الصوت"
+
+#: main-modules.php:5891
+msgid "Audio Cover Art"
+msgstr "صورة الملف الصوتي"
+
+#: main-modules.php:5895
+msgid "Audio Content"
+msgstr "المُحتوى الصوتي"
+
+#: main-modules.php:5899
+msgid "Audio Title"
+msgstr "عنوان صوتي"
+
+#: main-modules.php:5903
+msgid "Audio Meta"
+msgstr "ملف ميتا الصوتي"
+
+#: main-modules.php:5907
+msgid "Player Buttons"
+msgstr "أزرار المُشَغِل"
+
+#: main-modules.php:5911
+msgid "Player Timer"
+msgstr "مؤقت المُشَغِّلْ"
+
+#: main-modules.php:5915
+msgid "Player Sliders"
+msgstr "أشرطة التمرير الخاصة بالمُشَغِلْ"
+
+#: main-modules.php:5919
+msgid "Player Sliders Current"
+msgstr "الوضع الحالي لأشرطة تمرير المُشَغِّلْ"
+
+#: main-modules.php:5932
+msgid "Upload an audio file"
+msgstr "تحميل ملف صوتي"
+
+#: main-modules.php:5933
+msgid "Choose an Audio file"
+msgstr "اختيار ملفاً صوتياًً"
+
+#: main-modules.php:5934
+msgid "Set As Audio for the module"
+msgstr "إعداد صوت للوحدة"
+
+#: main-modules.php:5935
+msgid ""
+"Define the audio file for use in the module. To remove an audio file from the "
+"module, simply delete the URL from the settings field."
+msgstr ""
+"تحديد الملف السمعي للاستعمال في الوحدة. لإزالة ملف سمعي من الوحدة، يحذف ببساطة URL "
+"من حقل الإعدادات."
+
+#: main-modules.php:5941
+msgid "Define a title."
+msgstr "تحديد عنوان."
+
+#: main-modules.php:5944
+msgid "Artist Name"
+msgstr "اسم الفنان"
+
+#: main-modules.php:5947
+msgid "Define an artist name."
+msgstr "تحديد اسم فنان."
+
+#: main-modules.php:5950
+msgid "Album name"
+msgstr "اسم الألبوم"
+
+#: main-modules.php:5953
+msgid "Define an album name."
+msgstr "تحديد اسم الألبوم."
+
+#: main-modules.php:5956
+msgid "Cover Art Image URL"
+msgstr "‏URL صورة الغلاف"
+
+#: main-modules.php:5967 main-modules.php:6281 main-modules.php:6713
+#: main-structure-elements.php:130
+msgid ""
+"Define a custom background color for your module, or leave blank to use the default "
+"color."
+msgstr "حدد لون خلفية مخصص لوحدتك، أو اتركه فارغاً لاستعمال اللون الافتراضي."
+
+#: main-modules.php:6100
+msgid "Email Optin"
+msgstr "البريد الإلكتروني بتين"
+
+#: main-modules.php:6128
+msgid "Subscribe"
+msgstr "اشتراك"
+
+#: main-modules.php:6167
+msgid "Newsletter Description"
+msgstr "وصف الرسالة الإخبارية"
+
+#: main-modules.php:6171
+msgid "Newsletter Form"
+msgstr "نموذج الرسالة الإخبارية"
+
+#: main-modules.php:6175
+msgid "Newsletter Fields"
+msgstr "حقول النشرة الإخبارية"
+
+#: main-modules.php:6179
+msgid "Newsletter Button"
+msgstr "زر الرسالة الإخبارية"
+
+#: main-modules.php:6186
+msgid "Select the list"
+msgstr "اختيار القائمة"
+
+#: main-modules.php:6207
+msgid "Service Provider"
+msgstr "مقدم الخدمة"
+
+#: main-modules.php:6211
+msgid "MailChimp"
+msgstr "‏MailChimp"
+
+#: main-modules.php:6212
+msgid "FeedBurner"
+msgstr "‏FeedBurner"
+
+#: main-modules.php:6213
+msgid "Aweber"
+msgstr "‏Aweber"
+
+#: main-modules.php:6220
+msgid "Here you can choose a service provider."
+msgstr "يمكنك هنا أن تختار مقدم خدمة."
+
+#: main-modules.php:6223
+msgid "Feed Title"
+msgstr "عنوان التغذية"
+
+#: main-modules.php:6230
+msgid "MailChimp lists"
+msgstr "قوائم MailChimp"
+
+#: main-modules.php:6235
+msgid ""
+"Here you can choose MailChimp list to add customers to. If you don't see any lists "
+"here, you need to make sure MailChimp API key is set in %1$s and you have at least "
+"one list on a MailChimp account. If you added new list, but it doesn't appear here, "
+"activate 'Regenerate MailChimp Lists' option in %1$s.%2$s"
+msgstr ""
+"يمكنك هنا أن تختار قائمة MailChimp لإضافة العملاء إليها. إذا لم تر أي قوائم هنا، "
+"عليك التأكد من أن مفتاح MailChimp API معد على %1$s وأن لديك على الأقل قائمة واحدة "
+"في حساب MailChimp. إذا أضفت قائمة جديدة، لكنها لم تظهر هنا، قم بتنشيط خيار إعادة "
+"توليد قوائم MailChimp في %1$s.%2$s. لا تنس تعطيله بمجرد إعادة توليد القائمة."
+
+#: main-modules.php:6236 main-modules.php:6248
+msgid "Divi Plugin Options"
+msgstr "خيارات المكون الإضافي Divi"
+
+#: main-modules.php:6236 main-modules.php:6248
+msgid "ePanel"
+msgstr "ePanel"
+
+#: main-modules.php:6237 main-modules.php:6249
+msgid "Don't forget to disable it once the list has been regenerated."
+msgstr "لا تنس تعطيلها بمجرد الانتهاء من إعادة توليد القائمة."
+
+#: main-modules.php:6242
+msgid "Aweber lists"
+msgstr "قوائم Aweber"
+
+#: main-modules.php:6247
+msgid ""
+"Here you can choose Aweber list to add customers to. If you don't see any lists "
+"here, you need to make sure Aweber is set up properly in %1$s and you have at least "
+"one list on a Aweber account. If you added new list, but it doesn't appear here, "
+"activate 'Regenerate Aweber Lists' option in %1$s.%2$s"
+msgstr ""
+"يمكنك هنا اختيار قائمة Aweber لإضافة عملاءٍ لها. إذا كنت لا ترى أي قوائم هنا، فأنت "
+"بحاجة للتأكد من أن Aweber تم ضبطه بشكلٍ صحيحٍ في %1$s ومن أنك لديك قائمة واحدة على "
+"الأقل على حساب Aweber. إذا كنت قد قمت بإضافة قائمة جديدة ووجدتها لم تظهر هنا قم "
+"بتفعيل خيار 'إعادة إنشاء قوائم Aweber' في %1$s.%2$s"
+
+#: main-modules.php:6257
+msgid "Choose a title of your signup box."
+msgstr "اختيار عنواناً لصندوق الاشتراك الخاص بك."
+
+#: main-modules.php:6263
+msgid "Here you can change the text used for the signup button."
+msgstr "يمكنك هنا أن تغير النص المستعمل لزر الاشتراك."
+
+#: main-modules.php:6299 main-modules.php:6731
+msgid "Here you can adjust the alignment of your text."
+msgstr "يمكنك هنا أن تعدل اصطفاف النص الخاص بك."
+
+#: main-modules.php:6308 main-modules.php:6740
+msgid "Form Field Background Color"
+msgstr "ضبط لون خلفية حقل النموذج"
+
+#: main-modules.php:6314 main-modules.php:6746
+msgid "Form Field Text Color"
+msgstr "ضبط لون نص حقل النموذج"
+
+#: main-modules.php:6320 main-modules.php:6752
+msgid "Focus Background Color"
+msgstr "ضبط لون خلفية الحقل المُرَكز عليه"
+
+#: main-modules.php:6326 main-modules.php:6758
+msgid "Focus Text Color"
+msgstr "ضبط لون النص المُرَكز عليه"
+
+#: main-modules.php:6332 main-modules.php:6764
+msgid "Use Focus Border Color"
+msgstr "استخدام لون حد الحقل المُرَكز عليه"
+
+#: main-modules.php:6345 main-modules.php:6777
+msgid "Focus Border Color"
+msgstr "ضبط لون حد الحقل المُرَكز عليه"
+
+#: main-modules.php:6468
+msgid "First Name"
+msgstr "الاسم الأول"
+
+#: main-modules.php:6469
+msgid "Last Name"
+msgstr "اللقب"
+
+#: main-modules.php:6470 main-modules.php:9302
+msgid "Email Address"
+msgstr "عنوان البريد الإلكتروني"
+
+#: main-modules.php:6537 main-modules.php:9301 main-modules.php:10203
+msgid "Name"
+msgstr "الاسم"
+
+#: main-modules.php:6599 main-modules.php:6941
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#: main-modules.php:6661
+msgid "Login Description"
+msgstr "وصف تسجيل الدخول"
+
+#: main-modules.php:6665
+msgid "Login Form"
+msgstr "نموذج تسجيل الدخول"
+
+#: main-modules.php:6669
+msgid "Login Fields"
+msgstr "حقول تسجيل الدخول"
+
+#: main-modules.php:6673
+msgid "Login Button"
+msgstr "زر تسجيل الدخول"
+
+#: main-modules.php:6685
+msgid "Choose a title of your login box."
+msgstr "اختيار عنواناً لصندوق تسجيل الدخول الخاص بك."
+
+#: main-modules.php:6688
+msgid "Redirect To The Current Page"
+msgstr "إعادة التوجيه إلى الصفحة الحالية"
+
+#: main-modules.php:6695
+msgid "Here you can choose whether the user should be redirected to the current page."
+msgstr "يمكنك هنا أن تختار إعادة توجيه المستخدم إلى الصفحة الحالية أو لا."
+
+#: main-modules.php:6902
+msgid "Logged in as %1$s"
+msgstr "‏%1$s تم تسجيل الدخول تحت اسم"
+
+#: main-modules.php:6904
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+#: main-modules.php:6913
+msgid "Username"
+msgstr "اسم المستخدم"
+
+#: main-modules.php:6914
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: main-modules.php:6934
+msgid "Forgot your password?"
+msgstr "هل نسيت كلمة المرور الخاصة بك؟"
+
+#: main-modules.php:6981
+msgid "Portfolio"
+msgstr "المحفظة"
+
+#: main-modules.php:7035 main-modules.php:7432
+msgid "Portfolio Image"
+msgstr "صورة الحافظة"
+
+#: main-modules.php:7047 main-modules.php:7444 main-modules.php:15258
+#: main-modules.php:15296
+msgid "Portfolio Title"
+msgstr "عنوان المحفظة"
+
+#: main-modules.php:7051 main-modules.php:7448
+msgid "Portfolio Post Meta"
+msgstr "حافظة المقال ميتا"
+
+#: main-modules.php:7064 main-modules.php:7469 main-modules.php:10541
+msgid "Fullwidth"
+msgstr "الاتساع الكامل"
+
+#: main-modules.php:7067 main-modules.php:7472 main-modules.php:15312
+msgid "Choose your desired portfolio layout style."
+msgstr "اختيار أسلوب تخطيط محفظتك المطلوب."
+
+#: main-modules.php:7073 main-modules.php:7478
+msgid "Define the number of projects that should be displayed per page."
+msgstr "تحديد عدد المشاريع التي يجب إظهارها في كل صفحة."
+
+#: main-modules.php:7079 main-modules.php:7484 main-modules.php:15318
+msgid "Select the categories that you would like to include in the feed."
+msgstr "اختيار الفئات التي تود تضمينها في التغذية."
+
+#: main-modules.php:7082 main-modules.php:7487 main-modules.php:12389
+#: main-modules.php:15327 main-modules.php:16268
+msgid "Show Title"
+msgstr "إظهار العنوان"
+
+#: main-modules.php:7089 main-modules.php:7494 main-modules.php:15334
+msgid "Turn project titles on or off."
+msgstr "تشغيل أو إيقاف عناوين المشروعات."
+
+#: main-modules.php:7092 main-modules.php:7497 main-modules.php:10627
+msgid "Show Categories"
+msgstr "إظهار الفئات"
+
+#: main-modules.php:7099 main-modules.php:7504 main-modules.php:10634
+msgid "Turn the category links on or off."
+msgstr "تشغيل أو إيقاف روابط الفئات."
+
+#: main-modules.php:7360
+msgid "Filterable Portfolio"
+msgstr "محفظة قابلة للترشيح"
+
+#: main-modules.php:7405
+msgid "Filter"
+msgstr "المُرشِح"
+
+#: main-modules.php:7424
+msgid "Portfolio Filters"
+msgstr "مُرشِحات الحافظة"
+
+#: main-modules.php:7428
+msgid "Active Portfolio Filter"
+msgstr "مُرشِح الحافظة النشط"
+
+#: main-modules.php:7452
+msgid "Portfolio Pagination"
+msgstr "فواصل قائمة المشاريع"
+
+#: main-modules.php:7735
+msgid "All"
+msgstr "الكل"
+
+#: main-modules.php:7775
+msgid "Bar Counters"
+msgstr "عدادات شريطية"
+
+#: main-modules.php:7778 main-modules.php:8002
+msgid "Bar Counter"
+msgstr "شريط العداد"
+
+#: main-modules.php:7817 main-modules.php:8051 main-modules.php:8423
+msgid "Percent"
+msgstr "بالمائة"
+
+#: main-modules.php:7834 main-modules.php:8028
+msgid "Counter Title"
+msgstr "عنوان العداد"
+
+#: main-modules.php:7838 main-modules.php:8032
+msgid "Counter Container"
+msgstr "وعاء العداد"
+
+#: main-modules.php:7842 main-modules.php:8036
+msgid "Counter Amount"
+msgstr "رقم العداد"
+
+#: main-modules.php:7863
+msgid "This will adjust the color of the empty space in the bar (currently gray)."
+msgstr "سيعدل هذا لون المساحة الفارغة في الشريط (اللون الرمادي حالياً)."
+
+#: main-modules.php:7866 main-modules.php:8063 main-modules.php:8296
+msgid "Bar Background Color"
+msgstr "لون خلفية الشريط"
+
+#: main-modules.php:7868 main-modules.php:8298 main-modules.php:8501
+msgid "This will change the fill color for the bar."
+msgstr "سيغير هذا لون ملء الشريط."
+
+#: main-modules.php:7871
+msgid "Use Percentages"
+msgstr "استخدام النسب المئوية"
+
+#: main-modules.php:7880
+msgid "Bar Top Padding"
+msgstr "مسافة تباعد الشريط العلوي"
+
+#: main-modules.php:7888
+msgid "Bar Bottom Padding"
+msgstr "مسافة تباعد الشريط السفلي"
+
+#: main-modules.php:7896 main-modules.php:9614
+msgid "Border Radius"
+msgstr "نصف قطر الحد"
+
+#: main-modules.php:8020
+msgid "New Bar Counter"
+msgstr "عداد شريطي جديد"
+
+#: main-modules.php:8021
+msgid "Bar Counter Settings"
+msgstr "إعدادات عداد شريطي"
+
+#: main-modules.php:8048
+msgid "Input a title for your bar."
+msgstr "أدخل عنواناً لشريطك."
+
+#: main-modules.php:8054
+msgid "Define a percentage for this bar."
+msgstr "حدد نسبة مئوية لهذا الشريط."
+
+#: main-modules.php:8069
+msgid "Label Color"
+msgstr "تغيير لون العلامة"
+
+#: main-modules.php:8075
+msgid "Percentage Color"
+msgstr "تغيير لون النسبة المئوية"
+
+#: main-modules.php:8203
+msgid "Circle Counter"
+msgstr "عداد دائري"
+
+#: main-modules.php:8236 main-modules.php:8269 main-modules.php:8442
+#: main-modules.php:8483
+msgid "Number"
+msgstr "الرقم"
+
+#: main-modules.php:8246
+msgid "Percent Container"
+msgstr "حاوية النسبة المئوية"
+
+#: main-modules.php:8250
+msgid "Circle Counter Title"
+msgstr "عنوان عداد الدوائر"
+
+#: main-modules.php:8254
+msgid "Percent Text"
+msgstr "نص النسبة المئوية"
+
+#: main-modules.php:8266
+msgid "Input a title for the circle counter."
+msgstr "أدخل عنوان عداد دائري."
+
+#: main-modules.php:8273
+msgid ""
+"Define a number for the circle counter. (Don't include the percentage sign, use the "
+"option below.). <strong>Note: You can use only natural numbers from 0 to 100</"
+"strong>"
+msgstr ""
+"حدد رقماُ من أجل العداد الدائري. (لا تضع علامة النسبة المئوية، استعمل الخيار "
+"بأسفل.). ملاحظة: يمكن أن تستعمل أعداد طبيعية فقط من 0 إلى 100"
+
+#: main-modules.php:8276 main-modules.php:8489
+msgid "Percent Sign"
+msgstr "علامة بالمائة"
+
+#: main-modules.php:8283 main-modules.php:8496
+msgid ""
+"Here you can choose whether the percent sign should be added after the number set "
+"above."
+msgstr "يمكنك هنا أن تختار إضافة علامة بالمائة بعد الرقم المحدد أو لا."
+
+#: main-modules.php:8307
+msgid "Circle Color Opacity"
+msgstr "تغيير عتمة لون الدائرة"
+
+#: main-modules.php:8400
+msgid "Number Counter"
+msgstr "عداد رقمي"
+
+#: main-modules.php:8427
+msgid "Number Counter Title"
+msgstr "عنوان عداد الأرقام"
+
+#: main-modules.php:8480
+msgid "Input a title for the counter."
+msgstr "أدخل عنواناً للعداد."
+
+#: main-modules.php:8486
+msgid ""
+"Define a number for the counter. (Don't include the percentage sign, use the option "
+"below.)"
+msgstr "حدد رقماً للعداد. (لا تضع علامة النسبة المئوية، استعمل الخيار بأسفل.)"
+
+#: main-modules.php:8499
+msgid "Counter Text Color"
+msgstr "لون نص العداد"
+
+#: main-modules.php:8511
+msgid ""
+"Here you can choose whether your title text should be light or dark. If you are "
+"working with a dark background, then your text should be light. If your background "
+"is light, then your text should be set to dark."
+msgstr ""
+"يمكنك هنا أن تختار أن يكون نص عنوانك فاتح اللون أو داكن اللون. إذا كنت تعمل مع "
+"خلفية داكنة، يجب أن يكون نصك بلون فاتح. وإذا كانت خلفيتك فاتحة اللون، يجب أن يكون "
+"نصك داكن اللون."
+
+#: main-modules.php:8589 main-modules.php:8781
+msgid "Accordion"
+msgstr "أكورديون"
+
+#: main-modules.php:8606 main-modules.php:8640 main-modules.php:8811
+#: main-modules.php:8884
+msgid "Toggle"
+msgstr "التبديل"
+
+#: main-modules.php:8644 main-modules.php:8814 main-modules.php:8935
+msgid "Open Toggle"
+msgstr "مربع التبديل المفتوح"
+
+#: main-modules.php:8648 main-modules.php:8818 main-modules.php:8939
+msgid "Toggle Title"
+msgstr "عنوان مربع التبديل"
+
+#: main-modules.php:8652 main-modules.php:8822 main-modules.php:8943
+msgid "Toggle Icon"
+msgstr "أيقونة مربع التبديل"
+
+#: main-modules.php:8656 main-modules.php:8826 main-modules.php:8947
+msgid "Toggle Content"
+msgstr "مُحتوى مربع التبديل"
+
+#: main-modules.php:8665 main-modules.php:8847 main-modules.php:8978
+msgid "Open Toggle Background Color"
+msgstr "تغيير لون خلفية التبديل المفتوح"
+
+#: main-modules.php:8671 main-modules.php:8859 main-modules.php:8984
+msgid "Closed Toggle Background Color"
+msgstr "تغيير لون خلفية مربع التبديل المغلق"
+
+#: main-modules.php:8838 main-modules.php:8959
+msgid "The toggle title will appear above the content and when the toggle is closed."
+msgstr "سيظهر عنوان التبديل فوق المحتوى وعند غلق التبديل."
+
+#: main-modules.php:8853
+msgid "Open Toggle Text Color"
+msgstr "تغيير لون نص مربع التبديل المفتوح"
+
+#: main-modules.php:8865
+msgid "Closed Toggle Text Color"
+msgstr "تغيير لون نص مربع التبديل المغلق"
+
+#: main-modules.php:8962
+msgid "State"
+msgstr "الحالة"
+
+#: main-modules.php:8966 template-preview.php:86
+msgid "Close"
+msgstr "إغلاق"
+
+#: main-modules.php:8967
+msgid "Open"
+msgstr "فتح"
+
+#: main-modules.php:8969
+msgid "Choose whether or not this toggle should start in an open or closed state."
+msgstr "اختيار أن يبدأ هذا التبديل في وضع الفتح أو الغلق."
+
+#: main-modules.php:9106
+msgid "Contact Form"
+msgstr "نموذج اتصال"
+
+#: main-modules.php:9109 main-modules.php:9526 main-modules.php:9547
+#: main-modules.php:13138
+msgid "Field"
+msgstr "الحقل"
+
+#: main-modules.php:9141
+msgid "Form Field"
+msgstr "حقل النموذج"
+
+#: main-modules.php:9163
+msgid "Contact Title"
+msgstr "عنوان جهة الاتصال"
+
+#: main-modules.php:9167
+msgid "Contact Button"
+msgstr "زر جهة الاتصال"
+
+#: main-modules.php:9171
+msgid "Form Fields"
+msgstr "حقول النموذج"
+
+#: main-modules.php:9175 main-modules.php:13201
+msgid "Message Field"
+msgstr "حقل الرسالة"
+
+#: main-modules.php:9179
+msgid "Captcha Field"
+msgstr "حقل الكابتشا"
+
+#: main-modules.php:9183
+msgid "Captcha Text"
+msgstr "نص الكابتشا"
+
+#: main-modules.php:9192
+msgid "Display Captcha"
+msgstr "‏v"
+
+#: main-modules.php:9199
+msgid "Turn the captcha on or off using this option."
+msgstr "‏v"
+
+#: main-modules.php:9202
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: main-modules.php:9205
+msgid "Input the email address where messages should be sent."
+msgstr "أدخل عنوان البريد الإلكتروني التي يجب إرسال الرسائل إليه."
+
+#: main-modules.php:9211
+msgid "Define a title for your contact form."
+msgstr "تحديد عنوان نموذج الاتصال الخاص بك."
+
+#: main-modules.php:9214
+msgid "Message Pattern"
+msgstr "نمط الرسالة"
+
+#: main-modules.php:9217
+msgid ""
+"Here you can define the custom pattern for the email Message. Fields should be "
+"included in following format - <strong>%%field_id%%</strong>. For example if you "
+"want to include the field with id = <strong>phone</strong> and field with id = "
+"<strong>message</strong>, then you can use the following pattern: <strong>My "
+"message is %%message%% and phone number is %%phone%%</strong>. Leave blank for "
+"default."
+msgstr ""
+"يمكنك هنا تحديد نمط مُخصص لرسالة البريد الإلكتروني. يجب تضمين هذه الحقول بالتنسيق "
+"التالي - <strong>%%field_id%%</strong>. على سبيل المثال، إذا أردت تضمين الحقل الذي "
+"مُعرفه = <strong>phone</strong> وحقل آخر مُعرفه = <strong>message</strong> يمكن في "
+"هذه الحالة، استخدام النمط التالي: <strong>رسالتي هي %%message%% ورقم الهاتف هو %"
+"%الهاتف%%</strong>. اترك هذا فارغاً لاستخدام الخيارات الافتراضية."
+
+#: main-modules.php:9220
+msgid "Enable Redirect URL"
+msgstr "تمكين إعادة توجيه رابط URL"
+
+#: main-modules.php:9230
+msgid "Redirect users after successful form submission."
+msgstr "توجيه المستخدمين بعد عمليات ارسال النموذج الناجحة."
+
+#: main-modules.php:9233
+msgid "Redirect URL"
+msgstr "إعادة توجيه رابط URL"
+
+#: main-modules.php:9237
+msgid "Type the Redirect URL"
+msgstr "اكتب رابط إعادة التوجيه URL"
+
+#: main-modules.php:9240
+msgid "Success Message"
+msgstr "رسالة النجاح"
+
+#: main-modules.php:9243
+msgid ""
+"Type the message you want to display after successful form submission. Leave blank "
+"for default"
+msgstr ""
+"اكتب الرسالة التي تريد عرضها بعد أي عملية إرسال نموذج ناجحة. اترك هذا فارغاً "
+"لاستخدام الرسالة الافتراضية."
+
+#: main-modules.php:9246
+msgid "Form Background Color"
+msgstr "تغيير لون خلفية النموذج"
+
+#: main-modules.php:9252
+msgid "Input Border Radius"
+msgstr "تغيير نصف قطر حد الإدخال"
+
+#: main-modules.php:9348
+msgid "Thanks for contacting us"
+msgstr "شكراً لإتصالك بنا"
+
+#: main-modules.php:9368
+msgid "Make sure you entered the captcha."
+msgstr "تأكد من إدخال الكابتشا."
+
+#: main-modules.php:9377 main-modules.php:9399
+msgid "Make sure you fill in all required fields."
+msgstr "تأكد من ملء جميع الحقول الإلزامية."
+
+#: main-modules.php:9386
+msgid "Invalid Email."
+msgstr "البريد الإلكتروني غير صحيح."
+
+#: main-modules.php:9446
+msgid "New Message From %1$s%2$s"
+msgstr "رسالة جديدة من %1$s%2$s"
+
+#: main-modules.php:9488
+msgid "Submit"
+msgstr "أرسِل"
+
+#: main-modules.php:9541
+msgid "New Field"
+msgstr "حقل جديد"
+
+#: main-modules.php:9542
+msgid "Field Settings"
+msgstr "إعدادات الحقل"
+
+#: main-modules.php:9567
+msgid "Field ID"
+msgstr "مُعَرَّفْ الحقل"
+
+#: main-modules.php:9569
+msgid ""
+"Define the unique ID of this field. You should use only English characters without "
+"special characters and spaces."
+msgstr ""
+"حدد المُعَرِّفْ المُحدد حصرياً لهذا الحقل. ينبغي استخدام أحرف اللغة الإنجليزية فقط وبدون "
+"مسافات أو أحرف خاصة."
+
+#: main-modules.php:9581 main-modules.php:12814
+msgid "Input Field"
+msgstr "حقل الإدخال"
+
+#: main-modules.php:9582 main-modules.php:13209
+msgid "Email Field"
+msgstr "حقل البريد الإلكتروني"
+
+#: main-modules.php:9583
+msgid "Textarea"
+msgstr "المساحة النصية"
+
+#: main-modules.php:9585
+msgid "Choose the type of field"
+msgstr "حدد نوع الحقل"
+
+#: main-modules.php:9588
+msgid "Required Field"
+msgstr "حقل إلزامي"
+
+#: main-modules.php:9595
+msgid "Define whether the field should be required or optional"
+msgstr "تحديد إن ما كان الحقل إلزامي أم اختياري"
+
+#: main-modules.php:9598
+msgid "Make Fullwidth"
+msgstr "تمكين العرض الكامل"
+
+#: main-modules.php:9605
+msgid ""
+"If enabled, the field will take 100% of the width of the content area, otherwise it "
+"will take 50%"
+msgstr ""
+"إذا تم تمكين هذا الخيار، سيشغل الحقل 100% من عرض مساحة المحتوى، غير ذلك، سيشغل 50%"
+
+#: main-modules.php:9727
+msgid "Sidebar"
+msgstr "شريط جانبي"
+
+#: main-modules.php:9766
+msgid "Widget"
+msgstr "عنصر الواجهة"
+
+#: main-modules.php:9779
+msgid "Orientation"
+msgstr "التوجيه"
+
+#: main-modules.php:9786
+msgid ""
+"Choose which side of the page your sidebar will be on. This setting controls text "
+"orientation and border position."
+msgstr ""
+"اختيار جانب الصفحة الذي سيكون عليه شريطك الجانبي. هذه الإعدادات تتحكم في توجيه النص "
+"وموقع الحد."
+
+#: main-modules.php:9789
+msgid "Widget Area"
+msgstr "منطقة ودجة"
+
+#: main-modules.php:9792
+msgid ""
+"Select a widget-area that you would like to display. You can create new widget "
+"areas within the Appearances > Widgets tab."
+msgstr ""
+"اختيار منطقة الودجة التي تود عرضها. يمكنك إنشاء مناطق ودجة جديدة من خلال المظهر> "
+"تبويب ودجة."
+
+#: main-modules.php:9805
+msgid "Remove Border Separator"
+msgstr "إزالة فاصل الحد"
+
+#: main-modules.php:9908
+msgid "Divider"
+msgstr "مقسم"
+
+#: main-modules.php:9919
+msgid "Don't Show Divider"
+msgstr "عدم إظهار المقسم"
+
+#: main-modules.php:9920
+msgid "Show Divider"
+msgstr "إظهار المقسم"
+
+#: main-modules.php:9953
+msgid "Color"
+msgstr "اللون"
+
+#: main-modules.php:9955
+msgid "This will adjust the color of the 1px divider line."
+msgstr "سيعدل هذا لون خط الـ 1 بكسل المقسم."
+
+#: main-modules.php:9958
+msgid "Visibility"
+msgstr "الرؤية"
+
+#: main-modules.php:9967
+msgid ""
+"This settings turns on and off the 1px divider line, but does not affect the "
+"divider height."
+msgstr ""
+"هذه الإعدادات تشغل وتوقف خط الـ 1 بكسل المقسم، لكنها لا تؤثر على ارتفاع المقسم."
+
+#: main-modules.php:9970
+msgid "Height"
+msgstr "الارتفاع"
+
+#: main-modules.php:9973
+msgid "Define how much space should be added below the divider."
+msgstr "حَدِّد المسافة التي يجب أن تتم إضافتها أسفل الفاصل."
+
+#: main-modules.php:9976
+msgid "Divider Style"
+msgstr "نمط الفاصل"
+
+#: main-modules.php:9984
+msgid "Divider Position"
+msgstr "مَوْضِع الفاصل"
+
+#: main-modules.php:9989 main-modules.php:14043
+msgid "Vertically Centered"
+msgstr "مُتمركز عمودياً"
+
+#: main-modules.php:9996
+msgid "Divider Weight"
+msgstr "ضبط ارتفاع الفاصل"
+
+#: main-modules.php:10003
+msgid "Hide On Mobile"
+msgstr "الإخفاء على الهاتف المحمول"
+
+#: main-modules.php:10122
+msgid "Person"
+msgstr "الشخص"
+
+#: main-modules.php:10178
+msgid "Member Image"
+msgstr "صورة العضو"
+
+#: main-modules.php:10182
+msgid "Member Description"
+msgstr "وصف العضو"
+
+#: main-modules.php:10190
+msgid "Member Position"
+msgstr "وَظِيفَة العضو"
+
+#: main-modules.php:10194
+msgid "Member Social Links"
+msgstr "روابط العضو الإجتماعية"
+
+#: main-modules.php:10206
+msgid "Input the name of the person"
+msgstr "أدخل اسم الشخص"
+
+#: main-modules.php:10209
+msgid "Position"
+msgstr "الوظيفة"
+
+#: main-modules.php:10212
+msgid "Input the person's position."
+msgstr "أدخل وظيفة الشخص."
+
+#: main-modules.php:10248
+msgid "Facebook Profile Url"
+msgstr "‏URL اللمحة الشخصية على Facebook"
+
+#: main-modules.php:10251
+msgid "Input Facebook Profile Url."
+msgstr "أدخل URL لمحة الحياة على Facebook ."
+
+#: main-modules.php:10254
+msgid "Twitter Profile Url"
+msgstr "‏URL اللمحة الشخصية الخاصة بك على Twitter"
+
+#: main-modules.php:10257
+msgid "Input Twitter Profile Url"
+msgstr "أدخل URL لمحة الحياة على Twitter"
+
+#: main-modules.php:10260
+msgid "Google+ Profile Url"
+msgstr "‏URL اللمحة الشخصية على Google+"
+
+#: main-modules.php:10263
+msgid "Input Google+ Profile Url"
+msgstr "أدخل URL لمحة الحياة على Google+"
+
+#: main-modules.php:10266
+msgid "LinkedIn Profile Url"
+msgstr "‏URL لمحة الحياة على LinkedIn"
+
+#: main-modules.php:10269
+msgid "Input LinkedIn Profile Url"
+msgstr "أدخل URL لمحة الحياة على LinkedIn"
+
+#: main-modules.php:10272
+msgid "Description"
+msgstr "الوصف"
+
+#: main-modules.php:10284 main-modules.php:11238
+msgid "Icon Hover Color"
+msgstr "ضبط لون الأيقونة بالتأشير بالفأرة"
+
+#: main-modules.php:10367
+msgid "Facebook"
+msgstr "‏Facebook"
+
+#: main-modules.php:10375 main-modules.php:12141
+msgid "Twitter"
+msgstr "‏Twitter"
+
+#: main-modules.php:10383 main-modules.php:12145
+msgid "Google+"
+msgstr "‏Google+"
+
+#: main-modules.php:10391 main-modules.php:12153
+msgid "LinkedIn"
+msgstr "‏LinkedIn"
+
+#: main-modules.php:10438
+msgid "Blog"
+msgstr "مدونة"
+
+#: main-modules.php:10516
+msgid "Post Meta"
+msgstr "المقال ميتا"
+
+#: main-modules.php:10520
+msgid "Pagenavi"
+msgstr "التتقل خلال الصفحة"
+
+#: main-modules.php:10524 main-modules.php:12380
+msgid "Featured Image"
+msgstr "الصورة المُمَيزَة"
+
+#: main-modules.php:10528 main-modules.php:10596
+msgid "Read More Button"
+msgstr "زر قراءة المزيد"
+
+#: main-modules.php:10555
+msgid "Choose how much posts you would like to display per page."
+msgstr "اختيار عدد المقالات التي تود إظهارها في كل صفحة."
+
+#: main-modules.php:10564
+msgid "Choose which categories you would like to include in the feed."
+msgstr "اختيار أي فئات تود تضمينها في التغذية."
+
+#: main-modules.php:10567
+msgid "Meta Date Format"
+msgstr "صيغة التاريخ"
+
+#: main-modules.php:10570
+msgid ""
+"If you would like to adjust the date format, input the appropriate PHP date format "
+"here."
+msgstr ""
+"إذا كنت تود تعديل صيغة التاريخ، أدخل صيغة التاريخ الملائمة بلغة المعالج المسبق "
+"للنصوص الفائقة (PHP) هنا."
+
+#: main-modules.php:10580
+msgid "This will turn thumbnails on and off."
+msgstr "سيشغل ويوقف هذا الصور المصغرة."
+
+#: main-modules.php:10593
+msgid ""
+"Showing the full content will not truncate your posts on the index page. Showing "
+"the excerpt will only display your excerpt text."
+msgstr ""
+"لن يقطع إظهار المحتوى الكامل مقالاتك على صفحة الدليل. وإظهار المقتطف سيعرض نص "
+"مقتطفاتك فقط."
+
+#: main-modules.php:10604
+msgid ""
+"Here you can define whether to show \"read more\" link after the excerpts or not."
+msgstr "يمكنك هنا تحديد إظهار قراءة المزيد بعد المقتطفات أو لا."
+
+#: main-modules.php:10607 main-modules.php:12415 main-modules.php:16294
+msgid "Show Author"
+msgstr "إظهار الكاتب"
+
+#: main-modules.php:10614
+msgid "Turn on or off the author link."
+msgstr "تشغيل أو إيقاف وصلة الكاتب."
+
+#: main-modules.php:10617 main-modules.php:12426 main-modules.php:15337
+#: main-modules.php:16305
+msgid "Show Date"
+msgstr "إظهار التاريخ"
+
+#: main-modules.php:10624
+msgid "Turn the date on or off."
+msgstr "تشغيل أو إيقاف التاريخ."
+
+#: main-modules.php:10637
+msgid "Show Comment Count"
+msgstr "تظهر العد تعليق"
+
+#: main-modules.php:10644
+msgid "Turn comment count on and off."
+msgstr "بدوره العد تعليق أو إيقاف تشغيلها."
+
+#: main-modules.php:10654
+msgid "Turn pagination on and off."
+msgstr "تشغيل أو إيقاف التصفيح."
+
+#: main-modules.php:10657
+msgid "Offset Number"
+msgstr "رقم الإزاحة"
+
+#: main-modules.php:10660
+msgid "Choose how many posts you would like to offset by"
+msgstr "اختيار عدد المقالات التي تود الإزاحة بمقداره"
+
+#: main-modules.php:10663
+msgid "Featured Image Overlay"
+msgstr "تراكب الصورة المُمَيزَة"
+
+#: main-modules.php:10675
+msgid ""
+"If enabled, an overlay color and icon will be displayed when a visitors hovers over "
+"the featured image of a post."
+msgstr ""
+"إذا تم تمكين هذا الخيار، سيتم عرض أيقونة ولون متراكبين حينما يمرر أحد الزائرين مؤشر "
+"الفأرة فوق الصورة المُمَيزَة لأحد المنشورات."
+
+#: main-modules.php:10713
+msgid "Grid Tile Background Color"
+msgstr "ضبط لون خلفية شبكة القرميد"
+
+#: main-modules.php:10720
+msgid "Use Dropshadow"
+msgstr "استخدام ظل الإفلات"
+
+#: main-modules.php:11003
+msgid "read more..."
+msgstr "قراءة المزيد‪...‬"
+
+#: main-modules.php:11017
+msgid "read more"
+msgstr "قراءة المزيد"
+
+#: main-modules.php:11081
+msgid "Shop"
+msgstr "المتجر"
+
+#: main-modules.php:11132
+msgid "Product"
+msgstr "منتج"
+
+#: main-modules.php:11136
+msgid "Onsale"
+msgstr "معروض للبيع"
+
+#: main-modules.php:11152
+msgid "Rating"
+msgstr "التقيِّيم"
+
+#: main-modules.php:11160
+msgid "Old Price"
+msgstr "السعر القديم"
+
+#: main-modules.php:11173
+msgid "Recent Products"
+msgstr "المنتجات الحديثة"
+
+#: main-modules.php:11174
+msgid "Featured Products"
+msgstr "المنتجات المعروضة"
+
+#: main-modules.php:11175
+msgid "Sale Products"
+msgstr "منتجات البيع"
+
+#: main-modules.php:11176
+msgid "Best Selling Products"
+msgstr "المنتجات الأكثر رواجاً"
+
+#: main-modules.php:11177
+msgid "Top Rated Products"
+msgstr "المنتجات عالية المستوى"
+
+#: main-modules.php:11178
+msgid "Product Category"
+msgstr "فئة المنتج"
+
+#: main-modules.php:11183
+msgid "Choose which type of products you would like to display."
+msgstr "اختيار أي نوع من المنتجات تود عرضه."
+
+#: main-modules.php:11189
+msgid "Control how many products are displayed."
+msgstr "التحكم في عدد المنتجات المعروضة."
+
+#: main-modules.php:11200
+msgid "Choose which categories you would like to include."
+msgstr "اختيار الفئات التي تريد أن تدرج."
+
+#: main-modules.php:11203
+msgid "Columns Number"
+msgstr "عدد الأعمدة"
+
+#: main-modules.php:11207
+msgid "default"
+msgstr "افتراضي"
+
+#: main-modules.php:11208 main-modules.php:11209 main-modules.php:11210
+#: main-modules.php:11211 main-modules.php:11212
+msgid "%1$s Columns"
+msgstr "%1$s أعمدة"
+
+#: main-modules.php:11213
+msgid "1 Column"
+msgstr "عمود واحد"
+
+#: main-modules.php:11215
+msgid "Choose how many columns to display."
+msgstr "اِختر عدد الأعمدة التي تريد عرضها"
+
+#: main-modules.php:11222
+msgid "Default Sorting"
+msgstr "التصنيف الافتراضي"
+
+#: main-modules.php:11223
+msgid "Sort By Popularity"
+msgstr "التصنيف طبقاً للشعبية"
+
+#: main-modules.php:11224
+msgid "Sort By Rating"
+msgstr "التصنيف طبقاً للتقدير"
+
+#: main-modules.php:11225
+msgid "Sort By Date"
+msgstr "التصنيف طبقاً للتاريخ"
+
+#: main-modules.php:11226
+msgid "Sort By Price: Low To High"
+msgstr "التصنيف طبقاً للسعر: من الأقل إلى الأعلى"
+
+#: main-modules.php:11227
+msgid "Sort By Price: High To Low"
+msgstr "التصنيف طبقاً للسعر: من الأعلى إلى الأقل"
+
+#: main-modules.php:11229
+msgid "Choose how your products should be ordered."
+msgstr "اختيار كيفية ترتيب منتجاتك."
+
+#: main-modules.php:11232
+msgid "Sale Badge Color"
+msgstr "ضبط لون شارة البيع"
+
+#: main-modules.php:11428
+msgid "Countdown Timer"
+msgstr "ميقاتي العد التنازلي"
+
+#: main-modules.php:11458
+msgid "Numbers"
+msgstr "أعداد"
+
+#: main-modules.php:11471
+msgid "Label"
+msgstr "علامة"
+
+#: main-modules.php:11495
+msgid "Container"
+msgstr "وعاء"
+
+#: main-modules.php:11503
+msgid "Timer Section"
+msgstr "قسم المؤقت"
+
+#: main-modules.php:11512
+msgid "Countdown Timer Title"
+msgstr "عنوان ميقاتي العد التنازلي"
+
+#: main-modules.php:11515
+msgid "This is the title displayed for the countdown timer."
+msgstr "هذا هو العنوان المعروض لميقاتي العد التنازلي."
+
+#: main-modules.php:11518
+msgid "Countdown To"
+msgstr "العد التنازلي إلى"
+
+#: main-modules.php:11521
+msgid ""
+"This is the date the countdown timer is counting down to. Your countdown timer is "
+"based on your timezone settings in your <a href=\"%1$s\" target=\"_blank\" title="
+"\"WordPress General Settings\">WordPress General Settings</a>"
+msgstr ""
+"هذا هو تاريخ العد التنازلي جهاز ضبط وقت العد التنازلي. العد التنازلي الموقت هو "
+"استنادا إلى إعدادات المنطقة الزمنية في <a href=\"%1$s\" target=\"_blank\" title="
+"\"وورد\" الإعدادات العامة\">وورد الإعدادات العامة</a>"
+
+#: main-modules.php:11550
+msgid "Here you can define a custom background color for your countdown timer."
+msgstr "يمكنك هنا تحديد لون خلفية مخصص لميقاتي العد التنازلي الخاص بك."
+
+#: main-modules.php:11650
+msgid "Day(s)"
+msgstr "اليوم(s)"
+
+#: main-modules.php:11651
+msgid "Hour(s)"
+msgstr "الساعة(s)"
+
+#: main-modules.php:11652
+msgid "Hrs"
+msgstr "ساعات"
+
+#: main-modules.php:11653
+msgid "Minute(s)"
+msgstr "الدقيقة(s)"
+
+#: main-modules.php:11654
+msgid "Min"
+msgstr "دقائق"
+
+#: main-modules.php:11655
+msgid "Second(s)"
+msgstr "الثانية(s)"
+
+#: main-modules.php:11656
+msgid "Sec"
+msgstr "ثواني"
+
+#: main-modules.php:11657
+msgid "Day"
+msgstr "التاريخ"
+
+#: main-modules.php:11667
+msgid "Map"
+msgstr "الخريطة"
+
+#: main-modules.php:11670 main-modules.php:11830 main-modules.php:15579
+msgid "Pin"
+msgstr "زر"
+
+#: main-modules.php:11696 main-modules.php:15602
+msgid "Map Center Address"
+msgstr "عنوان مركز الخريطة"
+
+#: main-modules.php:11701 main-modules.php:11866 main-modules.php:15607
+msgid "Find"
+msgstr "بحث"
+
+#: main-modules.php:11704 main-modules.php:15610
+msgid ""
+"Enter an address for the map center point, and the address will be geocoded and "
+"displayed on the map below."
+msgstr ""
+"أدخل عنواناً لنقطة مركز الخريطة، وسيُشفّر العنوان جغرافياً ويعرض على الخريطة بأسفل."
+
+#: main-modules.php:11724 main-modules.php:15630
+msgid "Mouse Wheel Zoom"
+msgstr "التكبير والتصغير بواسطة عجلة الفأرة"
+
+#: main-modules.php:11731 main-modules.php:15637
+msgid ""
+"Here you can choose whether the zoom level will be controlled by mouse wheel or not."
+msgstr "يمكنك هنا أن تختار التحكم في مستوى التكبير والتصغير بواسطة عجلة الفأرة أو لا."
+
+#: main-modules.php:11734
+msgid "Use Grayscale Filter"
+msgstr "استخدام مُرشِح الدرجات الرمادية"
+
+#: main-modules.php:11747
+msgid "Grayscale Filter Amount (%)"
+msgstr "(%) كمية مُرشِح الدرجات الرمادية"
+
+#: main-modules.php:11846
+msgid "New Pin"
+msgstr "دبوس جديد"
+
+#: main-modules.php:11847
+msgid "Pin Settings"
+msgstr "إعدادات الدبوس"
+
+#: main-modules.php:11859
+msgid "Map Pin Address"
+msgstr "عنوان دبوس الخريطة"
+
+#: main-modules.php:11863
+msgid ""
+"Enter an address for this map pin, and the address will be geocoded and displayed "
+"on the map below."
+msgstr ""
+"أدخل عنواناً لدبوس الخريطة هذا، وسيُشفّر العنوان جغرافياً ويعرض على الخريطة بأسفل."
+
+#: main-modules.php:11891 main-modules.php:14052
+msgid ""
+"Here you can define the content that will be placed within the infobox for the pin."
+msgstr "يمكنك هنا تحديد المحتوى الذي سيضع في صندوق المعلومات من أجل الدبوس."
+
+#: main-modules.php:11934
+msgid "Social Media Follow"
+msgstr "إتباع الوسط الاجتماعي"
+
+#: main-modules.php:11937 main-modules.php:12092 main-modules.php:12130
+msgid "Social Network"
+msgstr "شبكة اجتماعية"
+
+#: main-modules.php:11958
+msgid "Social Follow"
+msgstr "مُتابعَة وسائل التواصل الاجتماعي"
+
+#: main-modules.php:11962 main-modules.php:12117
+msgid "Social Icon"
+msgstr "أيقونة وسائل التواصل الاجتماعي"
+
+#: main-modules.php:11966 main-modules.php:12005 main-modules.php:12121
+msgid "Follow Button"
+msgstr "زر المتابعة"
+
+#: main-modules.php:11975
+msgid "Link Shape"
+msgstr "شكل الرابط"
+
+#: main-modules.php:11979
+msgid "Rounded Rectangle"
+msgstr "مستطيل مستدير"
+
+#: main-modules.php:11980
+msgid "Circle"
+msgstr "دائرة"
+
+#: main-modules.php:11982
+msgid "Here you can choose the shape of your social network icons."
+msgstr "يمكنك هنا أن تختار شكل أيقونات شبكتك الاجتماعية."
+
+#: main-modules.php:12012
+msgid ""
+"Here you can choose whether or not to include the follow button next to the icon."
+msgstr "يمكنك هنا أن تختار تضمين زر المتابعة بجانب الأيقونة."
+
+#: main-modules.php:12112
+msgid "New Social Network"
+msgstr "شبكة اجتماعية جديدة"
+
+#: main-modules.php:12113
+msgid "Social Network Settings"
+msgstr "إعدادات الشبكة الاجتماعية"
+
+#: main-modules.php:12135
+msgid "Select a Network"
+msgstr "اختيار شبكة"
+
+#: main-modules.php:12137
+msgid "facebook"
+msgstr "‏facebook"
+
+#: main-modules.php:12149
+msgid "Pinterest"
+msgstr "‏Pinterest"
+
+#: main-modules.php:12157
+msgid "tumblr"
+msgstr "‏tumblr"
+
+#: main-modules.php:12161
+msgid "Instagram"
+msgstr "‏Instagram"
+
+#: main-modules.php:12165
+msgid "skype"
+msgstr "‏skype"
+
+#: main-modules.php:12169
+msgid "flikr"
+msgstr "‏flikr"
+
+#: main-modules.php:12173
+msgid "MySpace"
+msgstr "‏MySpace"
+
+#: main-modules.php:12177
+msgid "dribbble"
+msgstr "‏dribbble"
+
+#: main-modules.php:12181
+msgid "Youtube"
+msgstr "‏Youtube"
+
+#: main-modules.php:12185
+msgid "Vimeo"
+msgstr "‏Vimeo"
+
+#: main-modules.php:12189
+msgid "RSS"
+msgstr "‏RSS"
+
+#: main-modules.php:12198
+msgid "Choose the social network"
+msgstr "اختيار الشبكة الاجتماعية"
+
+#: main-modules.php:12205
+msgid "Account URL"
+msgstr "‏URL حساب"
+
+#: main-modules.php:12208
+msgid "The URL for this social network link."
+msgstr "‏URL رابط هذه الشبكة الاجتماعية."
+
+#: main-modules.php:12212
+msgid "Account Name"
+msgstr "اسم الحساب"
+
+#: main-modules.php:12215
+msgid "The Skype account name."
+msgstr "سكايب اسم الحساب."
+
+#: main-modules.php:12219
+msgid "Skype Button Action"
+msgstr "سكايب زر العمل"
+
+#: main-modules.php:12223
+msgid "Call"
+msgstr "اتصل"
+
+#: main-modules.php:12224
+msgid "Chat"
+msgstr "دردشة"
+
+#: main-modules.php:12227
+msgid "Here you can choose which action to execute on button click"
+msgstr "هنا يمكنك اختيار أي إجراء لتنفيذ على زر فوق"
+
+#: main-modules.php:12232
+msgid "This will change the icon color."
+msgstr "سيغير هذا لون الأيقونة."
+
+#: main-modules.php:12269
+msgid "Follow"
+msgstr "متابعة"
+
+#: main-modules.php:12297
+msgid "Post Title"
+msgstr "عنوان المُشاركة"
+
+#: main-modules.php:12396 main-modules.php:16275
+msgid "Here you can choose whether or not display the Post Title"
+msgstr "هنا يُمكِنك اختيار إما عرض أو عدم عرض عنوان المقال"
+
+#: main-modules.php:12399 main-modules.php:16278
+msgid "Show Meta"
+msgstr "عرض ميتا"
+
+#: main-modules.php:12412 main-modules.php:16291
+msgid "Here you can choose whether or not display the Post Meta"
+msgstr "هنا يُمكِنك اختيار إما عرض أو عدم عرض المُشاركة ميتا"
+
+#: main-modules.php:12423 main-modules.php:16302
+msgid "Here you can choose whether or not display the Author Name in Post Meta"
+msgstr "هنا يمكنك اختيار ما إذا كان أو لا يتم عرض اسم الكاتب في المشاركة ميتا"
+
+#: main-modules.php:12437 main-modules.php:16316
+msgid "Here you can choose whether or not display the Date in Post Meta"
+msgstr "هنا يُمكِنك اختيار ما إذا كان سوف يتم عرض أو لن يتم عرض التاريخ في المقال ميتا"
+
+#: main-modules.php:12441 main-modules.php:16320
+msgid "Date Format"
+msgstr "صيغة التاريخ"
+
+#: main-modules.php:12445 main-modules.php:16324
+msgid "Here you can define the Date Format in Post Meta. Default is 'M j, Y'"
+msgstr "هنا يُمكِنك تحديد صيغة التاريخ في  المقال ميتا. الصيغة الافتراضية هي 'M j, Y'"
+
+#: main-modules.php:12449 main-modules.php:16328
+msgid "Show Post Categories"
+msgstr "عرض تصنيفات المقال"
+
+#: main-modules.php:12457 main-modules.php:16336
+msgid ""
+"Here you can choose whether or not display the Categories in Post Meta. Note: This "
+"option doesn't work with custom post types."
+msgstr ""
+"هنا يُمكِنك اختيار ما إذا كان سوف يتم عرض أو لن يتم عرض التصنيفات في المقال بيتا. "
+"مُلاحَظة: لا يعمل هذا الخيار مع أنواع المقال المُخصَّصة."
+
+#: main-modules.php:12460 main-modules.php:16339
+msgid "Show Comments Count"
+msgstr "عرض عدد التعليقات"
+
+#: main-modules.php:12468 main-modules.php:16347
+msgid "Here you can choose whether or not display the Comments Count in Post Meta."
+msgstr ""
+"هنا يُمكِنك اختيار ما إذا كان سوف يتم عرض أو لن يتم عرض حساب التعليقات في المقال ميتا."
+
+#: main-modules.php:12481 main-modules.php:16360
+msgid "Here you can choose whether or not display the Featured Image"
+msgstr "هنا يُمكِنك اختيار ما إذا كان سوف يتم عرض أو لن يتم عرض الصورة المميزة"
+
+#: main-modules.php:12484 main-modules.php:16363
+msgid "Featured Image Placement"
+msgstr "اختيار موضع الصورة المميزة"
+
+#: main-modules.php:12488 main-modules.php:16367
+msgid "Below Title"
+msgstr "العنوان أدناه"
+
+#: main-modules.php:12489 main-modules.php:16368
+msgid "Above Title"
+msgstr "العنوان أعلاه"
+
+#: main-modules.php:12490 main-modules.php:16369
+msgid "Title/Meta Background Image"
+msgstr "عنوان صورة الخلفية"
+
+#: main-modules.php:12496 main-modules.php:16375
+msgid "Here you can choose where to place the Featured Image"
+msgstr "هنا يُمكِنك اختيار مكان وضع الصورة المُميزة"
+
+#: main-modules.php:12499 main-modules.php:16378 main-structure-elements.php:186
+#: main-structure-elements.php:1131
+msgid "Use Parallax Effect"
+msgstr "استعمال تأثير اختلاف المنظر"
+
+#: main-modules.php:12510 main-modules.php:16389
+msgid "Here you can choose whether or not use parallax effect for the featured image"
+msgstr ""
+"هنا يُمكِنك اختيار ما إذا كان سوف يتم استخدام أو لن يتم استخدام تأثير تزيح المنظر "
+"للصورة المُميزة"
+
+#: main-modules.php:12521 main-modules.php:16400
+msgid "Here you can choose which parallax method to use for the featured image"
+msgstr ""
+"هنا يُمكِنك اختيار الطريقة التي تريد استخدامها فى اختلاف المنظر في الصورة المميزة"
+
+#: main-modules.php:12532 main-modules.php:16411
+msgid "Here you can choose the orientation for the Title/Meta text"
+msgstr "هنا يُمكِنك اختيار المحاذاة لعنوان النص"
+
+#: main-modules.php:12542 main-modules.php:16421
+msgid "Here you can choose the color for the Title/Meta text"
+msgstr "هنا يُمكِنك اختيار لون لعنوان النص"
+
+#: main-modules.php:12545 main-modules.php:16424
+msgid "Use Text Background Color"
+msgstr "استخدام لون خلفية النص"
+
+#: main-modules.php:12555 main-modules.php:16434
+msgid ""
+"Here you can choose whether or not use the background color for the Title/Meta text"
+msgstr "هنا يُمكِنك اختيار ما إذا كان سوف تستخدم أو لن تستخدم لون الخلفية لعنوان النص"
+
+#: main-modules.php:12558 main-modules.php:16437
+msgid "Text Background Color"
+msgstr "لون خلفية النص"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "0 comments"
+msgstr "0 تعليقات"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "1 comment"
+msgstr "1 تعليق"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "comments"
+msgstr "تعليقات"
+
+#: main-modules.php:12742
+msgid "Search"
+msgstr "البحث"
+
+#: main-modules.php:12773
+msgid "Input"
+msgstr "الإدخال"
+
+#: main-modules.php:12848
+msgid "Exclude Pages"
+msgstr "استثناء صفحات"
+
+#: main-modules.php:12855
+msgid "Turning this on will exclude Pages from search results"
+msgstr "تشغيل هذا الخيار سيستثني صفحات من نتائج البحث"
+
+#: main-modules.php:12858
+msgid "Exclude Posts"
+msgstr "استثناء منشورات"
+
+#: main-modules.php:12868
+msgid "Turning this on will exclude Posts from search results"
+msgstr "تشغيل هذا الخيار سيستثني منشورات من نتائج البحث"
+
+#: main-modules.php:12871
+msgid "Exclude Categories"
+msgstr "استثناء تصنيفات"
+
+#: main-modules.php:12878
+msgid "Choose which categories you would like to exclude from the search results."
+msgstr "اختر التصنيفات التي تود استثناءها من نتائج البحث."
+
+#: main-modules.php:12881
+msgid "Hide Button"
+msgstr "إخفاء الزر"
+
+#: main-modules.php:12888
+msgid "Turning this on will hide the Search button"
+msgstr "تشغيل هذا الخيار سيُخفي زر البحث"
+
+#: main-modules.php:12891
+msgid "Placeholder Text"
+msgstr "عنصر نائب للنص"
+
+#: main-modules.php:12893
+msgid "Type the text you want to use as placeholder for the search field."
+msgstr "اكتب النص الذي تريد استخدامه كعنصر نائب في حقل البحث."
+
+#: main-modules.php:12910
+msgid "Button and Border Color"
+msgstr "لون الزر والإطار"
+
+#: main-modules.php:12916
+msgid "Input Field Background Color"
+msgstr "لون خلفية حقل الإدخال"
+
+#: main-modules.php:12922
+msgid "Placeholder Color"
+msgstr "نائب عنصر لون"
+
+#: main-modules.php:13123
+msgid "Comment"
+msgstr "التعليق"
+
+#: main-modules.php:13155
+msgid "Field border"
+msgstr "إطار الحقل"
+
+#: main-modules.php:13173
+msgid "Comments Count"
+msgstr ""
+
+#: main-modules.php:13177
+msgid "Comment Body"
+msgstr ""
+
+#: main-modules.php:13181
+msgid "Comment Meta"
+msgstr ""
+
+#: main-modules.php:13185
+msgid "Comment Content"
+msgstr ""
+
+#: main-modules.php:13189
+msgid "Comment Avatar"
+msgstr ""
+
+#: main-modules.php:13193
+msgid "Reply Button"
+msgstr ""
+
+#: main-modules.php:13197
+msgid "New Comment Title"
+msgstr ""
+
+#: main-modules.php:13205
+msgid "Name Field"
+msgstr ""
+
+#: main-modules.php:13213
+msgid "Website Field"
+msgstr ""
+
+#: main-modules.php:13217
+msgid "Submit Button"
+msgstr ""
+
+#: main-modules.php:13227
+msgid "Show author avatar"
+msgstr "إظهار أفاتار المؤلف"
+
+#: main-modules.php:13236
+msgid "Show reply button"
+msgstr "إظهار زر الرد"
+
+#: main-modules.php:13245
+msgid "Show comments count"
+msgstr "إظهار عدد التعليقات"
+
+#: main-modules.php:13264
+msgid "Fields Background Color"
+msgstr "لون خلفية الحقول"
+
+#: main-modules.php:13270
+msgid "Fields Border Radius"
+msgstr "نصف قطر حدود الحقول"
+
+#: main-modules.php:13397
+msgid "Post Navigation"
+msgstr "تصفُحْ المنشور"
+
+#: main-modules.php:13417 main-modules.php:13446
+msgid "Links"
+msgstr "الروابط"
+
+#: main-modules.php:13450
+msgid "Previous Link"
+msgstr "الرابط السابق"
+
+#: main-modules.php:13454
+msgid "Previous Link Arrow"
+msgstr ""
+
+#: main-modules.php:13458
+msgid "Next Link"
+msgstr "الرابط التالي"
+
+#: main-modules.php:13462
+msgid "Next Link Arrow"
+msgstr ""
+
+#: main-modules.php:13471
+msgid "In the same category"
+msgstr "في نفس التصنيف"
+
+#: main-modules.php:13481
+msgid ""
+"Here you can define whether previous and next posts must be within the same "
+"taxonomy term as the current post"
+msgstr ""
+"يمكنك هنا تحديد إذا ما كان يجب أن تكون المنشورات السابقة والتالية في إطار نفس مدى "
+"تصنيف المنشور الحالي"
+
+#: main-modules.php:13484
+msgid "Custom Taxonomy Name"
+msgstr "اسم تصنيف مُخصص"
+
+#: main-modules.php:13488
+msgid ""
+"Leave blank if you're using this module on a Project or Post. Otherwise type the "
+"taxonomy name to make the 'In the Same Category' option work correctly"
+msgstr ""
+"اترك هذا فارغاً إذا كنت تستخدم هذه الوحدة النمطية في مشروعٍ أو منشور. إن لم يكن الحال "
+"كذلك، اكتب اسم تصنيفٍ لجعل خيار ‘في نفس التصنيف’ يعمل بشكلٍ صحيح"
+
+#: main-modules.php:13491
+msgid "Hide Previous Post Link"
+msgstr "إخفاء رابط المنشور السابق"
+
+#: main-modules.php:13501
+msgid "Here you can choose whether to hide or show the previous post link"
+msgstr "يمكنك هنا تحديد إما إخفاء أو إظهار رابط المنشور السابق"
+
+#: main-modules.php:13504
+msgid "Hide Next Post Link"
+msgstr "إخفاء رابط المنشور التالي"
+
+#: main-modules.php:13514
+msgid "Here you can choose whether to hide or show the next post link"
+msgstr "يمكنك هنا تحديد إما إخفاء أو إظهار رابط المنشور التالي"
+
+#: main-modules.php:13517
+msgid "Previous Link Text"
+msgstr "نص الرابط السابق"
+
+#: main-modules.php:13521
+msgid ""
+"Define custom text for the previous link. You can use the <strong>%title</strong> "
+"variable to include the post title. Leave blank for default."
+msgstr ""
+"حدد نصاً مخصصاً للرابط السابق. يمكنك استخدام المتغير <strong>%title</strong> لتضمين "
+"عنوان المنشور. اترك هذا فارغاً لاستخدام النص الافتراضي."
+
+#: main-modules.php:13524
+msgid "Next Link Text"
+msgstr "نص الرابط التالي"
+
+#: main-modules.php:13528
+msgid ""
+"Define custom text for the next link. You can use the <strong>%title</strong> "
+"variable to include the post title. Leave blank for default."
+msgstr ""
+"حدد نصاً مُخصصاً لـ الرابط التالي. يمكنك استخدام المتغير <strong>%title</strong> "
+"لتضمين عنوان المنشور. اترك هذا فارغاً لاستخدام النص الافتراضي."
+
+#: main-modules.php:13629
+msgid "Fullwidth Header"
+msgstr "عنوان رأس صفحة باتساع كامل"
+
+#: main-modules.php:13691
+msgid "Title Styling"
+msgstr "تصميم العنوان"
+
+#: main-modules.php:13692
+msgid "Subhead Styling"
+msgstr "تصميم  العنوان الفرعي"
+
+#: main-modules.php:13693
+msgid "Content Styling"
+msgstr "تصميم المُحتوى"
+
+#: main-modules.php:13716
+msgid "Subhead"
+msgstr "العنوان الفرعي"
+
+#: main-modules.php:13758 main-modules.php:13794
+msgid "Button One"
+msgstr "زر واحد"
+
+#: main-modules.php:13764 main-modules.php:13798
+msgid "Button Two"
+msgstr "زر اثنين"
+
+#: main-modules.php:13774
+msgid "Header Container"
+msgstr "رأس حاوية"
+
+#: main-modules.php:13778
+msgid "Header Image"
+msgstr "صورة العنوان"
+
+#: main-modules.php:13782
+msgid "Logo"
+msgstr "الشعار"
+
+#: main-modules.php:13802
+msgid "Scroll Down Button"
+msgstr "زر التمرير لأسفل"
+
+#: main-modules.php:13814
+msgid "Enter your page title here."
+msgstr "أدخل عنوان صفحتك هنا."
+
+#: main-modules.php:13817
+msgid "Subheading Text"
+msgstr "نص العنوان الفرعي"
+
+#: main-modules.php:13820
+msgid ""
+"If you would like to use a subhead, add it here. Your subhead will appear below "
+"your title in a small font."
+msgstr ""
+"إذا كنت تود استعمال عنوان فرعي، أضفه هنا. سيظهر عنوانك الفرعي أسفل عنوانك ببنط صغير."
+
+#: main-modules.php:13833
+msgid "Text & Logo Orientation"
+msgstr "محاذاة النص والشعار"
+
+#: main-modules.php:13841
+msgid "Make Fullscreen"
+msgstr "عرض بملء الشاشة"
+
+#: main-modules.php:13851
+msgid "Here you can choose whether the header is expanded to fullscreen size."
+msgstr "هنا يُمكِنك اختيار ما إذا كان سوف يتم توسيع مقدمة الصفحة لحجم الشاشه الكاملة."
+
+#: main-modules.php:13854
+msgid "Show Scroll Down Button"
+msgstr "عرض زر التمرير لأسفل"
+
+#: main-modules.php:13864
+msgid "Here you can choose whether the scroll down button is shown."
+msgstr "هنا يُمكِنك اختيار ما إذا كان سوف يتم عرض زر التمرير لأسفل."
+
+#: main-modules.php:13873
+msgid "Choose an icon to display for the scroll down button."
+msgstr "اختر الأيقونة التي تقوم بعرض زر التمرير لأسفل."
+
+#: main-modules.php:13877
+msgid "Scroll Down Icon Color"
+msgstr "ضبط لون أيقونة التمرير لأسفل"
+
+#: main-modules.php:13883
+msgid "Scroll Down Icon Size"
+msgstr "حجم أيقونة التمرير لأسفل"
+
+#: main-modules.php:13896
+msgid "Title Font Color"
+msgstr "ضبط لون خط العنوان"
+
+#: main-modules.php:13903
+msgid "Subhead Font Color"
+msgstr "ضبط لون خط العنوان الفرعي"
+
+#: main-modules.php:13910
+msgid "Content Font Color"
+msgstr "ضبط لون خط المحتوى"
+
+#: main-modules.php:13917
+msgid "Text Max Width"
+msgstr "نص عرض ماكس"
+
+#: main-modules.php:13931 main-modules.php:13943
+msgid "Button %1$s Text"
+msgstr "ضبط نص الزر %1$s"
+
+#: main-modules.php:13934 main-modules.php:13946
+msgid "Enter the text for the Button."
+msgstr "ضبط زر إدخال النص."
+
+#: main-modules.php:13937 main-modules.php:13949
+msgid "Button %1$s URL"
+msgstr "ضبط رابط الزر %1$s"
+
+#: main-modules.php:13940 main-modules.php:13952
+msgid "Enter the URL for the Button."
+msgstr "إدخال عنوان الإنترنت للزر."
+
+#: main-modules.php:13955
+msgid "Background Image URL"
+msgstr "عنوان إنترنت صورة الخلفية"
+
+#: main-modules.php:13982 main-modules.php:14927
+msgid ""
+"If enabled, your background images will have a fixed position as your scroll, "
+"creating a fun parallax-like effect."
+msgstr ""
+"إذا كان مُمكّناً، سيكون لصور الخلفية الخاصة بك موقعاً ثابتاً بينما تتنقل أنت، مما يعطي "
+"تأثيراً ممتعاً لاختلاف المنظر."
+
+#: main-modules.php:13997
+msgid "Logo Image URL"
+msgstr "عنوان إنترنت صورة الشعار"
+
+#: main-modules.php:14006
+msgid "Logo Image Alternative Text"
+msgstr "صورة شعار النص البديل"
+
+#: main-modules.php:14012
+msgid "Logo Title"
+msgstr "شعار العنوان"
+
+#: main-modules.php:14018
+msgid "Text Vertical Alignment"
+msgstr "محاذاة عمودية للنص"
+
+#: main-modules.php:14025
+msgid ""
+"This setting determines the vertical alignment of your content. Your content can "
+"either be vertically centered, or aligned to the bottom."
+msgstr ""
+"يُحدِّد هذا الإعداد المُحاذاة العمودية لمُحتواك. يُمكِن لمُحتواك أن يتمركز عمودياً، أو أن "
+"يكون بمحاذاة الجزء السفلي"
+
+#: main-modules.php:14030
+msgid "Header Image URL"
+msgstr "عنوان إنترنت صورة مقدمة الصفحة"
+
+#: main-modules.php:14039
+msgid "Image Vertical Alignment"
+msgstr "المُحاذاة العمودية للصورة"
+
+#: main-modules.php:14046
+msgid "This controls the orientation of the image within the module."
+msgstr "يتحكم هذا في اتجاه الصورة داخل الوحدة."
+
+#: main-modules.php:14347
+msgid "Fullwidth Menu"
+msgstr "قائمة باتساع كامل"
+
+#: main-modules.php:14375 main-modules.php:14431
+msgid "Menu"
+msgstr "القائمة"
+
+#: main-modules.php:14404
+msgid "Menu Link"
+msgstr "رابط القائمة"
+
+#: main-modules.php:14408
+msgid "Active Menu Link"
+msgstr "رابط القائمة النشطة"
+
+#: main-modules.php:14412
+msgid "Dropdown Menu Container"
+msgstr "حاوية القائمة المنسدلة"
+
+#: main-modules.php:14416
+msgid "Dropdown Menu Links"
+msgstr "روابط القائمة المنسدلة"
+
+#: main-modules.php:14438
+msgid "Select a menu that should be used in the module"
+msgstr "اختيار قائمة يجب أن تستعمل في الوحدة"
+
+#: main-modules.php:14439
+msgid "Click here to create new menu"
+msgstr "انقر هنا لإنشاء قائمة جديدة"
+
+#: main-modules.php:14465
+msgid "Sub-Menus Open"
+msgstr "فتح القوائم الثانوية"
+
+#: main-modules.php:14469
+msgid "Downwards"
+msgstr "إلى أسفل"
+
+#: main-modules.php:14470
+msgid "Upwards"
+msgstr "إلى أعلى"
+
+#: main-modules.php:14472
+msgid ""
+"Here you can choose the direction that your sub-menus will open. You can choose to "
+"have them open downwards or upwards."
+msgstr ""
+"يمكنك هنا أن تختار الاتجاه الذي ستفتح فيه قوائمك الثانوية. يمكنك أن تختار أن تفتح "
+"إلى أسفل أو إلى أعلى."
+
+#: main-modules.php:14475
+msgid "Make Menu Links Fullwidth"
+msgstr "جعل الروابط القائمة مكتملة العرض"
+
+#: main-modules.php:14485
+msgid "Active Link Color"
+msgstr "تحديد لون الرابط النشط"
+
+#: main-modules.php:14491
+msgid "Dropdown Menu Background Color"
+msgstr "تحديد لون خلفية القائمة المُنسدِلة"
+
+#: main-modules.php:14497
+msgid "Dropdown Menu Line Color"
+msgstr "تحديد لون سطور القائمة المُنسدِلة"
+
+#: main-modules.php:14503
+msgid "Dropdown Menu Text Color"
+msgstr "تحديد لون نص القائمة المُنسدِلة"
+
+#: main-modules.php:14509
+msgid "Dropdown Menu Animation"
+msgstr "تحديد الرسوم المُتحرِكة للقائمة المنسدلة"
+
+#: main-modules.php:14513
+msgid "Fade"
+msgstr "تلاشى"
+
+#: main-modules.php:14516
+msgid "Flip"
+msgstr "تقلب"
+
+#: main-modules.php:14521
+msgid "Mobile Menu Background Color"
+msgstr "الهواتف لون خلفية القائمة"
+
+#: main-modules.php:14527
+msgid "Mobile Menu Text Color"
+msgstr "القائمة المحمول لون النص"
+
+#: main-modules.php:14633
+msgid "Home"
+msgstr "الصفحة الرئيسية"
+
+#: main-modules.php:14757
+msgid "Fullwidth Slider"
+msgstr "شريط تمرير باتساع كامل"
+
+#: main-modules.php:14873
+msgid "This setting allows you to turn the navigation arrows on or off."
+msgstr "تتيح لك هذه الإعدادات تشغيل أو إيقاف أسهم التصفح."
+
+#: main-modules.php:14876
+msgid "Controls"
+msgstr "الضوابط"
+
+#: main-modules.php:14880
+msgid "Show Slider Controls"
+msgstr "إظهار ضوابط شريط التمرير"
+
+#: main-modules.php:14881
+msgid "Hide Slider Controls"
+msgstr "إخفاء ضوابط شريط التمرير"
+
+#: main-modules.php:14883
+msgid ""
+"Disabling this option will remove the circle button at the bottom of the slider."
+msgstr "تعطيل هذا الخيار يزيل الزر الدائري أسفل شريط التمرير."
+
+#: main-modules.php:15201
+msgid "Fullwidth Portfolio"
+msgstr "محفظة باتساع كامل"
+
+#: main-modules.php:15262
+msgid "Portfolio Item"
+msgstr "بند قائمة المشاريع"
+
+#: main-modules.php:15266
+msgid "Item Overlay"
+msgstr "تراكب عنصر"
+
+#: main-modules.php:15270
+msgid "Item Title"
+msgstr "عنوان عنصر"
+
+#: main-modules.php:15278
+msgid "Navigation Arrows"
+msgstr "أسهم التصفح"
+
+#: main-modules.php:15299
+msgid "Title displayed above the portfolio."
+msgstr "العنوان الظاهر أعلى المحفظة."
+
+#: main-modules.php:15306
+msgid "Carousel"
+msgstr "الخزانة الدوارة"
+
+#: main-modules.php:15324
+msgid ""
+"Control how many projects are displayed. Leave blank or use 0 to not limit the "
+"amount."
+msgstr "التحكم في عدد المشاريع المعروضة. اتركها فارغة أو استعمل 0 حتى لا تحدد الكمية."
+
+#: main-modules.php:15344
+msgid "Turn the date display on or off."
+msgstr "تشغيل أو إيقاف عرض التاريخ."
+
+#: main-modules.php:15357
+msgid "Automatic Carousel Rotation"
+msgstr "دوران الخزانة الدوارة آلياً"
+
+#: main-modules.php:15368
+msgid ""
+"If you the carousel layout option is chosen and you would like the carousel to "
+"slide automatically, without the visitor having to click the next button, enable "
+"this option and then adjust the rotation speed below if desired."
+msgstr ""
+"348:: إذا اخترت خيار شكل الخزانة الدوارة وأردت أن تدور الخزانة آلياً، دون أن ينقر "
+"الزائر زر التالي، مكِّن هذا الخيار ثم عدِّل سرعة الدوران بأسفل إذا أردت."
+
+#: main-modules.php:15371
+msgid "Automatic Carousel Rotation Speed (in ms)"
+msgstr "سرعة دوران الخزانة الدوارة (مللي ثانية)"
+
+#: main-modules.php:15375
+msgid ""
+"Here you can designate how fast the carousel rotates, if 'Automatic Carousel "
+"Rotation' option is enabled above. The higher the number the longer the pause "
+"between each rotation. (Ex. 1000 = 1 sec)"
+msgstr ""
+"يمكنك هنا تحديد سرعة دوران الخزانة الدوارة، إذا كان خيار \"دوران الخزانة الدوارة "
+"آلياً\" مُمكّناً بأعلى. وكلما كان الرقم أكبر، كلما كانت المهلة بين كل دوران أطول. "
+"(مثال، 1000 = 1 ثانية)"
+
+#: main-modules.php:15575
+msgid "Fullwidth Map"
+msgstr "خريطة باتساع كامل"
+
+#: main-modules.php:15709
+msgid "Code"
+msgstr "الرمز"
+
+#: main-modules.php:15820
+msgid "Fullwidth Code"
+msgstr "رمز بعرض كامل الصفحة"
+
+#: main-modules.php:15902
+msgid "Fullwidth Image"
+msgstr "صورة بعرض كامل الصفحة"
+
+#: main-modules.php:15968
+msgid "Open In Lightbox"
+msgstr "افتح في صندوق الضوء"
+
+#: main-modules.php:16189
+msgid "Fullwidth Post Title"
+msgstr "عنوان المقال بكامل عرض الصفحة"
+
+#: main-modules.php:16623
+msgid "Fullwidth Post Slider"
+msgstr "مربع تمرير منشور بكامل العرض"
+
+#: main-modules.php:16839
+msgid ""
+"Define the text which will be displayed on \"Read More\" button. Leave blank for "
+"default ( Read More )"
+msgstr ""
+"حدد النص الذي سيتم عرضه على زر \"قراءة المزيد\". اترك هذا فارغاً لاستخدام النص "
+"الافتراضي ( قراءة المزيد )"
+
+#: main-structure-elements.php:114
+msgid "Transparent Background Color"
+msgstr "لون خلفية شفاف"
+
+#: main-structure-elements.php:124
+msgid ""
+"Enabling this option will remove the background color of this section, allowing the "
+"website background color or background image to show through."
+msgstr ""
+"سوف يقوم تفعيل هذا الخيار بإزالة لون الخلفية من هذا القسم، مما يسمح بعرض لون خلفية "
+"موقع الويب أو صورة الخلفية من خلال."
+
+#: main-structure-elements.php:176
+msgid "Show Inner Shadow"
+msgstr "إظهار الظل الداخلي"
+
+#: main-structure-elements.php:183
+msgid ""
+"Here you can select whether or not your section has an inner shadow. This can look "
+"great when you have colored backgrounds or background images."
+msgstr ""
+"يمكنك هنا أن تختار أن يكون لقسمك ظل داخلي أو لا. يمكن لهذا أن يبدو رائعاً عندما يكون "
+"لديك خلفيات أو صور خلفية ملونة."
+
+#: main-structure-elements.php:196
+msgid ""
+"If enabled, your background image will stay fixed as your scroll, creating a fun "
+"parallax-like effect."
+msgstr ""
+"إذا مُكِّنت، ستظل صورة الخلفية الخاصة بك ثابتة بينما تتنقل أنت، مما يحدث تأثير مرح "
+"يشبه اختلاف المنظر."
+
+#: main-structure-elements.php:214 main-structure-elements.php:1049
+#: main-structure-elements.php:1857
+msgid "Adjust padding to specific values, or leave blank to use the default padding."
+msgstr "ضبط التباعد بقيم مُعينة، أو تركه فارغاً لاستخدام التباعد الافتراضي."
+
+#: main-structure-elements.php:223 main-structure-elements.php:1058
+#: main-structure-elements.php:1866
+msgid "Keep Custom Padding on Mobile"
+msgstr "الحفاظ على التباعد المُخصَّص على الهاتف المحمول"
+
+#: main-structure-elements.php:230 main-structure-elements.php:1065
+#: main-structure-elements.php:1873
+msgid "Allow custom padding to be retained on mobile screens"
+msgstr "السماح بالتباعد المُخصَّص ليتم الإبقاء على شاشات المحمول"
+
+#: main-structure-elements.php:233
+msgid "Make This Section Fullwidth"
+msgstr "جعل هذا القسم Fullwidth"
+
+#: main-structure-elements.php:244 main-structure-elements.php:964
+msgid "Use Custom Width"
+msgstr "استخدام عرض مُخصَّص"
+
+#: main-structure-elements.php:259 main-structure-elements.php:979
+msgid "Unit"
+msgstr "وحدة"
+
+#: main-structure-elements.php:263 main-structure-elements.php:983
+msgid "px"
+msgstr "بيكسل"
+
+#: main-structure-elements.php:277 main-structure-elements.php:289
+#: main-structure-elements.php:996 main-structure-elements.php:1008
+msgid "Custom Width"
+msgstr "عرض مُخصَّص"
+
+#: main-structure-elements.php:301 main-structure-elements.php:1155
+#: main-structure-elements.php:1901
+msgid "Equalize Column Heights"
+msgstr "مساواة المسافات بين الأعمدة"
+
+#: main-structure-elements.php:311 main-structure-elements.php:1020
+#: main-structure-elements.php:1876
+msgid "Use Custom Gutter Width"
+msgstr "استخدام مخصص الحضيض العرض"
+
+#: main-structure-elements.php:324 main-structure-elements.php:1033
+#: main-structure-elements.php:1889
+msgid "Gutter Width"
+msgstr "ضبط تباعد الأعمدة"
+
+#: main-structure-elements.php:953
+msgid "Make This Row Fullwidth"
+msgstr "جعل هذا الصف بكامل عرض الصفحة"
+
+#: main-structure-elements.php:961
+msgid ""
+"Enable this option to extend the width of this row to the edge of the browser "
+"window."
+msgstr "تفعيل هذا الخيار لتوسيع نطاق عرض هذا الصف إلى حافة نافذة المُتصفِّح."
+
+#: main-structure-elements.php:976
+msgid ""
+"Change to Yes if you would like to adjust the width of this row to a non-standard "
+"width."
+msgstr "غَيِر إلى نعم إذا كنت ترغب في ضبط عرض هذا الصف إلى عرضٍ غير قياسي."
+
+#: main-structure-elements.php:1005 main-structure-elements.php:1017
+msgid "Define custom width for this Row"
+msgstr "تحديد عرض مُخصَّص لهذا الصف"
+
+#: main-structure-elements.php:1030 main-structure-elements.php:1886
+msgid "Enable this option to define custom gutter width for this row."
+msgstr "تمكين هذا الخيار لتحديد مخصص الحضيض عرض هذا الصف."
+
+#: main-structure-elements.php:1042 main-structure-elements.php:1898
+msgid "Adjust the spacing between each column in this row."
+msgstr "ضبط التباعد بين كل عمود في هذا الصف."
+
+#: main-structure-elements.php:1170 main-structure-elements.php:1916
+msgid "Keep Column Padding on Mobile"
+msgstr "إبقاء العمود الحشو على الجوال"
+
+#: main-structure-elements.php:1182
+msgid ""
+"This will change the label of the row in the builder for easy identification when "
+"collapsed."
+msgstr "سيؤدي ذلك إلى تغيير التسمية من الصف في البناء لسهولة تحديد عندما انهارت."
+
+#: template-preview.php:9 template-preview.php:64
+msgid "Authentication failed. You cannot preview this item."
+msgstr "فشل المصادقة. لا يمكنك معاينة هذا البند."
+
+#: template-preview.php:14
+msgid "Authentication failed. You are not logged in."
+msgstr "فشل المصادقة. أنت لم تقم بتسجيل الدخول."
+
+#: template-preview.php:19 template-preview.php:67
+msgid "Authentication failed. You have no permission to preview this item."
+msgstr "فشل المصادقة. ليس لديك الإذن معاينة هذا البند."
+
+#: template-preview.php:74
+msgid "Loading preview..."
+msgstr "تحميل معاينة..."
+
+#: template-preview.php:82
+msgid "Link Disabled"
+msgstr "الرابط معطل"
+
+#: template-preview.php:83
+msgid "During preview, link to different page is disabled"
+msgstr "أثناء معاينة الرابط إلى صفحة مختلفة تعطيل"
+
+#: layouts.php:4
+msgctxt "Layout type general name"
+msgid "Layouts"
+msgstr "المخططات"
+
+#: layouts.php:5
+msgctxt "Layout type singular name"
+msgid "Layout"
+msgstr "التخطيط"
+
+#: layouts.php:6
+msgctxt "Layout item"
+msgid "Add New"
+msgstr "إضافة جديد"
+
+#: main-modules.php:4166 main-modules.php:10984 main-modules.php:17443
+msgctxt "number of comments"
+msgid "1 Comment"
+msgid_plural "%s Comments"
+msgstr[0] ""
+msgstr[1] "1 تعليق"
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: main-modules.php:6040
+msgctxt "Audio Module meta information"
+msgid "by <strong>%1$s</strong>"
+msgstr "بواسطة <strong>%1$s</strong>"
+
+#: main-modules.php:9448
+msgctxt "contact form title separator"
+msgid " - %s"
+msgstr "‏ - %s"
+
+#: main-modules.php:13593
+msgctxt "Previous post link"
+msgid "&larr;"
+msgstr ""
+
+#: main-modules.php:13594
+msgctxt "Next post link"
+msgid "&rarr;"
+msgstr ""
+
+#~ msgid ""
+#~ "Type the message you want to display after successfull form submission. Leave "
+#~ "blank for default"
+#~ msgstr ""
+#~ "اكتب الرسالة التي تريد عرضها بعد أي عملية إرسال نموذج ناجحة. اترك هذا فارغاً "
+#~ "لاستخدام الرسالة الافتراضية."
+
+#~ msgid ""
+#~ "Define custom text for the previous link. You can use <strong>%title</strong> "
+#~ "variable to include the post title. Leave blank for default."
+#~ msgstr ""
+#~ "حدد نصاً مخصصاً للرابط السابق. يمكنك استخدام المتغير <strong>%title</strong> "
+#~ "لتضمين عنوان المنشور. اترك هذا فارغاً لاستخدام النص الافتراضي."
+
+#~ msgid ""
+#~ "Define custom text for the next link. You can use <strong>%title</strong> "
+#~ "variable to include the post title. Leave blank for default."
+#~ msgstr ""
+#~ "حدد نصاً مُخصصاً لـ الرابط التالي. يمكنك استخدام المتغير <strong>%title</strong> "
+#~ "لتضمين عنوان المنشور. اترك هذا فارغاً لاستخدام النص الافتراضي."
+
+#~ msgid " - %s"
+#~ msgstr "‏ - %s"
+
+#~ msgid "﻿This post is password protected. Enter the password to view comments."
+#~ msgstr "هذا المنشور محمي بكلمة مرور. أدخل كلمة المرور لمشاهدة التعليقات."
+
+#~ msgid ""
+#~ "Define the length of automatically generated excerpts. Leave blank for default "
+#~ "( 270 )"
+#~ msgstr ""
+#~ "حدد طول المقتطفات المُنشأة تلقائياً. اترك هذا فارغاً لاستخدام الطول الافتراضي "
+#~ "( 270 )"
+
+#~ msgid "by <strong>%1$s</strong>"
+#~ msgstr "كتبه <strong>%1$s</strong>"

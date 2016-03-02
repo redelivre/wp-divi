@@ -1,0 +1,6335 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Divi 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/framework\n"
+"POT-Creation-Date: 2016-01-25 12:19:12+00:00\n"
+"PO-Revision-Date: 2016-01-25 17:07+0300\n"
+"Last-Translator: \n"
+"Language-Team: Elegant Themes\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPathExcluded-0: ../node_modules\n"
+
+#: class-et-builder-element.php:477 class-et-builder-element.php:871
+msgid "%1$s Font"
+msgstr "%1$s Phông chữ"
+
+#: class-et-builder-element.php:487
+msgid "%1$s Font Size"
+msgstr "%1$s Kích cỡ phông chữ"
+
+#: class-et-builder-element.php:509 class-et-builder-element.php:518
+#: class-et-builder-element.php:807
+msgid "%1$s Text Color"
+msgstr "%1$s Màu chữ"
+
+#: class-et-builder-element.php:528 class-et-builder-element.php:860
+msgid "%1$s Letter Spacing"
+msgstr "%1$s Khoảng cách chữ"
+
+#: class-et-builder-element.php:551
+msgid "%1$s Line Height"
+msgstr "%1$s Chiều cao dòng"
+
+#: class-et-builder-element.php:582
+msgid "%1$s All Caps"
+msgstr "%1$s Viết hoa toàn bộ"
+
+#: class-et-builder-element.php:586 main-modules.php:146 main-modules.php:598
+#: main-modules.php:2424 main-modules.php:2445 main-modules.php:3770
+#: main-modules.php:3791 main-modules.php:7876 main-modules.php:8281
+#: main-modules.php:8494 main-modules.php:10600 main-modules.php:10667
+#: main-modules.php:10724 main-modules.php:11729 main-modules.php:12009
+#: main-modules.php:14890 main-modules.php:14911 main-modules.php:15361
+#: main-modules.php:15635 main-modules.php:16008 main-modules.php:17047
+#: main-modules.php:17068
+msgid "Off"
+msgstr "Tắt"
+
+#: class-et-builder-element.php:587 main-modules.php:147 main-modules.php:599
+#: main-modules.php:2425 main-modules.php:2446 main-modules.php:3771
+#: main-modules.php:3792 main-modules.php:7875 main-modules.php:8280
+#: main-modules.php:8493 main-modules.php:10601 main-modules.php:10668
+#: main-modules.php:10725 main-modules.php:11728 main-modules.php:12010
+#: main-modules.php:14891 main-modules.php:14912 main-modules.php:15362
+#: main-modules.php:15634 main-modules.php:16009 main-modules.php:17048
+#: main-modules.php:17069
+msgid "On"
+msgstr "Bật"
+
+#: class-et-builder-element.php:614 class-et-builder-element.php:3573
+#: main-modules.php:2915 main-modules.php:3607 main-modules.php:4396
+#: main-modules.php:5527 main-modules.php:5965 main-modules.php:6279
+#: main-modules.php:6711 main-modules.php:7861 main-modules.php:8057
+#: main-modules.php:9608 main-modules.php:11547 main-modules.php:12563
+#: main-modules.php:13964 main-modules.php:14443 main-modules.php:16442
+#: main-modules.php:16884 main-structure-elements.php:127
+#: main-structure-elements.php:1083
+msgid "Background Color"
+msgstr "Màu Nền"
+
+#: class-et-builder-element.php:624 class-et-builder-element.php:3569
+#: main-modules.php:2878 main-modules.php:3613 main-modules.php:16890
+#: main-structure-elements.php:105 main-structure-elements.php:1074
+msgid "Background Image"
+msgstr "Hình Nền:"
+
+#: class-et-builder-element.php:627 class-et-builder-element.php:3570
+#: main-modules.php:88 main-modules.php:876 main-modules.php:1255
+#: main-modules.php:1736 main-modules.php:2881 main-modules.php:2923
+#: main-modules.php:3616 main-modules.php:4367 main-modules.php:5959
+#: main-modules.php:10218 main-modules.php:13958 main-modules.php:14000
+#: main-modules.php:14033 main-modules.php:15950 main-modules.php:16893
+#: main-structure-elements.php:108 main-structure-elements.php:1077
+msgid "Upload an image"
+msgstr "Tải Ảnh Lên"
+
+#: class-et-builder-element.php:628 class-et-builder-element.php:3571
+#: main-modules.php:2882 main-structure-elements.php:109
+#: main-structure-elements.php:1078
+msgid "Choose a Background Image"
+msgstr "Chọn Hình Nền"
+
+#: class-et-builder-element.php:629 class-et-builder-element.php:3572
+#: main-modules.php:2883 main-modules.php:3618 main-modules.php:16895
+#: main-structure-elements.php:110 main-structure-elements.php:1079
+msgid "Set As Background"
+msgstr "Thiết Lập Làm Hình Nền"
+
+#: class-et-builder-element.php:647
+msgid "Use Border"
+msgstr "Sử dụng Khung viền"
+
+#: class-et-builder-element.php:651 class-et-builder-element.php:767
+#: class-et-builder-element.php:885 class-et-builder-element.php:940
+#: class-et-builder-element.php:3582 functions.php:3725 main-modules.php:110
+#: main-modules.php:193 main-modules.php:222 main-modules.php:233
+#: main-modules.php:569 main-modules.php:579 main-modules.php:1663
+#: main-modules.php:1696 main-modules.php:1717 main-modules.php:1805
+#: main-modules.php:2415 main-modules.php:2455 main-modules.php:2481
+#: main-modules.php:2534 main-modules.php:2544 main-modules.php:2554
+#: main-modules.php:3037 main-modules.php:3540 main-modules.php:3584
+#: main-modules.php:3666 main-modules.php:3733 main-modules.php:3817
+#: main-modules.php:3827 main-modules.php:3837 main-modules.php:4388
+#: main-modules.php:4871 main-modules.php:4897 main-modules.php:4908
+#: main-modules.php:5278 main-modules.php:5519 main-modules.php:6271
+#: main-modules.php:6336 main-modules.php:6692 main-modules.php:6703
+#: main-modules.php:6768 main-modules.php:7087 main-modules.php:7097
+#: main-modules.php:7107 main-modules.php:7492 main-modules.php:7502
+#: main-modules.php:7512 main-modules.php:9197 main-modules.php:9224
+#: main-modules.php:9593 main-modules.php:9603 main-modules.php:9809
+#: main-modules.php:10008 main-modules.php:10578 main-modules.php:10612
+#: main-modules.php:10622 main-modules.php:10632 main-modules.php:10642
+#: main-modules.php:10652 main-modules.php:11539 main-modules.php:11738
+#: main-modules.php:12394 main-modules.php:12404 main-modules.php:12420
+#: main-modules.php:12431 main-modules.php:12454 main-modules.php:12465
+#: main-modules.php:12476 main-modules.php:12504 main-modules.php:12549
+#: main-modules.php:12852 main-modules.php:12862 main-modules.php:12885
+#: main-modules.php:13232 main-modules.php:13241 main-modules.php:13250
+#: main-modules.php:13475 main-modules.php:13495 main-modules.php:13508
+#: main-modules.php:13845 main-modules.php:13858 main-modules.php:13976
+#: main-modules.php:14479 main-modules.php:14921 main-modules.php:14945
+#: main-modules.php:15010 main-modules.php:15020 main-modules.php:15030
+#: main-modules.php:15332 main-modules.php:15342 main-modules.php:15972
+#: main-modules.php:16273 main-modules.php:16283 main-modules.php:16299
+#: main-modules.php:16310 main-modules.php:16333 main-modules.php:16344
+#: main-modules.php:16355 main-modules.php:16383 main-modules.php:16428
+#: main-modules.php:16817 main-modules.php:16861 main-modules.php:16943
+#: main-modules.php:17010 main-modules.php:17094 main-modules.php:17104
+#: main-modules.php:17114 main-structure-elements.php:118
+#: main-structure-elements.php:170 main-structure-elements.php:180
+#: main-structure-elements.php:190 main-structure-elements.php:227
+#: main-structure-elements.php:237 main-structure-elements.php:248
+#: main-structure-elements.php:305 main-structure-elements.php:315
+#: main-structure-elements.php:957 main-structure-elements.php:968
+#: main-structure-elements.php:1024 main-structure-elements.php:1062
+#: main-structure-elements.php:1125 main-structure-elements.php:1135
+#: main-structure-elements.php:1159 main-structure-elements.php:1176
+#: main-structure-elements.php:1870 main-structure-elements.php:1880
+#: main-structure-elements.php:1905 main-structure-elements.php:1921
+msgid "No"
+msgstr "Không"
+
+#: class-et-builder-element.php:652 class-et-builder-element.php:768
+#: class-et-builder-element.php:884 class-et-builder-element.php:939
+#: class-et-builder-element.php:3581 functions.php:3726 functions.php:5081
+#: main-modules.php:111 main-modules.php:194 main-modules.php:223
+#: main-modules.php:232 main-modules.php:568 main-modules.php:578
+#: main-modules.php:1664 main-modules.php:1697 main-modules.php:1718
+#: main-modules.php:1806 main-modules.php:2414 main-modules.php:2456
+#: main-modules.php:2482 main-modules.php:2535 main-modules.php:2545
+#: main-modules.php:2555 main-modules.php:3038 main-modules.php:3539
+#: main-modules.php:3583 main-modules.php:3667 main-modules.php:3734
+#: main-modules.php:3818 main-modules.php:3828 main-modules.php:3838
+#: main-modules.php:4387 main-modules.php:4870 main-modules.php:4898
+#: main-modules.php:4909 main-modules.php:5279 main-modules.php:5518
+#: main-modules.php:6270 main-modules.php:6337 main-modules.php:6693
+#: main-modules.php:6702 main-modules.php:6769 main-modules.php:7086
+#: main-modules.php:7096 main-modules.php:7106 main-modules.php:7491
+#: main-modules.php:7501 main-modules.php:7511 main-modules.php:9196
+#: main-modules.php:9225 main-modules.php:9592 main-modules.php:9602
+#: main-modules.php:9810 main-modules.php:10007 main-modules.php:10577
+#: main-modules.php:10611 main-modules.php:10621 main-modules.php:10631
+#: main-modules.php:10641 main-modules.php:10651 main-modules.php:11538
+#: main-modules.php:11739 main-modules.php:12393 main-modules.php:12403
+#: main-modules.php:12419 main-modules.php:12430 main-modules.php:12453
+#: main-modules.php:12464 main-modules.php:12475 main-modules.php:12503
+#: main-modules.php:12550 main-modules.php:12853 main-modules.php:12863
+#: main-modules.php:12886 main-modules.php:13231 main-modules.php:13240
+#: main-modules.php:13249 main-modules.php:13476 main-modules.php:13496
+#: main-modules.php:13509 main-modules.php:13846 main-modules.php:13859
+#: main-modules.php:13977 main-modules.php:14480 main-modules.php:14922
+#: main-modules.php:14946 main-modules.php:15011 main-modules.php:15021
+#: main-modules.php:15031 main-modules.php:15331 main-modules.php:15341
+#: main-modules.php:15973 main-modules.php:16272 main-modules.php:16282
+#: main-modules.php:16298 main-modules.php:16309 main-modules.php:16332
+#: main-modules.php:16343 main-modules.php:16354 main-modules.php:16382
+#: main-modules.php:16429 main-modules.php:16816 main-modules.php:16860
+#: main-modules.php:16944 main-modules.php:17011 main-modules.php:17095
+#: main-modules.php:17105 main-modules.php:17115
+#: main-structure-elements.php:119 main-structure-elements.php:171
+#: main-structure-elements.php:181 main-structure-elements.php:191
+#: main-structure-elements.php:228 main-structure-elements.php:238
+#: main-structure-elements.php:249 main-structure-elements.php:306
+#: main-structure-elements.php:316 main-structure-elements.php:958
+#: main-structure-elements.php:969 main-structure-elements.php:1025
+#: main-structure-elements.php:1063 main-structure-elements.php:1126
+#: main-structure-elements.php:1136 main-structure-elements.php:1160
+#: main-structure-elements.php:1175 main-structure-elements.php:1871
+#: main-structure-elements.php:1881 main-structure-elements.php:1906
+#: main-structure-elements.php:1920
+msgid "Yes"
+msgstr "Có"
+
+#: class-et-builder-element.php:664
+msgid "Border Color"
+msgstr "Màu Khung viền"
+
+#: class-et-builder-element.php:674
+msgid "Border Width"
+msgstr "Chiều rộng Khung viền"
+
+#: class-et-builder-element.php:684
+msgid "Border Style"
+msgstr "Kiểu Khung viền"
+
+#: class-et-builder-element.php:711 main-structure-elements.php:1068
+msgid "Custom Margin"
+msgstr "Tùy chỉnh Căn lề"
+
+#: class-et-builder-element.php:732 main-structure-elements.php:210
+#: main-structure-elements.php:1045 main-structure-elements.php:1853
+msgid "Custom Padding"
+msgstr "Tùy chỉnh Đệm"
+
+#: class-et-builder-element.php:763
+msgid "Use Custom Styles for %1$s "
+msgstr "Dùng tự Chọn cách riêng cho %1$s "
+
+#: class-et-builder-element.php:792
+msgid "%1$s Text Size"
+msgstr "%1$s Cỡ Văn bản"
+
+#: class-et-builder-element.php:818
+msgid "%1$s Background Color"
+msgstr "%1$s Màu nền"
+
+#: class-et-builder-element.php:829
+msgid "%1$s Border Width"
+msgstr "%1$s Biên giới Rộng"
+
+#: class-et-builder-element.php:839
+msgid "%1$s Border Color"
+msgstr "%1$s Biên giới Màu"
+
+#: class-et-builder-element.php:850
+msgid "%1$s Border Radius"
+msgstr "%1$s Biên giới bán kính"
+
+#: class-et-builder-element.php:879
+msgid "Add %1$s Icon"
+msgstr "Thêm %1$s Biểu tượng"
+
+#: class-et-builder-element.php:883 functions.php:1036 main-modules.php:2490
+#: main-modules.php:2507 main-modules.php:2891 main-modules.php:2908
+#: main-modules.php:3742 main-modules.php:3759 main-modules.php:14954
+#: main-modules.php:14971 main-modules.php:17019 main-modules.php:17036
+msgid "Default"
+msgstr "Mặc định"
+
+#: class-et-builder-element.php:899
+msgid "%1$s Icon"
+msgstr "%1$s Biểu tượng"
+
+#: class-et-builder-element.php:911
+msgid "%1$s Icon Color"
+msgstr "%1$s Biểu tượng màu"
+
+#: class-et-builder-element.php:922
+msgid "%1$s Icon Placement"
+msgstr "%1$s Biểu tượng Placement"
+
+#: class-et-builder-element.php:926 class-et-builder-element.php:1634
+#: class-et-builder-element.php:3577 functions.php:339 functions.php:345
+#: main-modules.php:205 main-modules.php:1632 main-modules.php:3651
+#: main-modules.php:5746 main-modules.php:9784 main-modules.php:12530
+#: main-modules.php:12842 main-modules.php:16409 main-modules.php:16928
+msgid "Right"
+msgstr "Phải"
+
+#: class-et-builder-element.php:927 class-et-builder-element.php:1648
+#: class-et-builder-element.php:3579 functions.php:337 main-modules.php:203
+#: main-modules.php:1630 main-modules.php:3650 main-modules.php:5744
+#: main-modules.php:9783 main-modules.php:12528 main-modules.php:12841
+#: main-modules.php:16407 main-modules.php:16927
+msgid "Left"
+msgstr "Trái"
+
+#: class-et-builder-element.php:935
+msgid "Only Show Icon On Hover for %1$s"
+msgstr "Chỉ hiển thị biểu tượng On Hover cho %1$s"
+
+#: class-et-builder-element.php:948
+msgid "%1$s Hover Text Color"
+msgstr "%1$s Hover Text Color"
+
+#: class-et-builder-element.php:959
+msgid "%1$s Hover Background Color"
+msgstr "%1$s Hover Background Color"
+
+#: class-et-builder-element.php:970
+msgid "%1$s Hover Border Color"
+msgstr "%1$s Hover Border Color"
+
+#: class-et-builder-element.php:981
+msgid "%1$s Hover Border Radius"
+msgstr "%1$s Hover Border Radius"
+
+#: class-et-builder-element.php:991
+msgid "%1$s Hover Letter Spacing"
+msgstr "%1$s Hover Letter Spacing"
+
+#: class-et-builder-element.php:1036 class-et-builder-element.php:3654
+msgid "Before"
+msgstr "Trước"
+
+#: class-et-builder-element.php:1041 class-et-builder-element.php:3655
+msgid "Main Element"
+msgstr "Nhân tố chính"
+
+#: class-et-builder-element.php:1044 class-et-builder-element.php:3656
+msgid "After"
+msgstr "Sau"
+
+#: class-et-builder-element.php:1478 class-et-builder-element.php:3574
+msgid "Hex Value"
+msgstr "Giá trị Màu"
+
+#: class-et-builder-element.php:1489
+msgid "Choose Custom Color"
+msgstr "Chọn Tùy chỉnh Màu"
+
+#: class-et-builder-element.php:1499
+msgid "Upload"
+msgstr "Tải lên"
+
+#: class-et-builder-element.php:1500
+msgid "Choose image"
+msgstr "Chọn hình ảnh"
+
+#: class-et-builder-element.php:1501
+msgid "Set image"
+msgstr "Thiết lập hình ảnh"
+
+#: class-et-builder-element.php:1627 class-et-builder-element.php:3576
+#: main-modules.php:1626 main-modules.php:3652 main-modules.php:9988
+#: main-modules.php:16929
+msgid "Top"
+msgstr "Trên cùng"
+
+#: class-et-builder-element.php:1641 class-et-builder-element.php:3578
+#: main-modules.php:2974 main-modules.php:3653 main-modules.php:9990
+#: main-modules.php:14023 main-modules.php:14044 main-modules.php:16930
+msgid "Bottom"
+msgstr "Dưới cùng"
+
+#: class-et-builder-element.php:1879 class-et-builder-element.php:2087
+#: functions.php:4850
+msgid "General Settings"
+msgstr "Thiết đặt Chung"
+
+#: class-et-builder-element.php:1880
+msgid "Advanced Design Settings"
+msgstr "Thiết lập Thiết kế Cao cấp"
+
+#: class-et-builder-element.php:1881 functions.php:4858
+msgid "Custom CSS"
+msgstr "CSS tuỳ biến"
+
+#: class-et-builder-element.php:2036
+msgid "You don't have sufficient permissions to access the settings"
+msgstr "Anh không có quyền truy cập vào các thiết lập"
+
+#: class-et-builder-element.php:2061 main-modules.php:1428
+#: main-modules.php:1787 main-modules.php:2259 main-modules.php:3043
+#: main-modules.php:4419 main-modules.php:5326 main-modules.php:5550
+#: main-modules.php:6302 main-modules.php:6734 main-modules.php:8841
+#: main-modules.php:8972 main-modules.php:10583 main-modules.php:11888
+#: main-modules.php:12201 main-modules.php:13731 main-modules.php:14049
+#: main-modules.php:15728 main-modules.php:15837
+msgid "Content"
+msgstr "Nội dung"
+
+#: class-et-builder-element.php:2062 main-modules.php:2261
+#: main-modules.php:8844 main-modules.php:9574
+msgid ""
+"Here you can define the content that will be placed within the current tab."
+msgstr "Tại đây bạn có thể xác định nội dung sẽ đặt trong thẻ hiện tại."
+
+#: class-et-builder-element.php:2075
+msgid "Add New Item"
+msgstr "Thêm Mục Mới"
+
+#: class-et-builder-element.php:2075
+msgid "Add New %s"
+msgstr "Thêm mới %s"
+
+#: class-et-builder-element.php:2177
+msgid "%1$s %2$s Settings"
+msgstr "%1$s %2$s Thiết lập"
+
+#: class-et-builder-element.php:2179
+msgid "Item"
+msgstr "Mục"
+
+#: class-et-builder-element.php:2179 functions.php:1898 functions.php:2398
+#: functions.php:2444
+msgid "Module"
+msgstr "Đơn thể"
+
+#: class-et-builder-element.php:3568 class-et-builder-element.php:3653
+#: class-et-builder-element.php:3705 functions.php:2441
+#: main-structure-elements.php:2322
+msgid "Column"
+msgstr "Cột"
+
+#: class-et-builder-element.php:3575
+msgid "Padding"
+msgstr "Đệm"
+
+#: class-et-builder-element.php:3580
+msgid "Parallax Effect"
+msgstr "Hiệu ứng Parallax"
+
+#: class-et-builder-element.php:3583 main-modules.php:12513
+#: main-modules.php:16392 main-structure-elements.php:199
+#: main-structure-elements.php:1144
+msgid "Parallax Method"
+msgstr "Phương pháp Thị sai"
+
+#: class-et-builder-element.php:3584 main-modules.php:2470
+#: main-modules.php:3682 main-modules.php:12517 main-modules.php:13989
+#: main-modules.php:14934 main-modules.php:16396 main-modules.php:16959
+#: main-structure-elements.php:203 main-structure-elements.php:1148
+msgid "CSS"
+msgstr "CSS"
+
+#: class-et-builder-element.php:3585 main-modules.php:2471
+#: main-modules.php:3683 main-modules.php:12518 main-modules.php:13990
+#: main-modules.php:14935 main-modules.php:16397 main-modules.php:16960
+#: main-structure-elements.php:204 main-structure-elements.php:1149
+msgid "True Parallax"
+msgstr "Thị sai Thực sự"
+
+#: class-et-builder-element.php:3706 main-modules.php:261 main-modules.php:655
+#: main-modules.php:910 main-modules.php:1114 main-modules.php:1465
+#: main-modules.php:1857 main-modules.php:2107 main-modules.php:2589
+#: main-modules.php:3884 main-modules.php:4476 main-modules.php:4931
+#: main-modules.php:5587 main-modules.php:5778 main-modules.php:5997
+#: main-modules.php:6369 main-modules.php:6801 main-modules.php:7160
+#: main-modules.php:7565 main-modules.php:7931 main-modules.php:8335
+#: main-modules.php:8531 main-modules.php:8700 main-modules.php:9013
+#: main-modules.php:9281 main-modules.php:9832 main-modules.php:10030
+#: main-modules.php:10307 main-modules.php:10748 main-modules.php:11276
+#: main-modules.php:11570 main-modules.php:11770 main-modules.php:12032
+#: main-modules.php:12586 main-modules.php:12945 main-modules.php:13293
+#: main-modules.php:13548 main-modules.php:14072 main-modules.php:14550
+#: main-modules.php:15053 main-modules.php:15416 main-modules.php:15657
+#: main-modules.php:15765 main-modules.php:15860 main-modules.php:16075
+#: main-modules.php:16465 main-modules.php:17161
+#: main-structure-elements.php:482 main-structure-elements.php:1383
+#: main-structure-elements.php:2078
+msgid "CSS ID"
+msgstr "CSS ID"
+
+#: class-et-builder-element.php:3707 main-modules.php:268 main-modules.php:662
+#: main-modules.php:917 main-modules.php:1121 main-modules.php:1472
+#: main-modules.php:1864 main-modules.php:2114 main-modules.php:2596
+#: main-modules.php:3891 main-modules.php:4483 main-modules.php:4938
+#: main-modules.php:5594 main-modules.php:5785 main-modules.php:6004
+#: main-modules.php:6376 main-modules.php:6808 main-modules.php:7167
+#: main-modules.php:7572 main-modules.php:7938 main-modules.php:8342
+#: main-modules.php:8538 main-modules.php:8707 main-modules.php:9020
+#: main-modules.php:9288 main-modules.php:9839 main-modules.php:10037
+#: main-modules.php:10314 main-modules.php:10755 main-modules.php:11283
+#: main-modules.php:11577 main-modules.php:11777 main-modules.php:12039
+#: main-modules.php:12593 main-modules.php:12952 main-modules.php:13300
+#: main-modules.php:13555 main-modules.php:14079 main-modules.php:14557
+#: main-modules.php:15060 main-modules.php:15423 main-modules.php:15664
+#: main-modules.php:15772 main-modules.php:15867 main-modules.php:16082
+#: main-modules.php:16472 main-modules.php:17168
+#: main-structure-elements.php:489 main-structure-elements.php:1390
+#: main-structure-elements.php:2085
+msgid "CSS Class"
+msgstr "Lớp CSS"
+
+#: comments_template.php:4
+msgid "This post is password protected. Enter the password to view comments."
+msgstr ""
+"Bài đăng này được bảo vệ bằng mật khẩu. Hãy nhập mật khẩu để xem lời bình."
+
+#: comments_template.php:12
+msgid "0 Comments"
+msgstr "0 Lời bình"
+
+#: comments_template.php:12 functions.php:2511
+msgid "1 Comment"
+msgstr "1 Lời bình"
+
+#: comments_template.php:12 main-modules.php:13077
+msgid "Comments"
+msgstr "Lời bình"
+
+#: comments_template.php:16 comments_template.php:29
+msgid "<span class=\"meta-nav\">&larr;</span> Older Comments"
+msgstr "<span class=\"meta-nav\">&larr;</span> Lời bình Cũ hơn"
+
+#: comments_template.php:17 comments_template.php:30
+msgid "Newer Comments <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Lời bình Mới hơn <span class=\"meta-nav\">&rarr;</span>"
+
+#: comments_template.php:36
+msgid "Trackbacks/Pingbacks"
+msgstr "Trackbacks/Pingbacks"
+
+#: comments_template.php:54
+msgid "Submit Comment"
+msgstr "Gửi Lời bình"
+
+#: comments_template.php:54
+msgid "Submit a Comment"
+msgstr "Gửi Lời bình"
+
+#: comments_template.php:54
+msgid "Leave a Reply to %s"
+msgstr "Để lại Hồi đáp cho %s"
+
+#: framework.php:35
+msgid ""
+"Please, check the fields below to make sure you entered the correct "
+"information."
+msgstr "Làm ơn, kiểm tra đồng dưới chắc chắn để các ông gõ đúng thông tin."
+
+#: framework.php:36
+msgid "Please, fill in the following fields:"
+msgstr "Xin vui lòng, điền vào các lĩnh vực sau đây:"
+
+#: framework.php:37
+msgid "Please, fix the following errors:"
+msgstr "Xin hãy sửa những lỗi sau:"
+
+#: framework.php:38
+msgid "Invalid email"
+msgstr "Không hợp lệ email"
+
+#: framework.php:39
+msgid "Captcha"
+msgstr "Captcha"
+
+#: framework.php:40
+msgid "Prev"
+msgstr "Trước"
+
+#: framework.php:41
+msgid "Previous"
+msgstr "Trước"
+
+#: framework.php:42
+msgid "Next"
+msgstr "Tiếp theo"
+
+#: framework.php:43
+msgid "You entered the wrong number in captcha."
+msgstr "Bạn đã nhập sai số captcha."
+
+#: framework.php:82
+msgid "Unauthorized access. Preview cannot be accessed outside %1$s."
+msgstr "Không được phép truy cập. Xem thử không thể được truy cập ngoài %1$s."
+
+#: functions.php:88 functions.php:2407 functions.php:4308
+msgid "All Categories"
+msgstr "Tất cả Mục"
+
+#: functions.php:97 layouts.php:10
+msgid "All Layouts"
+msgstr "Tất cả Bố trí"
+
+#: functions.php:98 functions.php:1427
+msgid "Modules"
+msgstr "Mô đun"
+
+#: functions.php:99 functions.php:1426
+msgid "Rows"
+msgstr "Dòng"
+
+#: functions.php:100 functions.php:1425
+msgid "Sections"
+msgstr "Mục"
+
+#: functions.php:101 functions.php:1424
+msgid "Layouts"
+msgstr "Bố trí"
+
+#: functions.php:105
+msgid "Global/not Global"
+msgstr "Toàn cầu/Không Toàn cầu"
+
+#: functions.php:106 functions.php:1949
+msgid "Global"
+msgstr "Toàn cầu"
+
+#: functions.php:107
+msgid "not Global"
+msgstr "không Toàn cầu"
+
+#: functions.php:160 functions.php:175 functions.php:2323
+msgid "you don't have sufficient permissions to access this page"
+msgstr "anh không có quyền truy cập trang này"
+
+#: functions.php:338 functions.php:346 main-modules.php:204
+#: main-modules.php:2892 main-modules.php:2973 main-modules.php:5745
+#: main-modules.php:12529 main-modules.php:12843 main-modules.php:14022
+#: main-modules.php:16408
+msgid "Center"
+msgstr "Giữa"
+
+#: functions.php:340
+msgid "Justified"
+msgstr "Căn đều"
+
+#: functions.php:358
+msgid "Update Gallery"
+msgstr "Cập Nhật Thư Viện"
+
+#: functions.php:367
+msgid "Select a menu"
+msgstr "Chọn trình đơn"
+
+#: functions.php:408
+msgid "You currently don't have any projects assigned to a category."
+msgstr "Bạn hiện không có dự án nào gắn kết với kiểu mục."
+
+#: functions.php:522
+msgid "Solid"
+msgstr "Khung viền nét liền"
+
+#: functions.php:523
+msgid "Dotted"
+msgstr "Khung viền nét chấm"
+
+#: functions.php:524
+msgid "Dashed"
+msgstr "Khung viền nét gạch"
+
+#: functions.php:525
+msgid "Double"
+msgstr "Khung viền đôi"
+
+#: functions.php:526
+msgid "Groove"
+msgstr "Khung viền kiểu rãnh"
+
+#: functions.php:527
+msgid "Ridge"
+msgstr "Cạnh"
+
+#: functions.php:528
+msgid "Inset"
+msgstr "Khung viền bên trong"
+
+#: functions.php:529
+msgid "Outset"
+msgstr "Khung viền bên ngoài"
+
+#: functions.php:1384
+msgid ""
+"<strong>%1$s</strong> widget area has been created. You can create more "
+"areas, once you finish update the page to see all the areas."
+msgstr ""
+"<strong>%1$s</strong> vùng tiện ích đã được tạo. Bạn có thể tạo nhiều vùng "
+"hơn, một khi bạn hoàn thành cập nhật trang để xem tất cả các vùng."
+
+#: functions.php:1408
+msgid ""
+"You do not have sufficient permissions to export the content of this site."
+msgstr "Bạn không có đủ quyền để xuất nội dung trang này."
+
+#: functions.php:1412
+msgid "Export Divi Builder Layouts"
+msgstr "Xuất Bố cục Trình tạo Divi"
+
+#: functions.php:1413
+msgid ""
+"When you click the button below WordPress will create an XML file for you to "
+"save to your computer."
+msgstr ""
+"Khi bạn nhấp nút bên dưới WordPress sẽ tạo ra tập tin XML cho bạn lưu về máy."
+
+#: functions.php:1414
+msgid ""
+"This format, which we call WordPress eXtended RSS or WXR, will contain all "
+"layouts you created using the Page Builder."
+msgstr ""
+"Định dạng này, chúng tôi gọi là WordPress eXtended RSS hoặc WXR, chứa mọi bố "
+"trí bạn đã tạo trong Bộ dựng Trang."
+
+#: functions.php:1415
+msgid ""
+"Once you&#8217;ve saved the download file, you can use the Import function "
+"in another WordPress installation to import all layouts from this site."
+msgstr ""
+"Sau khi tải xuống, bạn có thể dùng chức năng Nhập của một bản cài đặt "
+"WordPress khác để nhập vào toàn bộ bố trí của trang này."
+
+#: functions.php:1416
+msgid "Select Templates you want to export:"
+msgstr "Chọn Bản mẫu muốn in:"
+
+#: functions.php:1449
+msgid "Download Export File"
+msgstr "Tải xuống Tập tin Xuất"
+
+#: functions.php:1454
+msgid "Export Divi Layouts"
+msgstr "Xuất Bố cục Divi"
+
+#: functions.php:1458
+msgid "Manage Categories"
+msgstr "Quản lý các Hạng mục"
+
+#: functions.php:1593 functions.php:1595
+msgid "Use Default Editor"
+msgstr "Dùng Trình sửa Mặc định"
+
+#: functions.php:1593 functions.php:1594
+msgid "Use The Divi Builder"
+msgstr "Sử dụng Trình tạo Divi"
+
+#: functions.php:1636
+msgid "Here you can create new widget areas for use in the Sidebar module"
+msgstr ""
+"Tại đây bạn có thể tạo các vùng tiện ích để sử dụng trong mô-đun Sidebar"
+
+#: functions.php:1637
+msgid ""
+"Note: Naming your widget area \"sidebar 1\", \"sidebar 2\", \"sidebar 3\", "
+"\"sidebar 4\" or \"sidebar 5\" will cause conflicts with this theme"
+msgstr ""
+"Ghi chú: Đặt tên vùng tiện ích của bạn \"sidebar 1\", \"sidebar 2\", "
+"\"sidebar 3\", \"sidebar 4\" or \"sidebar 5\" sẽ gây ra xung khắc với chủ đề "
+"này"
+
+#: functions.php:1638
+msgid "Widget Name"
+msgstr "Tên Tiện Ích"
+
+#: functions.php:1639
+msgid "Create"
+msgstr "Tạo"
+
+#: functions.php:1641 functions.php:1759 functions.php:3499
+msgid "Delete"
+msgstr "Xóa"
+
+#: functions.php:1708
+msgid "Replace the existing content with loaded layout"
+msgstr "Thay thế nội dung đang có bằng bố trí mới"
+
+#: functions.php:1756
+msgid "Load"
+msgstr "Tải"
+
+#: functions.php:1868
+msgid ""
+"You have not saved any items to your Divi Library yet. Once an item has been "
+"saved to your library, it will appear here for easy use."
+msgstr ""
+"Bạn chưa lưu mục nào vào Thư viện Divi của bạn. Khi một mục đã được lưu vào "
+"thư viện, nó sẽ xuất hiện ở đây để cho bạn thuận tiện sử dụng."
+
+#: functions.php:1899
+msgid "Fullwidth Module"
+msgstr "Mô đun có chiều rộng toàn bộ"
+
+#: functions.php:1900 functions.php:2442 main-structure-elements.php:821
+#: main-structure-elements.php:1741
+msgid "Row"
+msgstr "Hàng"
+
+#: functions.php:1901 functions.php:2437 main-structure-elements.php:5
+msgid "Section"
+msgstr "Mục"
+
+#: functions.php:1902 functions.php:2439 functions.php:3067
+msgid "Fullwidth Section"
+msgstr "Mục Toàn bộ Chiều rộng"
+
+#: functions.php:1903 functions.php:2440 functions.php:3073
+msgid "Specialty Section"
+msgstr "Mục Đặc biệt"
+
+#: functions.php:1904 functions.php:2447 main-modules.php:538
+#: main-modules.php:7060 main-modules.php:7465 main-modules.php:10537
+#: main-modules.php:15302
+msgid "Layout"
+msgstr "Bố trí"
+
+#: functions.php:1908
+msgid "Include General Settings"
+msgstr "Bao gồm các Thiết lập Chung"
+
+#: functions.php:1909
+msgid "Include Advanced Design Settings"
+msgstr "Bao gồm các thiết lập thiết kế cao cấp"
+
+#: functions.php:1910 functions.php:3651
+msgid "Include Custom CSS"
+msgstr "Bao gồm Tùy chỉnh CSS"
+
+#: functions.php:1918
+msgid "Template Type"
+msgstr "Kiểu Khuôn mẫu"
+
+#: functions.php:1955
+msgid "Select category(ies) for new template or type a new name ( optional )"
+msgstr "Lựa chọn (các) hạng mục cho mẫu mới hoặc gõ một tên mới (tùy chọn)"
+
+#: functions.php:1998
+msgid "New Template Settings"
+msgstr "Thiết lập Mẫu mới"
+
+#: functions.php:1999 functions.php:3700
+msgid "Template Name"
+msgstr "Tên Mẫu"
+
+#: functions.php:2394
+msgid "The section should have at least one row."
+msgstr "Phần này phải có ít nhất một dòng."
+
+#: functions.php:2395
+msgid "Fullwidth module can't be used outside of the Fullwidth Section."
+msgstr "Đơn thể toàn chiều rộng không dùng được bên ngoài Phần Toàn độ rộng."
+
+#: functions.php:2396
+msgid "3 column row can't be used in this column."
+msgstr "3 cột dòng không dùng được trong cột này."
+
+#: functions.php:2397 functions.php:2920 functions.php:3306
+msgid "Preview"
+msgstr "Xem trước"
+
+#: functions.php:2399
+msgid ""
+"Still images cannot be generated from this video service and/or this video "
+"format"
+msgstr "Không tạo được ảnh tĩnh từ dịch vụ video và/hoặc định dạng video này"
+
+#: functions.php:2400
+msgid "Geocode was not successful for the following reason"
+msgstr "Mã địa lý không thành công vì lý do sau"
+
+#: functions.php:2401
+msgid "Geocoder failed due to"
+msgstr "Mã địa lý thất bại do"
+
+#: functions.php:2402
+msgid "No results found"
+msgstr "Không tìm thấy kết quả"
+
+#: functions.php:2403
+msgid "No available options for this configuration."
+msgstr "Không có sẵn phương án cho cấu hình này."
+
+#: functions.php:2404
+msgid ""
+"You're about to update global module. This change will be applied to all "
+"pages where you use this module. Press OK if you want to update this module"
+msgstr ""
+"Bạn chuẩn bị cập nhập mô đun toàn cầu. Sự thay đổi này sẽ được áp dụng cho "
+"tất cả các trang mà bạn sử dụng mô đun này. Nhấn OK nếu bạn muốn cập nhật mô "
+"đun này"
+
+#: functions.php:2405
+msgid "You cannot add global rows into global sections"
+msgstr "Bạn không thể thêm các dòng toàn cầu trong các mục toàn cầu"
+
+#: functions.php:2406
+msgid "You cannot add global modules into global sections or rows"
+msgstr "Bạn không thể thêm các mô đun toàn cầu vào các mục hoặc dòng toàn cầu"
+
+#: functions.php:2411
+msgid "Map Pin Address cannot be empty"
+msgstr "Địa chỉ Pin Bản đồ không được trống"
+
+#: functions.php:2412
+msgid "Invalid Pin and address data. Please try again."
+msgstr "Pin và dữ liệu địa chỉ không hợp lệ. Xin hãy thử lại."
+
+#: functions.php:2413
+msgid "You do not have permission to unlock this section."
+msgstr "Anh không có quyền mở khoá phần này."
+
+#: functions.php:2414
+msgid "You do not have permission to unlock this row."
+msgstr "Anh không có quyền mở hàng này."
+
+#: functions.php:2415
+msgid "You do not have permission to unlock this module."
+msgstr "Anh không có quyền mở module này."
+
+#: functions.php:2416
+msgid "You do not have permission to perform this task."
+msgstr "Anh không có quyền để thực hiện nhiệm vụ này."
+
+#: functions.php:2417
+msgid ""
+"Unable to perform copy/paste process due to inavailability of localStorage "
+"feature in your browser. Please use latest modern browser (Chrome, Firefox, "
+"or Safari) to perform copy/paste process"
+msgstr ""
+"Không thể thực hiện bản sao/dán xử lý do inavailability của localStorage "
+"chức năng của duyệt. Xin vui lòng sử dụng mới nhất hiện đại duyệt (mạ bạc, "
+"Firefoxdescription, hay Săn) để thực hiện rõ/dán quá trình"
+
+#: functions.php:2419
+msgid "Did"
+msgstr "Làm"
+
+#: functions.php:2420
+msgid "Added"
+msgstr "Thêm"
+
+#: functions.php:2421
+msgid "Edited"
+msgstr "Sửa"
+
+#: functions.php:2422
+msgid "Removed"
+msgstr "Gỡ"
+
+#: functions.php:2423
+msgid "Moved"
+msgstr "Di chuyển"
+
+#: functions.php:2424
+msgid "Expanded"
+msgstr "Tôi đã mở rộng"
+
+#: functions.php:2425
+msgid "Collapsed"
+msgstr "Đổ sập"
+
+#: functions.php:2426
+msgid "Locked"
+msgstr "Khóa"
+
+#: functions.php:2427
+msgid "Unlocked"
+msgstr "Khóa"
+
+#: functions.php:2428
+msgid "Cloned"
+msgstr "Truyền giống vô tính"
+
+#: functions.php:2429
+msgid "Cleared"
+msgstr "Dọn sạch sẽ"
+
+#: functions.php:2430
+msgid "Enabled"
+msgstr "Bật"
+
+#: functions.php:2431
+msgid "Disabled"
+msgstr "Tắt"
+
+#: functions.php:2432
+msgid "Copied"
+msgstr "Sao chép"
+
+#: functions.php:2433
+msgid "Renamed"
+msgstr "Thay đổi nó"
+
+#: functions.php:2434
+msgid "Loaded"
+msgstr "Lên đạn"
+
+#: functions.php:2438
+msgid "Saved Section"
+msgstr "Cứu Phần"
+
+#: functions.php:2443
+msgid "Saved Row"
+msgstr "Cứu Hàng"
+
+#: functions.php:2445
+msgid "Saved Module"
+msgstr "Cứu Module"
+
+#: functions.php:2446
+msgid "Page"
+msgstr "Trang"
+
+#: functions.php:2450
+msgid "on Phone"
+msgstr "trên Điện thoại"
+
+#: functions.php:2451
+msgid "on Tablet"
+msgstr "trên Máy tính bản"
+
+#: functions.php:2452
+msgid "on Desktop"
+msgstr "trên Máy bàn"
+
+#: functions.php:2454
+msgid "Invalid Color"
+msgstr "Không Hợp Lệ Màu"
+
+#: functions.php:2471
+msgid "The Divi Builder"
+msgstr "Trình tạo Divi"
+
+#: functions.php:2492
+msgid "Posts by %s"
+msgstr "Các bài đăng của %s"
+
+#: functions.php:2507
+msgid "% Comments"
+msgstr "% Lời bình"
+
+#: functions.php:2509
+msgid "No Comments"
+msgstr "Không có Lời bình"
+
+#: functions.php:2522
+msgid "by"
+msgstr "bởi"
+
+#: functions.php:2819 functions.php:2948
+msgid "Rename"
+msgstr "Thay đổi tên."
+
+#: functions.php:2825
+msgid "Copy"
+msgstr "Nghe rõ"
+
+#: functions.php:2831
+msgid "Paste After"
+msgstr "Dán Sau"
+
+#: functions.php:2837 functions.php:2843
+msgid "Paste"
+msgstr "Dán"
+
+#: functions.php:2849 functions.php:2956 functions.php:2957
+msgid "Save to Library"
+msgstr "Lưu vào Thư viện"
+
+#: functions.php:2855
+msgid "Unlock"
+msgstr "Mở"
+
+#: functions.php:2856
+msgid "Lock"
+msgstr "Khóa"
+
+#: functions.php:2864 functions.php:5048
+msgid "Enable"
+msgstr "Bật"
+
+#: functions.php:2865 functions.php:5049
+msgid "Disable"
+msgstr "Tắt"
+
+#: functions.php:2910 main-modules.php:14514
+msgid "Expand"
+msgstr "Mở rộng"
+
+#: functions.php:2911
+msgid "Collapse"
+msgstr "Sụp đổ"
+
+#: functions.php:2915 functions.php:3004 functions.php:3005
+msgid "Undo"
+msgstr "Cởi"
+
+#: functions.php:2916 functions.php:3002 functions.php:3003
+msgid "Redo"
+msgstr "Làm lại"
+
+#: functions.php:2936 functions.php:3329 functions.php:3519 functions.php:3574
+msgid "Cancel"
+msgstr "Hủy"
+
+#: functions.php:2937 functions.php:3520 functions.php:3575
+msgid "Save"
+msgstr "Lưu"
+
+#: functions.php:2949
+msgid "Enter a new name for this module"
+msgstr "Nhập một tên mới cho mô-đun này"
+
+#: functions.php:2963 functions.php:2964
+msgid "Load From Library"
+msgstr "Tải về từ Thư viện"
+
+#: functions.php:2970 functions.php:2971 functions.php:3544
+msgid "Clear Layout"
+msgstr "Xóa Giao Diện"
+
+#: functions.php:3006 functions.php:3007
+msgid "See History"
+msgstr "Thấy Lịch Sử"
+
+#: functions.php:3014 functions.php:3015 functions.php:3114 functions.php:3115
+#: functions.php:3500
+msgid "Settings"
+msgstr "Thiết Lập"
+
+#: functions.php:3020 functions.php:3021
+msgid "Clone Section"
+msgstr "Sao chép Vùng Chọn"
+
+#: functions.php:3025 functions.php:3026
+msgid "Delete Section"
+msgstr "Xóa Vùng Chọn"
+
+#: functions.php:3030 functions.php:3031
+msgid "Unlock Section"
+msgstr "Mở Khoá Phần"
+
+#: functions.php:3049 functions.php:3050
+msgid "Expand Section"
+msgstr "Mở Rộng, Khu"
+
+#: functions.php:3056 functions.php:3356 functions.php:3399 functions.php:3462
+#: functions.php:4837
+msgid "Add From Library"
+msgstr "Thêm vào từ Thư viện"
+
+#: functions.php:3061
+msgid "Standard Section"
+msgstr "Mục Tiêu chuẩn"
+
+#: functions.php:3122 functions.php:3123
+msgid "Clone Row"
+msgstr "Sao chép Hàng"
+
+#: functions.php:3131 functions.php:3132
+msgid "Delete Row"
+msgstr "Xóa Hàng"
+
+#: functions.php:3140 functions.php:3141
+msgid "Change Structure"
+msgstr "Thay đổi Cấu trúc"
+
+#: functions.php:3147 functions.php:3148
+msgid "Unlock Row"
+msgstr "Mở Hàng"
+
+#: functions.php:3173 functions.php:3174
+msgid "Expand Row"
+msgstr "Mở Rộng Hàng"
+
+#: functions.php:3194
+msgid "Add Row"
+msgstr "Thêm Hàng"
+
+#: functions.php:3202
+msgid "Insert Column(s)"
+msgstr "Thêm Cột"
+
+#: functions.php:3232 functions.php:3233 functions.php:3501
+msgid "Clone Module"
+msgstr "Sao chép Mô-đun"
+
+#: functions.php:3243 functions.php:3244
+msgid "Remove Module"
+msgstr "Xóa Mô đun"
+
+#: functions.php:3254 functions.php:3255
+msgid "Unlock Module"
+msgstr "Mở Khoang"
+
+#: functions.php:3263 functions.php:3264
+msgid "Module Settings"
+msgstr "Thiết Lập Mô-đun"
+
+#: functions.php:3289
+msgid "Save & Exit"
+msgstr "Lưu & Thoát"
+
+#: functions.php:3298
+msgid "Save & Add To Library"
+msgstr "Lưu & Thêm vào Thư viện"
+
+#: functions.php:3384
+msgid "Insert Columns"
+msgstr "Chèn Cột"
+
+#: functions.php:3386
+msgid "New Row"
+msgstr "Dòng mới"
+
+#: functions.php:3428
+msgid "Insert Module"
+msgstr "Chèn Mô-đun"
+
+#: functions.php:3429
+msgid "New Module"
+msgstr "Mô đun mới"
+
+#: functions.php:3460 functions.php:4824
+msgid "Load Layout"
+msgstr "Tải Giao Diện"
+
+#: functions.php:3461
+msgid "Predefined Layouts"
+msgstr "Bố cục dựng sẵn"
+
+#: functions.php:3471
+msgid "Insert Module(s)"
+msgstr "Thêm Mô-đun"
+
+#: functions.php:3531
+msgid "Disable Builder"
+msgstr "Tắt trình tạo"
+
+#: functions.php:3532
+msgid ""
+"All content created in the Divi Builder will be lost. Previous content will "
+"be restored."
+msgstr ""
+"Tất cả nội dung được tạo trong Trình tạo Divi sẽ bị mất. Nội dung trước đó "
+"sẽ được khôi phục."
+
+#: functions.php:3533 functions.php:3546 functions.php:3557
+msgid "Do you wish to proceed?"
+msgstr "Bạn có muốn tiếp tục?"
+
+#: functions.php:3545
+msgid "All of your current page content will be lost."
+msgstr "Tất cả nội dung trong trang hiện tại của bạn sẽ bị mất."
+
+#: functions.php:3556
+msgid "All advanced module settings in will be lost."
+msgstr "Tất cả các thiết lập mô đun cao cấp sẽ bị mất."
+
+#: functions.php:3588 functions.php:4833
+msgid "Save To Library"
+msgstr "Lưu vào Thư viện"
+
+#: functions.php:3589
+msgid "Save your current page to the Divi Library for later use."
+msgstr "Lưu trang hiện tại của bạn vào Thư viện Divi để dùng về sau."
+
+#: functions.php:3590
+msgid "Layout Name:"
+msgstr "Tên Bố cục:"
+
+#: functions.php:3604
+msgid "Save And Add To Library"
+msgstr "Lưu và Thêm vào Thư viện"
+
+#: functions.php:3611
+msgid "Add To Categories:"
+msgstr "Thêm vào Các Mục:"
+
+#: functions.php:3632
+msgid "Create New Category"
+msgstr "Tạo Mục Mới"
+
+#: functions.php:3639
+msgid "Include General settings"
+msgstr "Bao gồm các thiết lập chung"
+
+#: functions.php:3645
+msgid "Include Advanced Design settings"
+msgstr "Bao gồm các thiết lập thiết kế cao cấp"
+
+#: functions.php:3699
+msgid ""
+"Here you can save the current item and add it to your Divi Library for later "
+"use as well."
+msgstr ""
+"Tại đây bạn có thể lưu mục dữ liệu hiện tại và thêm vào Thư viện Divi của "
+"bạn để dùng về sau."
+
+#: functions.php:3701
+msgid "Selective Sync"
+msgstr "Đồng bộ chọn lọc"
+
+#: functions.php:3705
+msgid "Please select at least 1 tab to save"
+msgstr "Vui lòng lựa chọn ít nhất một thẻ để lưu"
+
+#: functions.php:3706
+msgid "Save as Global:"
+msgstr "Lưu toàn cầu:"
+
+#: functions.php:3707
+msgid "Make this a global item"
+msgstr "Lưu thành một mục dữ liệu toàn cầu"
+
+#: functions.php:3735
+msgid "Add Specialty Section"
+msgstr "Thêm Vùng Chọn Dạng Đặc Biệt"
+
+#: functions.php:3793
+msgid "Mobile"
+msgstr "Mobil"
+
+#: functions.php:3794 functions.php:3825 main-modules.php:248
+#: main-modules.php:642 main-modules.php:897 main-modules.php:1101
+#: main-modules.php:1452 main-modules.php:1844 main-modules.php:2094
+#: main-modules.php:2576 main-modules.php:3871 main-modules.php:4463
+#: main-modules.php:4918 main-modules.php:5574 main-modules.php:5765
+#: main-modules.php:5984 main-modules.php:6356 main-modules.php:6788
+#: main-modules.php:7147 main-modules.php:7552 main-modules.php:7918
+#: main-modules.php:8322 main-modules.php:8518 main-modules.php:8687
+#: main-modules.php:9000 main-modules.php:9268 main-modules.php:9819
+#: main-modules.php:10017 main-modules.php:10294 main-modules.php:10735
+#: main-modules.php:11263 main-modules.php:11557 main-modules.php:11757
+#: main-modules.php:12019 main-modules.php:12573 main-modules.php:12932
+#: main-modules.php:13280 main-modules.php:13535 main-modules.php:14059
+#: main-modules.php:14537 main-modules.php:15040 main-modules.php:15403
+#: main-modules.php:15644 main-modules.php:15752 main-modules.php:15847
+#: main-modules.php:16062 main-modules.php:16452 main-modules.php:17148
+#: main-structure-elements.php:474 main-structure-elements.php:1375
+#: main-structure-elements.php:2070
+msgid "Tablet"
+msgstr "Máy tính bảng"
+
+#: functions.php:3795 functions.php:3824 main-modules.php:249
+#: main-modules.php:643 main-modules.php:898 main-modules.php:1102
+#: main-modules.php:1453 main-modules.php:1845 main-modules.php:2095
+#: main-modules.php:2577 main-modules.php:3872 main-modules.php:4464
+#: main-modules.php:4919 main-modules.php:5575 main-modules.php:5766
+#: main-modules.php:5985 main-modules.php:6357 main-modules.php:6789
+#: main-modules.php:7148 main-modules.php:7553 main-modules.php:7919
+#: main-modules.php:8323 main-modules.php:8519 main-modules.php:8688
+#: main-modules.php:9001 main-modules.php:9269 main-modules.php:9820
+#: main-modules.php:10018 main-modules.php:10295 main-modules.php:10736
+#: main-modules.php:11264 main-modules.php:11558 main-modules.php:11758
+#: main-modules.php:12020 main-modules.php:12574 main-modules.php:12933
+#: main-modules.php:13281 main-modules.php:13536 main-modules.php:14060
+#: main-modules.php:14538 main-modules.php:15041 main-modules.php:15404
+#: main-modules.php:15645 main-modules.php:15753 main-modules.php:15848
+#: main-modules.php:16063 main-modules.php:16453 main-modules.php:17149
+#: main-structure-elements.php:475 main-structure-elements.php:1376
+#: main-structure-elements.php:2071
+msgid "Desktop"
+msgstr "Màn hình"
+
+#: functions.php:3826
+msgid "Smartphone"
+msgstr "Điện thoại thông minh"
+
+#: functions.php:4055
+msgid "Configuration error"
+msgstr "Cấu hình lỗi"
+
+#: functions.php:4065
+msgid "Please enter first name"
+msgstr "Hãy nhập vào đầu tên"
+
+#: functions.php:4067
+msgid "Incorrect email"
+msgstr "Đúng email"
+
+#: functions.php:4069
+msgid "Configuration error: List is not defined"
+msgstr "Cấu hình lỗi: danh Sách không phải xác định"
+
+#: functions.php:4071
+msgid ""
+"<h2 class=\"et_pb_subscribed\">Subscribed - look for the confirmation email!"
+"</h2>"
+msgstr "<h2 class=\"et_pb_subscribed\">đăng ký - tìm xác nhận email!</h2>"
+
+#: functions.php:4088
+msgid "Configuration error: api key is not defined"
+msgstr "Cấu hình lỗi: api chìa khóa không xác định"
+
+#: functions.php:4124
+msgid "Aweber: Wrong configuration data"
+msgstr "Aweber: Sai dữ liệu cấu"
+
+#: functions.php:4155
+msgid "Connecting..."
+msgstr "Đang kết nối..."
+
+#: functions.php:4156
+msgid "Connection failed"
+msgstr "Kết nối thất bại"
+
+#: functions.php:4157
+msgid "Removing connection..."
+msgstr "Cắt liên hệ..."
+
+#: functions.php:4158
+msgid "Done"
+msgstr "Làm"
+
+#: functions.php:4187
+msgid ""
+"Step 1: <a href=\"%1$s\" target=\"_blank\">Generate authorization code</a>"
+msgstr "Bước 1: <a href=\"%1$s\" target=\"_blank\">Tạo ra lệnh mã</a>"
+
+#: functions.php:4188
+msgid ""
+"Step 2: Paste in the authorization code and click \"Make a connection\" "
+"button: "
+msgstr "Bước 2: Dán vào mã cho phép và nhấn \"kết nối\" nút: "
+
+#: functions.php:4189
+msgid "Make a connection"
+msgstr "Tạo kết nối"
+
+#: functions.php:4192
+msgid "Aweber is set up properly. You can remove connection here if you wish."
+msgstr ""
+"Aweber là sắp đặt đúng chỗ. Cậu có thể gỡ bỏ việc kết nối ở đây nếu cậu muốn."
+
+#: functions.php:4193
+msgid "Remove the connection"
+msgstr "Bỏ cái kết nối"
+
+#: functions.php:4201
+msgid "Nonce failed."
+msgstr "Nonce thất bại."
+
+#: functions.php:4207
+msgid "Authorization code is empty."
+msgstr "Xin phép mật mã là trống rỗng."
+
+#: functions.php:4218
+msgid ""
+"Authorization code is invalid. Try regenerating it and paste in the new code."
+msgstr ""
+"Cho phép điều lệ là không hợp lệ. Thử regenerating và dán mới trong mật mã."
+
+#: functions.php:4240
+msgid "Aweber API Exception"
+msgstr "Aweber API ngoại Lệ"
+
+#: functions.php:4241 main-modules.php:9577 main-modules.php:11169
+msgid "Type"
+msgstr "Kiểu"
+
+#: functions.php:4242 main-modules.php:9303
+msgid "Message"
+msgstr "Tin nhắn"
+
+#: functions.php:4243
+msgid "Documentation"
+msgstr "Có tài liệu"
+
+#: functions.php:4253
+msgid "Nonce failed"
+msgstr "Nonce thất bại"
+
+#: functions.php:4268
+msgid "Projects"
+msgstr "Dự án"
+
+#: functions.php:4269
+msgid "Project"
+msgstr "Dự án"
+
+#: functions.php:4270
+msgid "Add New"
+msgstr "Thêm Mới"
+
+#: functions.php:4271
+msgid "Add New Project"
+msgstr "Thêm Dự Án Mới"
+
+#: functions.php:4272
+msgid "Edit Project"
+msgstr "Sửa Dự Án"
+
+#: functions.php:4273
+msgid "New Project"
+msgstr "Dự Án Mới"
+
+#: functions.php:4274
+msgid "All Projects"
+msgstr "Tất Cả Trong Dự Án"
+
+#: functions.php:4275
+msgid "View Project"
+msgstr "Xem Dự Án"
+
+#: functions.php:4276
+msgid "Search Projects"
+msgstr "Tìm Kiếm Dự Án"
+
+#: functions.php:4277 layouts.php:13
+msgid "Nothing found"
+msgstr "Không thấy gì"
+
+#: functions.php:4278 layouts.php:14
+msgid "Nothing found in Trash"
+msgstr "Không thấy gì trong Thùng rác"
+
+#: functions.php:4305
+msgid "Project Categories"
+msgstr "Dự Án Phân Loại"
+
+#: functions.php:4306
+msgid "Project Category"
+msgstr "Dự Án Phân Loại"
+
+#: functions.php:4307
+msgid "Search Categories"
+msgstr "Lục Phân Loại"
+
+#: functions.php:4309
+msgid "Parent Category"
+msgstr "Cha Mẹ Phân Loại"
+
+#: functions.php:4310
+msgid "Parent Category:"
+msgstr "Cha Mẹ Loại:"
+
+#: functions.php:4311
+msgid "Edit Category"
+msgstr "Sửa Phân Loại"
+
+#: functions.php:4312
+msgid "Update Category"
+msgstr "Cập Nhật Phân Loại"
+
+#: functions.php:4313
+msgid "Add New Category"
+msgstr "Thêm Mới Phân Loại"
+
+#: functions.php:4314
+msgid "New Category Name"
+msgstr "Phân Loại Mới Tên"
+
+#: functions.php:4315
+msgid "Categories"
+msgstr "Phân loại"
+
+#: functions.php:4327
+msgid "Project Tags"
+msgstr "Dự Án Thẻ"
+
+#: functions.php:4328
+msgid "Project Tag"
+msgstr "Dự Án Thẻ"
+
+#: functions.php:4329
+msgid "Search Tags"
+msgstr "Tìm Thẻ"
+
+#: functions.php:4330
+msgid "All Tags"
+msgstr "Tất Cả Thẻ"
+
+#: functions.php:4331
+msgid "Parent Tag"
+msgstr "Cha Mẹ Thẻ"
+
+#: functions.php:4332
+msgid "Parent Tag:"
+msgstr "Cha Mẹ Thẻ:"
+
+#: functions.php:4333
+msgid "Edit Tag"
+msgstr "Sửa Thẻ"
+
+#: functions.php:4334
+msgid "Update Tag"
+msgstr "Cập Nhật Thẻ"
+
+#: functions.php:4335
+msgid "Add New Tag"
+msgstr "Thêm Thẻ Mới"
+
+#: functions.php:4336
+msgid "New Tag Name"
+msgstr "Thẻ Mới Tên"
+
+#: functions.php:4337
+msgid "Tags"
+msgstr "Thẻ"
+
+#: functions.php:4397
+msgid "Read more"
+msgstr "Đọc sách nhiều hơn."
+
+#: functions.php:4765
+msgid "Theme Customizer"
+msgstr "Bộ Tùy chỉnh Chủ đề"
+
+#: functions.php:4770
+msgid "Module Customizer"
+msgstr "Bộ Tùy chỉnh Mô đun"
+
+#: functions.php:4775
+msgid "Page Options"
+msgstr "Trang Lựa Chọn"
+
+#: functions.php:4786
+msgid "Plugin Options"
+msgstr "Bổ Sung Lựa Chọn"
+
+#: functions.php:4786
+msgid "Theme Options"
+msgstr "Sắc Lựa Chọn"
+
+#: functions.php:4791
+msgid "Divi Library"
+msgstr "Thư viện Divi"
+
+#: functions.php:4797
+msgid "Builder Interface"
+msgstr "Xây Dựng Diện"
+
+#: functions.php:4800
+msgid "Add/Delete Item"
+msgstr "Thêm/Bỏ Mục"
+
+#: functions.php:4804
+msgid "Edit Item"
+msgstr "Sửa Món"
+
+#: functions.php:4808
+msgid "Move Item"
+msgstr "Di Chuyển Mục"
+
+#: functions.php:4812
+msgid "Disable Item"
+msgstr "Tắt Mục"
+
+#: functions.php:4816
+msgid "Lock Item"
+msgstr "Khóa Mục"
+
+#: functions.php:4820
+msgid "Toggle Divi Builder"
+msgstr "Bật Tắt Divi Xây Dựng"
+
+#: functions.php:4830
+msgid "Library Settings"
+msgstr "Thư Viện Thiết Lập"
+
+#: functions.php:4841
+msgid "Edit Global Items"
+msgstr "Sửa Đổi Toàn Cục Mục"
+
+#: functions.php:4847
+msgid "Settings Tabs"
+msgstr "Thiết Lập Thẻ"
+
+#: functions.php:4854
+msgid "Advanced Settings"
+msgstr "Nâng Cao Thiết Lập"
+
+#: functions.php:4864
+msgid "Settings Types"
+msgstr "Thiết Lập Kiểu"
+
+#: functions.php:4867
+msgid "Edit Colors"
+msgstr "Sửa Đổi Màu Sắc"
+
+#: functions.php:4871
+msgid "Edit Content"
+msgstr "Sửa Nội Dung"
+
+#: functions.php:4875
+msgid "Edit Fonts"
+msgstr "Sửa Phông"
+
+#: functions.php:4879
+msgid "Edit Buttons"
+msgstr "Sửa Nút"
+
+#: functions.php:4883 layouts.php:8
+msgid "Edit Layout"
+msgstr "Sửa Bố trí"
+
+#: functions.php:4887
+msgid "Edit Configuration"
+msgstr "Sửa Đổi Cấu"
+
+#: functions.php:4893
+msgid "Module Use"
+msgstr "Sử Dụng Module"
+
+#: functions.php:4933
+msgid "Administrator"
+msgstr "Quản trị"
+
+#: functions.php:4934
+msgid "Editor"
+msgstr "Biên tập"
+
+#: functions.php:4935
+msgid "Author"
+msgstr "Tác giả"
+
+#: functions.php:4936
+msgid "Contributor"
+msgstr "Người đóng góp"
+
+#: functions.php:4971
+msgid "Divi Role Editor"
+msgstr "Divi Vai Biên Tập"
+
+#: functions.php:4972
+msgid "Save Divi Roles"
+msgstr "Cứu Divi Nhiệm Vụ"
+
+#: functions.php:5011
+msgid ""
+"Using the Divi Role Editor, you can limit the types of actions that can be "
+"taken by WordPress users of different roles. This is a great way to limit "
+"the functionality available to your customers or guest authors to ensure "
+"that they only have the necessary options available to them."
+msgstr ""
+"Dùng Divi Vai Biên tập, anh có thể hạn chế các loại hành động cũng có thể bị "
+"cướp bởi WordPress người khác nhau nhiệm vụ. Đây là một cách tuyệt vời, để "
+"giới hạn những chức năng sẵn sàng cho những khách hàng của ông hay khách tác "
+"giả để bảo đảm rằng họ chỉ cần thiết lựa chọn sẵn sàng cho họ."
+
+#: functions.php:5079
+msgid "Reset Roles"
+msgstr "Đặt Lại Nhiệm Vụ"
+
+#: functions.php:5080
+msgid ""
+"All of your current role settings will be set to defaults. Do you wish to "
+"proceed?"
+msgstr ""
+"Tất cả hiện tại của ông vai thiết lập sẽ được đặt để mặc định. Anh có muốn "
+"tiếp tục không?"
+
+#: functions.php:5082 main-modules.php:2933 main-modules.php:2953
+#: main-modules.php:3530 main-modules.php:3550 main-modules.php:3602
+#: main-modules.php:3637 main-modules.php:3694 main-modules.php:3713
+#: main-modules.php:16807 main-modules.php:16827 main-modules.php:16879
+#: main-modules.php:16914 main-modules.php:16971 main-modules.php:16990
+msgid "no"
+msgstr "không"
+
+#. translators: 1: date, 2: time
+#: functions.php:5424
+msgid "on %1$s at %2$s"
+msgstr "trên %1$s lúc %2$s"
+
+#: functions.php:5427
+msgid "(Edit)"
+msgstr "(Sửa)"
+
+#: functions.php:5430
+msgid "Reply"
+msgstr "Hồi đáp"
+
+#: functions.php:5439
+msgid "Your comment is awaiting moderation."
+msgstr "Lời bình của bạn đang đợi xem xét."
+
+#: layouts.php:7
+msgid "Add New Layout"
+msgstr "Thêm Bố trí Mới"
+
+#: layouts.php:9
+msgid "New Layout"
+msgstr "Bố trí Mới"
+
+#: layouts.php:11
+msgid "View Layout"
+msgstr "Xem Bố trí"
+
+#: layouts.php:12
+msgid "Search Layouts"
+msgstr "Tìm Bố trí"
+
+#: layouts.php:40
+msgid "Scope"
+msgstr "Phạm vi"
+
+#: layouts.php:53
+msgid "Layout Type"
+msgstr "Loại bố cục"
+
+#: layouts.php:66
+msgid "Module Width"
+msgstr "Chiều rộng mô đun"
+
+#: layouts.php:79
+msgid "Category"
+msgstr "Mục"
+
+#: layouts.php:142
+msgid "Built For Any"
+msgstr "Tạo Cho Bất kỳ"
+
+#: layouts.php:167
+msgid "Built For"
+msgstr "Tạo Cho"
+
+#: layouts.php:168
+msgid "Global Layout"
+msgstr "Bố trí Toàn cục"
+
+#: layouts.php:180
+msgid "Standard"
+msgstr "Chuẩn"
+
+#: layouts.php:421
+msgid "Homepage Basic"
+msgstr "Trang chủ Cơ bản"
+
+#: layouts.php:429
+msgid "Homepage Shop"
+msgstr "Trang chủ Cửa hàng"
+
+#: layouts.php:439
+msgid "Homepage Portfolio"
+msgstr "Trang chủ Hồ sơ"
+
+#: layouts.php:447
+msgid "Homepage Company"
+msgstr "Trang chủ Công ty"
+
+#: layouts.php:455
+msgid "Homepage Corporate"
+msgstr "Trang chủ Doanh nghiệp"
+
+#: layouts.php:466
+msgid "Homepage Extended"
+msgstr "Trang chủ Mở rộng"
+
+#: layouts.php:475
+msgid "Page Fullwidth"
+msgstr "Trang Toàn bề rộng"
+
+#: layouts.php:509
+msgid "Page Right Sidebar"
+msgstr "Trang Thanh trượt Phải"
+
+#: layouts.php:543
+msgid "Page Left Sidebar"
+msgstr "Trang Thanh trượt Trái"
+
+#: layouts.php:577
+msgid "Page Dual Sidebars"
+msgstr "Trang Hai Thanh Trượt"
+
+#: layouts.php:599
+msgid "Portfolio Grid"
+msgstr "Hồ Sơ Dạng Lưới"
+
+#: layouts.php:607
+msgid "Portfolio 1 Column"
+msgstr "Hồ Sơ 1 Cột"
+
+#: layouts.php:615
+msgid "Portfolio Fullwidth Carousel"
+msgstr "Hồ Sơ Dạng Cuộn Toàn Bề Rộng"
+
+#: layouts.php:623
+msgid "Portfolio Fullwidth Grid"
+msgstr "Hồ Sơ Dạng Lưới Toàn Bề Rộng"
+
+#: layouts.php:631
+msgid "Project Extended"
+msgstr "Dự Án Đã Mở Rộng"
+
+#: layouts.php:641
+msgid "Project Extended 2"
+msgstr "Dự Án Đã Mở Rộng 2"
+
+#: layouts.php:654
+msgid "Blog Masonry"
+msgstr "Blog Kẻ Lưới Xen Kẽ"
+
+#: layouts.php:662
+msgid "Blog Standard"
+msgstr "Blog Dạng Lưới"
+
+#: layouts.php:670
+msgid "Shop Basic"
+msgstr "Mua Sắm Cơ Bản"
+
+#: layouts.php:678
+msgid "Shop Extended"
+msgstr "Mua Sắm Mở Rộng"
+
+#: layouts.php:686
+msgid "Splash Page"
+msgstr "Trang Giới Thiệu"
+
+#: layouts.php:697
+msgid "Maintenance Mode"
+msgstr "Chế Độ Bảo Trì"
+
+#: layouts.php:706
+msgid "Coming Soon"
+msgstr "Sắp Ra Mắt"
+
+#: layouts.php:714
+msgid "Landing Page"
+msgstr "Trang Đích"
+
+#: layouts.php:723
+msgid "About Me"
+msgstr "Giới Thiệu Bản Thân"
+
+#: layouts.php:732
+msgid "About Us"
+msgstr "Giới Thiệu Về Chúng Tôi"
+
+#: layouts.php:741
+msgid "Contact Us"
+msgstr "Liên Hệ Với Chúng Tôi"
+
+#: layouts.php:757
+msgid "Our Team"
+msgstr "Nhóm Của Chúng Tôi"
+
+#: layouts.php:870
+msgid "Creative Agency"
+msgstr "Cơ Quan Sáng Tạo"
+
+#: layouts.php:879
+msgid "Sales Page"
+msgstr "Trang Kinh Doanh"
+
+#: layouts.php:915
+msgid "Case Study"
+msgstr "Nghiên Cứu Tình Huống"
+
+#: layouts.php:925
+msgid "Product Features"
+msgstr "Tính Năng Sản Phẩm"
+
+#: main-modules.php:4 main-modules.php:1733 main-modules.php:11140
+msgid "Image"
+msgstr "Ảnh"
+
+#: main-modules.php:56 main-modules.php:1762 main-modules.php:10230
+#: main-modules.php:16048
+msgid "Left To Right"
+msgstr "Trái Sang Phải"
+
+#: main-modules.php:57 main-modules.php:1763 main-modules.php:10231
+#: main-modules.php:16049
+msgid "Right To Left"
+msgstr "Phải Sang Trái"
+
+#: main-modules.php:58 main-modules.php:1761 main-modules.php:10232
+#: main-modules.php:16050
+msgid "Top To Bottom"
+msgstr "Trên Xuống Dưới"
+
+#: main-modules.php:59 main-modules.php:1764 main-modules.php:10233
+#: main-modules.php:16051
+msgid "Bottom To Top"
+msgstr "Dưới Lên Trên"
+
+#: main-modules.php:60 main-modules.php:10229 main-modules.php:16052
+msgid "Fade In"
+msgstr "Từ Từ Đưa Vào"
+
+#: main-modules.php:61 main-modules.php:1765 main-modules.php:10228
+#: main-modules.php:16053
+msgid "No Animation"
+msgstr "Không Ảnh Động"
+
+#: main-modules.php:85 main-modules.php:10215 main-modules.php:15947
+msgid "Image URL"
+msgstr "URL Ảnh"
+
+#: main-modules.php:89 main-modules.php:877 main-modules.php:1256
+#: main-modules.php:1737 main-modules.php:4368 main-modules.php:5960
+#: main-modules.php:10219 main-modules.php:13959 main-modules.php:14001
+#: main-modules.php:14034 main-modules.php:15951
+msgid "Choose an Image"
+msgstr "CHọn Ảnh"
+
+#: main-modules.php:90 main-modules.php:878 main-modules.php:1257
+#: main-modules.php:1738 main-modules.php:4369 main-modules.php:5961
+#: main-modules.php:10220 main-modules.php:13960 main-modules.php:14002
+#: main-modules.php:14035 main-modules.php:15952
+msgid "Set As Image"
+msgstr "Thiết Lập Làm Ảnh"
+
+#: main-modules.php:91 main-modules.php:4370 main-modules.php:5962
+#: main-modules.php:10221 main-modules.php:13961 main-modules.php:14003
+#: main-modules.php:14036 main-modules.php:15953
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"display."
+msgstr "Tải ảnh mong muốn của bạn, hoặc gõ vào URL đến ảnh bạn muốn hiển thị."
+
+#: main-modules.php:94 main-modules.php:2985 main-modules.php:15956
+msgid "Image Alternative Text"
+msgstr "Dòng Chữ Thay Thế Ảnh"
+
+#: main-modules.php:97 main-modules.php:14009 main-modules.php:15959
+msgid ""
+"This defines the HTML ALT text. A short description of your image can be "
+"placed here."
+msgstr ""
+"Tùy chọn này xác định dòng chữ thay thế cho ảnh. Có thể đặt mô tả ngắn về "
+"ảnh của bạn ở đây."
+
+#: main-modules.php:100 main-modules.php:15962
+msgid "Image Title Text"
+msgstr "Dòng Chữ Tiêu Đề Ảnh"
+
+#: main-modules.php:103 main-modules.php:14015 main-modules.php:15965
+msgid "This defines the HTML Title text."
+msgstr "Tùy chọn này xác định Dòng Chữ Tiêu Đề HTML."
+
+#: main-modules.php:106
+msgid "Open in Lightbox"
+msgstr "Mở bằng Lightbox"
+
+#: main-modules.php:118 main-modules.php:15980
+msgid ""
+"Here you can choose whether or not the image should open in Lightbox. Note: "
+"if you select to open the image in Lightbox, url options below will be "
+"ignored."
+msgstr ""
+"Tại đây bạn có thể chọn ảnh có hoặc không nên mở dưới dạng Lightbox. Lưu ý: "
+"nếu bạn chọn mở ảnh dưới dạng Lightbox, URL tùy chọn bên dưới sẽ bị bỏ qua."
+
+#: main-modules.php:121 main-modules.php:15983
+msgid "Link URL"
+msgstr "Liên kết URL"
+
+#: main-modules.php:128 main-modules.php:15990
+msgid ""
+"If you would like your image to be a link, input your destination URL here. "
+"No link will be created if this field is left blank."
+msgstr ""
+"Nếu bạn muốn ảnh của mình dưới dạng liên kết, nhập URL đích của bạn vào đây. "
+"Sẽ không có liên kết nào được tạo ra nếu ô này bị để trống."
+
+#: main-modules.php:131 main-modules.php:1649 main-modules.php:5498
+#: main-modules.php:5724 main-modules.php:11995 main-modules.php:15993
+msgid "Url Opens"
+msgstr "URL Mở"
+
+#: main-modules.php:135 main-modules.php:1653 main-modules.php:4358
+#: main-modules.php:5502 main-modules.php:5728 main-modules.php:11999
+#: main-modules.php:15997
+msgid "In The Same Window"
+msgstr "Trong Cùng Cửa Sổ"
+
+#: main-modules.php:136 main-modules.php:1654 main-modules.php:4359
+#: main-modules.php:5503 main-modules.php:5729 main-modules.php:12000
+#: main-modules.php:15998
+msgid "In The New Tab"
+msgstr "Dưới Dạng Thẻ Mới"
+
+#: main-modules.php:139 main-modules.php:1656 main-modules.php:5505
+#: main-modules.php:5731 main-modules.php:12002 main-modules.php:16001
+msgid "Here you can choose whether or not your link opens in a new window"
+msgstr ""
+"Tại đây bạn có thể chọn liệu liên kết của bạn sẽ mở trong cửa sổ mới hay "
+"không"
+
+#: main-modules.php:142 main-modules.php:16004
+msgid "Image Overlay"
+msgstr "Chồng Ảnh"
+
+#: main-modules.php:155 main-modules.php:16017
+msgid ""
+"If enabled, an overlay color and icon will be displayed when a visitors "
+"hovers over the image"
+msgstr ""
+"Nếu bật, khi khách thăm lượn qua ảnh sẽ hiển thị màu và biểu tượng chồng"
+
+#: main-modules.php:158 main-modules.php:10678 main-modules.php:16020
+msgid "Overlay Icon Color"
+msgstr "Màu Biểu tượng Chồng"
+
+#: main-modules.php:162 main-modules.php:10682 main-modules.php:16024
+msgid "Here you can define a custom color for the overlay icon"
+msgstr "Ở đây bạn có thể định nghĩa màu tuỳ biến cho biểu tượng chồng"
+
+#: main-modules.php:165 main-modules.php:622 main-modules.php:7128
+#: main-modules.php:7542 main-modules.php:10685 main-modules.php:11244
+#: main-modules.php:15384 main-modules.php:16027
+msgid "Hover Overlay Color"
+msgstr "Màu của Hình đè khi di chuột"
+
+#: main-modules.php:169 main-modules.php:10689 main-modules.php:16031
+msgid "Here you can define a custom color for the overlay"
+msgstr "Ở đây bạn có thể định nghĩa màu tuỳ biến cho phần chồng"
+
+#: main-modules.php:172 main-modules.php:629 main-modules.php:7134
+#: main-modules.php:7527 main-modules.php:10692 main-modules.php:11250
+#: main-modules.php:15390 main-modules.php:16034
+msgid "Hover Icon Picker"
+msgstr "Công cụ chọn Biểu tượng khi di chuột"
+
+#: main-modules.php:179 main-modules.php:10699 main-modules.php:16041
+msgid "Here you can define a custom icon for the overlay"
+msgstr "Ở đây bạn có thể định nghĩa biểu tượng tuỳ biến cho phần chồng"
+
+#: main-modules.php:182 main-modules.php:10224 main-modules.php:16044
+msgid "Animation"
+msgstr "Ảnh Động"
+
+#: main-modules.php:186 main-modules.php:1767 main-modules.php:10235
+#: main-modules.php:16055
+msgid "This controls the direction of the lazy-loading animation."
+msgstr "Nút này điều khiển hướng ảnh động."
+
+#: main-modules.php:189
+msgid "Remove Space Below The Image"
+msgstr "Xóa Khoảng Trắng Dưới Ảnh"
+
+#: main-modules.php:196
+msgid ""
+"Here you can choose whether or not the image should have a space below it."
+msgstr ""
+"Tại đây bạn có thể chọn liệu ảnh nên có khoảng trắng bên dưới nó hay không."
+
+#: main-modules.php:199
+msgid "Image Alignment"
+msgstr "Căn chỉnh Hình ảnh"
+
+#: main-modules.php:207
+msgid "Here you can choose the image alignment."
+msgstr "Bạn có thể chọn thiết lập căn chỉnh hình ảnh tại đây."
+
+#: main-modules.php:210 main-modules.php:1793
+msgid "Image Max Width"
+msgstr "Chiều rộng Tối đa của Hình ảnh"
+
+#: main-modules.php:218
+msgid "Force Fullwidth"
+msgstr "Chọn Chiều rộng Tối đa"
+
+#: main-modules.php:228
+msgid "Always Center Image On Mobile"
+msgstr "Luôn đặt Hình ảnh vào Trung tâm trên Điện thoại"
+
+#: main-modules.php:244 main-modules.php:638 main-modules.php:893
+#: main-modules.php:1097 main-modules.php:1448 main-modules.php:1840
+#: main-modules.php:2090 main-modules.php:2572 main-modules.php:3867
+#: main-modules.php:4459 main-modules.php:4914 main-modules.php:5570
+#: main-modules.php:5761 main-modules.php:5980 main-modules.php:6352
+#: main-modules.php:6784 main-modules.php:7143 main-modules.php:7548
+#: main-modules.php:7914 main-modules.php:8318 main-modules.php:8514
+#: main-modules.php:8683 main-modules.php:8996 main-modules.php:9264
+#: main-modules.php:9815 main-modules.php:10013 main-modules.php:10290
+#: main-modules.php:10731 main-modules.php:11259 main-modules.php:11553
+#: main-modules.php:11753 main-modules.php:12015 main-modules.php:12569
+#: main-modules.php:12928 main-modules.php:13276 main-modules.php:13531
+#: main-modules.php:14055 main-modules.php:14533 main-modules.php:15036
+#: main-modules.php:15399 main-modules.php:15640 main-modules.php:15748
+#: main-modules.php:15843 main-modules.php:16058 main-modules.php:16448
+#: main-modules.php:17144 main-structure-elements.php:470
+#: main-structure-elements.php:1371 main-structure-elements.php:2066
+msgid "Disable on"
+msgstr "Tắt vào"
+
+#: main-modules.php:247 main-modules.php:641 main-modules.php:896
+#: main-modules.php:1100 main-modules.php:1451 main-modules.php:1843
+#: main-modules.php:2093 main-modules.php:2575 main-modules.php:3870
+#: main-modules.php:4462 main-modules.php:4917 main-modules.php:5573
+#: main-modules.php:5764 main-modules.php:5983 main-modules.php:6355
+#: main-modules.php:6787 main-modules.php:7146 main-modules.php:7551
+#: main-modules.php:7917 main-modules.php:8321 main-modules.php:8517
+#: main-modules.php:8686 main-modules.php:8999 main-modules.php:9267
+#: main-modules.php:9818 main-modules.php:10016 main-modules.php:10293
+#: main-modules.php:10734 main-modules.php:11262 main-modules.php:11556
+#: main-modules.php:11756 main-modules.php:12018 main-modules.php:12572
+#: main-modules.php:12931 main-modules.php:13279 main-modules.php:13534
+#: main-modules.php:14058 main-modules.php:14536 main-modules.php:15039
+#: main-modules.php:15402 main-modules.php:15643 main-modules.php:15751
+#: main-modules.php:15846 main-modules.php:16061 main-modules.php:16451
+#: main-modules.php:17147 main-structure-elements.php:473
+#: main-structure-elements.php:1374 main-structure-elements.php:2069
+msgid "Phone"
+msgstr "Điện thoại"
+
+#: main-modules.php:253 main-modules.php:647 main-modules.php:902
+#: main-modules.php:1106 main-modules.php:1457 main-modules.php:1849
+#: main-modules.php:2099 main-modules.php:2581 main-modules.php:3876
+#: main-modules.php:4468 main-modules.php:4923 main-modules.php:5579
+#: main-modules.php:5770 main-modules.php:5989 main-modules.php:6361
+#: main-modules.php:6793 main-modules.php:7152 main-modules.php:7557
+#: main-modules.php:7923 main-modules.php:8327 main-modules.php:8523
+#: main-modules.php:8692 main-modules.php:9005 main-modules.php:9273
+#: main-modules.php:9824 main-modules.php:10022 main-modules.php:10299
+#: main-modules.php:10740 main-modules.php:11268 main-modules.php:11562
+#: main-modules.php:11762 main-modules.php:12024 main-modules.php:12578
+#: main-modules.php:12937 main-modules.php:13285 main-modules.php:13540
+#: main-modules.php:14064 main-modules.php:14542 main-modules.php:15045
+#: main-modules.php:15408 main-modules.php:15649 main-modules.php:15757
+#: main-modules.php:15852 main-modules.php:16067 main-modules.php:16457
+#: main-modules.php:17153 main-structure-elements.php:479
+#: main-structure-elements.php:1380 main-structure-elements.php:2075
+msgid "This will disable the module on selected devices"
+msgstr "Thao tác này sẽ tắt đơn thể trên thiết bị được chọn"
+
+#: main-modules.php:256 main-modules.php:650 main-modules.php:905
+#: main-modules.php:1109 main-modules.php:1227 main-modules.php:1460
+#: main-modules.php:1852 main-modules.php:2102 main-modules.php:2584
+#: main-modules.php:3061 main-modules.php:3879 main-modules.php:4471
+#: main-modules.php:4926 main-modules.php:5582 main-modules.php:5773
+#: main-modules.php:5992 main-modules.php:6364 main-modules.php:6796
+#: main-modules.php:7155 main-modules.php:7560 main-modules.php:7926
+#: main-modules.php:8330 main-modules.php:8526 main-modules.php:8695
+#: main-modules.php:9008 main-modules.php:9276 main-modules.php:9827
+#: main-modules.php:10025 main-modules.php:10302 main-modules.php:10743
+#: main-modules.php:11271 main-modules.php:11565 main-modules.php:11765
+#: main-modules.php:12027 main-modules.php:12581 main-modules.php:12940
+#: main-modules.php:13288 main-modules.php:13543 main-modules.php:14067
+#: main-modules.php:14545 main-modules.php:15048 main-modules.php:15411
+#: main-modules.php:15652 main-modules.php:15760 main-modules.php:15855
+#: main-modules.php:16070 main-modules.php:16460 main-modules.php:17156
+#: main-structure-elements.php:1180
+msgid "Admin Label"
+msgstr "Nhãn Quản Trị"
+
+#: main-modules.php:258 main-modules.php:652 main-modules.php:907
+#: main-modules.php:1111 main-modules.php:1462 main-modules.php:1854
+#: main-modules.php:2104 main-modules.php:2586 main-modules.php:3881
+#: main-modules.php:4473 main-modules.php:4928 main-modules.php:5584
+#: main-modules.php:5775 main-modules.php:5994 main-modules.php:6366
+#: main-modules.php:6798 main-modules.php:7157 main-modules.php:7562
+#: main-modules.php:7928 main-modules.php:8332 main-modules.php:8528
+#: main-modules.php:8697 main-modules.php:9010 main-modules.php:9278
+#: main-modules.php:9829 main-modules.php:10027 main-modules.php:10304
+#: main-modules.php:10745 main-modules.php:11273 main-modules.php:11567
+#: main-modules.php:11767 main-modules.php:12029 main-modules.php:12583
+#: main-modules.php:12942 main-modules.php:13290 main-modules.php:13545
+#: main-modules.php:14069 main-modules.php:14547 main-modules.php:15050
+#: main-modules.php:15413 main-modules.php:15654 main-modules.php:15762
+#: main-modules.php:15857 main-modules.php:16072 main-modules.php:16462
+#: main-modules.php:17158
+msgid ""
+"This will change the label of the module in the builder for easy "
+"identification."
+msgstr ""
+"Tùy chọn này sẽ thay đổi nhãn của mô-đun trong chương trình tạo để dễ nhận "
+"biết."
+
+#: main-modules.php:426
+msgid "Gallery"
+msgstr "Thư Viện"
+
+#: main-modules.php:462 main-modules.php:5870
+msgid "Caption"
+msgstr "Đầu đề"
+
+#: main-modules.php:476 main-modules.php:1637 main-modules.php:2254
+#: main-modules.php:5284 main-modules.php:5486 main-modules.php:5864
+#: main-modules.php:5938 main-modules.php:6254 main-modules.php:6682
+#: main-modules.php:7013 main-modules.php:7392 main-modules.php:7811
+#: main-modules.php:8045 main-modules.php:8230 main-modules.php:8263
+#: main-modules.php:8436 main-modules.php:8477 main-modules.php:8835
+#: main-modules.php:8908 main-modules.php:8956 main-modules.php:9135
+#: main-modules.php:9208 main-modules.php:9572 main-modules.php:9770
+#: main-modules.php:10186 main-modules.php:10512 main-modules.php:11110
+#: main-modules.php:11148 main-modules.php:11499 main-modules.php:11853
+#: main-modules.php:12356 main-modules.php:12372 main-modules.php:13700
+#: main-modules.php:13786 main-modules.php:13811 main-modules.php:15231
+#: main-modules.php:16249
+msgid "Title"
+msgstr "Tiêu đề"
+
+#: main-modules.php:491
+msgid "Gallery Item"
+msgstr "Mục Thư viện Ảnh"
+
+#: main-modules.php:495 main-modules.php:7039 main-modules.php:7436
+#: main-modules.php:11144
+msgid "Overlay"
+msgstr "Hình đè"
+
+#: main-modules.php:499 main-modules.php:7043 main-modules.php:7440
+msgid "Overlay Icon"
+msgstr "Biểu tượng Hình đè"
+
+#: main-modules.php:503
+msgid "Gallery Item Title"
+msgstr "Tên Mục Thư viện Ảnh"
+
+#: main-modules.php:507
+msgid "Gallery Item Caption"
+msgstr "Phụ đề Mục Phòng tranh"
+
+#: main-modules.php:511
+msgid "Gallery Pagination"
+msgstr "Phân trang Phòng tranh"
+
+#: main-modules.php:515 main-modules.php:7456
+msgid "Pagination Active Page"
+msgstr "Trang Hoạt hoá Phân trang"
+
+#: main-modules.php:524 main-modules.php:533
+msgid "Gallery Images"
+msgstr "Ảnh Thư Viện"
+
+#: main-modules.php:542 main-modules.php:2296
+msgid "Slider"
+msgstr "Thanh Trượt"
+
+#: main-modules.php:543 main-modules.php:7065 main-modules.php:7470
+#: main-modules.php:10542 main-modules.php:15307
+msgid "Grid"
+msgstr "Lưới"
+
+#: main-modules.php:545 main-modules.php:10549
+msgid "Toggle between the various blog layout types."
+msgstr "Chuyển đổi giữa nhiều loại giao diện blog khác nhau."
+
+#: main-modules.php:557
+msgid "Images Number"
+msgstr "Số Lượng Ảnh"
+
+#: main-modules.php:560
+msgid "Define the number of images that should be displayed per page."
+msgstr "Xác định số lượng ảnh đó nên hiển thị trên mỗi trang."
+
+#: main-modules.php:564
+msgid "Show Title and Caption"
+msgstr "Hiển Thị Tiêu Đề và Chú Thích"
+
+#: main-modules.php:571
+msgid ""
+"Here you can choose whether to show the images title and caption, if the "
+"image has them."
+msgstr ""
+"Tại đây bạn có thể chọn hiển thị tiêu đề và chú thích ảnh, nếu ảnh có chứa "
+"chúng."
+
+#: main-modules.php:574 main-modules.php:7102 main-modules.php:7507
+#: main-modules.php:10647
+msgid "Show Pagination"
+msgstr "Hiện Phân trang"
+
+#: main-modules.php:581 main-modules.php:7109 main-modules.php:7514
+msgid "Enable or disable pagination for this feed."
+msgstr "Kích hoạt hoặc vô hiệu hóa Phân trang cho nguồn dữ liệu này."
+
+#: main-modules.php:584 main-modules.php:1411 main-modules.php:1770
+#: main-modules.php:2991 main-modules.php:3622 main-modules.php:4402
+#: main-modules.php:5533 main-modules.php:5751 main-modules.php:5970
+#: main-modules.php:6285 main-modules.php:6717 main-modules.php:7112
+#: main-modules.php:7517 main-modules.php:7851 main-modules.php:8286
+#: main-modules.php:8504 main-modules.php:9795 main-modules.php:10238
+#: main-modules.php:10702 main-modules.php:11524 main-modules.php:11985
+#: main-modules.php:12535 main-modules.php:12827 main-modules.php:13254
+#: main-modules.php:13823 main-modules.php:14448 main-modules.php:15347
+#: main-modules.php:16414 main-modules.php:16899
+msgid "Text Color"
+msgstr "Màu Chữ"
+
+#: main-modules.php:588 main-modules.php:1080 main-modules.php:1271
+#: main-modules.php:1415 main-modules.php:1774 main-modules.php:2996
+#: main-modules.php:3627 main-modules.php:4406 main-modules.php:5538
+#: main-modules.php:5755 main-modules.php:5975 main-modules.php:6290
+#: main-modules.php:6722 main-modules.php:7116 main-modules.php:7521
+#: main-modules.php:7855 main-modules.php:8290 main-modules.php:8508
+#: main-modules.php:9799 main-modules.php:10242 main-modules.php:10706
+#: main-modules.php:11528 main-modules.php:11989 main-modules.php:12539
+#: main-modules.php:12831 main-modules.php:13258 main-modules.php:13827
+#: main-modules.php:14452 main-modules.php:15351 main-modules.php:16418
+#: main-modules.php:16904
+msgid "Dark"
+msgstr "Tối"
+
+#: main-modules.php:589 main-modules.php:1079 main-modules.php:1270
+#: main-modules.php:1416 main-modules.php:1775 main-modules.php:2995
+#: main-modules.php:3626 main-modules.php:4407 main-modules.php:5537
+#: main-modules.php:5756 main-modules.php:5974 main-modules.php:6289
+#: main-modules.php:6721 main-modules.php:7117 main-modules.php:7522
+#: main-modules.php:7856 main-modules.php:8291 main-modules.php:8509
+#: main-modules.php:9800 main-modules.php:10243 main-modules.php:10707
+#: main-modules.php:11529 main-modules.php:11990 main-modules.php:12540
+#: main-modules.php:12832 main-modules.php:13259 main-modules.php:13828
+#: main-modules.php:14453 main-modules.php:15352 main-modules.php:16419
+#: main-modules.php:16903
+msgid "Light"
+msgstr "Sáng"
+
+#: main-modules.php:591 main-modules.php:1777 main-modules.php:4409
+#: main-modules.php:5540 main-modules.php:5758 main-modules.php:5977
+#: main-modules.php:6292 main-modules.php:6724 main-modules.php:7119
+#: main-modules.php:7524 main-modules.php:7858 main-modules.php:8293
+#: main-modules.php:9802 main-modules.php:10710 main-modules.php:11531
+#: main-modules.php:11992 main-modules.php:15354
+msgid ""
+"Here you can choose whether your text should be light or dark. If you are "
+"working with a dark background, then your text should be light. If your "
+"background is light, then your text should be set to dark."
+msgstr ""
+"Tại đây bạn có thể chọn liệu dòng chữ của bạn nên là màu sáng hay tối. Nếu "
+"bạn đang làm việc với nền tối, thì dòng chữ của bạn nên là màu sáng. Nếu nền "
+"của bạn là màu sáng, thì dòng chữ của bạn nên được thiết lập làm màu tối."
+
+#: main-modules.php:594 main-modules.php:2420 main-modules.php:3766
+#: main-modules.php:14886 main-modules.php:17043
+msgid "Automatic Animation"
+msgstr "Ảnh Động Tự Động"
+
+#: main-modules.php:605 main-modules.php:2430 main-modules.php:3776
+#: main-modules.php:14896 main-modules.php:17053
+msgid ""
+"If you would like the slider to slide automatically, without the visitor "
+"having to click the next button, enable this option and then adjust the "
+"rotation speed below if desired."
+msgstr ""
+"Nếu bạn muốn thanh trượt tự động trượt, không cần người truy cập phải nhấn "
+"vào nút kế tiếp, kích hoạt tùy chọn này và sau đó điều chỉnh tốc độ quay "
+"dưới đây nếu muốn."
+
+#: main-modules.php:608 main-modules.php:2433 main-modules.php:3779
+#: main-modules.php:14899 main-modules.php:17056
+msgid "Automatic Animation Speed (in ms)"
+msgstr "Tốc Độ Ảnh Động Tự Động (bằng miligiây)"
+
+#: main-modules.php:612 main-modules.php:2437 main-modules.php:3783
+#: main-modules.php:14903 main-modules.php:17060
+msgid ""
+"Here you can designate how fast the slider fades between each slide, if "
+"'Automatic Animation' option is enabled above. The higher the number the "
+"longer the pause between each rotation."
+msgstr ""
+"Tại đây bạn có thể chỉ định thanh trượt chèn nhanh như thế nào giữa từng "
+"slide, nếu tùy chọn ‘Ảnh Động Tự Động' được kích hoạt ở trên. Số càng lớn "
+"khoảng dừng giữa mỗi vòng xoay càng dài hơn."
+
+#: main-modules.php:615 main-modules.php:7122 main-modules.php:7536
+#: main-modules.php:15378
+msgid "Zoom Icon Color"
+msgstr "Màu Biểu tượng Thu Phóng"
+
+#: main-modules.php:829 main-modules.php:1006 main-modules.php:1203
+msgid "Video"
+msgstr "Video"
+
+#: main-modules.php:844
+msgid "Video Icon"
+msgstr "Biểu tượng Video"
+
+#: main-modules.php:853 main-modules.php:1232
+msgid "Video MP4/URL"
+msgstr "Video .MP4 URL"
+
+#: main-modules.php:857 main-modules.php:867 main-modules.php:1236
+#: main-modules.php:1246 main-modules.php:3005 main-modules.php:3015
+#: main-structure-elements.php:138 main-structure-elements.php:148
+#: main-structure-elements.php:1093 main-structure-elements.php:1103
+msgid "Upload a video"
+msgstr "Tải video lên"
+
+#: main-modules.php:858 main-modules.php:1237
+msgid "Choose a Video MP4 File"
+msgstr "Chọn Tập Tin Video .MP4"
+
+#: main-modules.php:859 main-modules.php:869 main-modules.php:1238
+#: main-modules.php:1248
+msgid "Set As Video"
+msgstr "Thiết Lập Làm Video"
+
+#: main-modules.php:860 main-modules.php:1239
+msgid ""
+"Upload your desired video in .MP4 format, or type in the URL to the video "
+"you would like to display"
+msgstr ""
+"Tải video mong muốn của bạn theo định dạng .MP4, hoặc nhập URL video mà bạn "
+"muốn hiển thị."
+
+#: main-modules.php:863 main-modules.php:1242
+msgid "Video Webm"
+msgstr "Video .WEBM"
+
+#: main-modules.php:868 main-modules.php:1247
+msgid "Choose a Video WEBM File"
+msgstr "Chọn Tập tin Video .WEBM"
+
+#: main-modules.php:870 main-modules.php:1249
+msgid ""
+"Upload the .WEBM version of your video here. All uploaded videos should be "
+"in both .MP4 .WEBM formats to ensure maximum compatibility in all browsers."
+msgstr ""
+"Tải phiên bản .WEBM video của bạn tại đây. Tất cả video được tải lên nên thể "
+"hiện dưới cả hai dạng .MP4 và .WEBM để đảm bảo khả năng tương thích tối đa "
+"với tất cả trình duyệt."
+
+#: main-modules.php:873 main-modules.php:1252
+msgid "Image Overlay URL"
+msgstr "Phủ Ảnh URL"
+
+#: main-modules.php:881 main-modules.php:1260
+msgid "Generate From Video"
+msgstr "Tạo Từ Video"
+
+#: main-modules.php:884 main-modules.php:1263
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"display over your video. You can also generate a still image from your video."
+msgstr ""
+"Tải lên ảnh mong muốn của bạn, hoặc gõ vào URL đến ảnh bạn muốn hiển thị "
+"trên video của mình. Bạn cũng có thể tạo ảnh tĩnh từ video của mình."
+
+#: main-modules.php:887 main-modules.php:1085
+msgid "Play Icon Color"
+msgstr "Màu Biểu tượng khi Chơi video"
+
+#: main-modules.php:1003
+msgid "Video Slider"
+msgstr "Thanh Lướt Video"
+
+#: main-modules.php:1028
+msgid "Play Button"
+msgstr "Nút Chơi video"
+
+#: main-modules.php:1032
+msgid "Thumbnail Item"
+msgstr "Mục Hình thu nhỏ"
+
+#: main-modules.php:1036
+msgid "Slider Arrows"
+msgstr "Mũi tên Bộ trượt"
+
+#: main-modules.php:1045
+msgid "Display Image Overlays on Main Video"
+msgstr "Hiển thị Lớp Phủ Ảnh trên Video Chính"
+
+#: main-modules.php:1049
+msgid "Hide"
+msgstr "Ẩn"
+
+#: main-modules.php:1050
+msgid "Show"
+msgstr "Hiển thị"
+
+#: main-modules.php:1052
+msgid ""
+"This option will cover the player UI on the main video. This image can "
+"either be uploaded in each video setting or auto-generated by Divi."
+msgstr ""
+"Tùy chọn này sẽ bao phủ giao diện trình phát trên video chính. Ảnh này hoặc "
+"có thể tải lên trong thiết lập từng video hoặc tự động được Divitạo ra."
+
+#: main-modules.php:1055 main-modules.php:2400 main-modules.php:14866
+msgid "Arrows"
+msgstr "Mũi tên"
+
+#: main-modules.php:1059 main-modules.php:2404 main-modules.php:3525
+#: main-modules.php:14870 main-modules.php:16802
+msgid "Show Arrows"
+msgstr "Hiển thị Mũi tên"
+
+#: main-modules.php:1060 main-modules.php:2405 main-modules.php:14871
+msgid "Hide Arrows"
+msgstr "Ẩn Mũi tên"
+
+#: main-modules.php:1062 main-modules.php:2407 main-modules.php:3532
+#: main-modules.php:16809
+msgid "This setting will turn on and off the navigation arrows."
+msgstr "Thiết lập này sẽ bật và tắt các mũi tên điều hướng."
+
+#: main-modules.php:1065
+msgid "Slider Controls"
+msgstr "Điều khiển Thanh trượt"
+
+#: main-modules.php:1069
+msgid "Use Thumbnail Track"
+msgstr "Sử dụng Rãnh dạng ảnh thu nhỏ"
+
+#: main-modules.php:1070
+msgid "Use Dot Navigation"
+msgstr "Sử dụng Điều Hướng Dạng Chấm"
+
+#: main-modules.php:1072
+msgid ""
+"This setting will let you choose to use the thumbnail track controls below "
+"the slider or dot navigation at the bottom of the slider."
+msgstr ""
+"Thiết lập này sẽ cho phép bạn chọn sử dụng các điều khiển rãnh dạng ảnh thu "
+"nhỏ bên dưới thanh trượt hoặc điều hướng dạng chấm ở dưới cùng thanh trượt."
+
+#: main-modules.php:1075
+msgid "Slider Controls Color"
+msgstr "Màu sắc Điều khiển Thanh trượt"
+
+#: main-modules.php:1082
+msgid ""
+"This setting will make your slider controls either light or dark in color. "
+"Slider controls are either the arrows on the thumbnail track or the circles "
+"in dot navigation."
+msgstr ""
+"Thiết lập này sẽ biến thanh trượt điều khiển của bạn thành hoặc màu sáng "
+"hoặc màu tối. Điều khiển Thanh trượt hoặc là mũi tên trên rãnh dạng ảnh thu "
+"nhỏ hoặc các vòng tròn trong điều hướng dạng chấm."
+
+#: main-modules.php:1091
+msgid "Thumbnail Overlay Color"
+msgstr "Màu Hình đè thu nhỏ"
+
+#: main-modules.php:1208
+msgid "New Video"
+msgstr "Video Mới"
+
+#: main-modules.php:1209
+msgid "Video Settings"
+msgstr "Thiết lập Video"
+
+#: main-modules.php:1229
+msgid ""
+"This will change the label of the video in the builder for easy "
+"identification."
+msgstr ""
+"Thiết lập này sẽ thay đổi nhãn video trong chương trình tạo để dễ nhận biết."
+
+#: main-modules.php:1266
+msgid "Slider Arrows Color"
+msgstr "Màu sắc Mũi tên Thanh trượt"
+
+#: main-modules.php:1273
+msgid ""
+"This setting will make your slider arrows either light or dark in color."
+msgstr ""
+"Thiết lập này sẽ biến mũi tên thanh trượt của bạn thành hoặc màu sáng hoặc "
+"màu tối."
+
+#: main-modules.php:1364 main-modules.php:1388
+msgid "Text"
+msgstr "Dòng Chữ"
+
+#: main-modules.php:1418 main-modules.php:10245 main-modules.php:12834
+#: main-modules.php:13261 main-modules.php:13830 main-modules.php:14455
+msgid ""
+"Here you can choose the value of your text. If you are working with a dark "
+"background, then your text should be set to light. If you are working with a "
+"light background, then your text should be dark."
+msgstr ""
+"Tại đây bạn có thể lựa chọn giá trị của dòng chữ. Nếu bạn đang làm việc với "
+"nền tối, thì dòng chữ của bạn nên được thiết lập màu sáng. Nếu bạn đang làm "
+"việc với nền sáng, thì dòng chữ của bạn nên là màu tối."
+
+#: main-modules.php:1421 main-modules.php:1780 main-modules.php:4412
+#: main-modules.php:5543 main-modules.php:6295 main-modules.php:6727
+#: main-modules.php:12524 main-modules.php:12837 main-modules.php:14458
+#: main-modules.php:16403
+msgid "Text Orientation"
+msgstr "Canh lề dòng chữ"
+
+#: main-modules.php:1425 main-modules.php:12845 main-modules.php:13837
+#: main-modules.php:14462
+msgid "This controls the how your text is aligned within the module."
+msgstr ""
+"Thiết lập này kiểm soát dòng chữ của bạn được canh lề như thế nào trong mô-"
+"đun."
+
+#: main-modules.php:1431 main-modules.php:15731 main-modules.php:15840
+msgid "Here you can create the content that will be used within the module."
+msgstr "Tại đây bạn có thể tạo nội dung sẽ sử dụng trong mô-đun."
+
+#: main-modules.php:1434 main-modules.php:5556 main-modules.php:12896
+#: main-modules.php:15734
+msgid "Max Width"
+msgstr "Chiều rộng tối đa"
+
+#: main-modules.php:1528
+msgid "Blurb"
+msgstr "Lời giới thiệu"
+
+#: main-modules.php:1582 main-modules.php:2346 main-modules.php:2798
+#: main-modules.php:3426 main-modules.php:4730 main-modules.php:5146
+#: main-modules.php:5439 main-modules.php:6140 main-modules.php:6634
+#: main-modules.php:9750 main-modules.php:10152 main-modules.php:10489
+#: main-modules.php:11452 main-modules.php:14809 main-modules.php:16703
+msgid "Header"
+msgstr "Đầu trang"
+
+#: main-modules.php:1588 main-modules.php:2038 main-modules.php:2226
+#: main-modules.php:2352 main-modules.php:2812 main-modules.php:3432
+#: main-modules.php:4287 main-modules.php:4771 main-modules.php:5191
+#: main-modules.php:5446 main-modules.php:6147 main-modules.php:6641
+#: main-modules.php:8612 main-modules.php:8914 main-modules.php:9756
+#: main-modules.php:10158 main-modules.php:10502 main-modules.php:14818
+#: main-modules.php:16709
+msgid "Body"
+msgstr "Thân"
+
+#: main-modules.php:1608
+msgid "Blurb Image"
+msgstr "Hình ảnh phụ đề"
+
+#: main-modules.php:1612
+msgid "Blurb Title"
+msgstr "Tên Phụ đề"
+
+#: main-modules.php:1616
+msgid "Blurb Content"
+msgstr "Nội dung Phụ đề"
+
+#: main-modules.php:1640
+msgid "The title of your blurb will appear in bold below your blurb image."
+msgstr "Tiêu đề minh họa của bạn sẽ được in đậm dưới ảnh minh họa."
+
+#: main-modules.php:1643
+msgid "Url"
+msgstr "URL"
+
+#: main-modules.php:1646
+msgid ""
+"If you would like to make your blurb a link, input your destination URL here."
+msgstr ""
+"Nếu bạn muốn tạo liện kết cho phần minh họa của bạn, hãy nhập URL đích của "
+"bạn ở đây."
+
+#: main-modules.php:1659
+msgid "Use Icon"
+msgstr "Sử dụng Biểu tượng"
+
+#: main-modules.php:1673
+msgid "Here you can choose whether icon set below should be used."
+msgstr ""
+"Tại đây bạn có thể chọn liệu bộ biểu tượng dưới đây có được sử dụng không."
+
+#: main-modules.php:1676 main-modules.php:13867
+msgid "Icon"
+msgstr "Biểu tượng"
+
+#: main-modules.php:1682
+msgid "Choose an icon to display with your blurb."
+msgstr "Chọn biểu tượng để hiển thị với phần minh họa của bạn."
+
+#: main-modules.php:1686 main-modules.php:8677 main-modules.php:8871
+#: main-modules.php:8990 main-modules.php:10278 main-modules.php:12230
+msgid "Icon Color"
+msgstr "Màu sắc Biểu tượng"
+
+#: main-modules.php:1688
+msgid "Here you can define a custom color for your icon."
+msgstr "Tại đây bạn có thể xác định màu sắc tùy chỉnh cho biểu tượng của bạn."
+
+#: main-modules.php:1692
+msgid "Circle Icon"
+msgstr "Biểu Tượng Tròn"
+
+#: main-modules.php:1703
+msgid ""
+"Here you can choose whether icon set above should display within a circle."
+msgstr ""
+"Tại đây bạn có thể chọn biểu tượng thiết lập ở trên sẽ hiển thị trong vòng "
+"tròn"
+
+#: main-modules.php:1707 main-modules.php:8301
+msgid "Circle Color"
+msgstr "Màu sắc Vòng tròn"
+
+#: main-modules.php:1709
+msgid "Here you can define a custom color for the icon circle."
+msgstr "Ở đây bạn có thể xác định màu sắc tùy chỉnh cho vòng tròn biểu tượng."
+
+#: main-modules.php:1713
+msgid "Show Circle Border"
+msgstr "Hiển thị Viền Vòng Tròn"
+
+#: main-modules.php:1723
+msgid "Here you can choose whether if the icon circle border should display."
+msgstr ""
+"Tại đây bạn có thể chọn liệu viền biểu tượng hình tròn có nên hiển thị không."
+
+#: main-modules.php:1727
+msgid "Circle Border Color"
+msgstr "Màu sắc Viền Vòng tròn"
+
+#: main-modules.php:1729
+msgid "Here you can define a custom color for the icon circle border."
+msgstr ""
+"Tại đây bạn có thể xác định màu sắc tùy chỉnh cho viền vòng tròn biểu tượng."
+
+#: main-modules.php:1740
+msgid "Upload an image to display at the top of your blurb."
+msgstr "Tải ảnh lên để hiển thị ở trên cùng phần minh họa của bạn."
+
+#: main-modules.php:1743
+msgid "Image Alt Text"
+msgstr "Dòng chữ Thay thế Ảnh"
+
+#: main-modules.php:1746
+msgid "Define the HTML ALT text for your image here."
+msgstr "Xác định dòng chữ thay thế cho ảnh của bạn ở đây."
+
+#: main-modules.php:1750
+msgid "Image/Icon Placement"
+msgstr "Vị trí đặt Ảnh/Biểu tượng"
+
+#: main-modules.php:1754
+msgid "Here you can choose where to place the icon."
+msgstr "Tại đây bạn có thể chọn nơi để đặt biểu tượng."
+
+#: main-modules.php:1757
+msgid "Image/Icon Animation"
+msgstr "Ảnh/Biểu tượng động"
+
+#: main-modules.php:1784
+msgid "This will control how your blurb text is aligned."
+msgstr ""
+"Thiết lập này sẽ kiểm soát dòng chữ phần minh họa của bạn được canh lề như "
+"thế nào."
+
+#: main-modules.php:1790 main-modules.php:4422 main-modules.php:5553
+#: main-modules.php:6305 main-modules.php:6737 main-modules.php:8975
+#: main-modules.php:10275
+msgid "Input the main text content for your module here."
+msgstr "Nhập nội dung chính cho mô-đun của bạn ở đây."
+
+#: main-modules.php:1801
+msgid "Use Icon Font Size"
+msgstr "Sử dụng Biểu tượng Kích cỡ Phông chữ"
+
+#: main-modules.php:1814
+msgid "Icon Font Size"
+msgstr "Biểu tượng Kích cỡ Phông chữ"
+
+#: main-modules.php:2014
+msgid "Tabs"
+msgstr "Thẻ"
+
+#: main-modules.php:2017 main-modules.php:2031 main-modules.php:2061
+#: main-modules.php:2195 main-modules.php:2211 main-modules.php:2277
+msgid "Tab"
+msgstr "Thẻ"
+
+#: main-modules.php:2057
+msgid "Tabs Controls"
+msgstr "Điều khiển các Thẻ"
+
+#: main-modules.php:2065
+msgid "Active Tab"
+msgstr "Thẻ đang hoạt động"
+
+#: main-modules.php:2069
+msgid "Tabs Content"
+msgstr "Nội dung Thẻ"
+
+#: main-modules.php:2078
+msgid "Active Tab Background Color"
+msgstr "Màu nền Thẻ đang hoạt động"
+
+#: main-modules.php:2084
+msgid "Inactive Tab Background Color"
+msgstr "Màu nền Thẻ đang ngừng hoạt động"
+
+#: main-modules.php:2205
+msgid "New Tab"
+msgstr "Thẻ mới"
+
+#: main-modules.php:2206
+msgid "Tab Settings"
+msgstr "Thiết lập Thẻ"
+
+#: main-modules.php:2256 main-modules.php:11856
+msgid "The title will be used within the tab button for this tab."
+msgstr "Tiêu đề sẽ được sử dụng trong nút thẻ cho thẻ này."
+
+#: main-modules.php:2299 main-modules.php:2747 main-modules.php:14515
+#: main-modules.php:14761
+msgid "Slide"
+msgstr "Slide"
+
+#: main-modules.php:2361 main-modules.php:2829 main-modules.php:3458
+#: main-modules.php:4809 main-modules.php:5215 main-modules.php:5463
+#: main-modules.php:5682 main-modules.php:5706 main-modules.php:6161
+#: main-modules.php:6655 main-modules.php:9157 main-modules.php:12789
+#: main-modules.php:12818 main-modules.php:13166 main-modules.php:13749
+#: main-modules.php:14827 main-modules.php:16735
+msgid "Button"
+msgstr "Button"
+
+#: main-modules.php:2367 main-modules.php:2843 main-modules.php:3464
+#: main-modules.php:14833 main-modules.php:16741
+msgid "Slide Description"
+msgstr "Mô tả slide"
+
+#: main-modules.php:2371 main-modules.php:2839 main-modules.php:3468
+#: main-modules.php:14837 main-modules.php:16745
+msgid "Slide Title"
+msgstr "Tên slide"
+
+#: main-modules.php:2375 main-modules.php:2847 main-modules.php:3472
+#: main-modules.php:14841 main-modules.php:16749
+msgid "Slide Button"
+msgstr "Nút slide"
+
+#: main-modules.php:2379 main-modules.php:3476 main-modules.php:14845
+#: main-modules.php:16753
+msgid "Slide Controllers"
+msgstr "Bộ điều khiển slide"
+
+#: main-modules.php:2383 main-modules.php:3480 main-modules.php:14849
+#: main-modules.php:16757
+msgid "Slide Active Controller"
+msgstr "Bộ điều khiển Slide đang hoạt động"
+
+#: main-modules.php:2387 main-modules.php:2851 main-modules.php:2920
+#: main-modules.php:3484 main-modules.php:14853 main-modules.php:16761
+msgid "Slide Image"
+msgstr "Ảnh cho Slide"
+
+#: main-modules.php:2391 main-modules.php:3488 main-modules.php:14857
+#: main-modules.php:16765
+msgid "Slide Arrows"
+msgstr "Mũi tên Trượt"
+
+#: main-modules.php:2410 main-modules.php:3535 main-modules.php:16812
+msgid "Show Controls"
+msgstr "Hiện Điều khiển"
+
+#: main-modules.php:2417 main-modules.php:3542 main-modules.php:16819
+msgid ""
+"This setting will turn on and off the circle buttons at the bottom of the "
+"slider."
+msgstr "Thiết lập này sẽ bật và tắt các nút tròn ở dưới cùng thanh trượt."
+
+#: main-modules.php:2440 main-modules.php:3786 main-modules.php:14906
+#: main-modules.php:17063
+msgid "Continue Automatic Slide on Hover"
+msgstr "Tiếp tục Tự động đi Trượt vào cái này"
+
+#: main-modules.php:2448 main-modules.php:3794 main-modules.php:14914
+#: main-modules.php:17071
+msgid ""
+"Turning this on will allow automatic sliding to continue on mouse hover."
+msgstr "Quay cái này sẽ cho phép tự động trượt tiếp tục chuột đi qua."
+
+#: main-modules.php:2451 main-modules.php:3662 main-modules.php:13972
+#: main-modules.php:14917 main-modules.php:16939
+msgid "Use Parallax effect"
+msgstr "Sử dụng hiệu ứng Thị sai"
+
+#: main-modules.php:2463 main-modules.php:3675 main-modules.php:16952
+msgid ""
+"Enabling this option will give your background images a fixed position as "
+"you scroll."
+msgstr ""
+"Kích hoạt tùy chọn này sẽ cho ảnh nền của bạn một vị trí cố định khi bạn "
+"cuộn."
+
+#: main-modules.php:2466 main-modules.php:3678 main-modules.php:13985
+#: main-modules.php:14930 main-modules.php:16955
+msgid "Parallax method"
+msgstr "Phương pháp Thị sai"
+
+#: main-modules.php:2474 main-modules.php:3686 main-modules.php:13993
+#: main-modules.php:14938 main-modules.php:16963
+#: main-structure-elements.php:207
+msgid "Define the method, used for the parallax effect."
+msgstr "Xác định phương pháp, sử dụng cho hiệu ứng thị sai."
+
+#: main-modules.php:2477 main-modules.php:3729 main-modules.php:14941
+#: main-modules.php:17006
+msgid "Remove Inner Shadow"
+msgstr "Loại bỏ Bóng bên trong"
+
+#: main-modules.php:2486 main-modules.php:2887 main-modules.php:3738
+#: main-modules.php:14950 main-modules.php:17015
+msgid "Background Image Position"
+msgstr "Ảnh Nền Vị Trí"
+
+#: main-modules.php:2491 main-modules.php:2893 main-modules.php:3743
+#: main-modules.php:14955 main-modules.php:17020
+msgid "Top Left"
+msgstr "Bên Trái"
+
+#: main-modules.php:2492 main-modules.php:2894 main-modules.php:3744
+#: main-modules.php:14956 main-modules.php:17021
+msgid "Top Center"
+msgstr "Trên Trung Tâm"
+
+#: main-modules.php:2493 main-modules.php:2895 main-modules.php:3745
+#: main-modules.php:14957 main-modules.php:17022
+msgid "Top Right"
+msgstr "Bên Phải"
+
+#: main-modules.php:2494 main-modules.php:2896 main-modules.php:3746
+#: main-modules.php:14958 main-modules.php:17023
+msgid "Center Right"
+msgstr "Trung Tâm Rồi"
+
+#: main-modules.php:2495 main-modules.php:2897 main-modules.php:3747
+#: main-modules.php:14959 main-modules.php:17024
+msgid "Center Left"
+msgstr "Trung Tâm Trái"
+
+#: main-modules.php:2496 main-modules.php:2898 main-modules.php:3748
+#: main-modules.php:14960 main-modules.php:17025
+msgid "Bottom Left"
+msgstr "Đáy"
+
+#: main-modules.php:2497 main-modules.php:2899 main-modules.php:3749
+#: main-modules.php:14961 main-modules.php:17026
+msgid "Bottom Center"
+msgstr "Dưới Trung Tâm"
+
+#: main-modules.php:2498 main-modules.php:2900 main-modules.php:3750
+#: main-modules.php:14962 main-modules.php:17027
+msgid "Bottom Right"
+msgstr "Đáy Rồi"
+
+#: main-modules.php:2503 main-modules.php:2904 main-modules.php:3755
+#: main-modules.php:14967 main-modules.php:17032
+msgid "Background Image Size"
+msgstr "Nền Cỡ Ảnh"
+
+#: main-modules.php:2508 main-modules.php:2910 main-modules.php:3760
+#: main-modules.php:14972 main-modules.php:17037
+msgid "Fit"
+msgstr "Vừa khít"
+
+#: main-modules.php:2509 main-modules.php:2911 main-modules.php:3761
+#: main-modules.php:14973 main-modules.php:17038
+msgid "Actual Size"
+msgstr "Thực Cỡ"
+
+#: main-modules.php:2514 main-modules.php:3797 main-modules.php:14978
+#: main-modules.php:17074
+msgid "Top Padding"
+msgstr "Khoảng đệm trên"
+
+#: main-modules.php:2522 main-modules.php:3805 main-modules.php:14986
+#: main-modules.php:17082
+msgid "Bottom Padding"
+msgstr "Khoảng đệm dưới"
+
+#: main-modules.php:2530 main-modules.php:3813 main-modules.php:15006
+#: main-modules.php:17090
+msgid "Hide Content On Mobile"
+msgstr "Ẩn nội dung trên Điện thoại"
+
+#: main-modules.php:2540 main-modules.php:3823 main-modules.php:15016
+#: main-modules.php:17100
+msgid "Hide CTA On Mobile"
+msgstr "Ẩn CTA trên Điện thoại"
+
+#: main-modules.php:2550 main-modules.php:15026
+msgid "Show Image / Video On Mobile"
+msgstr "Hiển thị Hình ảnh / Video trên Điện thoại"
+
+#: main-modules.php:2792
+msgid "New Slide"
+msgstr "Slide Mới"
+
+#: main-modules.php:2793
+msgid "Slide Settings"
+msgstr "Thiết Lập Slide"
+
+#: main-modules.php:2860
+msgid "Heading"
+msgstr "Tiêu đề"
+
+#: main-modules.php:2863
+msgid "Define the title text for your slide."
+msgstr "Xác định dòng chữ tiêu đề cho slide của bạn."
+
+#: main-modules.php:2866 main-modules.php:3558 main-modules.php:5320
+#: main-modules.php:5508 main-modules.php:5734 main-modules.php:6260
+#: main-modules.php:16835
+msgid "Button Text"
+msgstr "Chữ Của Nút"
+
+#: main-modules.php:2869
+msgid "Define the text for the slide button"
+msgstr "Xác định dòng chữ cho nút trượt"
+
+#: main-modules.php:2872 main-modules.php:5314 main-modules.php:5492
+#: main-modules.php:5718
+msgid "Button URL"
+msgstr "URL nút"
+
+#: main-modules.php:2875
+msgid "Input a destination URL for the slide button."
+msgstr "Nhập URL chỉ định cho nút trượt."
+
+#: main-modules.php:2884 main-structure-elements.php:111
+msgid ""
+"If defined, this image will be used as the background for this module. To "
+"remove a background image, simply delete the URL from the settings field."
+msgstr ""
+"Nếu định nghĩa, ảnh này sẽ được sử dụng làm hình nền cho mô-đun này. Để gỡ "
+"bỏ hình nền, bạn chỉ cần xóa URL từ ô thiết lập."
+
+#: main-modules.php:2909
+msgid "Cover"
+msgstr "Yểm trợ"
+
+#: main-modules.php:2917 main-modules.php:3610 main-modules.php:14445
+#: main-modules.php:16887
+msgid "Use the color picker to choose a background color for this module."
+msgstr "Sử dụng bảng chọn màu sắc để chọn màu nền cho mô-đun này."
+
+#: main-modules.php:2924
+msgid "Choose a Slide Image"
+msgstr "Chọn Ảnh cho Slide"
+
+#: main-modules.php:2925
+msgid "Set As Slide Image"
+msgstr "Thiết Lập Làm Ảnh cho Slide"
+
+#: main-modules.php:2926
+msgid ""
+"If defined, this slide image will appear to the left of your slide text. "
+"Upload an image, or leave blank for a text-only slide."
+msgstr ""
+"Nếu được xác định, ảnh cho slide này sẽ xuất hiện bên trái dòng chữ trên "
+"slide của bạn. Tải ảnh lên, hoặc để trống cho slide chỉ có chữ."
+
+#: main-modules.php:2929 main-modules.php:3689 main-modules.php:16966
+msgid "Use Background Overlay"
+msgstr "Dùng Chồng Nền"
+
+#: main-modules.php:2934 main-modules.php:2954 main-modules.php:3529
+#: main-modules.php:3549 main-modules.php:3601 main-modules.php:3636
+#: main-modules.php:3693 main-modules.php:3714 main-modules.php:16806
+#: main-modules.php:16826 main-modules.php:16878 main-modules.php:16913
+#: main-modules.php:16970 main-modules.php:16991
+msgid "yes"
+msgstr "vâng"
+
+#: main-modules.php:2939 main-modules.php:3699 main-modules.php:16976
+msgid ""
+"When enabled, a custom overlay color will be added above your background "
+"image and behind your slider content."
+msgstr ""
+"Khi bật, màu chồng tuỳ biến sẽ được thêm vào trên ảnh nền và dưới nội dung "
+"bộ trượt."
+
+#: main-modules.php:2942 main-modules.php:3702 main-modules.php:13968
+#: main-modules.php:16979
+msgid "Background Overlay Color"
+msgstr "Màu Ảnh chèn Nền"
+
+#: main-modules.php:2946 main-modules.php:3706 main-modules.php:16983
+msgid "Use the color picker to choose a color for the background overlay."
+msgstr "Dùng bộ chọn màu để chọn màu làm chồng nền."
+
+#: main-modules.php:2949 main-modules.php:3709 main-modules.php:16986
+msgid "Use Text Overlay"
+msgstr "Dùng Chồng Chữ"
+
+#: main-modules.php:2959 main-modules.php:3719 main-modules.php:16996
+msgid ""
+"When enabled, a background color is added behind the slider text to make it "
+"more readable atop background images."
+msgstr ""
+"Khi bật, màu nền sẽ được thêm vào văn bản bộ trượt để làm nó dễ đọc hơn trên "
+"ảnh nền."
+
+#: main-modules.php:2962 main-modules.php:3722 main-modules.php:16999
+msgid "Text Overlay Color"
+msgstr "Màu Chồng Chữ"
+
+#: main-modules.php:2966 main-modules.php:3726 main-modules.php:17003
+msgid "Use the color picker to choose a color for the text overlay."
+msgstr "Dùng bộ chọn màu để chọn màu làm chồng chữ."
+
+#: main-modules.php:2969
+msgid "Slide Image Vertical Alignment"
+msgstr "Canh Dọc Ảnh cho Slide"
+
+#: main-modules.php:2976
+msgid ""
+"This setting determines the vertical alignment of your slide image. Your "
+"image can either be vertically centered, or aligned to the bottom of your "
+"slide."
+msgstr ""
+"Thiết lập này xác định canh dọc cho ảnh cho slide của bạn. Ảnh của bạn, hoặc "
+"có thể được canh giữa theo chiều dọc, hoặc canh xuống dưới cùng trên slide "
+"của bạn."
+
+#: main-modules.php:2979
+msgid "Slide Video"
+msgstr "Video Cho Slide"
+
+#: main-modules.php:2982
+msgid ""
+"If defined, this video will appear to the left of your slide text. Enter "
+"youtube or vimeo page url, or leave blank for a text-only slide."
+msgstr ""
+"Nếu được xác định, video này sẽ xuất hiện bên trái dòng chữ trên slide của "
+"bạn. Nhập URL trang Youtube hoặc Vimeo, hoặc để trống cho slide chỉ có chữ."
+
+#: main-modules.php:2988
+msgid ""
+"If you have a slide image defined, input your HTML ALT text for the image "
+"here."
+msgstr ""
+"Nếu bạn đã xác định ảnh cho slide, nhập dòng chữ thay thế cho ảnh ở đây."
+
+#: main-modules.php:2998 main-modules.php:3629 main-modules.php:16906
+msgid ""
+"Here you can choose whether your text is light or dark. If you have a slide "
+"with a dark background, then choose light text. If you have a light "
+"background, then use dark text."
+msgstr ""
+"Tại đây bạn có thể chọn dòng chữ của bạn là màu sáng hoặc tối. Nếu bạn có "
+"slide với nền tối, thì chọn chữ màu sáng. Nếu bạn có nền sáng, hãy sử dụng "
+"chữ màu tối."
+
+#: main-modules.php:3001 main-structure-elements.php:134
+#: main-structure-elements.php:1089
+msgid "Background Video MP4"
+msgstr "Video Nền .MP4"
+
+#: main-modules.php:3006 main-structure-elements.php:139
+#: main-structure-elements.php:1094
+msgid "Choose a Background Video MP4 File"
+msgstr "Chọn Tập Tin Video Nền .MP4"
+
+#: main-modules.php:3007 main-modules.php:3017 main-structure-elements.php:140
+#: main-structure-elements.php:150 main-structure-elements.php:1095
+#: main-structure-elements.php:1105
+msgid "Set As Background Video"
+msgstr "Thiết Lập Làm Video Nền"
+
+#: main-modules.php:3008 main-structure-elements.php:141
+msgid ""
+"All videos should be uploaded in both .MP4 .WEBM formats to ensure maximum "
+"compatibility in all browsers. Upload the .MP4 version here. <b>Important "
+"Note: Video backgrounds are disabled from mobile devices. Instead, your "
+"background image will be used. For this reason, you should define both a "
+"background image and a background video to ensure best results.</b>"
+msgstr ""
+"Tất cả các video nên được tải lên theo định dạng .MP4 hoặc .WEBM để đảm bảo "
+"khả năng tương thích tối đa trên tất cả các trình duyệt. Tải lên phiên bản "
+"MP4 ở đây. Lưu ý quan trọng: video nền bị vô hiệu hóa trên thiết bị di động. "
+"Thay vào đó, hình nền của bạn sẽ được sử dụng. Vì lý do này, bạn nên xác "
+"định cả hình nền và video nền để đảm bảo kết quả tốt nhất."
+
+#: main-modules.php:3011 main-structure-elements.php:144
+#: main-structure-elements.php:1099
+msgid "Background Video Webm"
+msgstr "Video Nền .WEBM"
+
+#: main-modules.php:3016 main-structure-elements.php:149
+#: main-structure-elements.php:1104
+msgid "Choose a Background Video WEBM File"
+msgstr "Chọn Tập Tin Video Nền .WEBM"
+
+#: main-modules.php:3018 main-structure-elements.php:151
+msgid ""
+"All videos should be uploaded in both .MP4 .WEBM formats to ensure maximum "
+"compatibility in all browsers. Upload the .WEBM version here. <b>Important "
+"Note: Video backgrounds are disabled from mobile devices. Instead, your "
+"background image will be used. For this reason, you should define both a "
+"background image and a background video to ensure best results.</b>"
+msgstr ""
+"Tất cả các video nên được tải lên theo định dạng .MP4 hoặc .WEBM để đảm bảo "
+"khả năng tương thích tối đa trên tất cả các trình duyệt. Tải lên phiên bản ."
+"WEBM ở đây. Lưu ý quan trọng: video nền bị vô hiệu hóa trên thiết bị di "
+"động. Thay vào đó, hình nền của bạn sẽ được sử dụng. Vì lý do này, bạn nên "
+"xác định cả hình nền và video nền để đảm bảo kết quả tốt nhất."
+
+#: main-modules.php:3021 main-structure-elements.php:154
+#: main-structure-elements.php:1109
+msgid "Background Video Width"
+msgstr "Chiều rộng Video Nền"
+
+#: main-modules.php:3024 main-structure-elements.php:157
+msgid ""
+"In order for videos to be sized correctly, you must input the exact width "
+"(in pixels) of your video here."
+msgstr ""
+"Để video có kích thước chính xác, bạn phải nhập chiều rộng chính xác (bằng "
+"pixel) của video của mình ở đây."
+
+#: main-modules.php:3027 main-structure-elements.php:160
+#: main-structure-elements.php:1115
+msgid "Background Video Height"
+msgstr "Chiều Cao Video Nền"
+
+#: main-modules.php:3030 main-structure-elements.php:163
+msgid ""
+"In order for videos to be sized correctly, you must input the exact height "
+"(in pixels) of your video here."
+msgstr ""
+"Để video có kích thước chính xác, bạn phải nhập chiều cao chính xác (bằng "
+"pixel) của video của mình ở đây."
+
+#: main-modules.php:3033 main-structure-elements.php:166
+#: main-structure-elements.php:1121
+msgid "Pause Video"
+msgstr "Dừng Video"
+
+#: main-modules.php:3040 main-structure-elements.php:173
+msgid "Allow video to be paused by other players when they begin playing"
+msgstr "Cho phép dừng video bởi các trình duyệt khác khi bắt đầu phát"
+
+#: main-modules.php:3046
+msgid "Input your main slide text content here."
+msgstr "Input chính nội dung trình chiếu chính của bạn ở đây."
+
+#: main-modules.php:3049 main-modules.php:3855 main-modules.php:17132
+msgid "Arrows Custom Color"
+msgstr "Tùy chỉnh Màu Mũi tên"
+
+#: main-modules.php:3055 main-modules.php:3861 main-modules.php:17138
+msgid "Dot Nav Custom Color"
+msgstr "Tùy chỉnh Màu Chấm điều hướng"
+
+#: main-modules.php:3063
+msgid ""
+"This will change the label of the slide in the builder for easy "
+"identification."
+msgstr "Điều này sẽ thay đổi những loại trượt trong xây dựng cho dễ nhận diện."
+
+#: main-modules.php:3066 main-modules.php:3843 main-modules.php:17120
+msgid "Text Overlay Border Radius"
+msgstr "Bán kính Đường viền Chồng Chữ"
+
+#: main-modules.php:3347
+msgid "Post Slider"
+msgstr "Bộ trượt Bài đăng"
+
+#: main-modules.php:3440 main-modules.php:7020 main-modules.php:7399
+#: main-modules.php:10496 main-modules.php:12363 main-modules.php:12376
+#: main-modules.php:13107 main-modules.php:15238 main-modules.php:15274
+#: main-modules.php:16256 main-modules.php:16717
+msgid "Meta"
+msgstr "Dữ liệu"
+
+#: main-modules.php:3497 main-modules.php:7070 main-modules.php:7475
+#: main-modules.php:10552 main-modules.php:11186 main-modules.php:15321
+#: main-modules.php:16774
+msgid "Posts Number"
+msgstr "Số lượng bài viết"
+
+#: main-modules.php:3500 main-modules.php:16777
+msgid "Choose how many posts you would like to display in the slider."
+msgstr "Chọn số bài đăng muốn hiển thị trong bộ trượt."
+
+#: main-modules.php:3503 main-modules.php:7076 main-modules.php:7481
+#: main-modules.php:10558 main-modules.php:11192 main-modules.php:15315
+#: main-modules.php:16780
+msgid "Include Categories"
+msgstr "Bao gồm Thể loại"
+
+#: main-modules.php:3509 main-modules.php:16786
+msgid "Choose which categories you would like to include in the slider."
+msgstr "Chọn mục muốn bao gồm trong bộ trượt."
+
+#: main-modules.php:3512 main-modules.php:11218 main-modules.php:16789
+msgid "Order By"
+msgstr "Sắp xếp theo"
+
+#: main-modules.php:3516 main-modules.php:16793
+msgid "Date: new to old"
+msgstr "Ngày: mới tới cũ"
+
+#: main-modules.php:3517 main-modules.php:16794
+msgid "Date: old to new"
+msgstr "Ngày: cũ tới mới"
+
+#: main-modules.php:3518 main-modules.php:16795
+msgid "Title: a-z"
+msgstr "Tiêu đề: a-z"
+
+#: main-modules.php:3519 main-modules.php:16796
+msgid "Title: z-a"
+msgstr "Tiêu đề: z-a"
+
+#: main-modules.php:3520 main-modules.php:16797
+msgid "Random"
+msgstr "Ngẫu nhiên"
+
+#: main-modules.php:3522 main-modules.php:16799
+msgid "Here you can adjust the order in which posts are displayed."
+msgstr "Ở đây bạn có thể điều chỉnh thứ tự hiển thị bài đăng."
+
+#: main-modules.php:3545 main-modules.php:16822
+msgid "Show Read More Button"
+msgstr "Hiện Nút Đọc Tiếp"
+
+#: main-modules.php:3555 main-modules.php:16832
+msgid "This setting will turn on and off the read more button."
+msgstr "Thiết đặt này sẽ bật hoặc tắt nút đọc tiếp."
+
+#: main-modules.php:3562
+msgid ""
+"Define the text which will be displayed on \"Read More\" button. leave blank "
+"for default ( Read More )"
+msgstr ""
+"Định nghĩa văn bản hiển thị trên nút \\\"Read More\\\". Để trống cho mặc "
+"định ( Đọc Tiếp )"
+
+#: main-modules.php:3565 main-modules.php:16842
+msgid "Content Display"
+msgstr "Hiển thị Nội dung"
+
+#: main-modules.php:3569 main-modules.php:10587 main-modules.php:16846
+msgid "Show Excerpt"
+msgstr "Hiển thị Trích dẫn"
+
+#: main-modules.php:3570 main-modules.php:10588 main-modules.php:16847
+msgid "Show Content"
+msgstr "Hiển thị Nội dung"
+
+#: main-modules.php:3576 main-modules.php:16853
+msgid ""
+"Showing the full content will not truncate your posts in the slider. Showing "
+"the excerpt will only display excerpt text."
+msgstr ""
+"Hiển thị toàn nội dung sẽ không cắt xén bài viết của bạn trong bộ trượt. "
+"Hiện phần trích dẫn sẽ chỉ hiển thị văn bản trích."
+
+#: main-modules.php:3579 main-modules.php:16856
+msgid "Use Post Excerpt if Defined"
+msgstr "Dùng Đoạn trích Bài đăng nếu Được định nghĩa"
+
+#: main-modules.php:3587 main-modules.php:16864
+msgid ""
+"Disable this option if you want to ignore manually defined excerpts and "
+"always generate it automatically."
+msgstr ""
+"Tắt tuỳ chọn này nếu bạn muốn bỏ qua những đoạn trích định nghĩa thủ công và "
+"luôn phát sinh tự động."
+
+#: main-modules.php:3590 main-modules.php:16867
+msgid "Automatic Excerpt Length"
+msgstr "Độ dài Đoạn trích Tự động"
+
+#: main-modules.php:3594 main-modules.php:16871
+msgid ""
+"Define the length of automatically generated excerpts. Leave blank for "
+"default ( 270 ) "
+msgstr ""
+"Định nghĩa độ dài của đoạn trích phát sinh tự động. Để trống cho mặc định "
+"( 270 ) "
+
+#: main-modules.php:3597 main-modules.php:16874
+msgid "Show Post Meta"
+msgstr "Hiện Thông tin Bài đăng"
+
+#: main-modules.php:3604 main-modules.php:16881
+msgid "This setting will turn on and off the meta section."
+msgstr "Thiết đặt này bật tắt phần meta thông tin."
+
+#: main-modules.php:3617 main-modules.php:16894
+msgid "Choose a Background"
+msgstr "Chọn Nền"
+
+#: main-modules.php:3619 main-modules.php:16896
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"use as the background for the slider."
+msgstr ""
+"Tải lên ảnh mong muốn, hoặc nhập vào URL đến ảnh muốn dùng làm nền cho bộ "
+"trượt."
+
+#: main-modules.php:3632 main-modules.php:10573 main-modules.php:12471
+#: main-modules.php:16350 main-modules.php:16909
+msgid "Show Featured Image"
+msgstr "Hiển thị Ảnh Nổi Bật"
+
+#: main-modules.php:3642 main-modules.php:16919
+msgid "This setting will turn on and off the featured image in the slider."
+msgstr "Thiết đặt này bật tắt phần ảnh đề cử trong bộ trượt."
+
+#: main-modules.php:3645 main-modules.php:16922
+msgid "Image Placement"
+msgstr "Vị trí Ảnh"
+
+#: main-modules.php:3649 main-modules.php:16926
+msgid "Background"
+msgstr "Nền"
+
+#: main-modules.php:3659 main-modules.php:16936
+msgid "Select how you would like to display the featured image in slides"
+msgstr "Chọn cách hiển thị ảnh đề cử trong các trang"
+
+#: main-modules.php:3833 main-modules.php:17110
+msgid "Show Image On Mobile"
+msgstr "Hiện Ảnh Trên Di động"
+
+#: main-modules.php:4163 main-modules.php:10954 main-modules.php:17440
+msgid "by %s"
+msgstr "bởi %s"
+
+#: main-modules.php:4164 main-modules.php:10964 main-modules.php:17441
+msgid "%s"
+msgstr "%s"
+
+#: main-modules.php:4248
+msgid "Testimonial"
+msgstr "Lời khen ngợi"
+
+#: main-modules.php:4309
+msgid "Testimonial Portrait"
+msgstr "Chân dung Chứng thực"
+
+#: main-modules.php:4313
+msgid "Testimonial Description"
+msgstr "Mô tả Chứng thực"
+
+#: main-modules.php:4317
+msgid "Testimonial Author"
+msgstr "Tác giả Chứng thực"
+
+#: main-modules.php:4321
+msgid "Testimonial Meta"
+msgstr "lý lịch dữ liệu chứng thực"
+
+#: main-modules.php:4330
+msgid "Author Name"
+msgstr "Tên Tác giả"
+
+#: main-modules.php:4333
+msgid "Input the name of the testimonial author."
+msgstr "Nhập tên tác giả bài cảm nhận."
+
+#: main-modules.php:4336
+msgid "Job Title"
+msgstr "Chức danh"
+
+#: main-modules.php:4339
+msgid "Input the job title."
+msgstr "Nhập chức danh."
+
+#: main-modules.php:4342
+msgid "Company Name"
+msgstr "Tên Công ty"
+
+#: main-modules.php:4345
+msgid "Input the name of the company."
+msgstr "Nhập tên của công ty."
+
+#: main-modules.php:4348
+msgid "Author/Company URL"
+msgstr "URL Tác giả/Công ty"
+
+#: main-modules.php:4351
+msgid "Input the website of the author or leave blank for no link."
+msgstr "Nhập trang web của tác giả hoặc để trống nếu không có liên kết."
+
+#: main-modules.php:4354
+msgid "URLs Open"
+msgstr "Mở URLs"
+
+#: main-modules.php:4361
+msgid "Choose whether or not the URL should open in a new window."
+msgstr "Chọn nên mở URLs hay không trong cửa sổ mới."
+
+#: main-modules.php:4364
+msgid "Portrait Image URL"
+msgstr "Ảnh Chân dung URL"
+
+#: main-modules.php:4373
+msgid "Quote Icon"
+msgstr "Biểu tượng Ngoặc kép"
+
+#: main-modules.php:4377
+msgid "Visible"
+msgstr "Hiện"
+
+#: main-modules.php:4378
+msgid "Hidden"
+msgstr "Ẩn"
+
+#: main-modules.php:4380
+msgid "Choose whether or not the quote icon should be visible."
+msgstr "Chọn có nên hiện biểu tượng ngoặc kép hay không."
+
+#: main-modules.php:4383 main-modules.php:5514 main-modules.php:6266
+#: main-modules.php:6698 main-modules.php:11534
+msgid "Use Background Color"
+msgstr "Dùng Màu Nền"
+
+#: main-modules.php:4393 main-modules.php:5524 main-modules.php:6276
+#: main-modules.php:6708 main-modules.php:11544
+msgid ""
+"Here you can choose whether background color setting below should be used or "
+"not."
+msgstr ""
+"Tại đây bạn có thể chọn liệu có nên sử dụng thiết lập màu nền dưới đây hay "
+"không."
+
+#: main-modules.php:4398 main-modules.php:5530
+msgid "Here you can define a custom background color for your CTA."
+msgstr ""
+"Tại đây bạn có thể xác định màu nền tùy chỉnh cho biểu ngữ kêu gọi hành động."
+
+#: main-modules.php:4416 main-modules.php:5547
+msgid "This will adjust the alignment of the module text."
+msgstr "Thiết lập này sẽ điều chỉnh canh lề dòng chữ mô-đun."
+
+#: main-modules.php:4425
+msgid "Quote Icon Color"
+msgstr "Màu Biểu tượng Đoạn trích dẫn"
+
+#: main-modules.php:4431
+msgid "Portrait Border Radius"
+msgstr "Bán kính Khung viền Chân dung"
+
+#: main-modules.php:4437
+msgid "Portrait Width"
+msgstr "Chiều rộng Chân dung"
+
+#: main-modules.php:4448
+msgid "Portrait Height"
+msgstr "Chiều cao Chân dung"
+
+#: main-modules.php:4645
+msgid "Pricing Tables"
+msgstr "Bảng giá"
+
+#: main-modules.php:4649 main-modules.php:5118
+msgid "Pricing Table"
+msgstr "Bảng Giá"
+
+#: main-modules.php:4679 main-modules.php:5225
+msgid "Pricing Heading"
+msgstr "Tiêu đề Bảng giá"
+
+#: main-modules.php:4683 main-modules.php:5229
+msgid "Pricing Title"
+msgstr "Tên Bảng giá"
+
+#: main-modules.php:4687 main-modules.php:5233
+msgid "Pricing Subtitle"
+msgstr "Phụ đề Giá"
+
+#: main-modules.php:4691 main-modules.php:5237
+msgid "Pricing Top"
+msgstr "Đầu Bảng giá"
+
+#: main-modules.php:4695 main-modules.php:4758 main-modules.php:5178
+#: main-modules.php:5241 main-modules.php:5308 main-modules.php:11116
+#: main-modules.php:11156
+msgid "Price"
+msgstr "Giá"
+
+#: main-modules.php:4699 main-modules.php:5245 main-modules.php:5296
+msgid "Currency"
+msgstr "Tiền tệ"
+
+#: main-modules.php:4703 main-modules.php:5249
+msgid "Frequency"
+msgstr "Tần số"
+
+#: main-modules.php:4707 main-modules.php:5253
+msgid "Pricing Content"
+msgstr "Nội dung Bảng giá"
+
+#: main-modules.php:4711 main-modules.php:5257
+msgid "Pricing Item"
+msgstr "Vật phẩm Giá"
+
+#: main-modules.php:4715 main-modules.php:5261
+msgid "Excluded Item"
+msgstr "Vật phẩm Loại trừ"
+
+#: main-modules.php:4719 main-modules.php:5265
+msgid "Pricing Button"
+msgstr "Nút Bảng giá"
+
+#: main-modules.php:4723
+msgid "Featured Table"
+msgstr "Bảng giá Nổi bật"
+
+#: main-modules.php:4740 main-modules.php:5159
+msgid "Subheader"
+msgstr "Tiêu đề"
+
+#: main-modules.php:4752 main-modules.php:5172
+msgid "Currency &amp; Frequency"
+msgstr "Tiền tệ &âm li; Tần số"
+
+#: main-modules.php:4818
+msgid "Featured Table Background Color"
+msgstr "Màu nền của Bảng giá Nổi bật"
+
+#: main-modules.php:4825
+msgid "Table Header Background Color"
+msgstr "Màu nền của Tiêu đề Bảng giá"
+
+#: main-modules.php:4831
+msgid "Featured Table Header Background Color"
+msgstr "Màu nền của Tiêu đề Bảng giá Nổi bật"
+
+#: main-modules.php:4838
+msgid "Featured Table Header Text Color"
+msgstr "Màu chữ của Đầu trang Bảng giá Nổi bật"
+
+#: main-modules.php:4845
+msgid "Featured Table Subheader Text Color"
+msgstr "Màu chữ của Tiêu đề Bảng giá Nổi bật"
+
+#: main-modules.php:4852
+msgid "Featured Table Price Color"
+msgstr "Màu giá trong Bảng giá Nổi bật"
+
+#: main-modules.php:4859
+msgid "Featured Table Body Text Color"
+msgstr "Màu chữ trong Thân Bảng giá Nổi bật"
+
+#: main-modules.php:4866
+msgid "Show Bullet"
+msgstr "Hiển thị Chấm"
+
+#: main-modules.php:4879
+msgid "Bullet Color"
+msgstr "Màu chấm"
+
+#: main-modules.php:4886
+msgid "Featured Table Bullet Color"
+msgstr "Màu chấm trong Bảng giá Nổi bật"
+
+#: main-modules.php:4893
+msgid "Remove Featured Table Drop Shadow"
+msgstr "Bỏ Đổ bóng trong Bảng giá Nổi bật"
+
+#: main-modules.php:4904
+msgid "Center List Items"
+msgstr "Căn giữa các Mục trong Danh sách"
+
+#: main-modules.php:5140
+msgid "New Pricing Table"
+msgstr "Bảng giá Mới"
+
+#: main-modules.php:5141
+msgid "Pricing Table Settings"
+msgstr "Thiết lập Bảng giá"
+
+#: main-modules.php:5274
+msgid "Make This Table Featured"
+msgstr "Làm nổi bật bảng này"
+
+#: main-modules.php:5281
+msgid "Featuring a table will make it stand out from the rest."
+msgstr "Làm nổi bật bảng giá sẽ giúp nó nổi trội với phần còn lại."
+
+#: main-modules.php:5287
+msgid "Define a title for the pricing table."
+msgstr "Xác định tiêu đề cho bảng giá."
+
+#: main-modules.php:5290 main-modules.php:13790
+msgid "Subtitle"
+msgstr "Tiêu đề phụ"
+
+#: main-modules.php:5293
+msgid "Define a sub title for the table if desired."
+msgstr "Xác định tiêu đề phụ cho bảng nếu muốn."
+
+#: main-modules.php:5299
+msgid "Input your desired currency symbol here."
+msgstr "Nhập biểu tượng tiền tệ bạn muốn tại đây."
+
+#: main-modules.php:5302
+msgid "Per"
+msgstr "Mỗi"
+
+#: main-modules.php:5305
+msgid ""
+"If your pricing is subscription based, input the subscription payment cycle "
+"here."
+msgstr ""
+"Nếu giá của bạn tính theo thuê bao, nhập chu kỳ thanh toán thuê bao tại đây."
+
+#: main-modules.php:5311
+msgid "Input the value of the product here."
+msgstr "Nhập giá trị sản phẩm tại đây."
+
+#: main-modules.php:5317
+msgid "Input the destination URL for the signup button."
+msgstr "Nhập đích đến URL cho nút đăng ký."
+
+#: main-modules.php:5323
+msgid "Adjust the text used from the signup button."
+msgstr "Điểu chỉnh chữ sử dụng từ nút đăng ký"
+
+#: main-modules.php:5331
+msgid ""
+"Input a list of features that are/are not included in the product. Separate "
+"items on a new line, and begin with either a + or - symbol: "
+msgstr ""
+"Nhập danh sách tính năng bao gồm/không bao gồm trong sản phẩm. Chia các mục "
+"trên dòng mới, và bắt đầu với biểu tượng + hoặc -"
+
+#: main-modules.php:5332
+msgid "Included option"
+msgstr "Tùy chọn bao gồm"
+
+#: main-modules.php:5333
+msgid "Excluded option"
+msgstr "Tùy chọn loại trừ"
+
+#: main-modules.php:5406
+msgid "Call To Action"
+msgstr "Lệnh Hành Động"
+
+#: main-modules.php:5469
+msgid "Promo Description"
+msgstr "Mô tả"
+
+#: main-modules.php:5473
+msgid "Promo Button"
+msgstr "Nút"
+
+#: main-modules.php:5477
+msgid "Promo Title"
+msgstr "Tiêu đề Quảng cáo"
+
+#: main-modules.php:5489
+msgid "Input your value to action title here."
+msgstr "Nhập giá trị tiêu đề hành động ở đây."
+
+#: main-modules.php:5495
+msgid "Input the destination URL for your CTA button."
+msgstr "Nhập URL đích cho nút kêu gọi hành động."
+
+#: main-modules.php:5511
+msgid "Input your desired button text, or leave blank for no button."
+msgstr "Nhập dòng chữ mong muốn cho nút, hoặc để trống nếu không có nút."
+
+#: main-modules.php:5721
+msgid "Input the destination URL for your button."
+msgstr "Nhập URL đích cho nút."
+
+#: main-modules.php:5737
+msgid "Input your desired button text."
+msgstr "Nhập văn bản mong muốn cho nút."
+
+#: main-modules.php:5740
+msgid "Button alignment"
+msgstr ""
+
+#: main-modules.php:5748
+msgid "Here you can define the alignemnt of Button"
+msgstr ""
+
+#: main-modules.php:5839 main-modules.php:5928
+msgid "Audio"
+msgstr "Âm thanh"
+
+#: main-modules.php:5891
+msgid "Audio Cover Art"
+msgstr "Hình ảnh Âm thanh"
+
+#: main-modules.php:5895
+msgid "Audio Content"
+msgstr "Nội dung Âm thanh"
+
+#: main-modules.php:5899
+msgid "Audio Title"
+msgstr "Tiêu đề Âm thanh"
+
+#: main-modules.php:5903
+msgid "Audio Meta"
+msgstr "Lý lịch dữ liệu âm thanh"
+
+#: main-modules.php:5907
+msgid "Player Buttons"
+msgstr "Nút Trình phát"
+
+#: main-modules.php:5911
+msgid "Player Timer"
+msgstr "Bộ định giờ Trình phát"
+
+#: main-modules.php:5915
+msgid "Player Sliders"
+msgstr "Bộ trượt Trình phát"
+
+#: main-modules.php:5919
+msgid "Player Sliders Current"
+msgstr "Bộ trượt Trình phát Hiện tại"
+
+#: main-modules.php:5932
+msgid "Upload an audio file"
+msgstr "Tải tập tin âm thanh lên"
+
+#: main-modules.php:5933
+msgid "Choose an Audio file"
+msgstr "Chọn tập tin âm thanh"
+
+#: main-modules.php:5934
+msgid "Set As Audio for the module"
+msgstr "Thiết lập làm âm thanh cho mô-đun"
+
+#: main-modules.php:5935
+msgid ""
+"Define the audio file for use in the module. To remove an audio file from "
+"the module, simply delete the URL from the settings field."
+msgstr ""
+"Xác định tập tin âm thanh để sử dụng trong mô-đun. Để xóa tập tin âm thanh "
+"khỏi mô-đun, bạn chỉ cần xóa URL từ ô thiết lập."
+
+#: main-modules.php:5941
+msgid "Define a title."
+msgstr "Xác định tiêu đề."
+
+#: main-modules.php:5944
+msgid "Artist Name"
+msgstr "Tên nghệ sĩ"
+
+#: main-modules.php:5947
+msgid "Define an artist name."
+msgstr "Xác định tên nghệ sĩ."
+
+#: main-modules.php:5950
+msgid "Album name"
+msgstr "Tên Album"
+
+#: main-modules.php:5953
+msgid "Define an album name."
+msgstr "Xác định tên album."
+
+#: main-modules.php:5956
+msgid "Cover Art Image URL"
+msgstr "URL Ảnh Bìa"
+
+#: main-modules.php:5967 main-modules.php:6281 main-modules.php:6713
+#: main-structure-elements.php:130
+msgid ""
+"Define a custom background color for your module, or leave blank to use the "
+"default color."
+msgstr ""
+"Xác định màu nền tùy chỉnh cho mô-đun của bạn, hoặc để trống để sử dụng màu "
+"sắc mặc định."
+
+#: main-modules.php:6100
+msgid "Email Optin"
+msgstr "Thư Optin"
+
+#: main-modules.php:6128
+msgid "Subscribe"
+msgstr "Đăng ký"
+
+#: main-modules.php:6167
+msgid "Newsletter Description"
+msgstr "Mô tả Mẫu đăng ký Thư thông báo"
+
+#: main-modules.php:6171
+msgid "Newsletter Form"
+msgstr "Mẫu Đăng ký Thư thông báo"
+
+#: main-modules.php:6175
+msgid "Newsletter Fields"
+msgstr "Trường Thư tin"
+
+#: main-modules.php:6179
+msgid "Newsletter Button"
+msgstr "Nút Đăng ký Thư thông báo"
+
+#: main-modules.php:6186
+msgid "Select the list"
+msgstr "Lựa chọn danh sách"
+
+#: main-modules.php:6207
+msgid "Service Provider"
+msgstr "Nhà cung cấp dịch vụ"
+
+#: main-modules.php:6211
+msgid "MailChimp"
+msgstr "MailChimp"
+
+#: main-modules.php:6212
+msgid "FeedBurner"
+msgstr "FeedBurner"
+
+#: main-modules.php:6213
+msgid "Aweber"
+msgstr "Aweber"
+
+#: main-modules.php:6220
+msgid "Here you can choose a service provider."
+msgstr "Tại đây bạn có thể chọn một nhà cung cấp dịch vụ."
+
+#: main-modules.php:6223
+msgid "Feed Title"
+msgstr "Tiêu đề Nguồn cấp dữ liệu"
+
+#: main-modules.php:6230
+msgid "MailChimp lists"
+msgstr "Danh sách MailChimp"
+
+#: main-modules.php:6235
+msgid ""
+"Here you can choose MailChimp list to add customers to. If you don't see any "
+"lists here, you need to make sure MailChimp API key is set in %1$s and you "
+"have at least one list on a MailChimp account. If you added new list, but it "
+"doesn't appear here, activate 'Regenerate MailChimp Lists' option in %1$s."
+"%2$s"
+msgstr ""
+"Ở đây bạn có thể chọn thêm khách hàng vào danh sách MailChimp. Nếu không "
+"thấy danh sách nào ở đây, bạn cần đảm bảo rằng khoá API MailChimp được đặt "
+"trong %1$s và bạn có ít nhất một danh sách trên tài khoản MailChimp. Nếu đã "
+"thêm danh sách mới nhưng nó không hiển thị ở đây, hãy kích hoạt lựa chọn "
+"'Phát sinh lại Danh sách MailChimp' trong %1$s.%2$s"
+
+#: main-modules.php:6236 main-modules.php:6248
+msgid "Divi Plugin Options"
+msgstr "Tuỳ chọn Trình cắm Divi"
+
+#: main-modules.php:6236 main-modules.php:6248
+msgid "ePanel"
+msgstr "ePanel"
+
+#: main-modules.php:6237 main-modules.php:6249
+msgid "Don't forget to disable it once the list has been regenerated."
+msgstr "Đừng quên tắt đi sau khi phát sinh lại danh sách."
+
+#: main-modules.php:6242
+msgid "Aweber lists"
+msgstr "Danh sách Aweber"
+
+#: main-modules.php:6247
+msgid ""
+"Here you can choose Aweber list to add customers to. If you don't see any "
+"lists here, you need to make sure Aweber is set up properly in %1$s and you "
+"have at least one list on a Aweber account. If you added new list, but it "
+"doesn't appear here, activate 'Regenerate Aweber Lists' option in %1$s.%2$s"
+msgstr ""
+"Ở đây bạn có thể chọn thêm khách hàng vào danh sách Aweber. Nếu không thấy "
+"danh sách nào ở đây, bạn cần đảm bảo rằng Aweber đã được cài đặt đúng đắn "
+"trong %1$s và bạn có ít nhất một danh sách trên tài khoản Aweber. Nếu đã "
+"thêm danh sách mới nhưng nó không hiển thị ở đây, hãy kích hoạt lựa chọn "
+"'Phát sinh lại Danh sách Aweber' trong %1$s.%2$s"
+
+#: main-modules.php:6257
+msgid "Choose a title of your signup box."
+msgstr "Chọn tiêu đề cho ô đăng ký của bạn."
+
+#: main-modules.php:6263
+msgid "Here you can change the text used for the signup button."
+msgstr "Tại đây bạn có thể thay đổi dòng chữ sử dụng cho nút đăng ký."
+
+#: main-modules.php:6299 main-modules.php:6731
+msgid "Here you can adjust the alignment of your text."
+msgstr "Tại đây bạn có thể điều chỉnh canh lề cho dòng chữ của mình."
+
+#: main-modules.php:6308 main-modules.php:6740
+msgid "Form Field Background Color"
+msgstr "Màu nền cho Trường Mẫu đăng ký"
+
+#: main-modules.php:6314 main-modules.php:6746
+msgid "Form Field Text Color"
+msgstr "Màu chữ Trường Mẫu đăng ký"
+
+#: main-modules.php:6320 main-modules.php:6752
+msgid "Focus Background Color"
+msgstr "Màu nền Trung tâm Trường Mẫu đăng ký"
+
+#: main-modules.php:6326 main-modules.php:6758
+msgid "Focus Text Color"
+msgstr "Màu chữ Trung tâm"
+
+#: main-modules.php:6332 main-modules.php:6764
+msgid "Use Focus Border Color"
+msgstr "Sử dụng Màu Khung viền Trung tâm"
+
+#: main-modules.php:6345 main-modules.php:6777
+msgid "Focus Border Color"
+msgstr "Màu Khung viền Trung tâm"
+
+#: main-modules.php:6468
+msgid "First Name"
+msgstr "Tên"
+
+#: main-modules.php:6469
+msgid "Last Name"
+msgstr "Họ"
+
+#: main-modules.php:6470 main-modules.php:9302
+msgid "Email Address"
+msgstr "Địa chỉ Email"
+
+#: main-modules.php:6537 main-modules.php:9301 main-modules.php:10203
+msgid "Name"
+msgstr "Tên"
+
+#: main-modules.php:6599 main-modules.php:6941
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: main-modules.php:6661
+msgid "Login Description"
+msgstr "Mô tả Đăng nhập"
+
+#: main-modules.php:6665
+msgid "Login Form"
+msgstr "Biểu mẫu Đăng nhập"
+
+#: main-modules.php:6669
+msgid "Login Fields"
+msgstr "Trường Đăng nhập"
+
+#: main-modules.php:6673
+msgid "Login Button"
+msgstr "Nút Đăng nhập"
+
+#: main-modules.php:6685
+msgid "Choose a title of your login box."
+msgstr "Chọn tiêu đề cho ô đăng nhập của bạn."
+
+#: main-modules.php:6688
+msgid "Redirect To The Current Page"
+msgstr "Chuyển hướng đến trang hiện tại"
+
+#: main-modules.php:6695
+msgid ""
+"Here you can choose whether the user should be redirected to the current "
+"page."
+msgstr ""
+"Tại đây bạn có thể chọn liệu người dùng có nên được chuyển hướng đến trang "
+"hiện tại không."
+
+#: main-modules.php:6902
+msgid "Logged in as %1$s"
+msgstr "Đăng nhập với tên %1$s"
+
+#: main-modules.php:6904
+msgid "Log out"
+msgstr "Đăng xuất"
+
+#: main-modules.php:6913
+msgid "Username"
+msgstr "Tên người dùng"
+
+#: main-modules.php:6914
+msgid "Password"
+msgstr "Mật khẩu"
+
+#: main-modules.php:6934
+msgid "Forgot your password?"
+msgstr "Bạn quên mật khẩu à ?"
+
+#: main-modules.php:6981
+msgid "Portfolio"
+msgstr "Hồ Sơ"
+
+#: main-modules.php:7035 main-modules.php:7432
+msgid "Portfolio Image"
+msgstr "Hình ảnh Danh  mục"
+
+#: main-modules.php:7047 main-modules.php:7444 main-modules.php:15258
+#: main-modules.php:15296
+msgid "Portfolio Title"
+msgstr "Tiêu đề Hồ sơ"
+
+#: main-modules.php:7051 main-modules.php:7448
+msgid "Portfolio Post Meta"
+msgstr "Mô tả danh mục"
+
+#: main-modules.php:7064 main-modules.php:7469 main-modules.php:10541
+msgid "Fullwidth"
+msgstr "Toàn chiều rộng"
+
+#: main-modules.php:7067 main-modules.php:7472 main-modules.php:15312
+msgid "Choose your desired portfolio layout style."
+msgstr "Chọn phong cách giao diện hồ sơ của bạn."
+
+#: main-modules.php:7073 main-modules.php:7478
+msgid "Define the number of projects that should be displayed per page."
+msgstr "Xác định số lượng dự án sẽ hiển thị mỗi trang."
+
+#: main-modules.php:7079 main-modules.php:7484 main-modules.php:15318
+msgid "Select the categories that you would like to include in the feed."
+msgstr "Chọn thể loại bạn muốn đưa vào trong nguồn cấp dữ liệu."
+
+#: main-modules.php:7082 main-modules.php:7487 main-modules.php:12389
+#: main-modules.php:15327 main-modules.php:16268
+msgid "Show Title"
+msgstr "Hiển thị Tiêu đề"
+
+#: main-modules.php:7089 main-modules.php:7494 main-modules.php:15334
+msgid "Turn project titles on or off."
+msgstr "Bật hoặc tắt tiêu đề dự án."
+
+#: main-modules.php:7092 main-modules.php:7497 main-modules.php:10627
+msgid "Show Categories"
+msgstr "Hiển thị Thể loại"
+
+#: main-modules.php:7099 main-modules.php:7504 main-modules.php:10634
+msgid "Turn the category links on or off."
+msgstr "Bật hoặc tắt liên kết thể loại."
+
+#: main-modules.php:7360
+msgid "Filterable Portfolio"
+msgstr "Hồ Sơ Có Thể Lọc Được"
+
+#: main-modules.php:7405
+msgid "Filter"
+msgstr "Bộ lọc"
+
+#: main-modules.php:7424
+msgid "Portfolio Filters"
+msgstr "Bộ lọc Danh mục"
+
+#: main-modules.php:7428
+msgid "Active Portfolio Filter"
+msgstr "Bộ lọc Danh mục đang hoạt động"
+
+#: main-modules.php:7452
+msgid "Portfolio Pagination"
+msgstr "Phân trang Cặp giấy"
+
+#: main-modules.php:7735
+msgid "All"
+msgstr "Tất cả"
+
+#: main-modules.php:7775
+msgid "Bar Counters"
+msgstr "Bộ Đếm Dạng Thanh"
+
+#: main-modules.php:7778 main-modules.php:8002
+msgid "Bar Counter"
+msgstr "Thanh Bộ đếm"
+
+#: main-modules.php:7817 main-modules.php:8051 main-modules.php:8423
+msgid "Percent"
+msgstr "Phần trăm"
+
+#: main-modules.php:7834 main-modules.php:8028
+msgid "Counter Title"
+msgstr "Tên Bộ đếm"
+
+#: main-modules.php:7838 main-modules.php:8032
+msgid "Counter Container"
+msgstr "Khoảng chứa Bộ đếm"
+
+#: main-modules.php:7842 main-modules.php:8036
+msgid "Counter Amount"
+msgstr "Số Bộ đếm"
+
+#: main-modules.php:7863
+msgid ""
+"This will adjust the color of the empty space in the bar (currently gray)."
+msgstr ""
+"Thiết Lập này sẽ điều chỉnh màu của khoảng trống trong thanh (hiện tại là "
+"màu xám)."
+
+#: main-modules.php:7866 main-modules.php:8063 main-modules.php:8296
+msgid "Bar Background Color"
+msgstr "Màu Nền Thanh"
+
+#: main-modules.php:7868 main-modules.php:8298 main-modules.php:8501
+msgid "This will change the fill color for the bar."
+msgstr "Thiết Lập này sẽ thay đổi màu nền đối với thanh."
+
+#: main-modules.php:7871
+msgid "Use Percentages"
+msgstr "Sử dụng Chỉ số Phần trăm"
+
+#: main-modules.php:7880
+msgid "Bar Top Padding"
+msgstr "Khoảng đệm trên của Thanh"
+
+#: main-modules.php:7888
+msgid "Bar Bottom Padding"
+msgstr "Khoảng đệm dưới của Thanh"
+
+#: main-modules.php:7896 main-modules.php:9614
+msgid "Border Radius"
+msgstr "Bán kính Khung viền"
+
+#: main-modules.php:8020
+msgid "New Bar Counter"
+msgstr "Bộ Đếm Thanh Mới"
+
+#: main-modules.php:8021
+msgid "Bar Counter Settings"
+msgstr "Thiết Lập Bộ Đếm Thanh"
+
+#: main-modules.php:8048
+msgid "Input a title for your bar."
+msgstr "Nhập tiêu đề cho thanh của bạn."
+
+#: main-modules.php:8054
+msgid "Define a percentage for this bar."
+msgstr "Xác định phần trăm cho thanh này."
+
+#: main-modules.php:8069
+msgid "Label Color"
+msgstr "Màu Nhãn"
+
+#: main-modules.php:8075
+msgid "Percentage Color"
+msgstr "Màu Chỉ số Phần trăm"
+
+#: main-modules.php:8203
+msgid "Circle Counter"
+msgstr "Bộ Đếm Hình Tròn"
+
+#: main-modules.php:8236 main-modules.php:8269 main-modules.php:8442
+#: main-modules.php:8483
+msgid "Number"
+msgstr "Số"
+
+#: main-modules.php:8246
+msgid "Percent Container"
+msgstr "Bộ chứa Phần trăm"
+
+#: main-modules.php:8250
+msgid "Circle Counter Title"
+msgstr "Tên Bộ đếm Vòng"
+
+#: main-modules.php:8254
+msgid "Percent Text"
+msgstr "Văn bản Phần trăm"
+
+#: main-modules.php:8266
+msgid "Input a title for the circle counter."
+msgstr "Nhập tiêu đề cho bộ đếm hình tròn."
+
+#: main-modules.php:8273
+msgid ""
+"Define a number for the circle counter. (Don't include the percentage sign, "
+"use the option below.). <strong>Note: You can use only natural numbers from "
+"0 to 100</strong>"
+msgstr ""
+"Xác định số cho bộ đếm hình tròn. (Không gồm bảng phần trăm, sử dụng tùy "
+"chọn bên dưới.) Ghi chú: Bạn chỉ có thể sử dụng số tự nhiên từ 0 đến 100"
+
+#: main-modules.php:8276 main-modules.php:8489
+msgid "Percent Sign"
+msgstr "Bảng Phần Trăm"
+
+#: main-modules.php:8283 main-modules.php:8496
+msgid ""
+"Here you can choose whether the percent sign should be added after the "
+"number set above."
+msgstr ""
+"Tại đây bạn có thể chọn bảng phần trăm được hoặc không được thêm vào sau số "
+"thiết lập bên trên."
+
+#: main-modules.php:8307
+msgid "Circle Color Opacity"
+msgstr "Độ mờ màu Vòng đếm"
+
+#: main-modules.php:8400
+msgid "Number Counter"
+msgstr "Bộ Đếm Dạng Số"
+
+#: main-modules.php:8427
+msgid "Number Counter Title"
+msgstr "Tên Bộ đếm Số"
+
+#: main-modules.php:8480
+msgid "Input a title for the counter."
+msgstr "Nhập tiêu đề cho bảng."
+
+#: main-modules.php:8486
+msgid ""
+"Define a number for the counter. (Don't include the percentage sign, use the "
+"option below.)"
+msgstr ""
+"Xác định số bảng màu. (Không gồm bảng phần trăm, sử dụng tùy chọn bên dưới.)"
+
+#: main-modules.php:8499
+msgid "Counter Text Color"
+msgstr "Bảng Màu Chữ"
+
+#: main-modules.php:8511
+msgid ""
+"Here you can choose whether your title text should be light or dark. If you "
+"are working with a dark background, then your text should be light. If your "
+"background is light, then your text should be set to dark."
+msgstr ""
+"Tại đây bạn có thể chọn dòng chữ tiêu đề của bạn màu sáng hoặc tối. Nếu bạn "
+"đang dùng nền tối, dòng chữ của bạn nên để màu sáng. Nếu nền của bạn sáng, "
+"dòng chữ của bạn nên được cài màu tối."
+
+#: main-modules.php:8589 main-modules.php:8781
+msgid "Accordion"
+msgstr "Dạng Thu Gọn"
+
+#: main-modules.php:8606 main-modules.php:8640 main-modules.php:8811
+#: main-modules.php:8884
+msgid "Toggle"
+msgstr "Đảo trạng thái"
+
+#: main-modules.php:8644 main-modules.php:8814 main-modules.php:8935
+msgid "Open Toggle"
+msgstr "Mở Công tắc"
+
+#: main-modules.php:8648 main-modules.php:8818 main-modules.php:8939
+msgid "Toggle Title"
+msgstr "Tên Công tắc"
+
+#: main-modules.php:8652 main-modules.php:8822 main-modules.php:8943
+msgid "Toggle Icon"
+msgstr "Biểu tượng Công tắc"
+
+#: main-modules.php:8656 main-modules.php:8826 main-modules.php:8947
+msgid "Toggle Content"
+msgstr "Nội dung Công tắc"
+
+#: main-modules.php:8665 main-modules.php:8847 main-modules.php:8978
+msgid "Open Toggle Background Color"
+msgstr "Màu nền Công tắc khi mở"
+
+#: main-modules.php:8671 main-modules.php:8859 main-modules.php:8984
+msgid "Closed Toggle Background Color"
+msgstr "Màu nền Công tắc khi đóng"
+
+#: main-modules.php:8838 main-modules.php:8959
+msgid ""
+"The toggle title will appear above the content and when the toggle is closed."
+msgstr ""
+"Tiêu đề chuyển trạng thái sẽ xuất hiện phía trên nội dung và khi nút chuyển "
+"trạng thái được đóng lại."
+
+#: main-modules.php:8853
+msgid "Open Toggle Text Color"
+msgstr "Màu chữ Công tắc khi mở"
+
+#: main-modules.php:8865
+msgid "Closed Toggle Text Color"
+msgstr "Màu chữ Công tắc khi đóng"
+
+#: main-modules.php:8962
+msgid "State"
+msgstr "Trạng thái"
+
+#: main-modules.php:8966 template-preview.php:86
+msgid "Close"
+msgstr "Đóng"
+
+#: main-modules.php:8967
+msgid "Open"
+msgstr "Mở"
+
+#: main-modules.php:8969
+msgid ""
+"Choose whether or not this toggle should start in an open or closed state."
+msgstr ""
+"Chọn nút Chuyển trạng thái này có nên bắt đầu ở trạng thái mở hoặc đóng hay "
+"không."
+
+#: main-modules.php:9106
+msgid "Contact Form"
+msgstr "Biểu mẫu Liên hệ"
+
+#: main-modules.php:9109 main-modules.php:9526 main-modules.php:9547
+#: main-modules.php:13138
+msgid "Field"
+msgstr "Trường"
+
+#: main-modules.php:9141
+msgid "Form Field"
+msgstr "Trường Mẫu liên hệ"
+
+#: main-modules.php:9163
+msgid "Contact Title"
+msgstr "Tên Liên hệ"
+
+#: main-modules.php:9167
+msgid "Contact Button"
+msgstr "Nút Liên hệ"
+
+#: main-modules.php:9171
+msgid "Form Fields"
+msgstr "Trường Biểu mẫu"
+
+#: main-modules.php:9175 main-modules.php:13201
+msgid "Message Field"
+msgstr "Trường Thông báo"
+
+#: main-modules.php:9179
+msgid "Captcha Field"
+msgstr "Trường Xác minh"
+
+#: main-modules.php:9183
+msgid "Captcha Text"
+msgstr "Văn bản Xác minh"
+
+#: main-modules.php:9192
+msgid "Display Captcha"
+msgstr "Hiển thị Captcha"
+
+#: main-modules.php:9199
+msgid "Turn the captcha on or off using this option."
+msgstr "Bật hoặc tắt Captcha bằng cách sử dụng tùy chọn này."
+
+#: main-modules.php:9202
+msgid "Email"
+msgstr "Email"
+
+#: main-modules.php:9205
+msgid "Input the email address where messages should be sent."
+msgstr "Nhập địa chỉ email nơi tin nhắn sẽ được gửi đến."
+
+#: main-modules.php:9211
+msgid "Define a title for your contact form."
+msgstr "Xác định tiêu đề cho mẫu đơn liên hệ của bạn."
+
+#: main-modules.php:9214
+msgid "Message Pattern"
+msgstr "Kiểu mẫu Thông báo"
+
+#: main-modules.php:9217
+msgid ""
+"Here you can define the custom pattern for the email Message. Fields should "
+"be included in following format - <strong>%%field_id%%</strong>. For example "
+"if you want to include the field with id = <strong>phone</strong> and field "
+"with id = <strong>message</strong>, then you can use the following pattern: "
+"<strong>My message is %%message%% and phone number is %%phone%%</strong>. "
+"Leave blank for default."
+msgstr ""
+"Ở đây bạn có thể định nghĩa kiểu mẫu tuỳ biến cho Thông báo điện thư. Các "
+"trường nên được thêm vào theo định dạng sau - <strong>%%field_id%%</strong>. "
+"Ví dụ nếu bạn muốn bao gồm trường với id = <strong>phone</strong> và trường "
+"với id = <strong>message</strong>, bạn có thể dùng kiểu mẫu sau: "
+"<strong>Thông báo của tôi là %%message%% và số điện thoại là %%phone%%</"
+"strong>. Để trống cho mặc định."
+
+#: main-modules.php:9220
+msgid "Enable Redirect URL"
+msgstr "Cho phép URL Chuyển hướng"
+
+#: main-modules.php:9230
+msgid "Redirect users after successful form submission."
+msgstr "Chuyển hướng người dùng sau khi gửi lên biểu mẫu thành công."
+
+#: main-modules.php:9233
+msgid "Redirect URL"
+msgstr "URL Chuyển hướng"
+
+#: main-modules.php:9237
+msgid "Type the Redirect URL"
+msgstr "Nhập URL Chuyển hướng"
+
+#: main-modules.php:9240
+msgid "Success Message"
+msgstr "Thông báo Thành công"
+
+#: main-modules.php:9243
+msgid ""
+"Type the message you want to display after successful form submission. Leave "
+"blank for default"
+msgstr ""
+"Nhập thông báo bạn muốn hiển thị sau khi gửi biểu mẫu thành công. Để trống "
+"cho mặc định"
+
+#: main-modules.php:9246
+msgid "Form Background Color"
+msgstr "Màu nền Mẫu Liên hệ"
+
+#: main-modules.php:9252
+msgid "Input Border Radius"
+msgstr "Bán kính Khung viền Trường Đầu vào"
+
+#: main-modules.php:9348
+msgid "Thanks for contacting us"
+msgstr "Cám ơn bạn đã liên hệ chúng tôi."
+
+#: main-modules.php:9368
+msgid "Make sure you entered the captcha."
+msgstr "Hãy chắc rằng bạn đã nhập captcha."
+
+#: main-modules.php:9377 main-modules.php:9399
+msgid "Make sure you fill in all required fields."
+msgstr "Đảm bảo rằng bạn đã điền đủ các trường yêu cầu."
+
+#: main-modules.php:9386
+msgid "Invalid Email."
+msgstr "Email Không hợp lệ."
+
+#: main-modules.php:9446
+msgid "New Message From %1$s%2$s"
+msgstr "Tin nhắn Mới Từ %1$s%2$s"
+
+#: main-modules.php:9488
+msgid "Submit"
+msgstr "Gửi"
+
+#: main-modules.php:9541
+msgid "New Field"
+msgstr "Trường Mới"
+
+#: main-modules.php:9542
+msgid "Field Settings"
+msgstr "Thiết đặt Trường"
+
+#: main-modules.php:9567
+msgid "Field ID"
+msgstr "ID Trường"
+
+#: main-modules.php:9569
+msgid ""
+"Define the unique ID of this field. You should use only English characters "
+"without special characters and spaces."
+msgstr ""
+"Định nghĩa ID đơn nhất cho trường này. Bạn chỉ nên dùng ký tự tiếng Anh "
+"không có khoảng cách hay ký hiệu đặc biệt."
+
+#: main-modules.php:9581 main-modules.php:12814
+msgid "Input Field"
+msgstr "Trường Nhập"
+
+#: main-modules.php:9582 main-modules.php:13209
+msgid "Email Field"
+msgstr "Trường Email"
+
+#: main-modules.php:9583
+msgid "Textarea"
+msgstr "Vùng văn bản"
+
+#: main-modules.php:9585
+msgid "Choose the type of field"
+msgstr "Chọn kiểu trường"
+
+#: main-modules.php:9588
+msgid "Required Field"
+msgstr "Trường Bắt buộc"
+
+#: main-modules.php:9595
+msgid "Define whether the field should be required or optional"
+msgstr "Định nghĩa trường là yêu cầu hay tuỳ chọn"
+
+#: main-modules.php:9598
+msgid "Make Fullwidth"
+msgstr "Làm Toàn độ rộng"
+
+#: main-modules.php:9605
+msgid ""
+"If enabled, the field will take 100% of the width of the content area, "
+"otherwise it will take 50%"
+msgstr ""
+"Nếu bật, trường này sẽ lấy 100% độ rộng vùng nội dung, không thì chỉ lấy 50%"
+
+#: main-modules.php:9727
+msgid "Sidebar"
+msgstr "Thanh trượt"
+
+#: main-modules.php:9766
+msgid "Widget"
+msgstr "Công cụ"
+
+#: main-modules.php:9779
+msgid "Orientation"
+msgstr "Hướng"
+
+#: main-modules.php:9786
+msgid ""
+"Choose which side of the page your sidebar will be on. This setting controls "
+"text orientation and border position."
+msgstr ""
+"Chọn slide của trang mà thanh trượt của bạn hiển thị. Thiết Lập này kiểm "
+"soát hướng dòng chữ và vị trí biên."
+
+#: main-modules.php:9789
+msgid "Widget Area"
+msgstr "Vùng Tiện Ích"
+
+#: main-modules.php:9792
+msgid ""
+"Select a widget-area that you would like to display. You can create new "
+"widget areas within the Appearances > Widgets tab."
+msgstr ""
+"Chọn vùng tiện ích bạn muốn hiện. Bạn có thể tạo các vùng tiện ích mới bằng "
+"cách vào Hiển Thị > Thẻ tiện ích."
+
+#: main-modules.php:9805
+msgid "Remove Border Separator"
+msgstr "Xóa Bộ chia Khung viền"
+
+#: main-modules.php:9908
+msgid "Divider"
+msgstr "Khoảng ngăn"
+
+#: main-modules.php:9919
+msgid "Don't Show Divider"
+msgstr "Không Hiển thị Dòng phần chia"
+
+#: main-modules.php:9920
+msgid "Show Divider"
+msgstr "Hiển thị Dòng phần chia"
+
+#: main-modules.php:9953
+msgid "Color"
+msgstr "Màu"
+
+#: main-modules.php:9955
+msgid "This will adjust the color of the 1px divider line."
+msgstr "Thiết lập này sẽ điều chỉnh màu sắc của dòng phân chia 1px."
+
+#: main-modules.php:9958
+msgid "Visibility"
+msgstr "Hiển thị"
+
+#: main-modules.php:9967
+msgid ""
+"This settings turns on and off the 1px divider line, but does not affect the "
+"divider height."
+msgstr ""
+"Thiết lập này bật và tắt dòng phân chia 1px, nhưng không ảnh hưởng đến chiều "
+"cao dòng phân chia."
+
+#: main-modules.php:9970
+msgid "Height"
+msgstr "Chiều cao"
+
+#: main-modules.php:9973
+msgid "Define how much space should be added below the divider."
+msgstr "Xác định khoảng cách cần có dưới nhân tố chia"
+
+#: main-modules.php:9976
+msgid "Divider Style"
+msgstr "Kiểu Nhân tố Chia"
+
+#: main-modules.php:9984
+msgid "Divider Position"
+msgstr "Vị trí Nhân tố Chia"
+
+#: main-modules.php:9989 main-modules.php:14043
+msgid "Vertically Centered"
+msgstr "Căn giữa theo chiều dọc"
+
+#: main-modules.php:9996
+msgid "Divider Weight"
+msgstr "Trọng số Nhân tố Chia"
+
+#: main-modules.php:10003
+msgid "Hide On Mobile"
+msgstr "Ẩn trên Điện thoại"
+
+#: main-modules.php:10122
+msgid "Person"
+msgstr "Người"
+
+#: main-modules.php:10178
+msgid "Member Image"
+msgstr "Hình ảnh Thành viên"
+
+#: main-modules.php:10182
+msgid "Member Description"
+msgstr "Mô tả Thành viên"
+
+#: main-modules.php:10190
+msgid "Member Position"
+msgstr "Vị trí Thành viên"
+
+#: main-modules.php:10194
+msgid "Member Social Links"
+msgstr "Liên kết Xã hội của Thành viên"
+
+#: main-modules.php:10206
+msgid "Input the name of the person"
+msgstr "Nhập tên cá nhân"
+
+#: main-modules.php:10209
+msgid "Position"
+msgstr "Chức vụ"
+
+#: main-modules.php:10212
+msgid "Input the person's position."
+msgstr "Nhập chức vụ của cá nhân."
+
+#: main-modules.php:10248
+msgid "Facebook Profile Url"
+msgstr "URL Hồ sơ Facebook"
+
+#: main-modules.php:10251
+msgid "Input Facebook Profile Url."
+msgstr "Nhập URL Hồ sơ cá nhân Facebook."
+
+#: main-modules.php:10254
+msgid "Twitter Profile Url"
+msgstr "URL Hồ sơ Twitter"
+
+#: main-modules.php:10257
+msgid "Input Twitter Profile Url"
+msgstr "Nhập URL Hồ sơ cá nhân Twitter"
+
+#: main-modules.php:10260
+msgid "Google+ Profile Url"
+msgstr "URL Hồ sơ Google+"
+
+#: main-modules.php:10263
+msgid "Input Google+ Profile Url"
+msgstr "Nhập URL Hồ sơ cá nhân Google+"
+
+#: main-modules.php:10266
+msgid "LinkedIn Profile Url"
+msgstr "URL Hồ sơ cá nhân LinkedIn"
+
+#: main-modules.php:10269
+msgid "Input LinkedIn Profile Url"
+msgstr "Nhập URL Hồ sơ cá nhân LinkedIn"
+
+#: main-modules.php:10272
+msgid "Description"
+msgstr "Mô tả"
+
+#: main-modules.php:10284 main-modules.php:11238
+msgid "Icon Hover Color"
+msgstr "Màu của Biểu tượng khi di chuột"
+
+#: main-modules.php:10367
+msgid "Facebook"
+msgstr "Facebook"
+
+#: main-modules.php:10375 main-modules.php:12141
+msgid "Twitter"
+msgstr "Twitter"
+
+#: main-modules.php:10383 main-modules.php:12145
+msgid "Google+"
+msgstr "Google+"
+
+#: main-modules.php:10391 main-modules.php:12153
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: main-modules.php:10438
+msgid "Blog"
+msgstr "Blog"
+
+#: main-modules.php:10516
+msgid "Post Meta"
+msgstr "Lý lịch dữ liệu"
+
+#: main-modules.php:10520
+msgid "Pagenavi"
+msgstr "Chuyển trang"
+
+#: main-modules.php:10524 main-modules.php:12380
+msgid "Featured Image"
+msgstr "Ảnh Đề cử"
+
+#: main-modules.php:10528 main-modules.php:10596
+msgid "Read More Button"
+msgstr "Nút Đọc Thêm"
+
+#: main-modules.php:10555
+msgid "Choose how much posts you would like to display per page."
+msgstr "Chọn số lượng bài viết bạn muốn hiển thị mỗi trang."
+
+#: main-modules.php:10564
+msgid "Choose which categories you would like to include in the feed."
+msgstr "Chọn thể loại bạn muốn đưa vào trong nguồn cấp dữ liệu."
+
+#: main-modules.php:10567
+msgid "Meta Date Format"
+msgstr "Định dạng ngày tháng"
+
+#: main-modules.php:10570
+msgid ""
+"If you would like to adjust the date format, input the appropriate PHP date "
+"format here."
+msgstr ""
+"Nếu bạn muốn điều chỉnh định dạng ngày tháng, hãy nhập định dạng ngày tháng "
+"PHP thích hợp ở đây."
+
+#: main-modules.php:10580
+msgid "This will turn thumbnails on and off."
+msgstr "Thiết lập này sẽ bật và tắt ảnh thu nhỏ."
+
+#: main-modules.php:10593
+msgid ""
+"Showing the full content will not truncate your posts on the index page. "
+"Showing the excerpt will only display your excerpt text."
+msgstr ""
+"Hiển thị nội dung đầy đủ sẽ không cắt bài viết của bạn trên trang danh mục. "
+"Hiển thị trích dẫn sẽ chỉ hiển thị đoạn trích của bạn."
+
+#: main-modules.php:10604
+msgid ""
+"Here you can define whether to show \"read more\" link after the excerpts or "
+"not."
+msgstr ""
+"Tại đây bạn có thể xác định liệu có hiển thị liên kết đọc thêm sau đoạn "
+"trích dẫn hay không."
+
+#: main-modules.php:10607 main-modules.php:12415 main-modules.php:16294
+msgid "Show Author"
+msgstr "Hiển thị Tác giả"
+
+#: main-modules.php:10614
+msgid "Turn on or off the author link."
+msgstr "Bật hoặc tắt liên kết tác giả."
+
+#: main-modules.php:10617 main-modules.php:12426 main-modules.php:15337
+#: main-modules.php:16305
+msgid "Show Date"
+msgstr "Hiển thị Ngày tháng"
+
+#: main-modules.php:10624
+msgid "Turn the date on or off."
+msgstr "Bật hoặc tắt Ngày tháng."
+
+#: main-modules.php:10637
+msgid "Show Comment Count"
+msgstr "Cho Bình Luận Đếm"
+
+#: main-modules.php:10644
+msgid "Turn comment count on and off."
+msgstr "Quay bình luận tin vào và ra đi."
+
+#: main-modules.php:10654
+msgid "Turn pagination on and off."
+msgstr "Bật hoặc tắt phân trang."
+
+#: main-modules.php:10657
+msgid "Offset Number"
+msgstr "Số bù vào"
+
+#: main-modules.php:10660
+msgid "Choose how many posts you would like to offset by"
+msgstr "Chọn số lượng bài đăng bạn muốn bù vào"
+
+#: main-modules.php:10663
+msgid "Featured Image Overlay"
+msgstr "Chồng Ảnh Đề cử"
+
+#: main-modules.php:10675
+msgid ""
+"If enabled, an overlay color and icon will be displayed when a visitors "
+"hovers over the featured image of a post."
+msgstr ""
+"Nếu bật, khi khách thăm lượn trên ảnh đề cử của bài đăng sẽ hiển thị màu và "
+"biểu tượng chồng."
+
+#: main-modules.php:10713
+msgid "Grid Tile Background Color"
+msgstr "Màu nền của các ô trong lưới"
+
+#: main-modules.php:10720
+msgid "Use Dropshadow"
+msgstr "Sử dụng Đổ bóng"
+
+#: main-modules.php:11003
+msgid "read more..."
+msgstr "Đọc thêm..."
+
+#: main-modules.php:11017
+msgid "read more"
+msgstr "Đọc thêm"
+
+#: main-modules.php:11081
+msgid "Shop"
+msgstr "Cửa hàng"
+
+#: main-modules.php:11132
+msgid "Product"
+msgstr "Sản phẩm"
+
+#: main-modules.php:11136
+msgid "Onsale"
+msgstr "Đang bán"
+
+#: main-modules.php:11152
+msgid "Rating"
+msgstr "Xếp hạng"
+
+#: main-modules.php:11160
+msgid "Old Price"
+msgstr "Giá Cũ"
+
+#: main-modules.php:11173
+msgid "Recent Products"
+msgstr "Sản phẩm gần đây"
+
+#: main-modules.php:11174
+msgid "Featured Products"
+msgstr "Sản phẩm nổi bật"
+
+#: main-modules.php:11175
+msgid "Sale Products"
+msgstr "Sản phẩm kinh doanh"
+
+#: main-modules.php:11176
+msgid "Best Selling Products"
+msgstr "Sản phẩm bán chạy nhất"
+
+#: main-modules.php:11177
+msgid "Top Rated Products"
+msgstr "Sản phẩm đứng đầu"
+
+#: main-modules.php:11178
+msgid "Product Category"
+msgstr "Sản Phẩm Loại"
+
+#: main-modules.php:11183
+msgid "Choose which type of products you would like to display."
+msgstr "Chọn loại sản phẩm bạn muốn hiển thị.."
+
+#: main-modules.php:11189
+msgid "Control how many products are displayed."
+msgstr "Kiểm soát số lượng sản phẩm được hiển thị."
+
+#: main-modules.php:11200
+msgid "Choose which categories you would like to include."
+msgstr "Chọn nào phân loại anh muốn bao gồm."
+
+#: main-modules.php:11203
+msgid "Columns Number"
+msgstr "Số cột"
+
+#: main-modules.php:11207
+msgid "default"
+msgstr "Mặc định"
+
+#: main-modules.php:11208 main-modules.php:11209 main-modules.php:11210
+#: main-modules.php:11211 main-modules.php:11212
+msgid "%1$s Columns"
+msgstr "%1$s Các cột"
+
+#: main-modules.php:11213
+msgid "1 Column"
+msgstr "1 Cột"
+
+#: main-modules.php:11215
+msgid "Choose how many columns to display."
+msgstr "Chọn số cột để hiển thị."
+
+#: main-modules.php:11222
+msgid "Default Sorting"
+msgstr "Sắp xếp mặc định"
+
+#: main-modules.php:11223
+msgid "Sort By Popularity"
+msgstr "Sắp xếp theo Phổ biến"
+
+#: main-modules.php:11224
+msgid "Sort By Rating"
+msgstr "Sắp xếp theo Đánh giá"
+
+#: main-modules.php:11225
+msgid "Sort By Date"
+msgstr "Sắp xếp theo Ngày"
+
+#: main-modules.php:11226
+msgid "Sort By Price: Low To High"
+msgstr "Sắp xếp theo Giá: Thấp đến Cao"
+
+#: main-modules.php:11227
+msgid "Sort By Price: High To Low"
+msgstr "Sắp xếp theo Giá: Cao đến Thấp"
+
+#: main-modules.php:11229
+msgid "Choose how your products should be ordered."
+msgstr "Chọn cách sắp xếp sản phẩm của bạn."
+
+#: main-modules.php:11232
+msgid "Sale Badge Color"
+msgstr "Màu Thẻ Bán hàng"
+
+#: main-modules.php:11428
+msgid "Countdown Timer"
+msgstr "Bộ Đếm Lùi"
+
+#: main-modules.php:11458
+msgid "Numbers"
+msgstr "Số"
+
+#: main-modules.php:11471
+msgid "Label"
+msgstr "Nhãn"
+
+#: main-modules.php:11495
+msgid "Container"
+msgstr "Nơi chứa"
+
+#: main-modules.php:11503
+msgid "Timer Section"
+msgstr "Bộ đếm thời gian"
+
+#: main-modules.php:11512
+msgid "Countdown Timer Title"
+msgstr "Tiêu Đề Bộ Đếm Ngược"
+
+#: main-modules.php:11515
+msgid "This is the title displayed for the countdown timer."
+msgstr "Đây là tiêu đề hiển thị cho bộ đếm ngược."
+
+#: main-modules.php:11518
+msgid "Countdown To"
+msgstr "Đếm Ngược Đến"
+
+#: main-modules.php:11521
+msgid ""
+"This is the date the countdown timer is counting down to. Your countdown "
+"timer is based on your timezone settings in your <a href=\"%1$s\" target="
+"\"_blank\" title=\"WordPress General Settings\">WordPress General Settings</"
+"a>"
+msgstr ""
+"Đây là ngày thời điểm hẹn giờ đang đếm ngược. Anh đếm thời gian chờ nổ hẹn "
+"giờ dựa trên timezone thiết lập trong <a href=\"%1$s\" target=\"_blank\" "
+"title=\"WordPress General Settings\">WordPress General Settings</a>"
+
+#: main-modules.php:11550
+msgid "Here you can define a custom background color for your countdown timer."
+msgstr ""
+"Tại đây bạn có thể xác định màu nền tùy chỉnh cho bộ đếm ngược của bạn."
+
+#: main-modules.php:11650
+msgid "Day(s)"
+msgstr "Ngày(s)"
+
+#: main-modules.php:11651
+msgid "Hour(s)"
+msgstr "Giờ"
+
+#: main-modules.php:11652
+msgid "Hrs"
+msgstr "g"
+
+#: main-modules.php:11653
+msgid "Minute(s)"
+msgstr "Chút(s)"
+
+#: main-modules.php:11654
+msgid "Min"
+msgstr "p"
+
+#: main-modules.php:11655
+msgid "Second(s)"
+msgstr "Thứ hai(s)"
+
+#: main-modules.php:11656
+msgid "Sec"
+msgstr "'"
+
+#: main-modules.php:11657
+msgid "Day"
+msgstr "Ngày"
+
+#: main-modules.php:11667
+msgid "Map"
+msgstr "Bản đồ"
+
+#: main-modules.php:11670 main-modules.php:11830 main-modules.php:15579
+msgid "Pin"
+msgstr "Ghim"
+
+#: main-modules.php:11696 main-modules.php:15602
+msgid "Map Center Address"
+msgstr "Địa Chỉ Trung Tâm Bản Đồ"
+
+#: main-modules.php:11701 main-modules.php:11866 main-modules.php:15607
+msgid "Find"
+msgstr "Tìm kiếm"
+
+#: main-modules.php:11704 main-modules.php:15610
+msgid ""
+"Enter an address for the map center point, and the address will be geocoded "
+"and displayed on the map below."
+msgstr ""
+"Nhập địa chỉ cho điểm trung tâm bản đồ, và địa chỉ ấy sẽ được mã địa lý và "
+"hiển thị trên bản đồ bên dưới."
+
+#: main-modules.php:11724 main-modules.php:15630
+msgid "Mouse Wheel Zoom"
+msgstr "Phóng Bằng Con Lăn Chuột"
+
+#: main-modules.php:11731 main-modules.php:15637
+msgid ""
+"Here you can choose whether the zoom level will be controlled by mouse wheel "
+"or not."
+msgstr ""
+"Tại đây bạn có thể chọn độ phóng sẽ được điều khiển bởi con lăn chuột hoặc "
+"không."
+
+#: main-modules.php:11734
+msgid "Use Grayscale Filter"
+msgstr "Dùng Bộ lọc Thang xám"
+
+#: main-modules.php:11747
+msgid "Grayscale Filter Amount (%)"
+msgstr "Số lượng Bộ lọc Thang xám (%)"
+
+#: main-modules.php:11846
+msgid "New Pin"
+msgstr "Điểm Mới"
+
+#: main-modules.php:11847
+msgid "Pin Settings"
+msgstr "Thiết Lập Điểm"
+
+#: main-modules.php:11859
+msgid "Map Pin Address"
+msgstr "Địa Chỉ Điểm Trên Bản Đồ"
+
+#: main-modules.php:11863
+msgid ""
+"Enter an address for this map pin, and the address will be geocoded and "
+"displayed on the map below."
+msgstr ""
+"Nhập địa chỉ cho điểm bản đồ này, và địa chỉ ấy sẽ được mã địa lý và hiển "
+"thị trên bản đồ bên dưới."
+
+#: main-modules.php:11891 main-modules.php:14052
+msgid ""
+"Here you can define the content that will be placed within the infobox for "
+"the pin."
+msgstr ""
+"Tại đây bạn có thể xác định nội dung sẽ được đặt trong ô thông tin đối với "
+"điểm."
+
+#: main-modules.php:11934
+msgid "Social Media Follow"
+msgstr "Theo dõi Truyền thông Xã hội"
+
+#: main-modules.php:11937 main-modules.php:12092 main-modules.php:12130
+msgid "Social Network"
+msgstr "Mạng Xã Hội"
+
+#: main-modules.php:11958
+msgid "Social Follow"
+msgstr "Theo dõi trên Mạng xã hội"
+
+#: main-modules.php:11962 main-modules.php:12117
+msgid "Social Icon"
+msgstr "Biểu tượng Mạng xã hội"
+
+#: main-modules.php:11966 main-modules.php:12005 main-modules.php:12121
+msgid "Follow Button"
+msgstr "Nút Theo Dõi"
+
+#: main-modules.php:11975
+msgid "Link Shape"
+msgstr "Hình Dạng Liên Kết"
+
+#: main-modules.php:11979
+msgid "Rounded Rectangle"
+msgstr "Hình Chữ Nhật Góc Tròn"
+
+#: main-modules.php:11980
+msgid "Circle"
+msgstr "Hình tròn"
+
+#: main-modules.php:11982
+msgid "Here you can choose the shape of your social network icons."
+msgstr "Tại đây bạn có thể chọn hình dạng biểu tượng mạng xã hội của bạn."
+
+#: main-modules.php:12012
+msgid ""
+"Here you can choose whether or not to include the follow button next to the "
+"icon."
+msgstr ""
+"Tại đây bạn có thể chọn có hoặc không có nút theo dõi bên cạnh biểu tượng."
+
+#: main-modules.php:12112
+msgid "New Social Network"
+msgstr "Mạng Xã Hội Mới"
+
+#: main-modules.php:12113
+msgid "Social Network Settings"
+msgstr "Thiết Lập Mạng Xã Hội"
+
+#: main-modules.php:12135
+msgid "Select a Network"
+msgstr "Chọn Mạng"
+
+#: main-modules.php:12137
+msgid "facebook"
+msgstr "Facebook"
+
+#: main-modules.php:12149
+msgid "Pinterest"
+msgstr "Pinterest"
+
+#: main-modules.php:12157
+msgid "tumblr"
+msgstr "tumblr"
+
+#: main-modules.php:12161
+msgid "Instagram"
+msgstr "Instagram"
+
+#: main-modules.php:12165
+msgid "skype"
+msgstr "skype"
+
+#: main-modules.php:12169
+msgid "flikr"
+msgstr "flikr"
+
+#: main-modules.php:12173
+msgid "MySpace"
+msgstr "MySpace"
+
+#: main-modules.php:12177
+msgid "dribbble"
+msgstr "dribbble"
+
+#: main-modules.php:12181
+msgid "Youtube"
+msgstr "Youtube"
+
+#: main-modules.php:12185
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: main-modules.php:12189
+msgid "RSS"
+msgstr "RSS"
+
+#: main-modules.php:12198
+msgid "Choose the social network"
+msgstr "Chọn mạng xã hội"
+
+#: main-modules.php:12205
+msgid "Account URL"
+msgstr "Tài khoản URL"
+
+#: main-modules.php:12208
+msgid "The URL for this social network link."
+msgstr "URL cho liên kết mạng xã hội này."
+
+#: main-modules.php:12212
+msgid "Account Name"
+msgstr "Tài Khoản Tên"
+
+#: main-modules.php:12215
+msgid "The Skype account name."
+msgstr "Cái Comment tài khoản tên."
+
+#: main-modules.php:12219
+msgid "Skype Button Action"
+msgstr "Comment Nút Hành Động"
+
+#: main-modules.php:12223
+msgid "Call"
+msgstr "Gọi"
+
+#: main-modules.php:12224
+msgid "Chat"
+msgstr "Tán gẫu"
+
+#: main-modules.php:12227
+msgid "Here you can choose which action to execute on button click"
+msgstr "Ở đây anh có thể chọn nào hành động để thực hiện trên cái nút bấm"
+
+#: main-modules.php:12232
+msgid "This will change the icon color."
+msgstr "Thiết Lập này sẽ thay đổi màu sắc biểu tượng."
+
+#: main-modules.php:12269
+msgid "Follow"
+msgstr "Theo dõi"
+
+#: main-modules.php:12297
+msgid "Post Title"
+msgstr "Tên bài viết"
+
+#: main-modules.php:12396 main-modules.php:16275
+msgid "Here you can choose whether or not display the Post Title"
+msgstr "Bạn có thể chọn hiển thị hoặc không hiển thị tên bài viết tại đây"
+
+#: main-modules.php:12399 main-modules.php:16278
+msgid "Show Meta"
+msgstr "Hiển thị lý lịch dữ liệu"
+
+#: main-modules.php:12412 main-modules.php:16291
+msgid "Here you can choose whether or not display the Post Meta"
+msgstr "Bạn có thể chọn hiển thị hoặc không hiển thị lý lịch dữ liệu tại đây"
+
+#: main-modules.php:12423 main-modules.php:16302
+msgid "Here you can choose whether or not display the Author Name in Post Meta"
+msgstr ""
+"Bạn có thể chọn hiển thị hoặc không hiển thị thông tin về Tên Tác giả trong "
+"phần lý lịch dữ liệu tại đây"
+
+#: main-modules.php:12437 main-modules.php:16316
+msgid "Here you can choose whether or not display the Date in Post Meta"
+msgstr ""
+"Bạn có thể chọn hiển thị hoặc không hiển thị thông tin về ngày đăng trong "
+"phần lý lịch dữ liệu tại đây"
+
+#: main-modules.php:12441 main-modules.php:16320
+msgid "Date Format"
+msgstr "Định dạng Ngày"
+
+#: main-modules.php:12445 main-modules.php:16324
+msgid "Here you can define the Date Format in Post Meta. Default is 'M j, Y'"
+msgstr ""
+"Bạn có thể lựa chọn Định dạng Ngày trong phần lý lịch dữ liệu. Mặc định dạng "
+"'M j, Y'"
+
+#: main-modules.php:12449 main-modules.php:16328
+msgid "Show Post Categories"
+msgstr "Hiển thị các Mục bài đăng"
+
+#: main-modules.php:12457 main-modules.php:16336
+msgid ""
+"Here you can choose whether or not display the Categories in Post Meta. "
+"Note: This option doesn't work with custom post types."
+msgstr ""
+"Bạn có thể chọn hiển thị hoặc không hiển thị các Hạng mục trong phần lý lịch "
+"dữ liệu tại đây. Lưu ý: Phương án này không phù hợp với các dạng bài đăng "
+"tùy chỉnh."
+
+#: main-modules.php:12460 main-modules.php:16339
+msgid "Show Comments Count"
+msgstr "Hiểm thị bộ đếm bình luận"
+
+#: main-modules.php:12468 main-modules.php:16347
+msgid ""
+"Here you can choose whether or not display the Comments Count in Post Meta."
+msgstr ""
+"Bạn có thể chọn hiển thị hoặc không hiển thị bộ đếm bình luận trong phần lý "
+"lịch dữ liệu tại đây."
+
+#: main-modules.php:12481 main-modules.php:16360
+msgid "Here you can choose whether or not display the Featured Image"
+msgstr "Bạn có thể chọn hiển thị hoặc không hiển thị Hình ảnh Nổi bật."
+
+#: main-modules.php:12484 main-modules.php:16363
+msgid "Featured Image Placement"
+msgstr "Bố trí Hình ảnh Nổi bật"
+
+#: main-modules.php:12488 main-modules.php:16367
+msgid "Below Title"
+msgstr "Dưới Tiêu đề"
+
+#: main-modules.php:12489 main-modules.php:16368
+msgid "Above Title"
+msgstr "Trên Tiêu đề"
+
+#: main-modules.php:12490 main-modules.php:16369
+msgid "Title/Meta Background Image"
+msgstr "Hình ảnh nền Tiêu đề"
+
+#: main-modules.php:12496 main-modules.php:16375
+msgid "Here you can choose where to place the Featured Image"
+msgstr "Bạn có thể chọn hiển thị hoặc không hiển thị Hình ảnh Nổi bật tại đây"
+
+#: main-modules.php:12499 main-modules.php:16378
+#: main-structure-elements.php:186 main-structure-elements.php:1131
+msgid "Use Parallax Effect"
+msgstr "Sử dụng Hiệu ứng Thị sai"
+
+#: main-modules.php:12510 main-modules.php:16389
+msgid ""
+"Here you can choose whether or not use parallax effect for the featured image"
+msgstr ""
+"Bạn có thể chọn sử dụng hoặc không sử dụng hiệu ứng thị sai cho hình ảnh nổi "
+"bật tại đây"
+
+#: main-modules.php:12521 main-modules.php:16400
+msgid "Here you can choose which parallax method to use for the featured image"
+msgstr ""
+"Bạn có thể chọn phương pháp thị sai để sử dụng cho hình ảnh nổi bật tại đây"
+
+#: main-modules.php:12532 main-modules.php:16411
+msgid "Here you can choose the orientation for the Title/Meta text"
+msgstr "Bạn có thể chọn hướng cho chữ của Tiêu đề tại đây"
+
+#: main-modules.php:12542 main-modules.php:16421
+msgid "Here you can choose the color for the Title/Meta text"
+msgstr "Bạn có thể chọn màu cho chữ của Tiêu đề tại đây"
+
+#: main-modules.php:12545 main-modules.php:16424
+msgid "Use Text Background Color"
+msgstr "Sử dụng Màu nền cho chữ"
+
+#: main-modules.php:12555 main-modules.php:16434
+msgid ""
+"Here you can choose whether or not use the background color for the Title/"
+"Meta text"
+msgstr ""
+"Bạn có thể chọn sử dụng hoặc không sử dụng Màu nền cho chữ của Tiêu đề tại "
+"đây"
+
+#: main-modules.php:12558 main-modules.php:16437
+msgid "Text Background Color"
+msgstr "Màu nền chữ"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "0 comments"
+msgstr "0 Lời bình"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "1 comment"
+msgstr "1 Lời bình"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "comments"
+msgstr "Lời bình"
+
+#: main-modules.php:12742
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#: main-modules.php:12773
+msgid "Input"
+msgstr "Nhập"
+
+#: main-modules.php:12848
+msgid "Exclude Pages"
+msgstr "Loại trừ Trang"
+
+#: main-modules.php:12855
+msgid "Turning this on will exclude Pages from search results"
+msgstr "Bật cái này sẽ bỏ qua Trang khỏi kết quả tìm kiếm"
+
+#: main-modules.php:12858
+msgid "Exclude Posts"
+msgstr "Loại trừ Bài đăng"
+
+#: main-modules.php:12868
+msgid "Turning this on will exclude Posts from search results"
+msgstr "Bật cái này sẽ bỏ qua Bài viết khỏi kết quả tìm kiếm"
+
+#: main-modules.php:12871
+msgid "Exclude Categories"
+msgstr "Loại trừ Mục"
+
+#: main-modules.php:12878
+msgid ""
+"Choose which categories you would like to exclude from the search results."
+msgstr "Chọn mục bạn muốn loại trừ khỏi kết quả tìm kiếm."
+
+#: main-modules.php:12881
+msgid "Hide Button"
+msgstr "Nút Ẩn"
+
+#: main-modules.php:12888
+msgid "Turning this on will hide the Search button"
+msgstr "Bật cái này sẽ ẩn nút Tìm kiếm"
+
+#: main-modules.php:12891
+msgid "Placeholder Text"
+msgstr "Văn bản Giữ chỗ"
+
+#: main-modules.php:12893
+msgid "Type the text you want to use as placeholder for the search field."
+msgstr "Nhập văn bản muốn dùng làm giữ chỗ cho trường tìm kiếm."
+
+#: main-modules.php:12910
+msgid "Button and Border Color"
+msgstr "Màu Nút và Viền"
+
+#: main-modules.php:12916
+msgid "Input Field Background Color"
+msgstr "Màu Nền Trường Nhập"
+
+#: main-modules.php:12922
+msgid "Placeholder Color"
+msgstr "Màu Giữ chỗ"
+
+#: main-modules.php:13123
+msgid "Comment"
+msgstr "Lời bình"
+
+#: main-modules.php:13155
+msgid "Field border"
+msgstr "Viền trường"
+
+#: main-modules.php:13173
+msgid "Comments Count"
+msgstr ""
+
+#: main-modules.php:13177
+msgid "Comment Body"
+msgstr ""
+
+#: main-modules.php:13181
+msgid "Comment Meta"
+msgstr ""
+
+#: main-modules.php:13185
+msgid "Comment Content"
+msgstr ""
+
+#: main-modules.php:13189
+msgid "Comment Avatar"
+msgstr ""
+
+#: main-modules.php:13193
+msgid "Reply Button"
+msgstr ""
+
+#: main-modules.php:13197
+msgid "New Comment Title"
+msgstr ""
+
+#: main-modules.php:13205
+msgid "Name Field"
+msgstr ""
+
+#: main-modules.php:13213
+msgid "Website Field"
+msgstr ""
+
+#: main-modules.php:13217
+msgid "Submit Button"
+msgstr ""
+
+#: main-modules.php:13227
+msgid "Show author avatar"
+msgstr "Hiện ảnh đại diện tác giả"
+
+#: main-modules.php:13236
+msgid "Show reply button"
+msgstr "Hiện nút trả lời"
+
+#: main-modules.php:13245
+msgid "Show comments count"
+msgstr "Hiện số lời bình"
+
+#: main-modules.php:13264
+msgid "Fields Background Color"
+msgstr "Màu Nền Trường"
+
+#: main-modules.php:13270
+msgid "Fields Border Radius"
+msgstr "Bán kính Viền Trường"
+
+#: main-modules.php:13397
+msgid "Post Navigation"
+msgstr "Điều hướng Bài đăng"
+
+#: main-modules.php:13417 main-modules.php:13446
+msgid "Links"
+msgstr "Liên kết"
+
+#: main-modules.php:13450
+msgid "Previous Link"
+msgstr "Liên kết Trước"
+
+#: main-modules.php:13454
+msgid "Previous Link Arrow"
+msgstr ""
+
+#: main-modules.php:13458
+msgid "Next Link"
+msgstr "Liên kết Kế"
+
+#: main-modules.php:13462
+msgid "Next Link Arrow"
+msgstr ""
+
+#: main-modules.php:13471
+msgid "In the same category"
+msgstr "Trong cùng mục"
+
+#: main-modules.php:13481
+msgid ""
+"Here you can define whether previous and next posts must be within the same "
+"taxonomy term as the current post"
+msgstr ""
+"Ở đây bạn có thể định nghĩa xem bài trước và kế có phải nằm trong cùng mục "
+"phân loại với bài hiện tại không"
+
+#: main-modules.php:13484
+msgid "Custom Taxonomy Name"
+msgstr "Tên Phân loại Tuỳ biến"
+
+#: main-modules.php:13488
+msgid ""
+"Leave blank if you're using this module on a Project or Post. Otherwise type "
+"the taxonomy name to make the 'In the Same Category' option work correctly"
+msgstr ""
+"Để trống nếu bạn dùng đơn thể này trên Dự án hay Bài đăng. Nếu không hãy "
+"nhập tên phân loại vào để lựa chọn 'Trong Cùng Mục' hoạt động đúng đắn"
+
+#: main-modules.php:13491
+msgid "Hide Previous Post Link"
+msgstr "Ẩn Liên kết Bài Trước"
+
+#: main-modules.php:13501
+msgid "Here you can choose whether to hide or show the previous post link"
+msgstr "Ở đây bạn có thể chọn hiện hay ẩn liên kết bài trước"
+
+#: main-modules.php:13504
+msgid "Hide Next Post Link"
+msgstr "Ẩn Liên kết Bài Kế"
+
+#: main-modules.php:13514
+msgid "Here you can choose whether to hide or show the next post link"
+msgstr "Ở đây bạn có thể chọn hiện hay ẩn liên kết bài kết"
+
+#: main-modules.php:13517
+msgid "Previous Link Text"
+msgstr "Văn bản Liên kết Trước"
+
+#: main-modules.php:13521
+msgid ""
+"Define custom text for the previous link. You can use the <strong>%title</"
+"strong> variable to include the post title. Leave blank for default."
+msgstr ""
+"Định nghĩa văn bản tuỳ biến cho liên kết trước. Bạn có thể dùng biến <strong>"
+"%title</strong> để bao gồm tựa bài viết. Để trống cho mặc định."
+
+#: main-modules.php:13524
+msgid "Next Link Text"
+msgstr "Văn bản Liên kết Kế"
+
+#: main-modules.php:13528
+msgid ""
+"Define custom text for the next link. You can use the <strong>%title</"
+"strong> variable to include the post title. Leave blank for default."
+msgstr ""
+"Định nghĩa văn bản tuỳ biến cho liên kết kế. Bạn có thể dùng biến <strong>"
+"%title</strong> để bao gồm tựa bài viết. Để trống cho mặc định."
+
+#: main-modules.php:13629
+msgid "Fullwidth Header"
+msgstr "Tiêu đề Toàn bề rộng"
+
+#: main-modules.php:13691
+msgid "Title Styling"
+msgstr "Kiểu Tiêu đề"
+
+#: main-modules.php:13692
+msgid "Subhead Styling"
+msgstr "Kiểu Tiêu đề phụ"
+
+#: main-modules.php:13693
+msgid "Content Styling"
+msgstr "Kiểu Nội dung"
+
+#: main-modules.php:13716
+msgid "Subhead"
+msgstr "Đầu đề phụ"
+
+#: main-modules.php:13758 main-modules.php:13794
+msgid "Button One"
+msgstr "Một Cái Nút"
+
+#: main-modules.php:13764 main-modules.php:13798
+msgid "Button Two"
+msgstr "Nút Hai"
+
+#: main-modules.php:13774
+msgid "Header Container"
+msgstr "Trang-Te-Nơ"
+
+#: main-modules.php:13778
+msgid "Header Image"
+msgstr "Ảnh Đầu đề"
+
+#: main-modules.php:13782
+msgid "Logo"
+msgstr "Biểu tượng"
+
+#: main-modules.php:13802
+msgid "Scroll Down Button"
+msgstr "Nút Cuộn Xuống"
+
+#: main-modules.php:13814
+msgid "Enter your page title here."
+msgstr "Nhập tiêu đề trang của bạn tại đây."
+
+#: main-modules.php:13817
+msgid "Subheading Text"
+msgstr "Dòng Chữ Tiêu Đề Phụ"
+
+#: main-modules.php:13820
+msgid ""
+"If you would like to use a subhead, add it here. Your subhead will appear "
+"below your title in a small font."
+msgstr ""
+"Nếu bạn muốn sử dụng tiêu đề phụ, thêm vào tại đây. Tiêu đề phụ của bạn sẽ "
+"xuất hiện bên dưới tiêu đề của bạn với phông chữ nhỏ."
+
+#: main-modules.php:13833
+msgid "Text & Logo Orientation"
+msgstr "Hướng Chữ & Logo"
+
+#: main-modules.php:13841
+msgid "Make Fullscreen"
+msgstr "Hiển thị Toàn màn hình"
+
+#: main-modules.php:13851
+msgid "Here you can choose whether the header is expanded to fullscreen size."
+msgstr ""
+"Bạn có thể chọn mở rộng tiêu đề phụ đến kích thước toàn màn hình tại đây."
+
+#: main-modules.php:13854
+msgid "Show Scroll Down Button"
+msgstr "Hiển thị Nút Kéo xuống"
+
+#: main-modules.php:13864
+msgid "Here you can choose whether the scroll down button is shown."
+msgstr "Bạn có thể chọn liệu có hiển thị nút kéo xuống hay không."
+
+#: main-modules.php:13873
+msgid "Choose an icon to display for the scroll down button."
+msgstr "Chọn một biểu tượng để hiển thị cho nút kéo xuống."
+
+#: main-modules.php:13877
+msgid "Scroll Down Icon Color"
+msgstr "Màu Biểu tượng Kéo xuống"
+
+#: main-modules.php:13883
+msgid "Scroll Down Icon Size"
+msgstr "Kích cỡ Biểu tượng Kéo xuống"
+
+#: main-modules.php:13896
+msgid "Title Font Color"
+msgstr "Màu Phông chữ Tiêu đề"
+
+#: main-modules.php:13903
+msgid "Subhead Font Color"
+msgstr "Màu Phông chữ Tiêu đề phụ"
+
+#: main-modules.php:13910
+msgid "Content Font Color"
+msgstr "Màu Phông chữ Nội dung"
+
+#: main-modules.php:13917
+msgid "Text Max Width"
+msgstr "Văn Bản Max Rộng"
+
+#: main-modules.php:13931 main-modules.php:13943
+msgid "Button %1$s Text"
+msgstr "Chữ của Nút %1$s"
+
+#: main-modules.php:13934 main-modules.php:13946
+msgid "Enter the text for the Button."
+msgstr "Nhập chữ cho Nút"
+
+#: main-modules.php:13937 main-modules.php:13949
+msgid "Button %1$s URL"
+msgstr "URL của Nút %1$s"
+
+#: main-modules.php:13940 main-modules.php:13952
+msgid "Enter the URL for the Button."
+msgstr "Nhập URL cho Nút."
+
+#: main-modules.php:13955
+msgid "Background Image URL"
+msgstr "URL Hình ảnh Nền"
+
+#: main-modules.php:13982 main-modules.php:14927
+msgid ""
+"If enabled, your background images will have a fixed position as your "
+"scroll, creating a fun parallax-like effect."
+msgstr ""
+"Nếu được kích hoạt, ảnh nền của bạn sẽ có một vị trí cố định khi bạn cuộn, "
+"tạo nên một hiệu ứng thị sai thú vị."
+
+#: main-modules.php:13997
+msgid "Logo Image URL"
+msgstr "URL Hình ảnh Logo"
+
+#: main-modules.php:14006
+msgid "Logo Image Alternative Text"
+msgstr "Biểu Tượng Hình Ảnh Các Văn Bản"
+
+#: main-modules.php:14012
+msgid "Logo Title"
+msgstr "Logo Tựa"
+
+#: main-modules.php:14018
+msgid "Text Vertical Alignment"
+msgstr "Căn chỉnh Dọc cho Chữ"
+
+#: main-modules.php:14025
+msgid ""
+"This setting determines the vertical alignment of your content. Your content "
+"can either be vertically centered, or aligned to the bottom."
+msgstr ""
+"Thiết lập này xác định chế độ căn chỉnh theo chiều dọc cho nội dung của bạn. "
+"Nội dung của bạn có thể được căn giữa hoặc căn dưới theo chiều dọc."
+
+#: main-modules.php:14030
+msgid "Header Image URL"
+msgstr "URL Hình ảnh Đầu trang"
+
+#: main-modules.php:14039
+msgid "Image Vertical Alignment"
+msgstr "Căn chỉnh Dọc cho Hình ảnh"
+
+#: main-modules.php:14046
+msgid "This controls the orientation of the image within the module."
+msgstr "Thiết lập này điều chỉnh hướng của hình ảnh trong phạm vi mô đun."
+
+#: main-modules.php:14347
+msgid "Fullwidth Menu"
+msgstr "Trình đơn Toàn bề rộng"
+
+#: main-modules.php:14375 main-modules.php:14431
+msgid "Menu"
+msgstr "Trình đơn"
+
+#: main-modules.php:14404
+msgid "Menu Link"
+msgstr "Liên kết Trình đơn"
+
+#: main-modules.php:14408
+msgid "Active Menu Link"
+msgstr "Liên kết Trình đơn Hoạt hoá"
+
+#: main-modules.php:14412
+msgid "Dropdown Menu Container"
+msgstr "Bộ chứa Trình đơn Thả xuống"
+
+#: main-modules.php:14416
+msgid "Dropdown Menu Links"
+msgstr "Liên kết Trình đơn Thả xuống"
+
+#: main-modules.php:14438
+msgid "Select a menu that should be used in the module"
+msgstr "Chọn trình đơn sẽ được sử dụng trong mô-đun"
+
+#: main-modules.php:14439
+msgid "Click here to create new menu"
+msgstr "Nhấn vào đây để tạo trình đơn mới"
+
+#: main-modules.php:14465
+msgid "Sub-Menus Open"
+msgstr "Trình Đơn Phụ Mở"
+
+#: main-modules.php:14469
+msgid "Downwards"
+msgstr "Đổ xuống"
+
+#: main-modules.php:14470
+msgid "Upwards"
+msgstr "Hướng lên"
+
+#: main-modules.php:14472
+msgid ""
+"Here you can choose the direction that your sub-menus will open. You can "
+"choose to have them open downwards or upwards."
+msgstr ""
+"Bạn có thể chọn hướng trình đơn phụ sẽ mở tại đây. Bạn có thể chọn cách mở "
+"đổ xuống hoặc hướng lên."
+
+#: main-modules.php:14475
+msgid "Make Menu Links Fullwidth"
+msgstr "Làm Đơn Liên Kết Fullwidth"
+
+#: main-modules.php:14485
+msgid "Active Link Color"
+msgstr "Màu Link hoạt động"
+
+#: main-modules.php:14491
+msgid "Dropdown Menu Background Color"
+msgstr "Màu nền Danh mục Thả xuống"
+
+#: main-modules.php:14497
+msgid "Dropdown Menu Line Color"
+msgstr "Màu dòng Danh mục Thả xuống"
+
+#: main-modules.php:14503
+msgid "Dropdown Menu Text Color"
+msgstr "Màu chữ Danh mục Thả xuống"
+
+#: main-modules.php:14509
+msgid "Dropdown Menu Animation"
+msgstr "Minh họa Danh mục Thả xuống"
+
+#: main-modules.php:14513
+msgid "Fade"
+msgstr "Mờ"
+
+#: main-modules.php:14516
+msgid "Flip"
+msgstr "Lật"
+
+#: main-modules.php:14521
+msgid "Mobile Menu Background Color"
+msgstr "Mobil Đơn Nền"
+
+#: main-modules.php:14527
+msgid "Mobile Menu Text Color"
+msgstr "Mobil Thực Đơn Màu"
+
+#: main-modules.php:14633
+msgid "Home"
+msgstr "Trang chủ"
+
+#: main-modules.php:14757
+msgid "Fullwidth Slider"
+msgstr "Thanh lướt Toàn bề rộng"
+
+#: main-modules.php:14873
+msgid "This setting allows you to turn the navigation arrows on or off."
+msgstr "Thiết lập này cho phép bạn bật hoặc tắt mũi tên điều hướng."
+
+#: main-modules.php:14876
+msgid "Controls"
+msgstr "Điều khiển"
+
+#: main-modules.php:14880
+msgid "Show Slider Controls"
+msgstr "Hiển thị Điều khiển Thanh trượt"
+
+#: main-modules.php:14881
+msgid "Hide Slider Controls"
+msgstr "Ẩn Điều khiển Thanh trượt"
+
+#: main-modules.php:14883
+msgid ""
+"Disabling this option will remove the circle button at the bottom of the "
+"slider."
+msgstr ""
+"Vô hiệu hóa tùy chọn này sẽ gỡ bỏ các nút tròn ở dưới cùng thanh trượt."
+
+#: main-modules.php:15201
+msgid "Fullwidth Portfolio"
+msgstr "Hồ sơ Toàn bề rộng"
+
+#: main-modules.php:15262
+msgid "Portfolio Item"
+msgstr "Mục Cặp giấy"
+
+#: main-modules.php:15266
+msgid "Item Overlay"
+msgstr "Chồng Mục"
+
+#: main-modules.php:15270
+msgid "Item Title"
+msgstr "Tiêu đề Mục"
+
+#: main-modules.php:15278
+msgid "Navigation Arrows"
+msgstr "Mũi tên Điều hướng"
+
+#: main-modules.php:15299
+msgid "Title displayed above the portfolio."
+msgstr "Tiêu đề hiển thị phía trên hồ sơ."
+
+#: main-modules.php:15306
+msgid "Carousel"
+msgstr "Ảnh trượt"
+
+#: main-modules.php:15324
+msgid ""
+"Control how many projects are displayed. Leave blank or use 0 to not limit "
+"the amount."
+msgstr ""
+"Kiểm soát số lượng dự án được hiển thị. Để trống hoặc sử dụng 0 để không "
+"giới hạn số lượng."
+
+#: main-modules.php:15344
+msgid "Turn the date display on or off."
+msgstr "Bật hoặc tắt hiển thị ngày tháng."
+
+#: main-modules.php:15357
+msgid "Automatic Carousel Rotation"
+msgstr "Xoay Ảnh trượt Tự động"
+
+#: main-modules.php:15368
+msgid ""
+"If you the carousel layout option is chosen and you would like the carousel "
+"to slide automatically, without the visitor having to click the next button, "
+"enable this option and then adjust the rotation speed below if desired."
+msgstr ""
+"Nếu tùy chọn bố trí carousel được chọn và bạn muốn ảnh trượt tự động, mà "
+"không cần khách truy cập phải nhấn vào nút kế tiếp, hãy kích hoạt tùy chọn "
+"này và sau đó điều chỉnh tốc độ xoay dưới đây nếu muốn."
+
+#: main-modules.php:15371
+msgid "Automatic Carousel Rotation Speed (in ms)"
+msgstr "Tốc độ Xoay Ảnh trượt Tự động (bằng miligiây)"
+
+#: main-modules.php:15375
+msgid ""
+"Here you can designate how fast the carousel rotates, if 'Automatic Carousel "
+"Rotation' option is enabled above. The higher the number the longer the "
+"pause between each rotation. (Ex. 1000 = 1 sec)"
+msgstr ""
+"Tại đây bạn có thể chỉ định tốc độ xoay của ảnh trượt, nếu tùy chọn "
+"\"Automatic Carousel Rotation\" đã được kích hoạt ở trên. Số càng lớn khoảng "
+"dừng giữa mỗi vòng xoay càng lâu hơn. (Ví dụ 1000 = 1 giây)"
+
+#: main-modules.php:15575
+msgid "Fullwidth Map"
+msgstr "Bản đồ Toàn bề rộng"
+
+#: main-modules.php:15709
+msgid "Code"
+msgstr "Mã"
+
+#: main-modules.php:15820
+msgid "Fullwidth Code"
+msgstr "Mã Toàn bộ chiều rộng"
+
+#: main-modules.php:15902
+msgid "Fullwidth Image"
+msgstr "Hình ảnh Toàn bộ chiều rộng"
+
+#: main-modules.php:15968
+msgid "Open In Lightbox"
+msgstr "Mở Trong Lightbox"
+
+#: main-modules.php:16189
+msgid "Fullwidth Post Title"
+msgstr "Tên Bài viết Toàn bộ Chiều rộng"
+
+#: main-modules.php:16623
+msgid "Fullwidth Post Slider"
+msgstr "Bộ trượt Bài đăng Đầy độ rộng"
+
+#: main-modules.php:16839
+msgid ""
+"Define the text which will be displayed on \"Read More\" button. Leave blank "
+"for default ( Read More )"
+msgstr ""
+"Định nghĩa văn bản hiển thị trên nút \"Read More\". Để trống cho mặc định "
+"( Đọc Tiếp )"
+
+#: main-structure-elements.php:114
+msgid "Transparent Background Color"
+msgstr "Màu Nền Trong Suốt"
+
+#: main-structure-elements.php:124
+msgid ""
+"Enabling this option will remove the background color of this section, "
+"allowing the website background color or background image to show through."
+msgstr ""
+"Kích hoạt phương án này sẽ làm mất màu nền của mục này, cho phép màu nền của "
+"website hoặc của hình ảnh được nhìn xuyên qua."
+
+#: main-structure-elements.php:176
+msgid "Show Inner Shadow"
+msgstr "Hiển Thị Bóng Mờ Bên Trong"
+
+#: main-structure-elements.php:183
+msgid ""
+"Here you can select whether or not your section has an inner shadow. This "
+"can look great when you have colored backgrounds or background images."
+msgstr ""
+"Tại đây bạn có thể chọn xem hay không xem vùng Chọn của bạn với bóng mờ bên "
+"trong. Việc lựa chon này có thể tạo giao diện tuyệt vời khi bạn có màu nền "
+"hoặc hình nền."
+
+#: main-structure-elements.php:196
+msgid ""
+"If enabled, your background image will stay fixed as your scroll, creating a "
+"fun parallax-like effect."
+msgstr ""
+"Nếu kích hoạt, hình nền của bạn sẽ giữ cố định khi bạn cuộn, tạo hiệu ứng "
+"thú vị giống như thị sai."
+
+#: main-structure-elements.php:214 main-structure-elements.php:1049
+#: main-structure-elements.php:1857
+msgid ""
+"Adjust padding to specific values, or leave blank to use the default padding."
+msgstr ""
+"Điều chỉnh khoảng đến đến các giá trị nhất định, hoặc để trống để sử dụng "
+"giá trị khoảng đệm mặc định."
+
+#: main-structure-elements.php:223 main-structure-elements.php:1058
+#: main-structure-elements.php:1866
+msgid "Keep Custom Padding on Mobile"
+msgstr "Duy trì Khoảng đệm điều chỉnh trên Điện thoại"
+
+#: main-structure-elements.php:230 main-structure-elements.php:1065
+#: main-structure-elements.php:1873
+msgid "Allow custom padding to be retained on mobile screens"
+msgstr "Cho phép giữ khoảng đệm điều chỉnh trên màn hình điện thoại."
+
+#: main-structure-elements.php:233
+msgid "Make This Section Fullwidth"
+msgstr "Làm Phần Này Fullwidth"
+
+#: main-structure-elements.php:244 main-structure-elements.php:964
+msgid "Use Custom Width"
+msgstr "Sử dụng Tủy chỉnh Chiều rộng"
+
+#: main-structure-elements.php:259 main-structure-elements.php:979
+msgid "Unit"
+msgstr "Đơn vị"
+
+#: main-structure-elements.php:263 main-structure-elements.php:983
+msgid "px"
+msgstr "pixels"
+
+#: main-structure-elements.php:277 main-structure-elements.php:289
+#: main-structure-elements.php:996 main-structure-elements.php:1008
+msgid "Custom Width"
+msgstr "Tùy chỉnh chiều rộng"
+
+#: main-structure-elements.php:301 main-structure-elements.php:1155
+#: main-structure-elements.php:1901
+msgid "Equalize Column Heights"
+msgstr "Cân bằng chiều cao cột"
+
+#: main-structure-elements.php:311 main-structure-elements.php:1020
+#: main-structure-elements.php:1876
+msgid "Use Custom Gutter Width"
+msgstr "Dùng Thước Đường Mương Rộng"
+
+#: main-structure-elements.php:324 main-structure-elements.php:1033
+#: main-structure-elements.php:1889
+msgid "Gutter Width"
+msgstr "Khoảng cách cột"
+
+#: main-structure-elements.php:953
+msgid "Make This Row Fullwidth"
+msgstr "Xem rộng toàn màn hình dòng này"
+
+#: main-structure-elements.php:961
+msgid ""
+"Enable this option to extend the width of this row to the edge of the "
+"browser window."
+msgstr ""
+"Kích hoạt phương án này sẽ làm mở rộng chiều rộng của dòng đến cạnh của cửa "
+"sổ trình duyệt."
+
+#: main-structure-elements.php:976
+msgid ""
+"Change to Yes if you would like to adjust the width of this row to a non-"
+"standard width."
+msgstr ""
+"Chuyển sang Có nếu bạn muốn điều chỉnh chiều rộng của dòng này thành chiều "
+"rộng không tiêu chuẩn."
+
+#: main-structure-elements.php:1005 main-structure-elements.php:1017
+msgid "Define custom width for this Row"
+msgstr "Xác định tùy chỉnh chiều rộng cho dòng này"
+
+#: main-structure-elements.php:1030 main-structure-elements.php:1886
+msgid "Enable this option to define custom gutter width for this row."
+msgstr "Bật lựa chọn này để xác định được đặt dưới cống rộng hàng này."
+
+#: main-structure-elements.php:1042 main-structure-elements.php:1898
+msgid "Adjust the spacing between each column in this row."
+msgstr "Điều chỉnh khoảng cách giữa mỗi cột trong dòng này"
+
+#: main-structure-elements.php:1170 main-structure-elements.php:1916
+msgid "Keep Column Padding on Mobile"
+msgstr "Giữ Cột lớp độn bên trên Mobile"
+
+#: main-structure-elements.php:1182
+msgid ""
+"This will change the label of the row in the builder for easy identification "
+"when collapsed."
+msgstr ""
+"Điều này sẽ thay đổi cái nhãn của hàng trong khu xây dựng cho dễ nhận diện "
+"khi sụp đổ."
+
+#: template-preview.php:9 template-preview.php:64
+msgid "Authentication failed. You cannot preview this item."
+msgstr "Xác nhận thất bại. Anh không thể xem thử mục này."
+
+#: template-preview.php:14
+msgid "Authentication failed. You are not logged in."
+msgstr "Xác nhận thất bại. Anh không được ghi lại trong."
+
+#: template-preview.php:19 template-preview.php:67
+msgid "Authentication failed. You have no permission to preview this item."
+msgstr "Xác nhận thất bại. Anh không có quyền xem thử mục này."
+
+#: template-preview.php:74
+msgid "Loading preview..."
+msgstr "Nạp xem thử..."
+
+#: template-preview.php:82
+msgid "Link Disabled"
+msgstr "Link Đã Tắt"
+
+#: template-preview.php:83
+msgid "During preview, link to different page is disabled"
+msgstr "Trong xem thử, link khác trang bị tắt"
+
+#: layouts.php:4
+msgctxt "Layout type general name"
+msgid "Layouts"
+msgstr "Bố trí"
+
+#: layouts.php:5
+msgctxt "Layout type singular name"
+msgid "Layout"
+msgstr "Bố trí"
+
+#: layouts.php:6
+msgctxt "Layout item"
+msgid "Add New"
+msgstr "Thêm Mới"
+
+#: main-modules.php:4166 main-modules.php:10984 main-modules.php:17443
+msgctxt "number of comments"
+msgid "1 Comment"
+msgid_plural "%s Comments"
+msgstr[0] "%s Lời bình"
+
+#: main-modules.php:6040
+msgctxt "Audio Module meta information"
+msgid "by <strong>%1$s</strong>"
+msgstr "bởi <strong>%1$s</strong>"
+
+#: main-modules.php:9448
+msgctxt "contact form title separator"
+msgid " - %s"
+msgstr " - %s"
+
+#: main-modules.php:13593
+msgctxt "Previous post link"
+msgid "&larr;"
+msgstr ""
+
+#: main-modules.php:13594
+msgctxt "Next post link"
+msgid "&rarr;"
+msgstr ""
+
+#~ msgid ""
+#~ "Type the message you want to display after successfull form submission. "
+#~ "Leave blank for default"
+#~ msgstr ""
+#~ "Nhập thông báo bạn muốn hiển thị sau khi gửi biểu mẫu thành công. Để "
+#~ "trống cho mặc định"
+
+#~ msgid ""
+#~ "Define custom text for the previous link. You can use <strong>%title</"
+#~ "strong> variable to include the post title. Leave blank for default."
+#~ msgstr ""
+#~ "Định nghĩa văn bản tuỳ biến cho liên kết trước. Bạn có thể dùng biến "
+#~ "<strong>%title</strong> để bao gồm tựa bài viết. Để trống cho mặc định."
+
+#~ msgid ""
+#~ "Define custom text for the next link. You can use <strong>%title</strong> "
+#~ "variable to include the post title. Leave blank for default."
+#~ msgstr ""
+#~ "Định nghĩa văn bản tuỳ biến cho liên kết kế. Bạn có thể dùng biến <strong>"
+#~ "%title</strong> để bao gồm tựa bài viết. Để trống cho mặc định."
+
+#~ msgid " - %s"
+#~ msgstr " - %s"
+
+#~ msgid ""
+#~ "Define the length of automatically generated excerpts. Leave blank for "
+#~ "default ( 270 )"
+#~ msgstr ""
+#~ "Định nghĩa độ dài của đoạn trích phát sinh tự động. Để trống cho mặc định "
+#~ "( 270 )"
+
+#~ msgid "by <strong>%1$s</strong>"
+#~ msgstr "bởi <strong>%1$s</strong>"

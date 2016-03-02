@@ -1,0 +1,2922 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Divi 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
+"POT-Creation-Date: 2016-01-25 14:31:21+00:00\n"
+"PO-Revision-Date: 2016-01-25 17:50+0300\n"
+"Last-Translator: \n"
+"Language-Team: Elegant Themes\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPathExcluded-0: ../includes/builder\n"
+"X-Poedit-SearchPathExcluded-1: ../node_modules\n"
+
+#: comments.php:4
+msgid "This post is password protected. Enter the password to view comments."
+msgstr ""
+"Det här inlägget är lösenordsskyddat. Ange lösenord för att visa kommentarer."
+
+#: comments.php:13
+msgid "0 Comments"
+msgstr "0 Kommentarer"
+
+#: comments.php:13
+msgid "1 Comment"
+msgstr "1 kommentar"
+
+#: comments.php:13 epanel/core_functions.php:469
+msgid "Comments"
+msgstr "Kommentarer"
+
+#: comments.php:18 comments.php:31
+msgid "<span class=\"meta-nav\">&larr;</span> Older Comments"
+msgstr "<span class=\"meta-nav\">&larr;</span> Äldre Kommentarer"
+
+#: comments.php:19 comments.php:32
+msgid "Newer Comments <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Nyare Kommentarer <span class=\"meta-nav\">&rarr;</span>"
+
+#: comments.php:38
+msgid "Trackbacks/Pingbacks"
+msgstr "Trackbacks/Pingbacks"
+
+#: comments.php:56
+msgid "Submit Comment"
+msgstr "Skicka kommentar"
+
+#: comments.php:56
+msgid "Submit a Comment"
+msgstr "Skicka kommentar"
+
+#: comments.php:56
+msgid "Leave a Reply to %s"
+msgstr "Lämna ett svar till %s"
+
+#: epanel/core_functions.php:25
+msgid "Help"
+msgstr "Hjälp"
+
+#: epanel/core_functions.php:92
+msgid "Options"
+msgstr "Inställningar"
+
+#: epanel/core_functions.php:92 functions.php:8222
+msgid "Theme Options"
+msgstr "Temainställningar"
+
+#: epanel/core_functions.php:110
+msgid "settings saved."
+msgstr "Inställningarna sparade."
+
+#: epanel/core_functions.php:113
+msgid "settings reset."
+msgstr "Inställningarna återställda."
+
+#: epanel/core_functions.php:122 epanel/core_functions.php:417
+msgid "Save Changes"
+msgstr "Spara ändringar"
+
+#: epanel/core_functions.php:131
+msgid "%s Theme Options"
+msgstr "%s tema-alternativ"
+
+#: epanel/core_functions.php:138
+msgid "Reset to Defaults"
+msgstr "Återställ till grundinställningar"
+
+#: epanel/core_functions.php:142 options_divi.php:38
+msgid "General"
+msgstr "Allmänt"
+
+#: epanel/core_functions.php:145
+msgid "Navigation"
+msgstr "Meny"
+
+#: epanel/core_functions.php:148 functions.php:663
+msgid "Layout"
+msgstr "Layout"
+
+#: epanel/core_functions.php:151
+msgid "Ads"
+msgstr "Reklam"
+
+#: epanel/core_functions.php:154
+msgid "Colorization"
+msgstr "Färg"
+
+#: epanel/core_functions.php:157
+msgid "SEO"
+msgstr "SEO"
+
+#: epanel/core_functions.php:160
+msgid "Integration"
+msgstr "Integration"
+
+#: epanel/core_functions.php:239 epanel/core_functions.php:426
+msgid "Reset"
+msgstr "Återställ"
+
+#: epanel/core_functions.php:240
+msgid "Upload"
+msgstr "Ladda upp"
+
+#: epanel/core_functions.php:267
+msgid "You don't have pages"
+msgstr "Du har inga sidor"
+
+#: epanel/core_functions.php:427
+msgid ""
+"This will return all of the settings throughout the options page to their "
+"default values. <strong>Are you sure you want to do this?</strong>"
+msgstr ""
+"Detta kommer att återställa alla inställningar tillbaka till "
+"standardvärdena. <strong>Är du säker på att du vill göra detta?</strong>"
+
+#: epanel/core_functions.php:431 includes/functions/choices.php:92
+msgid "Yes"
+msgstr "Ja"
+
+#: epanel/core_functions.php:434 includes/functions/choices.php:93
+msgid "No"
+msgstr "Nej"
+
+#: epanel/core_functions.php:448
+msgid "Enable"
+msgstr "Aktivera"
+
+#: epanel/core_functions.php:450
+msgid "Disable"
+msgstr "Avaktivera"
+
+#: epanel/core_functions.php:457
+msgid "Author"
+msgstr "Skapare"
+
+#: epanel/core_functions.php:461
+msgid "Date"
+msgstr "Datum"
+
+#: epanel/core_functions.php:465 options_divi.php:300
+msgid "Categories"
+msgstr "Kategorier"
+
+#: epanel/core_functions.php:646
+msgid "Choose an Image"
+msgstr "Ange som bild"
+
+#: epanel/custom_functions.php:195
+msgid "&hellip;"
+msgstr "&hellip;"
+
+#: epanel/custom_functions.php:499 header.php:188 header.php:231
+msgid "Home"
+msgstr "Hem"
+
+#: epanel/custom_functions.php:796
+msgid "Archives"
+msgstr "Arkiv"
+
+#: epanel/custom_functions.php:798
+msgid "Search results for \"%s\""
+msgstr "Sökresultat för \"%s\""
+
+#: epanel/custom_functions.php:800
+msgid "404 Not Found"
+msgstr "404 Hittades inte"
+
+#: epanel/custom_functions.php:870
+msgid "Currently viewing archives from %1$s"
+msgstr "Visar arkiv från %1$s"
+
+#: epanel/custom_functions.php:883
+msgid "Search Results for: %s"
+msgstr "Sökersultat för: %s"
+
+#: epanel/custom_functions.php:1124
+msgid "Image doesn't exist"
+msgstr "Bilden finns inte"
+
+#: epanel/custom_functions.php:1341
+msgid ""
+"<div class=\"updated\"><p>This is a fresh installation of %1$s theme. Don't "
+"forget to go to <a href=\"%2$s\">ePanel</a> to set it up. This message will "
+"disappear once you have clicked the Save button within the <a href=\"%2$s"
+"\">theme's options page</a>.</p></div>"
+msgstr ""
+"<div class=\"updated\"><p>Detta är en ny installation av %1$s temat. Glöm "
+"inte att gå till <a href=\"%2$s\">ePanel</a> för att aktivera det. Detta "
+"meddelande kommer att försvinna när du tryckt på spara-knappen på<a href="
+"\"%2$s\">temats inställningssida</a>.</p></div>"
+
+#: epanel/custom_functions.php:1355
+msgid ""
+"There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox"
+"\" title=\"%1$s\">View version %3$s details</a>. <em>Before you can update "
+"your Elegant Themes, you must first install the <a href=\"https://www."
+"elegantthemes.com/members-area/documentation.html#updater\" target=\"_blank"
+"\">Elegant Updater Plugin</a> to authenticate your subscription.</em>"
+msgstr ""
+"Det finns en ny version av %1$s tillgänglig. <a href=\"%2$s\" class="
+"\"thickbox\" title=\"%1$s\">Visa version %3$s detaljer</a>. <em>Innan du kan "
+"uppdatera dina Eleganta Teman måste du först installera <a href=\"https://"
+"www.elegantthemes.com/members-area/documentation.html#updater\" target="
+"\"_blank\">Elegant Updater Plugin</a> för att autentisera ditt abonnemang.</"
+"em>"
+
+#: epanel/custom_functions.php:1359
+msgid ""
+"Before you can update your Elegant Themes, you must first install the <a "
+"href=\"https://www.elegantthemes.com/members-area/documentation.html#updater"
+"\" target=\"_blank\">Elegant Updater Plugin</a> to authenticate your "
+"subscription."
+msgstr ""
+"Innan du kan uppdatera dina Elegant Teman måste du först installera <a href="
+"\"https://www.elegantthemes.com/members-area/documentation.html#updater\" "
+"target=\"_blank\">Elegant Updater Plugin</a> för att autentisera ditt "
+"abonnemang."
+
+#: epanel/shortcodes/shortcodes.php:15 epanel/shortcodes/shortcodes.php:518
+msgid "Previous"
+msgstr "Föregående"
+
+#: epanel/shortcodes/shortcodes.php:15 epanel/shortcodes/shortcodes.php:519
+msgid "Next"
+msgstr "Nästa"
+
+#: epanel/shortcodes/shortcodes.php:273
+msgid "Tweet"
+msgstr "Twittra"
+
+#: epanel/shortcodes/shortcodes.php:289
+msgid "Member Login"
+msgstr "Medlemsloggin"
+
+#: epanel/shortcodes/shortcodes.php:292
+msgid "Username: "
+msgstr "Användarnamn: "
+
+#: epanel/shortcodes/shortcodes.php:293
+msgid "Password: "
+msgstr "Lösenord: "
+
+#: epanel/shortcodes/shortcodes.php:294 functions.php:3778
+msgid "Login"
+msgstr "Logga in"
+
+#: epanel/shortcodes/shortcodes.php:330
+msgid "Add a Tooltip Text"
+msgstr "Lägg till tooltip-text"
+
+#: epanel/shortcodes/shortcodes.php:352
+msgid "Click here to learn more"
+msgstr "Klicka här för att läsa mer"
+
+#: epanel/shortcodes/shortcodes.php:732
+msgid "Join Now"
+msgstr "Kom med nu"
+
+#: epanel/shortcodes/shortcodes.php:967
+msgid "Add ET Learn more block"
+msgstr "Lägg till ett växlingsblock"
+
+#: epanel/shortcodes/shortcodes.php:968
+msgid "Add ET Box"
+msgstr "Lägg till fält"
+
+#: epanel/shortcodes/shortcodes.php:969
+msgid "Add ET Button"
+msgstr "Lägg till knapp"
+
+#: epanel/shortcodes/shortcodes.php:970
+msgid "Add ET Tabs"
+msgstr "Lägg till flikar"
+
+#: epanel/shortcodes/shortcodes.php:971
+msgid "Add Author Bio"
+msgstr "Lägg till författarbiografi"
+
+#: epanel/shortcodes/shortcodes.php:972
+msgid "Shortcodes"
+msgstr "Kortkoder"
+
+#: epanel/shortcodes/shortcodes.php:977
+msgid "Caption"
+msgstr "Bildtext"
+
+#: epanel/shortcodes/shortcodes.php:978
+msgid "Caption goes here"
+msgstr "Bildtext här"
+
+#: epanel/shortcodes/shortcodes.php:979
+msgid "Caption title goes here"
+msgstr "Bildtextens titel här"
+
+#: epanel/shortcodes/shortcodes.php:983
+msgid "State"
+msgstr "Tillstånd"
+
+#: epanel/shortcodes/shortcodes.php:985
+msgid "Select between expanded and closed state"
+msgstr "Välj mellan expanderat och stängt tillstånd"
+
+#: epanel/shortcodes/shortcodes.php:990 epanel/shortcodes/shortcodes.php:1006
+#: epanel/shortcodes/shortcodes.php:1035 epanel/shortcodes/shortcodes.php:1115
+msgid "Content"
+msgstr "Innehåll"
+
+#: epanel/shortcodes/shortcodes.php:991 epanel/shortcodes/shortcodes.php:1007
+#: epanel/shortcodes/shortcodes.php:1093 epanel/shortcodes/shortcodes.php:1116
+msgid "Content goes here"
+msgstr "Innehåll här"
+
+#: epanel/shortcodes/shortcodes.php:992 epanel/shortcodes/shortcodes.php:1008
+#: epanel/shortcodes/shortcodes.php:1037
+msgid "Content text or html"
+msgstr "Innehållstext eller HTML"
+
+#: epanel/shortcodes/shortcodes.php:999 epanel/shortcodes/shortcodes.php:1021
+msgid "Type"
+msgstr "Typ"
+
+#: epanel/shortcodes/shortcodes.php:1001
+msgid "Type of the box"
+msgstr "Typ av låda"
+
+#: epanel/shortcodes/shortcodes.php:1015
+msgid "Link"
+msgstr "Länk"
+
+#: epanel/shortcodes/shortcodes.php:1017
+msgid "URL"
+msgstr "URL"
+
+#: epanel/shortcodes/shortcodes.php:1023
+msgid "Choose button type"
+msgstr "Välj knapptyp"
+
+#: epanel/shortcodes/shortcodes.php:1028
+msgid "Color"
+msgstr "Färg"
+
+#: epanel/shortcodes/shortcodes.php:1030
+msgid "Choose button color"
+msgstr "Välj knappfärg"
+
+#: epanel/shortcodes/shortcodes.php:1036
+msgid "Link text"
+msgstr "Länka text"
+
+#: epanel/shortcodes/shortcodes.php:1041
+msgid "Icon"
+msgstr "Ikon"
+
+#: epanel/shortcodes/shortcodes.php:1043
+msgid "Used for icon button type"
+msgstr "Används för ikonknappens typ"
+
+#: epanel/shortcodes/shortcodes.php:1048
+msgid "Open link in new window"
+msgstr "Öppna länken i nytt fönster"
+
+#: epanel/shortcodes/shortcodes.php:1050
+msgid "Select yes if the link should be opened in a new window"
+msgstr "Välj ja om länken ska öppnas i ett nytt fönster"
+
+#: epanel/shortcodes/shortcodes.php:1058
+msgid "Slider Type"
+msgstr "Reglageyp"
+
+#: epanel/shortcodes/shortcodes.php:1060
+msgid "Select Slider Type here"
+msgstr "Välj reglagetyp här"
+
+#: epanel/shortcodes/shortcodes.php:1065
+msgid "Effect"
+msgstr "Effekt"
+
+#: epanel/shortcodes/shortcodes.php:1067
+msgid "Select Animation Effect"
+msgstr "Välj Animationseffekt"
+
+#: epanel/shortcodes/shortcodes.php:1072
+msgid "Auto"
+msgstr "Automatisk"
+
+#: epanel/shortcodes/shortcodes.php:1074
+msgid "Choose yes if you want for automatic slider animation"
+msgstr "Välj ja om du vill aktivera automatisk reglageanimation"
+
+#: epanel/shortcodes/shortcodes.php:1079
+msgid "Auto Speed"
+msgstr "Automatisk hastighet"
+
+#: epanel/shortcodes/shortcodes.php:1081
+msgid "Automattic slider speed (works only if Auto is set to yes)"
+msgstr ""
+"Automatisk reglagehastighet (fungerar bara om Automatisk är inställd till "
+"yes)"
+
+#: epanel/shortcodes/shortcodes.php:1085
+msgid "Tab Text"
+msgstr "Fliktext"
+
+#: epanel/shortcodes/shortcodes.php:1092
+msgid "Tab Content"
+msgstr "Flikinnehåll"
+
+#: epanel/shortcodes/shortcodes.php:1094
+msgid "Paste image url here, if you chose \"images\" slider type"
+msgstr "Klistra in bild URL här, om du väljer \"images\" reglagetyp"
+
+#: epanel/shortcodes/shortcodes.php:1102
+msgid "Image Url"
+msgstr "Bild URL"
+
+#: epanel/shortcodes/shortcodes.php:1104
+msgid "Author Image URL"
+msgstr "Redigera bild URL"
+
+#: epanel/shortcodes/shortcodes.php:1108
+msgid "Use resizing"
+msgstr "Användning storleksändring"
+
+#: epanel/shortcodes/shortcodes.php:1185
+msgid "+ Add One More Tab"
+msgstr "+ Lägg till en flik"
+
+#: epanel/shortcodes/shortcodes.php:1335 functions.php:3444
+msgid "Image Height"
+msgstr "Bildens höjd"
+
+#: epanel/shortcodes/shortcodes.php:1336 functions.php:3424
+msgid "Image Width"
+msgstr "Bildens bredd"
+
+#: footer.php:40
+msgid "Designed by %1$s | Powered by %2$s"
+msgstr "Designad av %1$s | Drivs med %2$s"
+
+#: functions.php:32
+msgid "Primary Menu"
+msgstr "Primär meny"
+
+#: functions.php:33
+msgid "Secondary Menu"
+msgstr "Sekundär meny"
+
+#: functions.php:34 functions.php:678
+msgid "Footer Menu"
+msgstr "Sidfotsmeny"
+
+#: functions.php:81
+msgid ""
+"Welcome to Divi! Before diving in to your new theme, please visit the <a "
+"style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank"
+"\">Divi Documentation</a> page for access to dozens of in-depth tutorials."
+msgstr ""
+"Välkommen till Divi! Innan du dyker ner i ditt nya tema får du gärna besöka "
+"<a style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank"
+"\">Divi Documentation</a>-sidan för tillgång till dussintals djuptgående "
+"genomgångar."
+
+#: functions.php:206
+msgid "Select Page"
+msgstr "Välj en sida"
+
+#: functions.php:247
+msgid "Divi Page Settings"
+msgstr "Divi-sidinställning"
+
+#: functions.php:249
+msgid "Divi Post Settings"
+msgstr "Divi-inläggsinställningar"
+
+#: functions.php:250
+msgid "Divi Product Settings"
+msgstr "Divi-produktinställningar"
+
+#: functions.php:251
+msgid "Divi Project Settings"
+msgstr "Divi-projektinställningar"
+
+#: functions.php:258
+msgid "Skills"
+msgstr "Färdigheter"
+
+#: functions.php:261
+msgid "Posted on"
+msgstr "Upplagt på"
+
+#: functions.php:285 options_divi.php:95
+msgid "Right Sidebar"
+msgstr "Höger sidofält"
+
+#: functions.php:286 options_divi.php:96
+msgid "Left Sidebar"
+msgstr "Vänster sidofält"
+
+#: functions.php:287 options_divi.php:97
+msgid "Full Width"
+msgstr "Full bredd"
+
+#: functions.php:291
+msgid "Light"
+msgstr "Ljus"
+
+#: functions.php:292
+msgid "Dark"
+msgstr "Mörk"
+
+#: functions.php:305
+msgid "Page Layout"
+msgstr "Sidlayout"
+
+#: functions.php:319
+msgid "Dot Navigation"
+msgstr "Punkt navigation"
+
+#: functions.php:322 functions.php:331
+msgid "Off"
+msgstr "Av"
+
+#: functions.php:323 functions.php:332
+msgid "On"
+msgstr "På"
+
+#: functions.php:327
+msgid "Hide Nav Before Scroll"
+msgstr "Göm navigation innan skrollning"
+
+#: functions.php:330 functions.php:5617 includes/functions/choices.php:24
+#: includes/functions/choices.php:40
+msgid "Default"
+msgstr "Standardinställning"
+
+#: functions.php:338
+msgid "Post Title"
+msgstr "Inläggstitel"
+
+#: functions.php:341 functions.php:376
+msgid "Show"
+msgstr "Visa"
+
+#: functions.php:342 functions.php:375
+msgid "Hide"
+msgstr "Dölj"
+
+#: functions.php:347
+msgid "Use Background Color"
+msgstr "Använd bakgrundsfärg"
+
+#: functions.php:352 functions.php:5653
+msgid "Hex Value"
+msgstr "Färgvärde"
+
+#: functions.php:356 functions.php:1976 functions.php:2003 functions.php:2130
+#: functions.php:2652 functions.php:2752 functions.php:2957
+msgid "Text Color"
+msgstr "Textfärg"
+
+#: functions.php:372
+msgid "Project Navigation"
+msgstr "Projektnavigering"
+
+#: functions.php:518 functions.php:530 functions.php:8300
+msgid "you don't have sufficient permissions to access this page"
+msgstr ""
+"du inte har tillräckliga rättigheter för att få tillgång till den här sidan"
+
+#: functions.php:578 options_divi.php:305 options_divi.php:445
+msgid "General Settings"
+msgstr "Allmänna inställningar"
+
+#: functions.php:583
+msgid "Site Identity"
+msgstr "Webbplats identitet"
+
+#: functions.php:588
+msgid "Layout Settings"
+msgstr "Layoutinställningar"
+
+#: functions.php:593
+msgid "Typography"
+msgstr "Typografi"
+
+#: functions.php:598
+msgid "Mobile Styles"
+msgstr "Mobilstilar"
+
+#: functions.php:603
+msgid "Tablet"
+msgstr "Tablett"
+
+#: functions.php:608
+msgid "Phone"
+msgstr "Telefon"
+
+#: functions.php:613
+msgid "Mobile Menu"
+msgstr "Mobilmeny"
+
+#: functions.php:618
+msgid "Background"
+msgstr "Bakgrund"
+
+#: functions.php:623
+msgid "Header & Navigation"
+msgstr "Sidhuvud & Navigation"
+
+#: functions.php:628
+msgid "Header Format"
+msgstr "Format på sidhuvud"
+
+#: functions.php:633
+msgid "Primary Menu Bar"
+msgstr "Primär menyrad"
+
+#: functions.php:638
+msgid "Secondary Menu Bar"
+msgstr "Sekundär menyrad"
+
+#: functions.php:643
+msgid "Slide In & Fullscreen Header Settings"
+msgstr "Inställningar för slider och helskärmsfront"
+
+#: functions.php:648
+msgid "Fixed Navigation Settings"
+msgstr "Låsta navigationsinställningar"
+
+#: functions.php:653
+msgid "Header Elements"
+msgstr "Element i sidhuvud"
+
+#: functions.php:658
+msgid "Footer"
+msgstr "Sidfot"
+
+#: functions.php:668
+msgid "Widgets"
+msgstr "Widgets"
+
+#: functions.php:673
+msgid "Footer Elements"
+msgstr "Element i sidfot"
+
+#: functions.php:683
+msgid "Bottom Bar"
+msgstr "Bottenrad"
+
+#: functions.php:688 functions.php:1409
+msgid "Color Schemes"
+msgstr "Färgscheman"
+
+#: functions.php:690
+msgid ""
+"Note: Color settings set above should be applied to the Default color scheme."
+msgstr ""
+"Obs: Färginställningar angivna ovan bör tillämpas på standardfärgschemat."
+
+#: functions.php:694
+msgid "Buttons"
+msgstr "Knappar"
+
+#: functions.php:699
+msgid "Buttons Style"
+msgstr "Stilar på knappar"
+
+#: functions.php:704
+msgid "Buttons Hover Style"
+msgstr "Stilar på knappar vid hovring"
+
+#: functions.php:709 functions.php:4957
+msgid "Blog"
+msgstr "Blogg"
+
+#: functions.php:714
+msgid "Post"
+msgstr "Inlägg"
+
+#: functions.php:731
+msgid "Meta Text Size"
+msgstr "Textstorlek för metadata"
+
+#: functions.php:750
+msgid "Meta Line Height"
+msgstr "Linjehöjd för metadata"
+
+#: functions.php:769
+msgid "Meta Letter Spacing"
+msgstr "Avstånd mellan bokstäver för metadata"
+
+#: functions.php:788 functions.php:5026 functions.php:5105
+msgid "Meta Font Style"
+msgstr "Typsnittsstil för metadata"
+
+#: functions.php:803 functions.php:1209 functions.php:1281 functions.php:1300
+#: functions.php:2398
+msgid "Header Text Size"
+msgstr "Textstorlek i sidhuvud"
+
+#: functions.php:822 functions.php:1247
+msgid "Header Line Height"
+msgstr "Linjehöjd i sidhuvud"
+
+#: functions.php:841 functions.php:1228
+msgid "Header Letter Spacing"
+msgstr "Avstånd mellan bokstäver i sidhuvud"
+
+#: functions.php:860 functions.php:1266 functions.php:2417 functions.php:3313
+#: functions.php:3491 functions.php:3606 functions.php:3669 functions.php:3748
+#: functions.php:3812 functions.php:4603 functions.php:5299 functions.php:5405
+msgid "Header Font Style"
+msgstr "Typsnittsstil i sidhuvud"
+
+#: functions.php:874
+msgid "Enable Boxed Layout"
+msgstr "Aktivera boxad layout"
+
+#: functions.php:888
+msgid "Website Content Width"
+msgstr "Webbplatsens innehållsbredd"
+
+#: functions.php:907
+msgid "Website Gutter Width"
+msgstr "Webplatsens Kolumnavstånd"
+
+#: functions.php:925
+msgid "Use Custom Sidebar Width"
+msgstr "Använd Custom Sidebar bredd"
+
+#: functions.php:939
+msgid "Sidebar Width"
+msgstr "Sidlistens bredd"
+
+#: functions.php:958 functions.php:977 functions.php:996
+msgid "Section Height"
+msgstr "Sektionshöjd"
+
+#: functions.php:1015 functions.php:1034 functions.php:1053
+msgid "Row Height"
+msgstr "Radhöjd"
+
+#: functions.php:1072
+msgid "Stretch Background Image"
+msgstr "Stretcha bakgrundsbilden"
+
+#: functions.php:1079 functions.php:1673 functions.php:2031 functions.php:2102
+#: functions.php:2116 functions.php:2638 functions.php:2766 functions.php:2971
+msgid "Background Color"
+msgstr "Bakgrundsfärg"
+
+#: functions.php:1086
+msgid "Background Image"
+msgstr "Bakgrundsbild"
+
+#: functions.php:1092
+msgid "Background Repeat"
+msgstr "Upprepa bakgrund"
+
+#: functions.php:1096
+msgid "No Repeat"
+msgstr "Upprepa inte"
+
+#: functions.php:1097
+msgid "Tile"
+msgstr "Ordna"
+
+#: functions.php:1098
+msgid "Tile Horizontally"
+msgstr "Ordna över och under"
+
+#: functions.php:1099
+msgid "Tile Vertically"
+msgstr "Ordna sida vid sida"
+
+#: functions.php:1104 functions.php:1115
+msgid "Background Position"
+msgstr "Bakgrundsposition"
+
+#: functions.php:1108 includes/functions/choices.php:106
+msgid "Left"
+msgstr "Vänster"
+
+#: functions.php:1109
+msgid "Center"
+msgstr "Mitten"
+
+#: functions.php:1110 includes/functions/choices.php:105
+msgid "Right"
+msgstr "Höger"
+
+#: functions.php:1119
+msgid "Scroll"
+msgstr "Skrolla"
+
+#: functions.php:1120
+msgid "Fixed"
+msgstr "Låst"
+
+#: functions.php:1133 functions.php:1171 functions.php:1190
+msgid "Body Text Size"
+msgstr "Textstorlek i body"
+
+#: functions.php:1152
+msgid "Body Line Height"
+msgstr "Linjehöjd i Body"
+
+#: functions.php:1320
+msgid "Header Font"
+msgstr "Sidhuvudets typsnitt"
+
+#: functions.php:1336
+msgid "Body Font"
+msgstr "Brödtextens typsnitt"
+
+#: functions.php:1353
+msgid "Body Link Color"
+msgstr "Länkfärg i body"
+
+#: functions.php:1367
+msgid "Body Text Color"
+msgstr "Färg för Body-text"
+
+#: functions.php:1381
+msgid "Header Text Color"
+msgstr "Textfärg i sidhuvud"
+
+#: functions.php:1395
+msgid "Theme Accent Color"
+msgstr "Färgtema"
+
+#: functions.php:1425
+msgid "Header Style"
+msgstr "Stil sidhuvud"
+
+#: functions.php:1439
+msgid "Enable Vertical Navigation"
+msgstr "Aktivera vertikal navigation"
+
+#: functions.php:1453
+msgid "Vertical Menu Orientation"
+msgstr "Vertikal menyorientering"
+
+#: functions.php:1469
+msgid "Hide Navigation Until Scroll"
+msgstr "Göm navigation tills skrollning"
+
+#: functions.php:1484 functions.php:2354
+msgid "Show Social Icons"
+msgstr "Visa sociala media-ikoner"
+
+#: functions.php:1498
+msgid "Show Search Icon"
+msgstr "Visa sökikon"
+
+#: functions.php:1512
+msgid "Show Top Bar"
+msgstr "Visa översta fältet"
+
+#: functions.php:1526
+msgid "Menu Width"
+msgstr "Menybredd"
+
+#: functions.php:1545 functions.php:1583
+msgid "Menu Text Size"
+msgstr "Textstorlek i menyn"
+
+#: functions.php:1564 functions.php:1602
+msgid "Top Bar Text Size"
+msgstr "Textstorlek i det översta fältet"
+
+#: functions.php:1621 functions.php:1840 functions.php:1924 functions.php:2584
+#: functions.php:2832 functions.php:3018
+msgid "Letter Spacing"
+msgstr "Avstånd mellan bokstäver"
+
+#: functions.php:1641 functions.php:1860 functions.php:1944
+msgid "Font"
+msgstr "Typsnitt"
+
+#: functions.php:1658 functions.php:1877 functions.php:1961 functions.php:2603
+#: functions.php:2666
+msgid "Font Style"
+msgstr "Typsnittsstil"
+
+#: functions.php:1687
+msgid "Menu Link Color"
+msgstr "Länkfärg i menyn"
+
+#: functions.php:1701 functions.php:2017
+msgid "Active Link Color"
+msgstr "Färg på aktiv länk"
+
+#: functions.php:1715
+msgid "Top Bar Text Color"
+msgstr "Textfärg i översta fältet"
+
+#: functions.php:1729
+msgid "Search Bar Text Color"
+msgstr "Textfärg i sökfältet"
+
+#: functions.php:1743
+msgid "Search Bar Background Color"
+msgstr "Bakgrundsfärg i sökfältet"
+
+#: functions.php:1756 functions.php:1899
+msgid "Make Full Width"
+msgstr "Sätt full bredd"
+
+#: functions.php:1769 functions.php:1989 functions.php:2205
+msgid "Hide Logo Image"
+msgstr "Göm logo-bild"
+
+#: functions.php:1783
+msgid "Menu Height"
+msgstr "meny Höjd"
+
+#: functions.php:1802
+msgid "Logo Max Height"
+msgstr "Logo Max Höjd"
+
+#: functions.php:1821 functions.php:1905 functions.php:2238 functions.php:2733
+msgid "Text Size"
+msgstr "Textstorlek"
+
+#: functions.php:2045 functions.php:2144
+msgid "Dropdown Menu Background Color"
+msgstr "Bakgrundsfärg på rullgardinsmeny"
+
+#: functions.php:2059
+msgid "Dropdown Menu Line Color"
+msgstr "Linjefärg på rullgardinsmeny"
+
+#: functions.php:2073 functions.php:2158
+msgid "Dropdown Menu Text Color"
+msgstr "Textfärg på rullgardinsmeny"
+
+#: functions.php:2087 functions.php:2172
+msgid "Dropdown Menu Animation"
+msgstr "Animering på rullgardinsmeny"
+
+#: functions.php:2219
+msgid "Fixed Menu Height"
+msgstr "Fast Menu Höjd"
+
+#: functions.php:2257
+msgid "Primary Menu Background Color"
+msgstr "Bakgrundsfärg för primär meny"
+
+#: functions.php:2271
+msgid "Secondary Menu Background Color"
+msgstr "Bakgrundsfärg för sekundär meny"
+
+#: functions.php:2285
+msgid "Primary Menu Link Color"
+msgstr "Länk Färg Primär Meny"
+
+#: functions.php:2299
+msgid "Secondary Menu Link Color"
+msgstr "Länk Färg undermenyn"
+
+#: functions.php:2313
+msgid "Active Primary Menu Link Color"
+msgstr "Länk Färg aktiv Primär Menu"
+
+#: functions.php:2327
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+#: functions.php:2340
+msgid "Email"
+msgstr "E-post"
+
+#: functions.php:2368
+msgid "Column Layout"
+msgstr "Kolumn-layout"
+
+#: functions.php:2384
+msgid "Footer Background Color"
+msgstr "Bakgrundsfärg för sidfot"
+
+#: functions.php:2432
+msgid "Body/Link Text Size"
+msgstr "Textstorlek Body/Länk"
+
+#: functions.php:2451
+msgid "Body/Link Line Height"
+msgstr "Linjehöjd Body/Länk"
+
+#: functions.php:2470
+msgid "Body Font Style"
+msgstr "Typsnittsstil i body"
+
+#: functions.php:2485
+msgid "Widget Text Color"
+msgstr "Textfärg i widget"
+
+#: functions.php:2499
+msgid "Widget Link Color"
+msgstr "Länkfärg i widget"
+
+#: functions.php:2513
+msgid "Widget Header Color"
+msgstr "Rubrikfärg i widget"
+
+#: functions.php:2527
+msgid "Widget Bullet Color"
+msgstr "Punktfärg i widget"
+
+#: functions.php:2542
+msgid "Footer Menu Background Color"
+msgstr "Bakgrundsfärg i sidfotsmeny"
+
+#: functions.php:2556
+msgid "Footer Menu Text Color"
+msgstr "Textfärg i sidfotsmeny"
+
+#: functions.php:2570
+msgid "Footer Menu Active Link Color"
+msgstr "Färg på aktiv länk i sidfotsmeny"
+
+#: functions.php:2618 functions.php:2681
+msgid "Font Size"
+msgstr "Typsnittsstorlek"
+
+#: functions.php:2700
+msgid "Social Icon Size"
+msgstr "Storlek på ikon för sociala medier"
+
+#: functions.php:2719
+msgid "Social Icon Color"
+msgstr "Färg på ikon för sociala medier"
+
+#: functions.php:2780
+msgid "Border Width"
+msgstr "Bredd på ram"
+
+#: functions.php:2799 functions.php:2985
+msgid "Border Color"
+msgstr "Färg på ram"
+
+#: functions.php:2813 functions.php:2999
+msgid "Border Radius"
+msgstr "Radie på ram"
+
+#: functions.php:2851 functions.php:5342
+msgid "Button Font Style"
+msgstr "Typsnittsstil på knapp"
+
+#: functions.php:2867
+msgid "Buttons Font"
+msgstr "Typsnitt på knapp"
+
+#: functions.php:2884
+msgid "Add Button Icon"
+msgstr "Lägg till knapp-ikon"
+
+#: functions.php:2899
+msgid "Select Icon"
+msgstr "Välj ikon"
+
+#: functions.php:2913
+msgid "Icon Color"
+msgstr "Ikonens färg"
+
+#: functions.php:2927
+msgid "Icon Placement"
+msgstr "Placering av ikon"
+
+#: functions.php:2942
+msgid "Only Show Icon on Hover"
+msgstr "Visa ikon endast vid hovring"
+
+#: functions.php:3036 includes/widgets/widget-about.php:50
+#: includes/widgets/widget-ads.php:180 includes/widgets/widget-ads.php:188
+#: includes/widgets/widget-ads.php:196 includes/widgets/widget-ads.php:204
+#: includes/widgets/widget-ads.php:212 includes/widgets/widget-ads.php:220
+#: includes/widgets/widget-ads.php:228 includes/widgets/widget-ads.php:236
+msgid "Image"
+msgstr "Bild"
+
+#: functions.php:3037
+msgid "Image Module Settings"
+msgstr "Inställningar för bildmodul"
+
+#: functions.php:3048
+msgid "Animation"
+msgstr "Animation"
+
+#: functions.php:3049
+msgid "This controls default direction of the lazy-loading animation."
+msgstr "Kontrollernas standardriktning för långsamt laddande animationer."
+
+#: functions.php:3059
+msgid "Gallery"
+msgstr "Galleri"
+
+#: functions.php:3072 functions.php:3855 functions.php:3964
+msgid "Zoom Icon Color"
+msgstr "Färg på inzoomad ikon"
+
+#: functions.php:3087 functions.php:3870 functions.php:3979
+msgid "Hover Overlay Color"
+msgstr "Färg på överlagring vid hovring"
+
+#: functions.php:3102 functions.php:3208 functions.php:3885 functions.php:3994
+#: functions.php:4263 functions.php:4342 functions.php:4384 functions.php:4484
+msgid "Title Font Size"
+msgstr "Typsnittstorlek i titel"
+
+#: functions.php:3122 functions.php:3228 functions.php:3905 functions.php:4014
+#: functions.php:4283 functions.php:4362 functions.php:4990 functions.php:5069
+msgid "Title Font Style"
+msgstr "Typsnittsstil för titel"
+
+#: functions.php:3138 functions.php:3921 functions.php:4030
+msgid "Caption Font Size"
+msgstr "Storlek på typsnitt för bildtext"
+
+#: functions.php:3158 functions.php:3941 functions.php:4050
+msgid "Caption Font Style"
+msgstr "Typsnittsstil för rubrik"
+
+#: functions.php:3168
+msgid "Blurb"
+msgstr "Blurb"
+
+#: functions.php:3181 functions.php:3293 functions.php:3471 functions.php:3586
+#: functions.php:3649 functions.php:3728 functions.php:3792 functions.php:4583
+#: functions.php:5279 functions.php:5385
+msgid "Header Font Size"
+msgstr "Typsnittsstorlek i sidhuvud"
+
+#: functions.php:3195
+msgid "Tabs"
+msgstr "Flikar"
+
+#: functions.php:3245 functions.php:3622 functions.php:3764 functions.php:3828
+msgid "Padding"
+msgstr "Padding"
+
+#: functions.php:3259
+msgid "Slider"
+msgstr "Växlare"
+
+#: functions.php:3273 functions.php:5365
+msgid "Top & Bottom Padding"
+msgstr "Padding i toppen & botten"
+
+#: functions.php:3329 functions.php:5421
+msgid "Content Font Size"
+msgstr "Typsnittsstorlek för innehåll"
+
+#: functions.php:3349 functions.php:5441
+msgid "Content Font Style"
+msgstr "Typsnittsstil för innehåll"
+
+#: functions.php:3359
+msgid "Testimonial"
+msgstr "Omdöme"
+
+#: functions.php:3372 functions.php:4891
+msgid "Name Font Style"
+msgstr "Typsnittsstil för namn"
+
+#: functions.php:3388
+msgid "Details Font Style"
+msgstr "Typsnittsstil för detaljer"
+
+#: functions.php:3404
+msgid "Portrait Border Radius"
+msgstr "Radie för porträttram"
+
+#: functions.php:3458
+msgid "Pricing Table"
+msgstr "Prissättningstabell"
+
+#: functions.php:3507 functions.php:3685 functions.php:4907
+msgid "Subheader Font Size"
+msgstr "Typsnittstorlek i subhead"
+
+#: functions.php:3527 functions.php:3705 functions.php:4927
+msgid "Subheader Font Style"
+msgstr "Typsnittsstil i subhead"
+
+#: functions.php:3543 functions.php:5200
+msgid "Price Font Size"
+msgstr "Typsnittsstorlek för pris"
+
+#: functions.php:3563
+msgid "Pricing Font Style"
+msgstr "Typsnittsstil för pris"
+
+#: functions.php:3573
+msgid "Call To Action"
+msgstr "Uppmaning till handling"
+
+#: functions.php:3636
+msgid "Audio"
+msgstr "Ljud"
+
+#: functions.php:3715
+msgid "Email Optin"
+msgstr "E-post OptIn"
+
+#: functions.php:3842
+msgid "Portfolio"
+msgstr "Portfolio"
+
+#: functions.php:3951
+msgid "Filterable Portfolio"
+msgstr "Filtrerbar portfolio"
+
+#: functions.php:4066
+msgid "Filters Font Size"
+msgstr "Typsnittsstorlek för filter"
+
+#: functions.php:4086
+msgid "Filters Font Style"
+msgstr "Typsnittsstil för filter"
+
+#: functions.php:4096
+msgid "Bar Counter"
+msgstr "Stapeldiagram"
+
+#: functions.php:4109
+msgid "Label Font Size"
+msgstr "Typsnittstorlek för etiketter"
+
+#: functions.php:4129
+msgid "Label Font Style"
+msgstr "Typsnittsstil för etiketter"
+
+#: functions.php:4145
+msgid "Percent Font Size"
+msgstr "Typsnittstorlek för procent"
+
+#: functions.php:4165
+msgid "Percent Font Style"
+msgstr "Typsnittsstil för procent"
+
+#: functions.php:4181
+msgid "Bar Padding"
+msgstr "Padding i stapeldiagram"
+
+#: functions.php:4201
+msgid "Bar Border Radius"
+msgstr "Stapelkantsradie"
+
+#: functions.php:4215
+msgid "Circle Counter"
+msgstr "Cirkelräknare"
+
+#: functions.php:4227 functions.php:4306
+msgid "Number Font Size"
+msgstr "Typsittsstorlek för siffror"
+
+#: functions.php:4247 functions.php:4326
+msgid "Number Font Style"
+msgstr "Typsnittsstil för siffror"
+
+#: functions.php:4293
+msgid "Number Counter"
+msgstr "Sifferräknare"
+
+#: functions.php:4372
+msgid "Accordion"
+msgstr "Dragspel"
+
+#: functions.php:4404 functions.php:4504
+msgid "Opened Title Font Style"
+msgstr "Typsnittsstil för öppnad titel"
+
+#: functions.php:4420 functions.php:4520
+msgid "Closed Title Font Style"
+msgstr "Typsnittsstil för stängd titel"
+
+#: functions.php:4436 functions.php:4536
+msgid "Toggle Icon Size"
+msgstr "Ikonstorlek för brytare"
+
+#: functions.php:4457 functions.php:4556
+msgid "Toggle Padding"
+msgstr "Padding för brytare"
+
+#: functions.php:4471
+msgid "Toggle"
+msgstr "Växla"
+
+#: functions.php:4570
+msgid "Contact Form"
+msgstr "Kontaktformulär"
+
+#: functions.php:4619
+msgid "Input Font Size"
+msgstr "Typsnittsstorlek för inmatning"
+
+#: functions.php:4639
+msgid "Input Font Style"
+msgstr "Typsnittsstil för inmatning"
+
+#: functions.php:4655
+msgid "Input Field Padding"
+msgstr "Padding för inmatningsfält"
+
+#: functions.php:4675
+msgid "Captcha Font Size"
+msgstr "Typsnittsstorlek för captcha"
+
+#: functions.php:4695
+msgid "Captcha Font Style"
+msgstr "Typsnittsstil för captcha"
+
+#: functions.php:4705 includes/functions/sidebars.php:4
+msgid "Sidebar"
+msgstr "Sidofält"
+
+#: functions.php:4718
+msgid "Widget Header Font Size"
+msgstr "Typsnittsstorlek för widgethuvud"
+
+#: functions.php:4738
+msgid "Widget Header Font Style"
+msgstr "Typsnittsstil för widgethuvud"
+
+#: functions.php:4754
+msgid "Remove Vertical Divider"
+msgstr "Ta bort vertikal avdelare"
+
+#: functions.php:4763
+msgid "Divider"
+msgstr "Avdelare"
+
+#: functions.php:4775
+msgid "Show Divider"
+msgstr "Visa avdelare"
+
+#: functions.php:4790
+msgid "Divider Style"
+msgstr "Stil på avdelaren"
+
+#: functions.php:4807
+msgid "Divider Weight"
+msgstr "Avdelarens höjd"
+
+#: functions.php:4827
+msgid "Divider Height"
+msgstr "Höjd på avdelare"
+
+#: functions.php:4847
+msgid "Divider Position"
+msgstr "Position på avdelaren"
+
+#: functions.php:4858
+msgid "Person"
+msgstr "Person"
+
+#: functions.php:4871
+msgid "Name Font Size"
+msgstr "Typsnittsstorlek på namn"
+
+#: functions.php:4943
+msgid "Social Network Icon Size"
+msgstr "Ikonstorlek för sociala nätverk"
+
+#: functions.php:4970 functions.php:5049
+msgid "Post Title Font Size"
+msgstr "Typsnittsstorlek på inläggstitel"
+
+#: functions.php:5006 functions.php:5085
+msgid "Meta Font Size"
+msgstr "Typsnittsstorlek på metadata"
+
+#: functions.php:5036
+msgid "Blog Grid"
+msgstr "Blogg Grid"
+
+#: functions.php:5115
+msgid "Shop"
+msgstr "Butik"
+
+#: functions.php:5128
+msgid "Product Name Font Size"
+msgstr "Typsnittsstorlek på produktnamn"
+
+#: functions.php:5148
+msgid "Product Name Font Style"
+msgstr "Typsnittsstil på produktnamn"
+
+#: functions.php:5164
+msgid "Sale Badge Font Size"
+msgstr "Typsnittsstorlek på rea-emblem"
+
+#: functions.php:5184
+msgid "Sale Badge Font Style"
+msgstr "Typsnittsstil på rea-emblem"
+
+#: functions.php:5220
+msgid "Price Font Style"
+msgstr "Typsnittsstil på priser"
+
+#: functions.php:5236
+msgid "Sale Price Font Size"
+msgstr "Typsnittsstorlek på reapriser"
+
+#: functions.php:5256
+msgid "Sale Price Font Style"
+msgstr "Typsnittsstil på reapriser"
+
+#: functions.php:5266
+msgid "Countdown"
+msgstr "Nedräkning"
+
+#: functions.php:5309
+msgid "Social Follow"
+msgstr "Följ i sociala medier"
+
+#: functions.php:5322
+msgid "Follow Font & Icon Size"
+msgstr "Storlek på typsnitt & ikoner för sociala medier"
+
+#: functions.php:5352
+msgid "Fullwidth Slider"
+msgstr "fullbredds Slider"
+
+#: functions.php:7745
+msgid "0 comments"
+msgstr "0 Kommentarer"
+
+#: functions.php:7745
+msgid "1 comment"
+msgstr "1 kommentar"
+
+#: functions.php:7745
+msgid "comments"
+msgstr "Kommentarer"
+
+#: functions.php:7828
+msgid "Password Protected"
+msgstr "Lösenordsskyddad"
+
+#: functions.php:7829
+msgid "To view this protected post, enter the password below"
+msgstr "För att se detta skyddade inlägg, ange lösenordet nedan"
+
+#: functions.php:7832
+msgid "Password"
+msgstr "Lösenord"
+
+#: functions.php:7833
+msgid "Submit"
+msgstr "Skicka"
+
+#: functions.php:8226 functions.php:8261
+msgid "Theme Customizer"
+msgstr "Tema-anpassare"
+
+#: functions.php:8230 functions.php:8274
+msgid "Module Customizer"
+msgstr "Modul-anpassare"
+
+#: functions.php:8232
+msgid "Role Editor"
+msgstr "roll Redaktör"
+
+#: functions.php:8235
+msgid "Divi Library"
+msgstr "Divi-biblioteket"
+
+#: header.php:143 header.php:271
+msgid "Search &hellip;"
+msgstr "Sök &hellip;"
+
+#: header.php:145 header.php:273
+msgid "Search for:"
+msgstr "Sök efter:"
+
+#: includes/functions/choices.php:9
+msgid "Bold"
+msgstr "Fet"
+
+#: includes/functions/choices.php:10
+msgid "Italic"
+msgstr "Kursiv"
+
+#: includes/functions/choices.php:11
+msgid "Uppercase"
+msgstr "Versaler"
+
+#: includes/functions/choices.php:12
+msgid "Underline"
+msgstr "Understruken"
+
+#: includes/functions/choices.php:25
+msgid "Green"
+msgstr "Grön"
+
+#: includes/functions/choices.php:26
+msgid "Orange"
+msgstr "Orange"
+
+#: includes/functions/choices.php:27
+msgid "Pink"
+msgstr "Rosa"
+
+#: includes/functions/choices.php:28
+msgid "Red"
+msgstr "Röd"
+
+#: includes/functions/choices.php:41
+msgid "Centered"
+msgstr "Centrerad"
+
+#: includes/functions/choices.php:42
+msgid "Centered Inline Logo"
+msgstr "Centrerad logga i linje"
+
+#: includes/functions/choices.php:43
+msgid "Slide In"
+msgstr "Slider"
+
+#: includes/functions/choices.php:44
+msgid "Fullscreen"
+msgstr "Helskärm"
+
+#: includes/functions/choices.php:56
+msgid "Fade"
+msgstr "Blekna"
+
+#: includes/functions/choices.php:57
+msgid "Expand"
+msgstr "Expandera"
+
+#: includes/functions/choices.php:58
+msgid "Slide"
+msgstr "Slide"
+
+#: includes/functions/choices.php:59
+msgid "Flip"
+msgstr "Vänd"
+
+#: includes/functions/choices.php:71 includes/functions/choices.php:72
+#: includes/functions/choices.php:73 includes/functions/choices.php:75
+#: includes/functions/choices.php:76 includes/functions/choices.php:77
+#: includes/functions/choices.php:78 includes/functions/choices.php:79
+#: includes/functions/choices.php:80
+msgid "%1$s Columns"
+msgstr "%1$s kolumner"
+
+#: includes/functions/choices.php:74
+msgid "1 Column"
+msgstr "1 kolumn"
+
+#: includes/functions/choices.php:118
+msgid "Left to Right"
+msgstr "Vänster till höger"
+
+#: includes/functions/choices.php:119
+msgid "Right to Left"
+msgstr "Höger till vänster"
+
+#: includes/functions/choices.php:120
+msgid "Top to Bottom"
+msgstr "Uppifrån och ner"
+
+#: includes/functions/choices.php:121
+msgid "Bottom to Top"
+msgstr "Nerifrån och upp"
+
+#: includes/functions/choices.php:122
+msgid "Fade In"
+msgstr "Tona in"
+
+#: includes/functions/choices.php:123
+msgid "No Animation"
+msgstr "Ingen animation"
+
+#: includes/functions/choices.php:135
+msgid "Solid"
+msgstr "Solid"
+
+#: includes/functions/choices.php:136
+msgid "Dotted"
+msgstr "Prickad"
+
+#: includes/functions/choices.php:137
+msgid "Dashed"
+msgstr "Streckad"
+
+#: includes/functions/choices.php:138
+msgid "Double"
+msgstr "Dubbel"
+
+#: includes/functions/choices.php:139
+msgid "Groove"
+msgstr "Nedsänkning"
+
+#: includes/functions/choices.php:140
+msgid "Ridge"
+msgstr "Upphöjning"
+
+#: includes/functions/choices.php:141
+msgid "Inset"
+msgstr "Insida"
+
+#: includes/functions/choices.php:142
+msgid "Outset"
+msgstr "Utsida"
+
+#: includes/functions/choices.php:154
+msgid "Top"
+msgstr "Ovantill"
+
+#: includes/functions/choices.php:155
+msgid "Vertically Centered"
+msgstr "Vertikalt centrerad"
+
+#: includes/functions/choices.php:156
+msgid "Bottom"
+msgstr "Nertill"
+
+#: includes/functions/installation.php:1
+msgid "Read Divi Documentation"
+msgstr "Läs Divi dokumentation"
+
+#: includes/functions/sidebars.php:13 includes/functions/sidebars.php:22
+#: includes/functions/sidebars.php:31 includes/functions/sidebars.php:40
+msgid "Footer Area"
+msgstr "Sidfotsfält"
+
+#: includes/functions/tutorials.php:1
+msgid "Watch video tutorials"
+msgstr "Titta på instruktionsvideor"
+
+#: includes/navigation.php:2
+msgid "&laquo; Older Entries"
+msgstr "&laquo; Äldre inlägg"
+
+#: includes/navigation.php:3
+msgid "Next Entries &raquo;"
+msgstr "Nästa Inlägg &raquo;"
+
+#: includes/no-results.php:3
+msgid "No Results Found"
+msgstr "Inga resultat hittades"
+
+#: includes/no-results.php:4
+msgid ""
+"The page you requested could not be found. Try refining your search, or use "
+"the navigation above to locate the post."
+msgstr ""
+"Sidan du begärde kunde inte hittas. Försök förfina din sökning eller använd "
+"navigeringen ovan för att lokalisera inlägget."
+
+#: includes/social_icons.php:6
+msgid "Facebook"
+msgstr "Facebook"
+
+#: includes/social_icons.php:13
+msgid "Twitter"
+msgstr "Twitter"
+
+#: includes/social_icons.php:20
+msgid "Google"
+msgstr "Google"
+
+#: includes/social_icons.php:32
+msgid "RSS"
+msgstr "RSS"
+
+#: includes/widgets/widget-about.php:4
+msgid "Displays About Me Information"
+msgstr "Visar Om mej-information"
+
+#: includes/widgets/widget-about.php:6
+msgid "ET About Me Widget"
+msgstr "Om mej-gränssnittskomponent"
+
+#: includes/widgets/widget-about.php:12 includes/widgets/widget-about.php:41
+msgid "About Me"
+msgstr "Om mej"
+
+#: includes/widgets/widget-about.php:48 includes/widgets/widget-ads.php:172
+#: includes/widgets/widget-ads.php:184 includes/widgets/widget-ads.php:192
+#: includes/widgets/widget-ads.php:200 includes/widgets/widget-ads.php:208
+#: includes/widgets/widget-ads.php:216 includes/widgets/widget-ads.php:224
+#: includes/widgets/widget-ads.php:232 includes/widgets/widget-ads.php:240
+#: includes/widgets/widget-adsense.php:46
+msgid "Title"
+msgstr "Rubrik"
+
+#: includes/widgets/widget-about.php:52
+msgid "Text"
+msgstr "Text"
+
+#: includes/widgets/widget-ads.php:4
+msgid "Displays Advertisements"
+msgstr "Visar annonser"
+
+#: includes/widgets/widget-ads.php:6
+msgid "ET Advertisement"
+msgstr "Annons"
+
+#: includes/widgets/widget-ads.php:12 includes/widgets/widget-ads.php:128
+msgid "Advertisement"
+msgstr "Annons"
+
+#: includes/widgets/widget-ads.php:175
+msgid "Use Relative Image Paths"
+msgstr "Använd relativa bildsökväg"
+
+#: includes/widgets/widget-ads.php:177
+msgid "Open in a new window"
+msgstr "Öppna i ett nytt fönster"
+
+#: includes/widgets/widget-ads.php:180 includes/widgets/widget-ads.php:182
+#: includes/widgets/widget-ads.php:184 includes/widgets/widget-ads.php:186
+#: includes/widgets/widget-ads.php:188 includes/widgets/widget-ads.php:190
+#: includes/widgets/widget-ads.php:192 includes/widgets/widget-ads.php:194
+#: includes/widgets/widget-ads.php:196 includes/widgets/widget-ads.php:198
+#: includes/widgets/widget-ads.php:200 includes/widgets/widget-ads.php:202
+#: includes/widgets/widget-ads.php:204 includes/widgets/widget-ads.php:206
+#: includes/widgets/widget-ads.php:208 includes/widgets/widget-ads.php:210
+#: includes/widgets/widget-ads.php:212 includes/widgets/widget-ads.php:214
+#: includes/widgets/widget-ads.php:216 includes/widgets/widget-ads.php:218
+#: includes/widgets/widget-ads.php:220 includes/widgets/widget-ads.php:222
+#: includes/widgets/widget-ads.php:224 includes/widgets/widget-ads.php:226
+#: includes/widgets/widget-ads.php:228 includes/widgets/widget-ads.php:230
+#: includes/widgets/widget-ads.php:232 includes/widgets/widget-ads.php:234
+#: includes/widgets/widget-ads.php:236 includes/widgets/widget-ads.php:238
+#: includes/widgets/widget-ads.php:240 includes/widgets/widget-ads.php:242
+msgid "Banner"
+msgstr "Banderoll"
+
+#: includes/widgets/widget-ads.php:182 includes/widgets/widget-ads.php:190
+#: includes/widgets/widget-ads.php:198 includes/widgets/widget-ads.php:206
+#: includes/widgets/widget-ads.php:214 includes/widgets/widget-ads.php:222
+#: includes/widgets/widget-ads.php:230 includes/widgets/widget-ads.php:238
+msgid "Url"
+msgstr "URL"
+
+#: includes/widgets/widget-ads.php:186 includes/widgets/widget-ads.php:194
+#: includes/widgets/widget-ads.php:202 includes/widgets/widget-ads.php:210
+#: includes/widgets/widget-ads.php:218 includes/widgets/widget-ads.php:226
+#: includes/widgets/widget-ads.php:234 includes/widgets/widget-ads.php:242
+msgid "Alt"
+msgstr "Alt"
+
+#: includes/widgets/widget-ads.php:243
+msgid ""
+"If you don't want to display some banners - leave approptiate fields blank"
+msgstr "Om du inte vill visa några banderoller - lämna lämpliga fält tomma"
+
+#: includes/widgets/widget-adsense.php:4
+msgid "Displays Adsense Ads"
+msgstr "Visar Adsense-annonser"
+
+#: includes/widgets/widget-adsense.php:6
+msgid "ET Adsense Widget"
+msgstr "Adsense-gränssnittskomponent"
+
+#: includes/widgets/widget-adsense.php:12
+#: includes/widgets/widget-adsense.php:40
+msgid "Adsense"
+msgstr "Adsense"
+
+#: includes/widgets/widget-adsense.php:48
+msgid "Adsense Code"
+msgstr "Adsense-kod"
+
+#: options_divi.php:45
+msgid "Logo"
+msgstr "Logotyp"
+
+#: options_divi.php:48
+msgid "Set As Logo"
+msgstr "Ange som logo"
+
+#: options_divi.php:50
+msgid ""
+"If you would like to use your own custom logo image click the Upload Image "
+"button."
+msgstr ""
+"Om du vill använda dina egna logotyp klicka på knappen \"Ladda upp bild\"."
+
+#: options_divi.php:53
+msgid "Favicon"
+msgstr "Favicon"
+
+#: options_divi.php:56
+msgid "Set As Favicon"
+msgstr "Ange som Favicon"
+
+#: options_divi.php:58
+msgid ""
+"If you would like to use your own custom favicon image click the Upload "
+"Image button."
+msgstr "Om du vill använda dina egna favicon klicka på knappen Ladda upp bild."
+
+#: options_divi.php:61
+msgid "Fixed Navigation Bar"
+msgstr "Fast navigationsfält"
+
+#: options_divi.php:65
+msgid ""
+"By default the navigation bar stays on top of the screen at all times. We "
+"suggest to disable this option, if you need to use a logo taller than the "
+"default one."
+msgstr ""
+"Som standard stannar navigeringsfältet på toppen av skärmen hela tiden. Vi "
+"föreslår att inaktivera det här alternativet om du vill använda en stor "
+"logotyp."
+
+#: options_divi.php:68
+msgid "Enable Divi Gallery"
+msgstr "Aktivera Divi galleri"
+
+#: options_divi.php:72
+msgid ""
+"Enable this if you want to replace the WordPress default gallery with the "
+"Divi-style gallery."
+msgstr ""
+"Aktivera ifall du vill byta ut grundinställningen WordPress med Divi galleri."
+
+#: options_divi.php:77
+msgid "Grab the first post image"
+msgstr "Ta första inlagda bilden"
+
+#: options_divi.php:81
+msgid ""
+"By default thumbnail images are created using custom fields. However, if you "
+"would rather use the images that are already in your post for your thumbnail "
+"(and bypass using custom fields) you can activate this option. Once "
+"activcated thumbnail images will be generated automatically using the first "
+"image in your post. The image must be hosted on your own server."
+msgstr ""
+"Som standard skapas miniatyrbilder med anpassade fält. Men om du hellre vill "
+"använda bilderna som redan finns i ditt inlägg som miniatyrbilder (och "
+"kringgå genom att använda anpassade fält) kan du aktivera det här "
+"alternativet. När det är aktiverat kommer miniatyrbilder genereras "
+"automatiskt av första bilden i ditt inlägg. Bilden måste finnas på din egen "
+"server."
+
+#: options_divi.php:84
+msgid "Blog Style Mode"
+msgstr "Bloggens stilläge"
+
+#: options_divi.php:88
+msgid ""
+"By default the theme truncates your posts on index/homepages automatically "
+"to create post previews. If you would rather show your posts in full on "
+"index pages like a traditional blog then you can activate this feature."
+msgstr ""
+"Som standard kortar temat dina inläggsutdrag automatiskt för att skapa "
+"inläggsförhandsvisningar. Om du hellre vill visa dina inlägg i sin helhet "
+"som en traditionell blogg kan du aktivera den här funktionen."
+
+#: options_divi.php:91
+msgid "Shop Page & Category Page Layout for WooCommerce"
+msgstr "Shoppingsidans & Kategorisidans layout för WooCommerce"
+
+#: options_divi.php:100
+msgid "Here you can choose Shop Page & Category Page Layout for WooCommerce."
+msgstr ""
+"Här kan du välja Shoppingsidans & Kategorisidans layout för  WooCommerce."
+
+#: options_divi.php:104
+msgid "MailChimp API Key"
+msgstr "MailChimp API nyckel"
+
+#: options_divi.php:109
+msgid ""
+"Enter your MailChimp API key. You can create an api key <a target=\"_blank\" "
+"href=\"%1$s\">here</a>"
+msgstr ""
+"Ange ditt MailChimp API-nyckel. Du kan skapa en API-nyckel <a target=\"_blank"
+"\" href=\"%1$s\">here</a>"
+
+#: options_divi.php:112
+msgid "Aweber Authorization"
+msgstr "Aweber Auktorisering"
+
+#: options_divi.php:114
+msgid "Authorize your Aweber account here."
+msgstr "Auktorisera ditt Aweber-konto här."
+
+#: options_divi.php:118
+msgid "Regenerate MailChimp Lists"
+msgstr "Regenerera MailChimp listor"
+
+#: options_divi.php:122
+msgid ""
+"By default, MailChimp lists are cached for one day. If you added new list, "
+"but it doesn't appear within the Email Optin module settings, activate this "
+"option. Don't forget to disable it once the list has been regenerated."
+msgstr ""
+"Som standard är MailChimp listor cachelagras för en dag. Om du har lagt till "
+"ny lista, men det verkar inte inom modul E OptIn, aktivera det här "
+"alternativet. Glöm inte att stänga av den när listan har regenereras."
+
+#: options_divi.php:124
+msgid "Regenerate Aweber Lists"
+msgstr "Regenerera AWeber listor"
+
+#: options_divi.php:128
+msgid ""
+"By default, Aweber lists are cached for one day. If you added new list, but "
+"it doesn't appear within the Email Optin module settings, activate this "
+"option. Don't forget to disable it once the list has been regenerated."
+msgstr ""
+"Som standard är Aweber listor cachelagras för en dag. Om du har lagt till ny "
+"lista, men det verkar inte inom modul E OptIn, aktivera det här "
+"alternativet. Glöm inte att stänga av den när listan har regenereras."
+
+#: options_divi.php:130
+msgid "Show Facebook Icon"
+msgstr "Visa Facebook ikon"
+
+#: options_divi.php:134
+msgid "Here you can choose to display the Facebook Icon on your homepage. "
+msgstr "Här kan du välja att visa en Facebook ikon på din hemsida. "
+
+#: options_divi.php:136
+msgid "Show Twitter Icon"
+msgstr "Visa Twitter Ikon"
+
+#: options_divi.php:140
+msgid "Here you can choose to display the Twitter Icon. "
+msgstr "Här kan du välja att visa en Twitter ikon. "
+
+#: options_divi.php:142
+msgid "Show Google+ Icon"
+msgstr "Show Google+ ikon"
+
+#: options_divi.php:146
+msgid "Here you can choose to display the Google+ Icon on your homepage. "
+msgstr "Här kan du välja att visa en Google+ ikon på din hemsida. "
+
+#: options_divi.php:148
+msgid "Show RSS Icon"
+msgstr "Visa RSS ikon"
+
+#: options_divi.php:152
+msgid "Here you can choose to display the RSS Icon. "
+msgstr "Här kan du välja att visa en RSS ikon. "
+
+#: options_divi.php:154
+msgid "Facebook Profile Url"
+msgstr "Facebook profil URL"
+
+#: options_divi.php:159
+msgid "Enter the URL of your Facebook Profile. "
+msgstr "Ange URL för din Facebook profil. "
+
+#: options_divi.php:161
+msgid "Twitter Profile Url"
+msgstr "Twitter profil URL"
+
+#: options_divi.php:166
+msgid "Enter the URL of your Twitter Profile."
+msgstr "Ange URL för din Twitter profil."
+
+#: options_divi.php:168
+msgid "Google+ Profile Url"
+msgstr "Google+ profil URL"
+
+#: options_divi.php:173
+msgid "Enter the URL of your Google+ Profile. "
+msgstr "Ange URL för din Google+ profil. "
+
+#: options_divi.php:175
+msgid "RSS Icon Url"
+msgstr "RSS ikon URL"
+
+#: options_divi.php:180
+msgid "Enter the URL of your RSS feed. "
+msgstr "Skriv in URL för ditt RSS flöde. "
+
+#: options_divi.php:182
+msgid "Number of Products displayed on WooCommerce archive pages"
+msgstr "Antal produkter visade på WooCommerce arkivsida"
+
+#: options_divi.php:186
+msgid ""
+"Here you can designate how many WooCommerce products are displayed on the "
+"archive page. This option works independently from the Settings > Reading "
+"options in wp-admin."
+msgstr ""
+"Här kan du ange hur många WooCommerce produkter som visas på arkivsidan. "
+"Alternativet är oberoende av alternativet Inställningar > Läs i wp-admin."
+
+#: options_divi.php:190
+msgid "Number of Posts displayed on Category page"
+msgstr "Antal inlägg som visas på kategorisidorna"
+
+#: options_divi.php:194
+msgid ""
+"Here you can designate how many recent articles are displayed on the "
+"Category page. This option works independently from the Settings > Reading "
+"options in wp-admin."
+msgstr ""
+"Här kan du ange hur många nya artiklar som visas på kategorisidorna. Detta "
+"alternativ fungerar oberoende av läsningsalternativet i wp-admin."
+
+#: options_divi.php:198
+msgid "Number of Posts displayed on Archive pages"
+msgstr "Antal inlägg som visas på arkiv-sidorna"
+
+#: options_divi.php:202
+msgid ""
+"Here you can designate how many recent articles are displayed on the Archive "
+"pages. This option works independently from the Settings > Reading options "
+"in wp-admin."
+msgstr ""
+"Här kan du ange hur många nya artiklar som visas på arkivsidorna. Detta "
+"alternativ fungerar oberoende av läsningsalternativ i wp-admin."
+
+#: options_divi.php:206
+msgid "Number of Posts displayed on Search pages"
+msgstr "Antal inlägg visas på söksidorna"
+
+#: options_divi.php:210
+msgid ""
+"Here you can designate how many recent articles are displayed on the Search "
+"results pages. This option works independently from the Settings > Reading "
+"options in wp-admin."
+msgstr ""
+"Här kan du ange hur många nya artiklar som visas på sökresultatsidorna. "
+"Detta alternativ fungerar oberoende av läsningsalternativ i wp-admin."
+
+#: options_divi.php:214
+msgid "Number of Posts displayed on Tag pages"
+msgstr "Antal inlägg visas på Taggsidorna"
+
+#: options_divi.php:218
+msgid ""
+"Here you can designate how many recent articles are displayed on the Tag "
+"pages. This option works independently from the Settings > Reading options "
+"in wp-admin."
+msgstr ""
+"Här kan du ange hur många nya artiklar visas på taggsidorna. Detta "
+"alternativ fungerar oberoende av läsningsalternativ i wp-admin."
+
+#: options_divi.php:222
+msgid "Date format"
+msgstr "Datumformat"
+
+#: options_divi.php:226
+msgid ""
+"This option allows you to change how your dates are displayed. For more "
+"information please refer to the WordPress codex here:<a href='http://codex."
+"wordpress.org/Formatting_Date_and_Time' target='_blank'>Formatting Date and "
+"Time</a>"
+msgstr ""
+"Det här alternativet låter dig ändra hur datum visas. För mer information "
+"hänvisar vi till Wordpress kodex här:<a href='http://codex.wordpress.org/"
+"Formatting_Date_and_Time' target='_blank'>Formatera datum och tid</a>"
+
+#: options_divi.php:230
+msgid "Use excerpts when defined"
+msgstr "Använd utdrag när definierade"
+
+#: options_divi.php:234
+msgid "This will enable the use of excerpts in posts or pages."
+msgstr "Detta kommer att möjliggöra användning av utdrag i inlägg eller sidor."
+
+#: options_divi.php:237
+msgid "Responsive shortcodes"
+msgstr "Responsiva shortcodes"
+
+#: options_divi.php:241
+msgid "Enable this option to make shortcodes respond to various screen sizes"
+msgstr ""
+"Aktivera det här alternativet för att få shortcodes att anpassa sig till "
+"olika skärmstorlekar"
+
+#: options_divi.php:244
+msgid "Google Fonts subsets"
+msgstr "Google Fonts delmängder"
+
+#: options_divi.php:248
+msgid "This will enable Google Fonts for Non-English languages."
+msgstr "Det här aktiverar Google Fonts för andra språk än engelska."
+
+#: options_divi.php:251
+msgid "Back To Top Button"
+msgstr "Till toppen knappen"
+
+#: options_divi.php:255
+msgid "Enable this option to display Back To Top Button while scrolling"
+msgstr ""
+"Aktivera det här alternativet för att visa tillbaka till toppen knappen "
+"medan du bläddrar"
+
+#: options_divi.php:258
+msgid "Smooth Scrolling"
+msgstr "Mjuk rullning"
+
+#: options_divi.php:262
+msgid "Enable this option to get the smooth scrolling effect with mouse wheel"
+msgstr ""
+"Aktivera det här alternativet för att få effekten mjuk rullning med mushjulet"
+
+#: options_divi.php:265
+msgid "Disable Translations"
+msgstr "Avaktivera översättningar"
+
+#: options_divi.php:269
+msgid ""
+"Disable translations if you don't want to display translated theme strings "
+"on your site."
+msgstr ""
+"Avaktivera översättningar ifall du inte vill att översatta temarader ska "
+"visas på din sida."
+
+#: options_divi.php:272
+msgid "Custom CSS"
+msgstr "Anpassad CSS"
+
+#: options_divi.php:276
+msgid "Here you can add custom css to override or extend default styles."
+msgstr ""
+"Här kan du lägga till anpassade CSS för att byta ut eller addera till "
+"standardstilar."
+
+#: options_divi.php:295
+msgid "Pages"
+msgstr "Sidor"
+
+#: options_divi.php:313
+msgid "Exclude pages from the navigation bar"
+msgstr "Uteslut sidor från navigeringsfältet"
+
+#: options_divi.php:317
+msgid ""
+"Here you can choose to remove certain pages from the navigation menu. All "
+"pages marked with an X will not appear in your navigation bar. "
+msgstr ""
+"Här kan du välja att ta bort vissa sidor från navigationsmenyn. Alla sidor "
+"som är markerade med en X kommer inte att visas i navigeringsfältet. "
+
+#: options_divi.php:321 options_divi.php:371
+msgid "Show dropdown menus"
+msgstr "Visa rullgardinsmenyer"
+
+#: options_divi.php:325
+msgid ""
+"If you would like to remove the dropdown menus from the pages navigation bar "
+"disable this feature."
+msgstr ""
+"Om du vill ta bort rullgardinsmenyer från sidornas navigeringsfältet "
+"inaktivera den här funktionen."
+
+#: options_divi.php:328
+msgid "Display Home link"
+msgstr "Visa hemlänk"
+
+#: options_divi.php:332
+msgid ""
+"By default the theme creates a Home link that, when clicked, leads back to "
+"your blog's homepage. If, however, you are using a static homepage and have "
+"already created a page called Home to use, this will result in a duplicate "
+"link. In this case you should disable this feature to remove the link."
+msgstr ""
+"Som standard skapar temat en hemlänk som, när du klickar å¨den, leder "
+"tillbaka till din bloggs hemsida. Men om du använder en statisk hemsida och "
+"redan skapat en sida som heter hem som används kommer detta att resultera i "
+"en dubblettlänk. I så fall bör du inaktivera den här funktionen för att ta "
+"bort länken."
+
+#: options_divi.php:335
+msgid "Sort Pages Links"
+msgstr "Sortera Sidlänkar"
+
+#: options_divi.php:339
+msgid "Here you can choose to sort your pages links."
+msgstr "Här kan du välja hur du vill sortera dina sidlänkar."
+
+#: options_divi.php:342
+msgid "Order Pages Links by Ascending/Descending"
+msgstr "Sortera sidlänkar efter stigande/fallande"
+
+#: options_divi.php:346
+msgid ""
+"Here you can choose to reverse the order that your pages links are "
+"displayed. You can choose between ascending and descending."
+msgstr ""
+"Här kan du välja att vända på hur dina sidlänkar visas. Du kan välja mellan "
+"stigande och fallande."
+
+#: options_divi.php:349 options_divi.php:385
+msgid "Number of dropdown tiers shown"
+msgstr "Antal rullgardinsnivåer som visas"
+
+#: options_divi.php:353 options_divi.php:389
+msgid ""
+"This options allows you to control how many teirs your pages dropdown menu "
+"has. Increasing the number allows for additional menu items to be shown."
+msgstr ""
+"Det här alternativet låter dig styra hur många nivåer din rullgardinsmeny "
+"har. Genom att öka antalet kan ytterligare menyalternativ visas."
+
+#: options_divi.php:363
+msgid "Exclude categories from the navigation bar"
+msgstr "Uteslut kategorier från navigeringsfältet"
+
+#: options_divi.php:367
+msgid ""
+"Here you can choose to remove certain categories from the navigation menu. "
+"All categories marked with an X will not appear in your navigation bar. "
+msgstr ""
+"Här kan du välja att ta bort vissa kategorier från navigationsmenyn. Alla "
+"kategorier markerade med ett X kommer inte att visas i navigeringsfältet. "
+
+#: options_divi.php:375
+msgid ""
+"If you would like to remove the dropdown menus from the categories "
+"navigation bar disable this feature."
+msgstr ""
+"Om du vill ta bort rullgardinsmenyer från kategoriernas navigeringsfält "
+"inaktivera den här funktionen."
+
+#: options_divi.php:378
+msgid "Hide empty categories"
+msgstr "Göm tomma kategorier"
+
+#: options_divi.php:382
+msgid ""
+"If you would like categories to be displayed in your navigationbar that "
+"don't have any posts in them then disable this option. By default empty "
+"categories are hidden"
+msgstr ""
+"Om du vill kategorier som inte har några inlägg ska visas i "
+"navigationsfältet inaktivera det här alternativet. Som standard är tomma "
+"kategorier dolda."
+
+#: options_divi.php:393
+msgid "Sort Categories Links by Name/ID/Slug/Count/Term Group"
+msgstr "Sortera kategorilänkar efter Name/ID/Slug/Count/Term grupp"
+
+#: options_divi.php:397
+msgid ""
+"By default pages are sorted by name. However if you would rather have them "
+"sorted by ID you can adjust this setting."
+msgstr ""
+"Som standard är sidor sorterade efter namn. Men om du hellre vill ha dem "
+"sorterade efter ID du kan justera den här inställningen."
+
+#: options_divi.php:400
+msgid "Order Category Links by Ascending/Descending"
+msgstr "Sortera kategorilänkar efter stigande eller fallande"
+
+#: options_divi.php:404
+msgid ""
+"Here you can choose to reverse the order that your categories links are "
+"displayed. You can choose between ascending and descending."
+msgstr ""
+"Här kan du välja att vända på hur dina kategorilänkar visas. Du kan välja "
+"mellan stigande och fallande."
+
+#: options_divi.php:413
+msgid "Disable top tier dropdown menu links"
+msgstr "Inaktivera huvudlänken för rullgardinsmenyer"
+
+#: options_divi.php:417
+msgid ""
+"In some cases users will want to create parent categories or links as "
+"placeholders to hold a list of child links or categories. In this case it is "
+"not desirable to have the parent links lead anywhere, but instead merely "
+"serve an organizational function. Enabling this options will remove the "
+"links from all parent pages/categories so that they don't lead anywhere when "
+"clicked."
+msgstr ""
+"I vissa fall vill användare skapa överkategorier eller länkar som "
+"platshållare innehållandes en lista med underlänkar eller kategorier. I det "
+"här fallet är det inte önskvärt att den överordande länken leder någonstans, "
+"utan istället bara har en organisatorisk funktion. Genom att aktivera detta "
+"alternativ kommer länkar från alla överordnade sidor/kategorier att tas "
+"bort, så att de inte leder någonstans när du klickar på dem."
+
+#: options_divi.php:435
+msgid "Single Post Layout"
+msgstr "Layout för enkelinlägg"
+
+#: options_divi.php:440
+msgid "Single Page Layout"
+msgstr "Layout för enkelsidor"
+
+#: options_divi.php:453
+msgid "Choose which items to display in the postinfo section"
+msgstr "Välj vilka objekt som ska visas i inläggets inforuta"
+
+#: options_divi.php:457
+msgid ""
+"Here you can choose which items appear in the postinfo section on single "
+"post pages. This is the area, usually below the post title, which displays "
+"basic information about your post. The highlighted itmes shown below will "
+"appear. "
+msgstr ""
+"Här kan du välja vilka objekt som ska visas i inläggets inforuta på enstaka "
+"inläggssidor. Detta är det område, vanligtvis under inläggstiteln, som visar "
+"grundläggande information om ditt inlägg. De markerade objekten nedan kommer "
+"visas. "
+
+#: options_divi.php:461
+msgid "Show comments on posts"
+msgstr "Visa kommentarer på inlägg"
+
+#: options_divi.php:465
+msgid ""
+"You can disable this option if you want to remove the comments and comment "
+"form from single post pages. "
+msgstr ""
+"Du kan inaktivera det här alternativet om du vill ta bort kommentarer och "
+"kommentersformuläret från inlägg. "
+
+#: options_divi.php:468
+msgid "Place Thumbs on Posts"
+msgstr "Placera miniatyrbilder i inlägg"
+
+#: options_divi.php:472
+msgid ""
+"By default thumbnails are placed at the beginning of your post on single "
+"post pages. If you would like to remove this initial thumbnail image to "
+"avoid repetition simply disable this option. "
+msgstr ""
+"Som standard placeras miniatyrbilder i början av ditt inlägg på "
+"enkelinläggssidor. Om du vill ta bort denna första miniatyrbild för att "
+"undvika upprepning inaktivera det här alternativet. "
+
+#: options_divi.php:481
+msgid "Place Thumbs on Pages"
+msgstr "Placera miniatyrbilder på sidor"
+
+#: options_divi.php:485
+msgid ""
+"By default thumbnails are not placed on pages (they are only used on posts). "
+"However, if you want to use thumbnails on pages you can! Just enable this "
+"option. "
+msgstr ""
+"Miniatyrer placeras inte på sidor enligt standardinställningarna (de används "
+"bara i inlägg). Du kan dock använda dem på sidor om du så vill! Aktivera "
+"helt enkelt detta alternativ."
+
+#: options_divi.php:488
+msgid "Show comments on pages"
+msgstr "Visa kommentarer på sidor"
+
+#: options_divi.php:492
+msgid ""
+"By default comments are not placed on pages, however, if you would like to "
+"allow people to comment on your pages simply enable this option. "
+msgstr ""
+"Som standard visas kommentarer inte på sidor, men om du vill ge personer "
+"möjlighet att kommentera dina sidor aktivera det här alternativet. "
+
+#: options_divi.php:501
+msgid "Post info section"
+msgstr "Inläggens infosektion"
+
+#: options_divi.php:505
+msgid ""
+"Here you can choose which items appear in the postinfo section on pages. "
+"This is the area, usually below the post title, which displays basic "
+"information about your post. The highlighted itmes shown below will appear. "
+msgstr ""
+"Här kan du välja vilka objekt som ska visas i en artikes infosektion på "
+"sidorna. Detta är det område, vanligtvis under inläggstiteln, som visar "
+"grundläggande information om ditt inlägg. De markerade objekten nedan kommer "
+"att visas. "
+
+#: options_divi.php:508
+msgid "Show Thumbs on Index pages"
+msgstr "Visa miniatyrbilder på indexsidor"
+
+#: options_divi.php:512
+msgid "Enable this option to show thumbnails on Index Pages."
+msgstr ""
+"Aktivera det här alternativet för att visa miniatyrbilder på indexsidor."
+
+#: options_divi.php:529
+msgid "Homepage SEO"
+msgstr "Hemsida SEO"
+
+#: options_divi.php:534
+msgid "Single Post Page SEO"
+msgstr "Enkelinläggssida SEO"
+
+#: options_divi.php:539
+msgid "Index Page SEO"
+msgstr "Indexsida SEO"
+
+#: options_divi.php:547
+msgid " Enable custom title "
+msgstr "Aktivera anpassad titel "
+
+#: options_divi.php:551
+msgid ""
+"By default the theme uses a combination of your blog name and your blog "
+"description, as defined when you created your blog, to create your homepage "
+"titles. However if you want to create a custom title then simply enable this "
+"option and fill in the custom title field below. "
+msgstr ""
+"Som standard använder temat en kombination av ditt bloggnamn och din blogg-"
+"beskrivning, enligt definitionen när du skapade din blogg, för att skapa "
+"dina hemsidetitlar. Men om du vill skapa en anpassad titel aktivera helt "
+"enkelt det här alternativet och fyll i en egen titel i titelfältet nedan. "
+
+#: options_divi.php:554
+msgid " Enable meta description"
+msgstr "Aktivera metatagg-beskrivning"
+
+#: options_divi.php:558
+msgid ""
+"By default the theme uses your blog description, as defined when you created "
+"your blog, to fill in the meta description field. If you would like to use a "
+"different description then enable this option and fill in the custom "
+"description field below. "
+msgstr ""
+"Som standard använder temat din blogg-beskrivning, enligt definitionen när "
+"du skapade din blogg, för att fylla i meta-beskrivningsfältet. Om du vill "
+"använda en annan beskrivning aktivera det här alternativet och fyll i en "
+"anpassad beskrivning i beskrivningsfältet nedan. "
+
+#: options_divi.php:561
+msgid " Enable meta keywords"
+msgstr "Aktivera metasökord"
+
+#: options_divi.php:565
+msgid ""
+"By default the theme does not add keywords to your header. Most search "
+"engines don't use keywords to rank your site anymore, but some people define "
+"them anyway just in case. If you want to add meta keywords to your header "
+"then enable this option and fill in the custom keywords field below. "
+msgstr ""
+"Som standard lägger inte temat till sökord i ditt sidhuvud. De flesta "
+"sökmotorer använder inte sökord för att rangordna din webbplats längre, men "
+"vissa definierar dem ändå för säkerhets skull. Om du vill lägga till "
+"metasökord till ditt sidhuvud aktivera det här alternativet och fyll i  "
+"anpassade sökord i fältet nedan. "
+
+#: options_divi.php:568 options_divi.php:695
+msgid " Enable canonical URL's"
+msgstr "Aktivera kanonisk URL"
+
+#: options_divi.php:572 options_divi.php:646 options_divi.php:699
+msgid ""
+"Canonicalization helps to prevent the indexing of duplicate content by "
+"search engines, and as a result, may help avoid duplicate content penalties "
+"and pagerank degradation. Some pages may have different URLs all leading to "
+"the same place. For example domain.com, domain.com/index.html, and www."
+"domain.com are all different URLs leading to your homepage. From a search "
+"engine's perspective these duplicate URLs, which also occur often due to "
+"custom permalinks, may be treated individually instead of as a single "
+"destination. Defining a canonical URL tells the search engine which URL you "
+"would like to use officially. The theme bases its canonical URLs off your "
+"permalinks and the domain name defined in the settings tab of wp-admin."
+msgstr ""
+"Kanonisering hjälper till att förhindra att sökmotorer indexerar dubbletter "
+"och kan således hjälpa till att undvika straff för dubbletter och "
+"nedbrytning av sidrankning. En del sidor kan ha olika URL som alla leder "
+"till samma plats. Till exempel är domain.com, domain.com/index.html, och www."
+"domain.com alla olika URL som leder till din webbplats. Från en sökmotors "
+"perspektiv kan dessa dubbletter, som också förekommer på grund av anpassade "
+"länkar, behandlas individuellt istället för som en och samma destination. "
+"Att ange en kanonisk URL meddelar sökmotorn vilket URL du vill använda "
+"officiellt. Temat baserar sina kanoniska URL på dina länkar och domänens "
+"namn som anges i inställningsfliken i wp-admin."
+
+#: options_divi.php:575
+msgid "Homepage custom title (if enabled)"
+msgstr "Anpassad titel för hemsida (om aktiverat)"
+
+#: options_divi.php:579
+msgid ""
+"If you have enabled custom titles you can add your custom title here. "
+"Whatever you type here will be placed between the < title >< /title > tags "
+"in header.php"
+msgstr ""
+"Om du har aktiverat anpassade titlar kan du lägga till din egen titel här. "
+"Det du skriver här kommer att placeras mellan < title >< /title > taggarna i "
+"header.php"
+
+#: options_divi.php:583
+msgid "Homepage meta description (if enabled)"
+msgstr "Metabeskrivning för hemsida (om aktiverat)"
+
+#: options_divi.php:587
+msgid ""
+"If you have enabled meta descriptions you can add your custom description "
+"here."
+msgstr ""
+"Om du har aktiverat metabeskrivningar kan du lägga till din egen beskrivning "
+"här."
+
+#: options_divi.php:591
+msgid "Homepage meta keywords (if enabled)"
+msgstr "Metasökord för hemsida (om aktiverat)"
+
+#: options_divi.php:595
+msgid ""
+"If you have enabled meta keywords you can add your custom keywords here. "
+"Keywords should be separated by comas. For example: wordpress,themes,"
+"templates,elegant"
+msgstr ""
+"Om du har aktiverat metasökord kan du lägga till dina egna nyckelord här. "
+"Nyckelord bör separeras av kommatecken. Till exempel: wordpress,themes,"
+"templates,elegant"
+
+#: options_divi.php:599 options_divi.php:673
+msgid "If custom titles are disabled, choose autogeneration method"
+msgstr "Om anpassade titlar är inaktiverat välj metoden automatisk generering"
+
+#: options_divi.php:604
+msgid ""
+"If you are not using cutsom post titles you can still have control over how "
+"your titles are generated. Here you can choose which order you would like "
+"your post title and blog name to be displayed, or you can remove the blog "
+"name from the title completely."
+msgstr ""
+"Om du inte använder anpassade titlar kan du fortfarande ha kontroll över hur "
+"dina titlar genereras. Här kan du välja i vilken ordning du vill att din "
+"inläggstitel och ditt bloggnamn ska visas, eller så kan du ta bort "
+"bloggnamnet från titeln helt."
+
+#: options_divi.php:607 options_divi.php:681 options_divi.php:717
+msgid "Define a character to separate BlogName and Post title"
+msgstr "Definiera en karaktär för att separera wbbplats-namn och inläggstitel"
+
+#: options_divi.php:611 options_divi.php:685
+msgid ""
+"Here you can change which character separates your blog title and post name "
+"when using autogenerated post titles. Common values are | or -"
+msgstr ""
+"Här kan du ändra vilken karaktär som skiljer din bloggtitel och inläggsnamn "
+"åt när du använder automatiskt genererade inläggstitlar. Vanliga karaktärer "
+"är | eller -"
+
+#: options_divi.php:621
+msgid "Enable custom titles"
+msgstr "Aktivera anpassade titlar"
+
+#: options_divi.php:625
+msgid ""
+"By default the theme creates post titles based on the title of your post and "
+"your blog name. If you would like to make your meta title different than "
+"your actual post title you can define a custom title for each post using "
+"custom fields. This option must be enabled for custom titles to work, and "
+"you must choose a custom field name for your title below."
+msgstr ""
+"Som standard skapar temat inläggstitlar baserat på titeln på ditt inlägg och "
+"ditt bloggnamn. Om du vill göra din metatitel annorlunda än din faktiska "
+"inläggstitel kan du definiera en egen titel för varje inlägg med hjälp av "
+"anpassade fält. Detta alternativ måste vara aktiverat för att anpassade "
+"titlar ska fungera och du måste välja ett anpassat fältnamn för din titel "
+"nedan."
+
+#: options_divi.php:628
+msgid "Enable custom description"
+msgstr "Aktivera anpassad beskrivning"
+
+#: options_divi.php:632
+msgid ""
+"If you would like to add a meta description to your post you can do so using "
+"custom fields. This option must be enabled for descriptions to be displayed "
+"on post pages. You can add your meta description using custom fields based "
+"off the custom field name you define below."
+msgstr ""
+"Om du vill lägga till en metabeskrivning till ditt inlägg kan du göra det "
+"med hjälp av anpassade fält. Detta alternativ måste vara aktiverat för att "
+"beskrivningar ska visas på inläggssidor. Du kan lägga din metabeskrivning "
+"med hjälp av anpassade fält baserade på det anpassade fältnamn som du "
+"definierar nedan."
+
+#: options_divi.php:635
+msgid "Enable custom keywords"
+msgstr "Aktivera anpassade nyckelord"
+
+#: options_divi.php:639
+msgid ""
+"If you would like to add meta keywords to your post you can do so using "
+"custom fields. This option must be enabled for keywords to be displayed on "
+"post pages. You can add your meta keywords using custom fields based off the "
+"custom field name you define below."
+msgstr ""
+"Om du vill lägga till metasökord i ditt inlägg kan du göra det med hjälp av "
+"anpassade fält. Detta alternativ måste vara aktiverat för att sökord ska "
+"visas på inläggssidor. Du kan lägga till dina metasökord med anpassade fält "
+"baserade på det anpassade fältnamn som du definierar nedan."
+
+#: options_divi.php:642
+msgid "Enable canonical URL's"
+msgstr "Aktivera kanoniska URL's"
+
+#: options_divi.php:649
+msgid "Custom field Name to be used for title"
+msgstr "Anpassad fältnamn som ska användas som titeln"
+
+#: options_divi.php:653
+msgid ""
+"When you define your title using custom fields you should use this value for "
+"the custom field Name. The Value of your custom field should be the custom "
+"title you would like to use."
+msgstr ""
+"När du definierar din titel med hjälp av anpassade fält bör du använda det "
+"här värdet som namn på anpassat fält. Värdet på ditt anpassade fält bör vara "
+"den anpassade titel du vill använda."
+
+#: options_divi.php:657
+msgid "Custom field Name to be used for description"
+msgstr "Anpassat fältnamn som ska användas som beskrivning"
+
+#: options_divi.php:661
+msgid ""
+"When you define your meta description using custom fields you should use "
+"this value for the custom field Name. The Value of your custom field should "
+"be the custom description you would like to use."
+msgstr ""
+"När du definierar din metabeskrivning med hjälp av anpassade fält bör du "
+"använda det här värdet som namn för anpassat fält. Värdet på ditt anpassade "
+"fält bör vara den anpassade beskrivning du vill använda."
+
+#: options_divi.php:665
+msgid "Custom field Name to be used for keywords"
+msgstr "Anpassat fältnamn som ska användas för sökord"
+
+#: options_divi.php:669
+msgid ""
+"When you define your keywords using custom fields you should use this value "
+"for the custom field Name. The Value of your custom field should be the meta "
+"keywords you would like to use, separated by comas."
+msgstr ""
+"När du definierar dina sökord med hjälp av anpassade fält bör du använda det "
+"här värdet som namn för anpassat fält. Värdet på ditt anpassade fält bör "
+"vara de metasökord du vill använda, åtskilda med kommatecken."
+
+#: options_divi.php:678
+msgid ""
+"If you are not using cutsom post titles you can still have control over hw "
+"your titles are generated. Here you can choose which order you would like "
+"your post title and blog name to be displayed, or you can remove the blog "
+"name from the title completely."
+msgstr ""
+"Om du inte använder anpassade inläggstitlar kan du fortfarande ha kontroll "
+"över hur dina titlar genereras. Här kan du välja vilken ordning du vill att "
+"din inläggstitel och bloggnamn ska visas, eller så kan du ta bort "
+"bloggnamnet från titeln helt."
+
+#: options_divi.php:702
+msgid "Enable meta descriptions"
+msgstr "Aktivera metabeskrivningar"
+
+#: options_divi.php:706
+msgid ""
+"Check this box if you want to display meta descriptions on category/archive "
+"pages. The description is based off the category description you choose when "
+"creating/edit your category in wp-admin."
+msgstr ""
+"Markera den här rutan om du vill visa metabeskrivningar på kategorisidor/"
+"arkivsidor. Beskrivningen är baserad på den kategorinbeskrivning du väljer "
+"när du skapar/redigerar din kategori i wp-admin."
+
+#: options_divi.php:709
+msgid "Choose title autogeneration method"
+msgstr "Välj metod för titelgenerering"
+
+#: options_divi.php:714
+msgid ""
+"Here you can choose how your titles on index pages are generated. You can "
+"change which order your blog name and index title are displayed, or you can "
+"remove the blog name from the title completely."
+msgstr ""
+"Här kan du välja hur dina titlar på indexsidor genereras. Du kan ändra "
+"vilken i vilken ordning ditt bloggnamn och din indextitel visas, eller så "
+"kan du ta bort bloggnamnet från titeln helt."
+
+#: options_divi.php:721
+msgid ""
+"Here you can change which character separates your blog title and index page "
+"name when using autogenerated post titles. Common values are | or -"
+msgstr ""
+"Här kan du ändra vilken karaktär som skiljer din bloggtitel och indexsidas "
+"namn när du använder automatiskt genererade inläggstitlar. Vanliga "
+"karaktärer är | eller -"
+
+#: options_divi.php:740
+msgid "Code Integration"
+msgstr "Kodintegration"
+
+#: options_divi.php:748
+msgid "Enable header code"
+msgstr "Aktivera sidhuvudskod"
+
+#: options_divi.php:752
+msgid ""
+"Disabling this option will remove the header code below from your blog. This "
+"allows you to remove the code while saving it for later use."
+msgstr ""
+"Genom att inaktivera det här alternativet tas sidhuvudskoden nedan bort från "
+"din blogg. Detta gör att du kan ta bort koden och samtidigt spara den för "
+"användning vid ett senare tillfälle."
+
+#: options_divi.php:755
+msgid "Enable body code"
+msgstr "Aktivera < body > kod"
+
+#: options_divi.php:759
+msgid ""
+"Disabling this option will remove the body code below from your blog. This "
+"allows you to remove the code while saving it for later use."
+msgstr ""
+"Genom att inaktivera det här alternativet tas body-koden nedan bort från din "
+"blogg.  Detta gör att du kan ta bort koden och samtidigt spara den för "
+"användning vid ett senare tillfälle."
+
+#: options_divi.php:762
+msgid "Enable single top code"
+msgstr "Aktivera enkel topp-kod"
+
+#: options_divi.php:766
+msgid ""
+"Disabling this option will remove the single top code below from your blog. "
+"This allows you to remove the code while saving it for later use."
+msgstr ""
+"Genom att inaktivera det här alternativet tas topp-koden nedan bort från din "
+"blogg. Detta gör att du kan ta bort koden och samtidigt spara den för "
+"användning vid ett senare tillfälle."
+
+#: options_divi.php:769
+msgid "Enable single bottom code"
+msgstr "Aktivera enkel botten-kod"
+
+#: options_divi.php:773
+msgid ""
+"Disabling this option will remove the single bottom code below from your "
+"blog. This allows you to remove the code while saving it for later use."
+msgstr ""
+"Genom att inaktivera det här alternativet tas den enkla botten-koden nedan "
+"bort från din blogg.  Detta gör att du kan ta bort koden och samtidigt spara "
+"den för användning vid ett senare tillfälle."
+
+#: options_divi.php:776
+msgid "Add code to the < head > of your blog"
+msgstr "Lägg till kod till <head> på din blogg"
+
+#: options_divi.php:780
+msgid ""
+"Any code you place here will appear in the head section of every page of "
+"your blog. This is useful when you need to add javascript or css to all "
+"pages."
+msgstr ""
+"All kod du placerar här kommer att placeras i head-sektionen på varje sida i "
+"din blogg. Detta är användbart när du behöver lägga till Javascript eller "
+"CSS på alla sidor."
+
+#: options_divi.php:783
+msgid ""
+"Add code to the < body > (good for tracking codes such as google analytics)"
+msgstr ""
+"Lägg till kod till <body> (bra för uppföljningskoder såsom Google Analytics)"
+
+#: options_divi.php:787
+msgid ""
+"Any code you place here will appear in body section of all pages of your "
+"blog. This is usefull if you need to input a tracking pixel for a state "
+"counter such as Google Analytics."
+msgstr ""
+"All kod du placerar här kommer att visas i body-sektionen på alla sidor i "
+"din blogg. Detta är användbart om du vill placera en spårningspixel för en "
+"statistik-räknare som Google Analytics."
+
+#: options_divi.php:790
+msgid "Add code to the top of your posts"
+msgstr "Lägg till kod till toppen av dina inlägg"
+
+#: options_divi.php:794 options_divi.php:801
+msgid ""
+"Any code you place here will be placed at the top of all single posts. This "
+"is useful if you are looking to integrating things such as social "
+"bookmarking links."
+msgstr ""
+"All kod du placerar här kommer att placeras på toppen av alla inlägg. Detta "
+"är användbart om du funderar på att integrera saker som sociala "
+"favoritlänkar."
+
+#: options_divi.php:797
+msgid "Add code to the bottom of your posts, before the comments"
+msgstr "Lägg till kod till botten av dina inlägg, innan kommentarerna"
+
+#: options_divi.php:819
+msgid "Manage Un-widgetized Advertisements"
+msgstr "Hantera Annonser"
+
+#: options_divi.php:827
+msgid "Enable Single Post 468x60 banner"
+msgstr "Aktivera enkelinlägg 468x60 banner"
+
+#: options_divi.php:831
+msgid ""
+"Enabling this option will display a 468x60 banner ad on the bottom of your "
+"post pages below the single post content. If enabled you must fill in the "
+"banner image and destination url below."
+msgstr ""
+"Genom att aktiverar det här alternativet kommer en 468x60 bannerannons visas "
+"under dina enkelinlägg. Om du väljer att aktivera måste du fylla i banner-"
+"bilden och destinations URL nedan."
+
+#: options_divi.php:834
+msgid "Input 468x60 advertisement banner image"
+msgstr "Lägg till bild för 468x60 annonsbanner"
+
+#: options_divi.php:838
+msgid "Here you can provide 468x60 banner image url"
+msgstr "Här kan du skriva in 468x60 bannerbildens URL"
+
+#: options_divi.php:842
+msgid "Input 468x60 advertisement destination url"
+msgstr "Lägg till 468x60 annonsen destinations URL"
+
+#: options_divi.php:846
+msgid "Here you can provide 468x60 banner destination url"
+msgstr "Här kan du skriva in 468x60 banners destinations URL"
+
+#: options_divi.php:850
+msgid "Input 468x60 adsense code"
+msgstr "Skriv in 468x60 Google Adsense koden"
+
+#: options_divi.php:854
+msgid "Place your adsense code here."
+msgstr "Placera din Google Adsense kod här."
+
+#: page-template-blank.php:49 page.php:48 single-project.php:55 single.php:112
+msgid "Pages:"
+msgstr "Sidor:"
+
+#. Translators: If there are characters in your language that are not supported
+#. by Open Sans, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:105
+msgctxt "Open Sans font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:8036
+msgctxt "WooCommerce items number"
+msgid "1 Item"
+msgid_plural "%1$s Items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: single-project.php:68
+msgctxt "Previous post link"
+msgid "&larr;"
+msgstr ""
+
+#: single-project.php:69
+msgctxt "Next post link"
+msgid "&rarr;"
+msgstr ""
+
+#~ msgid "%1$s %2$s"
+#~ msgstr "%1$s %2$s"
+
+#~ msgid "Items"
+#~ msgstr "Objekt"
+
+#~ msgid "Saving..."
+#~ msgstr "Sparar..."
+
+#~ msgid "Options Saved."
+#~ msgstr "Inställningar sparade."
+
+#~ msgid "Ad Management"
+#~ msgstr "Annonshantering"
+
+#~ msgid "Support Docs"
+#~ msgstr "Hjälpdokument"
+
+#~ msgid "Documentation"
+#~ msgstr "Dokumentation"
+
+#~ msgid "on %1$s at %2$s"
+#~ msgstr "Den %1$s vid %2$s"
+
+#~ msgid "(Edit)"
+#~ msgstr "(Redigera)"
+
+#~ msgid "Reply"
+#~ msgstr "Svara"
+
+#~ msgid "Your comment is awaiting moderation."
+#~ msgstr "Din kommentar inväntar moderering."

@@ -1,0 +1,6214 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Divi 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/framework\n"
+"POT-Creation-Date: 2016-01-25 12:19:12+00:00\n"
+"PO-Revision-Date: 2016-01-25 16:09+0300\n"
+"Last-Translator: \n"
+"Language-Team: Elegant Themes\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+"X-Poedit-SearchPathExcluded-0: ../node_modules\n"
+
+#: class-et-builder-element.php:477 class-et-builder-element.php:871
+msgid "%1$s Font"
+msgstr "%1$s גופן"
+
+#: class-et-builder-element.php:487
+msgid "%1$s Font Size"
+msgstr "%1$s גודל גופן"
+
+#: class-et-builder-element.php:509 class-et-builder-element.php:518
+#: class-et-builder-element.php:807
+msgid "%1$s Text Color"
+msgstr "%1$s צבע מלל"
+
+#: class-et-builder-element.php:528 class-et-builder-element.php:860
+msgid "%1$s Letter Spacing"
+msgstr "%1$s מרווח תווים"
+
+#: class-et-builder-element.php:551
+msgid "%1$s Line Height"
+msgstr "%1$sגובה שורה"
+
+#: class-et-builder-element.php:582
+msgid "%1$s All Caps"
+msgstr "%1$s רק אותיות גדולות"
+
+#: class-et-builder-element.php:586 main-modules.php:146 main-modules.php:598
+#: main-modules.php:2424 main-modules.php:2445 main-modules.php:3770
+#: main-modules.php:3791 main-modules.php:7876 main-modules.php:8281
+#: main-modules.php:8494 main-modules.php:10600 main-modules.php:10667
+#: main-modules.php:10724 main-modules.php:11729 main-modules.php:12009
+#: main-modules.php:14890 main-modules.php:14911 main-modules.php:15361
+#: main-modules.php:15635 main-modules.php:16008 main-modules.php:17047
+#: main-modules.php:17068
+msgid "Off"
+msgstr "כבוי"
+
+#: class-et-builder-element.php:587 main-modules.php:147 main-modules.php:599
+#: main-modules.php:2425 main-modules.php:2446 main-modules.php:3771
+#: main-modules.php:3792 main-modules.php:7875 main-modules.php:8280
+#: main-modules.php:8493 main-modules.php:10601 main-modules.php:10668
+#: main-modules.php:10725 main-modules.php:11728 main-modules.php:12010
+#: main-modules.php:14891 main-modules.php:14912 main-modules.php:15362
+#: main-modules.php:15634 main-modules.php:16009 main-modules.php:17048
+#: main-modules.php:17069
+msgid "On"
+msgstr "דולק"
+
+#: class-et-builder-element.php:614 class-et-builder-element.php:3573
+#: main-modules.php:2915 main-modules.php:3607 main-modules.php:4396
+#: main-modules.php:5527 main-modules.php:5965 main-modules.php:6279
+#: main-modules.php:6711 main-modules.php:7861 main-modules.php:8057
+#: main-modules.php:9608 main-modules.php:11547 main-modules.php:12563
+#: main-modules.php:13964 main-modules.php:14443 main-modules.php:16442
+#: main-modules.php:16884 main-structure-elements.php:127
+#: main-structure-elements.php:1083
+msgid "Background Color"
+msgstr "צבע רקע"
+
+#: class-et-builder-element.php:624 class-et-builder-element.php:3569
+#: main-modules.php:2878 main-modules.php:3613 main-modules.php:16890
+#: main-structure-elements.php:105 main-structure-elements.php:1074
+msgid "Background Image"
+msgstr "תמונת רקע"
+
+#: class-et-builder-element.php:627 class-et-builder-element.php:3570
+#: main-modules.php:88 main-modules.php:876 main-modules.php:1255
+#: main-modules.php:1736 main-modules.php:2881 main-modules.php:2923
+#: main-modules.php:3616 main-modules.php:4367 main-modules.php:5959
+#: main-modules.php:10218 main-modules.php:13958 main-modules.php:14000
+#: main-modules.php:14033 main-modules.php:15950 main-modules.php:16893
+#: main-structure-elements.php:108 main-structure-elements.php:1077
+msgid "Upload an image"
+msgstr "העלה תמונה"
+
+#: class-et-builder-element.php:628 class-et-builder-element.php:3571
+#: main-modules.php:2882 main-structure-elements.php:109
+#: main-structure-elements.php:1078
+msgid "Choose a Background Image"
+msgstr "בחר תמונת רקע"
+
+#: class-et-builder-element.php:629 class-et-builder-element.php:3572
+#: main-modules.php:2883 main-modules.php:3618 main-modules.php:16895
+#: main-structure-elements.php:110 main-structure-elements.php:1079
+msgid "Set As Background"
+msgstr "קבע כרקע"
+
+#: class-et-builder-element.php:647
+msgid "Use Border"
+msgstr "השתמש במסגרת"
+
+#: class-et-builder-element.php:651 class-et-builder-element.php:767
+#: class-et-builder-element.php:885 class-et-builder-element.php:940
+#: class-et-builder-element.php:3582 functions.php:3725 main-modules.php:110
+#: main-modules.php:193 main-modules.php:222 main-modules.php:233
+#: main-modules.php:569 main-modules.php:579 main-modules.php:1663
+#: main-modules.php:1696 main-modules.php:1717 main-modules.php:1805
+#: main-modules.php:2415 main-modules.php:2455 main-modules.php:2481
+#: main-modules.php:2534 main-modules.php:2544 main-modules.php:2554
+#: main-modules.php:3037 main-modules.php:3540 main-modules.php:3584
+#: main-modules.php:3666 main-modules.php:3733 main-modules.php:3817
+#: main-modules.php:3827 main-modules.php:3837 main-modules.php:4388
+#: main-modules.php:4871 main-modules.php:4897 main-modules.php:4908
+#: main-modules.php:5278 main-modules.php:5519 main-modules.php:6271
+#: main-modules.php:6336 main-modules.php:6692 main-modules.php:6703
+#: main-modules.php:6768 main-modules.php:7087 main-modules.php:7097
+#: main-modules.php:7107 main-modules.php:7492 main-modules.php:7502
+#: main-modules.php:7512 main-modules.php:9197 main-modules.php:9224
+#: main-modules.php:9593 main-modules.php:9603 main-modules.php:9809
+#: main-modules.php:10008 main-modules.php:10578 main-modules.php:10612
+#: main-modules.php:10622 main-modules.php:10632 main-modules.php:10642
+#: main-modules.php:10652 main-modules.php:11539 main-modules.php:11738
+#: main-modules.php:12394 main-modules.php:12404 main-modules.php:12420
+#: main-modules.php:12431 main-modules.php:12454 main-modules.php:12465
+#: main-modules.php:12476 main-modules.php:12504 main-modules.php:12549
+#: main-modules.php:12852 main-modules.php:12862 main-modules.php:12885
+#: main-modules.php:13232 main-modules.php:13241 main-modules.php:13250
+#: main-modules.php:13475 main-modules.php:13495 main-modules.php:13508
+#: main-modules.php:13845 main-modules.php:13858 main-modules.php:13976
+#: main-modules.php:14479 main-modules.php:14921 main-modules.php:14945
+#: main-modules.php:15010 main-modules.php:15020 main-modules.php:15030
+#: main-modules.php:15332 main-modules.php:15342 main-modules.php:15972
+#: main-modules.php:16273 main-modules.php:16283 main-modules.php:16299
+#: main-modules.php:16310 main-modules.php:16333 main-modules.php:16344
+#: main-modules.php:16355 main-modules.php:16383 main-modules.php:16428
+#: main-modules.php:16817 main-modules.php:16861 main-modules.php:16943
+#: main-modules.php:17010 main-modules.php:17094 main-modules.php:17104
+#: main-modules.php:17114 main-structure-elements.php:118
+#: main-structure-elements.php:170 main-structure-elements.php:180
+#: main-structure-elements.php:190 main-structure-elements.php:227
+#: main-structure-elements.php:237 main-structure-elements.php:248
+#: main-structure-elements.php:305 main-structure-elements.php:315
+#: main-structure-elements.php:957 main-structure-elements.php:968
+#: main-structure-elements.php:1024 main-structure-elements.php:1062
+#: main-structure-elements.php:1125 main-structure-elements.php:1135
+#: main-structure-elements.php:1159 main-structure-elements.php:1176
+#: main-structure-elements.php:1870 main-structure-elements.php:1880
+#: main-structure-elements.php:1905 main-structure-elements.php:1921
+msgid "No"
+msgstr "לא"
+
+#: class-et-builder-element.php:652 class-et-builder-element.php:768
+#: class-et-builder-element.php:884 class-et-builder-element.php:939
+#: class-et-builder-element.php:3581 functions.php:3726 functions.php:5081
+#: main-modules.php:111 main-modules.php:194 main-modules.php:223
+#: main-modules.php:232 main-modules.php:568 main-modules.php:578
+#: main-modules.php:1664 main-modules.php:1697 main-modules.php:1718
+#: main-modules.php:1806 main-modules.php:2414 main-modules.php:2456
+#: main-modules.php:2482 main-modules.php:2535 main-modules.php:2545
+#: main-modules.php:2555 main-modules.php:3038 main-modules.php:3539
+#: main-modules.php:3583 main-modules.php:3667 main-modules.php:3734
+#: main-modules.php:3818 main-modules.php:3828 main-modules.php:3838
+#: main-modules.php:4387 main-modules.php:4870 main-modules.php:4898
+#: main-modules.php:4909 main-modules.php:5279 main-modules.php:5518
+#: main-modules.php:6270 main-modules.php:6337 main-modules.php:6693
+#: main-modules.php:6702 main-modules.php:6769 main-modules.php:7086
+#: main-modules.php:7096 main-modules.php:7106 main-modules.php:7491
+#: main-modules.php:7501 main-modules.php:7511 main-modules.php:9196
+#: main-modules.php:9225 main-modules.php:9592 main-modules.php:9602
+#: main-modules.php:9810 main-modules.php:10007 main-modules.php:10577
+#: main-modules.php:10611 main-modules.php:10621 main-modules.php:10631
+#: main-modules.php:10641 main-modules.php:10651 main-modules.php:11538
+#: main-modules.php:11739 main-modules.php:12393 main-modules.php:12403
+#: main-modules.php:12419 main-modules.php:12430 main-modules.php:12453
+#: main-modules.php:12464 main-modules.php:12475 main-modules.php:12503
+#: main-modules.php:12550 main-modules.php:12853 main-modules.php:12863
+#: main-modules.php:12886 main-modules.php:13231 main-modules.php:13240
+#: main-modules.php:13249 main-modules.php:13476 main-modules.php:13496
+#: main-modules.php:13509 main-modules.php:13846 main-modules.php:13859
+#: main-modules.php:13977 main-modules.php:14480 main-modules.php:14922
+#: main-modules.php:14946 main-modules.php:15011 main-modules.php:15021
+#: main-modules.php:15031 main-modules.php:15331 main-modules.php:15341
+#: main-modules.php:15973 main-modules.php:16272 main-modules.php:16282
+#: main-modules.php:16298 main-modules.php:16309 main-modules.php:16332
+#: main-modules.php:16343 main-modules.php:16354 main-modules.php:16382
+#: main-modules.php:16429 main-modules.php:16816 main-modules.php:16860
+#: main-modules.php:16944 main-modules.php:17011 main-modules.php:17095
+#: main-modules.php:17105 main-modules.php:17115 main-structure-elements.php:119
+#: main-structure-elements.php:171 main-structure-elements.php:181
+#: main-structure-elements.php:191 main-structure-elements.php:228
+#: main-structure-elements.php:238 main-structure-elements.php:249
+#: main-structure-elements.php:306 main-structure-elements.php:316
+#: main-structure-elements.php:958 main-structure-elements.php:969
+#: main-structure-elements.php:1025 main-structure-elements.php:1063
+#: main-structure-elements.php:1126 main-structure-elements.php:1136
+#: main-structure-elements.php:1160 main-structure-elements.php:1175
+#: main-structure-elements.php:1871 main-structure-elements.php:1881
+#: main-structure-elements.php:1906 main-structure-elements.php:1920
+msgid "Yes"
+msgstr "כן"
+
+#: class-et-builder-element.php:664
+msgid "Border Color"
+msgstr "צבע מסגרת"
+
+#: class-et-builder-element.php:674
+msgid "Border Width"
+msgstr "רוחב מסגרת"
+
+#: class-et-builder-element.php:684
+msgid "Border Style"
+msgstr "סגנון מסגרת"
+
+#: class-et-builder-element.php:711 main-structure-elements.php:1068
+msgid "Custom Margin"
+msgstr "שוליים מותאמים אישית"
+
+#: class-et-builder-element.php:732 main-structure-elements.php:210
+#: main-structure-elements.php:1045 main-structure-elements.php:1853
+msgid "Custom Padding"
+msgstr "מרווחים מותאמים אישית"
+
+#: class-et-builder-element.php:763
+msgid "Use Custom Styles for %1$s "
+msgstr "השתמש סגנונות מותאמים אישית עבור %1$s "
+
+#: class-et-builder-element.php:792
+msgid "%1$s Text Size"
+msgstr "%1$s גודל טקסט"
+
+#: class-et-builder-element.php:818
+msgid "%1$s Background Color"
+msgstr "%1$s צבע רקע"
+
+#: class-et-builder-element.php:829
+msgid "%1$s Border Width"
+msgstr "%1$s רוחב הגבול"
+
+#: class-et-builder-element.php:839
+msgid "%1$s Border Color"
+msgstr "%1$s צבע הגבול"
+
+#: class-et-builder-element.php:850
+msgid "%1$s Border Radius"
+msgstr "%1$s רדיוס הגבול"
+
+#: class-et-builder-element.php:879
+msgid "Add %1$s Icon"
+msgstr "להוסיף את %1$s סמל"
+
+#: class-et-builder-element.php:883 functions.php:1036 main-modules.php:2490
+#: main-modules.php:2507 main-modules.php:2891 main-modules.php:2908
+#: main-modules.php:3742 main-modules.php:3759 main-modules.php:14954
+#: main-modules.php:14971 main-modules.php:17019 main-modules.php:17036
+msgid "Default"
+msgstr "ברירת מחדל"
+
+#: class-et-builder-element.php:899
+msgid "%1$s Icon"
+msgstr "%1$s סמל"
+
+#: class-et-builder-element.php:911
+msgid "%1$s Icon Color"
+msgstr "%1$s צבע הסמל"
+
+#: class-et-builder-element.php:922
+msgid "%1$s Icon Placement"
+msgstr "%1$s מיקום סמל"
+
+#: class-et-builder-element.php:926 class-et-builder-element.php:1634
+#: class-et-builder-element.php:3577 functions.php:339 functions.php:345
+#: main-modules.php:205 main-modules.php:1632 main-modules.php:3651
+#: main-modules.php:5746 main-modules.php:9784 main-modules.php:12530
+#: main-modules.php:12842 main-modules.php:16409 main-modules.php:16928
+msgid "Right"
+msgstr "ימין"
+
+#: class-et-builder-element.php:927 class-et-builder-element.php:1648
+#: class-et-builder-element.php:3579 functions.php:337 main-modules.php:203
+#: main-modules.php:1630 main-modules.php:3650 main-modules.php:5744
+#: main-modules.php:9783 main-modules.php:12528 main-modules.php:12841
+#: main-modules.php:16407 main-modules.php:16927
+msgid "Left"
+msgstr "שמאל"
+
+#: class-et-builder-element.php:935
+msgid "Only Show Icon On Hover for %1$s"
+msgstr "רק להציג את הסמל על ריחוף עבור %1$s"
+
+#: class-et-builder-element.php:948
+msgid "%1$s Hover Text Color"
+msgstr "%1$s רחף צבע טקסט"
+
+#: class-et-builder-element.php:959
+msgid "%1$s Hover Background Color"
+msgstr "%1$s רחף צבע רקע"
+
+#: class-et-builder-element.php:970
+msgid "%1$s Hover Border Color"
+msgstr "%1$s רחף צבע הגבול"
+
+#: class-et-builder-element.php:981
+msgid "%1$s Hover Border Radius"
+msgstr "%1$s לרחף רדיוס הגבול"
+
+#: class-et-builder-element.php:991
+msgid "%1$s Hover Letter Spacing"
+msgstr "%1$s לרחף הרווח בין האותיות"
+
+#: class-et-builder-element.php:1036 class-et-builder-element.php:3654
+msgid "Before"
+msgstr "לפני"
+
+#: class-et-builder-element.php:1041 class-et-builder-element.php:3655
+msgid "Main Element"
+msgstr "רכיב ראשי"
+
+#: class-et-builder-element.php:1044 class-et-builder-element.php:3656
+msgid "After"
+msgstr "אחרי"
+
+#: class-et-builder-element.php:1478 class-et-builder-element.php:3574
+msgid "Hex Value"
+msgstr "ערך צבע"
+
+#: class-et-builder-element.php:1489
+msgid "Choose Custom Color"
+msgstr "בחר צבע מותאם אישית"
+
+#: class-et-builder-element.php:1499
+msgid "Upload"
+msgstr "העלה"
+
+#: class-et-builder-element.php:1500
+msgid "Choose image"
+msgstr "בחר תמונה"
+
+#: class-et-builder-element.php:1501
+msgid "Set image"
+msgstr "קבע תמונה"
+
+#: class-et-builder-element.php:1627 class-et-builder-element.php:3576
+#: main-modules.php:1626 main-modules.php:3652 main-modules.php:9988
+#: main-modules.php:16929
+msgid "Top"
+msgstr "למעלה"
+
+#: class-et-builder-element.php:1641 class-et-builder-element.php:3578
+#: main-modules.php:2974 main-modules.php:3653 main-modules.php:9990
+#: main-modules.php:14023 main-modules.php:14044 main-modules.php:16930
+msgid "Bottom"
+msgstr "למטה"
+
+#: class-et-builder-element.php:1879 class-et-builder-element.php:2087
+#: functions.php:4850
+msgid "General Settings"
+msgstr "הגדרות כלליות"
+
+#: class-et-builder-element.php:1880
+msgid "Advanced Design Settings"
+msgstr "הגדרות עיצוב מתקדמות"
+
+#: class-et-builder-element.php:1881 functions.php:4858
+msgid "Custom CSS"
+msgstr "‏CSS מותאם אישית"
+
+#: class-et-builder-element.php:2036
+msgid "You don't have sufficient permissions to access the settings"
+msgstr "אין לך הרשאות מספיקות כדי לגשת להגדרות"
+
+#: class-et-builder-element.php:2061 main-modules.php:1428 main-modules.php:1787
+#: main-modules.php:2259 main-modules.php:3043 main-modules.php:4419
+#: main-modules.php:5326 main-modules.php:5550 main-modules.php:6302
+#: main-modules.php:6734 main-modules.php:8841 main-modules.php:8972
+#: main-modules.php:10583 main-modules.php:11888 main-modules.php:12201
+#: main-modules.php:13731 main-modules.php:14049 main-modules.php:15728
+#: main-modules.php:15837
+msgid "Content"
+msgstr "תוכן"
+
+#: class-et-builder-element.php:2062 main-modules.php:2261 main-modules.php:8844
+#: main-modules.php:9574
+msgid ""
+"Here you can define the content that will be placed within the current tab."
+msgstr "כאן אתה יכול להגדיר את התוכן שיוצב בכרטייסה הנוכחית"
+
+#: class-et-builder-element.php:2075
+msgid "Add New Item"
+msgstr "הוסף פריט חדש"
+
+#: class-et-builder-element.php:2075
+msgid "Add New %s"
+msgstr "הוסף %s חדש"
+
+#: class-et-builder-element.php:2177
+msgid "%1$s %2$s Settings"
+msgstr "%1$s %2$s הגדרות"
+
+#: class-et-builder-element.php:2179
+msgid "Item"
+msgstr "כלי"
+
+#: class-et-builder-element.php:2179 functions.php:1898 functions.php:2398
+#: functions.php:2444
+msgid "Module"
+msgstr "מודול"
+
+#: class-et-builder-element.php:3568 class-et-builder-element.php:3653
+#: class-et-builder-element.php:3705 functions.php:2441
+#: main-structure-elements.php:2322
+msgid "Column"
+msgstr "טור"
+
+#: class-et-builder-element.php:3575
+msgid "Padding"
+msgstr "מרווח"
+
+#: class-et-builder-element.php:3580
+msgid "Parallax Effect"
+msgstr "אפקט פרלקס"
+
+#: class-et-builder-element.php:3583 main-modules.php:12513
+#: main-modules.php:16392 main-structure-elements.php:199
+#: main-structure-elements.php:1144
+msgid "Parallax Method"
+msgstr "שיטת parallax"
+
+#: class-et-builder-element.php:3584 main-modules.php:2470 main-modules.php:3682
+#: main-modules.php:12517 main-modules.php:13989 main-modules.php:14934
+#: main-modules.php:16396 main-modules.php:16959 main-structure-elements.php:203
+#: main-structure-elements.php:1148
+msgid "CSS"
+msgstr "‏CSS"
+
+#: class-et-builder-element.php:3585 main-modules.php:2471 main-modules.php:3683
+#: main-modules.php:12518 main-modules.php:13990 main-modules.php:14935
+#: main-modules.php:16397 main-modules.php:16960 main-structure-elements.php:204
+#: main-structure-elements.php:1149
+msgid "True Parallax"
+msgstr "פרלקס אמת"
+
+#: class-et-builder-element.php:3706 main-modules.php:261 main-modules.php:655
+#: main-modules.php:910 main-modules.php:1114 main-modules.php:1465
+#: main-modules.php:1857 main-modules.php:2107 main-modules.php:2589
+#: main-modules.php:3884 main-modules.php:4476 main-modules.php:4931
+#: main-modules.php:5587 main-modules.php:5778 main-modules.php:5997
+#: main-modules.php:6369 main-modules.php:6801 main-modules.php:7160
+#: main-modules.php:7565 main-modules.php:7931 main-modules.php:8335
+#: main-modules.php:8531 main-modules.php:8700 main-modules.php:9013
+#: main-modules.php:9281 main-modules.php:9832 main-modules.php:10030
+#: main-modules.php:10307 main-modules.php:10748 main-modules.php:11276
+#: main-modules.php:11570 main-modules.php:11770 main-modules.php:12032
+#: main-modules.php:12586 main-modules.php:12945 main-modules.php:13293
+#: main-modules.php:13548 main-modules.php:14072 main-modules.php:14550
+#: main-modules.php:15053 main-modules.php:15416 main-modules.php:15657
+#: main-modules.php:15765 main-modules.php:15860 main-modules.php:16075
+#: main-modules.php:16465 main-modules.php:17161 main-structure-elements.php:482
+#: main-structure-elements.php:1383 main-structure-elements.php:2078
+msgid "CSS ID"
+msgstr "זיהי  CSS"
+
+#: class-et-builder-element.php:3707 main-modules.php:268 main-modules.php:662
+#: main-modules.php:917 main-modules.php:1121 main-modules.php:1472
+#: main-modules.php:1864 main-modules.php:2114 main-modules.php:2596
+#: main-modules.php:3891 main-modules.php:4483 main-modules.php:4938
+#: main-modules.php:5594 main-modules.php:5785 main-modules.php:6004
+#: main-modules.php:6376 main-modules.php:6808 main-modules.php:7167
+#: main-modules.php:7572 main-modules.php:7938 main-modules.php:8342
+#: main-modules.php:8538 main-modules.php:8707 main-modules.php:9020
+#: main-modules.php:9288 main-modules.php:9839 main-modules.php:10037
+#: main-modules.php:10314 main-modules.php:10755 main-modules.php:11283
+#: main-modules.php:11577 main-modules.php:11777 main-modules.php:12039
+#: main-modules.php:12593 main-modules.php:12952 main-modules.php:13300
+#: main-modules.php:13555 main-modules.php:14079 main-modules.php:14557
+#: main-modules.php:15060 main-modules.php:15423 main-modules.php:15664
+#: main-modules.php:15772 main-modules.php:15867 main-modules.php:16082
+#: main-modules.php:16472 main-modules.php:17168 main-structure-elements.php:489
+#: main-structure-elements.php:1390 main-structure-elements.php:2085
+msgid "CSS Class"
+msgstr "סוג של  CSS"
+
+#: comments_template.php:4
+msgid "This post is password protected. Enter the password to view comments."
+msgstr "הפוסט הזה מוגן בסיסמא. אנא הכניסו את הסיסמא כדי לצפות בתגובות."
+
+#: comments_template.php:12
+msgid "0 Comments"
+msgstr "0 תגובות"
+
+#: comments_template.php:12 functions.php:2511
+msgid "1 Comment"
+msgstr "תגובת אחת."
+
+#: comments_template.php:12 main-modules.php:13077
+msgid "Comments"
+msgstr "תגובות"
+
+#: comments_template.php:16 comments_template.php:29
+msgid "<span class=\"meta-nav\">&larr;</span> Older Comments"
+msgstr "<span class=\"meta-nav\">&larr;</span>  תגובות ישנות"
+
+#: comments_template.php:17 comments_template.php:30
+msgid "Newer Comments <span class=\"meta-nav\">&rarr;</span>"
+msgstr "תגובות חדשות <span class=\"meta-nav\">&rarr;</span>"
+
+#: comments_template.php:36
+msgid "Trackbacks/Pingbacks"
+msgstr "Trackbacks/Pingbacks"
+
+#: comments_template.php:54
+msgid "Submit Comment"
+msgstr "שלח תגובה"
+
+#: comments_template.php:54
+msgid "Submit a Comment"
+msgstr "שלח תגובה"
+
+#: comments_template.php:54
+msgid "Leave a Reply to %s"
+msgstr "השאר תגובה ל %s"
+
+#: framework.php:35
+msgid ""
+"Please, check the fields below to make sure you entered the correct "
+"information."
+msgstr "בבקשה, לבדוק את השדות שלהלן כדי לוודא שהזנת את המידע הנכון."
+
+#: framework.php:36
+msgid "Please, fill in the following fields:"
+msgstr "אנא, מלא את השדות הבאים:"
+
+#: framework.php:37
+msgid "Please, fix the following errors:"
+msgstr "אנא תקן את השגיאות הבאות:"
+
+#: framework.php:38
+msgid "Invalid email"
+msgstr "דוא \" ל לא חוקית"
+
+#: framework.php:39
+msgid "Captcha"
+msgstr "קפצ’ה"
+
+#: framework.php:40
+msgid "Prev"
+msgstr "קודם"
+
+#: framework.php:41
+msgid "Previous"
+msgstr "הקודם"
+
+#: framework.php:42
+msgid "Next"
+msgstr "הבא"
+
+#: framework.php:43
+msgid "You entered the wrong number in captcha."
+msgstr "הכנסתם מספר לא נכון בקפצ'ה."
+
+#: framework.php:82
+msgid "Unauthorized access. Preview cannot be accessed outside %1$s."
+msgstr "גישה לא מורשית. תצוגה מקדימה לא ניתן לגשת מחוץ %1$s."
+
+#: functions.php:88 functions.php:2407 functions.php:4308
+msgid "All Categories"
+msgstr "כל הקטגוריות"
+
+#: functions.php:97 layouts.php:10
+msgid "All Layouts"
+msgstr "כל התבניות"
+
+#: functions.php:98 functions.php:1427
+msgid "Modules"
+msgstr "מודולים"
+
+#: functions.php:99 functions.php:1426
+msgid "Rows"
+msgstr "שורות"
+
+#: functions.php:100 functions.php:1425
+msgid "Sections"
+msgstr "סעיפים"
+
+#: functions.php:101 functions.php:1424
+msgid "Layouts"
+msgstr "מתווים"
+
+#: functions.php:105
+msgid "Global/not Global"
+msgstr "גלובאלי/לא גלובאלי"
+
+#: functions.php:106 functions.php:1949
+msgid "Global"
+msgstr "גלובאל"
+
+#: functions.php:107
+msgid "not Global"
+msgstr "לא גלובאלי"
+
+#: functions.php:160 functions.php:175 functions.php:2323
+msgid "you don't have sufficient permissions to access this page"
+msgstr "אין לך הרשאות מספיקות כדי לגשת לדף זה"
+
+#: functions.php:338 functions.php:346 main-modules.php:204
+#: main-modules.php:2892 main-modules.php:2973 main-modules.php:5745
+#: main-modules.php:12529 main-modules.php:12843 main-modules.php:14022
+#: main-modules.php:16408
+msgid "Center"
+msgstr "מרכז"
+
+#: functions.php:340
+msgid "Justified"
+msgstr "מוצדק"
+
+#: functions.php:358
+msgid "Update Gallery"
+msgstr "עדכן גלרייה"
+
+#: functions.php:367
+msgid "Select a menu"
+msgstr "בחר תפריט"
+
+#: functions.php:408
+msgid "You currently don't have any projects assigned to a category."
+msgstr "אין לך כרגע פרוייקטים המשוייכים לקטגוריה."
+
+#: functions.php:522
+msgid "Solid"
+msgstr "שלם"
+
+#: functions.php:523
+msgid "Dotted"
+msgstr "מנוקד"
+
+#: functions.php:524
+msgid "Dashed"
+msgstr "מקווקו"
+
+#: functions.php:525
+msgid "Double"
+msgstr "כפול"
+
+#: functions.php:526
+msgid "Groove"
+msgstr "חריץ"
+
+#: functions.php:527
+msgid "Ridge"
+msgstr "רכס"
+
+#: functions.php:528
+msgid "Inset"
+msgstr "הגבול יוחל בתוך הרכיב"
+
+#: functions.php:529
+msgid "Outset"
+msgstr "הגבול יוחל מחוץ לרכיב"
+
+#: functions.php:1384
+msgid ""
+"<strong>%1$s</strong> widget area has been created. You can create more "
+"areas, once you finish update the page to see all the areas."
+msgstr ""
+"‏<strong>%1$s</strong> אזור יישומון נוצר. אתה יכול ליצור איזורים נוספים, ברגע "
+"שתסיים לעדכן את העמוד כדי לראות את כל האיזורים"
+
+#: functions.php:1408
+msgid ""
+"You do not have sufficient permissions to export the content of this site."
+msgstr "אין לכן הרשאה מספקת כדי לייצא את התוכן של האתר הזה."
+
+#: functions.php:1412
+msgid "Export Divi Builder Layouts"
+msgstr "יצא מערכי בנאי Divi"
+
+#: functions.php:1413
+msgid ""
+"When you click the button below WordPress will create an XML file for you to "
+"save to your computer."
+msgstr ""
+"כאשר תלחצו על הכפתור למטה WordPress ייצור קובץ XML לשמירה על המחשב שלכם."
+
+#: functions.php:1414
+msgid ""
+"This format, which we call WordPress eXtended RSS or WXR, will contain all "
+"layouts you created using the Page Builder."
+msgstr ""
+"הפורמט הזה, שנקרא WordPress eXtended RSS או WXR, יכיל את כל התבניות שיצרתם "
+"בעזרת בונה הדפים."
+
+#: functions.php:1415
+msgid ""
+"Once you&#8217;ve saved the download file, you can use the Import function in "
+"another WordPress installation to import all layouts from this site."
+msgstr ""
+"כאשר שמרת את הקובץ שהורד, אתם יכולים להשתמש בפונקיית הייבוא של התקנת "
+"WordPress אחרת כדי לייבא את כל התבניות מהאתר הזה."
+
+#: functions.php:1416
+msgid "Select Templates you want to export:"
+msgstr "בחר תבניות שברצונך לייצא:"
+
+#: functions.php:1449
+msgid "Download Export File"
+msgstr "הורד קובץ ייצוא"
+
+#: functions.php:1454
+msgid "Export Divi Layouts"
+msgstr "יצא מערכי Divi"
+
+#: functions.php:1458
+msgid "Manage Categories"
+msgstr "נהל קטגוריות"
+
+#: functions.php:1593 functions.php:1595
+msgid "Use Default Editor"
+msgstr "השתמש בעורך ברירת מחדל"
+
+#: functions.php:1593 functions.php:1594
+msgid "Use The Divi Builder"
+msgstr "השתמש בבנאי Divi"
+
+#: functions.php:1636
+msgid "Here you can create new widget areas for use in the Sidebar module"
+msgstr "כאן אתה יכול ליצור איזורי וידג'ט לשימשו במודול סרגל צדדי"
+
+#: functions.php:1637
+msgid ""
+"Note: Naming your widget area \"sidebar 1\", \"sidebar 2\", \"sidebar 3\", "
+"\"sidebar 4\" or \"sidebar 5\" will cause conflicts with this theme"
+msgstr ""
+"זכור: אם תקרא לאיזור הוידג'ט שלך : \"sidebar 1\", \"sidebar 2\", \"sidebar "
+"3\", \"sidebar 4\" or \"sidebar 5\" זה ייגרום להתנגשויות עם  קונפליקטים עם "
+"התמה הזאת"
+
+#: functions.php:1638
+msgid "Widget Name"
+msgstr "שם הוידג'ט"
+
+#: functions.php:1639
+msgid "Create"
+msgstr "צור "
+
+#: functions.php:1641 functions.php:1759 functions.php:3499
+msgid "Delete"
+msgstr "מחק"
+
+#: functions.php:1708
+msgid "Replace the existing content with loaded layout"
+msgstr "החלף תוכן קיים בתבנית חדשה"
+
+#: functions.php:1756
+msgid "Load"
+msgstr "העלה"
+
+#: functions.php:1868
+msgid ""
+"You have not saved any items to your Divi Library yet. Once an item has been "
+"saved to your library, it will appear here for easy use."
+msgstr ""
+"לא שמרת קבצים בספריית הDivi שלך. ברגע שפריט ישמר בספריה שלך, הוא יופיע כאן "
+"לשימוש קל."
+
+#: functions.php:1899
+msgid "Fullwidth Module"
+msgstr "מודול ברוחב מלא"
+
+#: functions.php:1900 functions.php:2442 main-structure-elements.php:821
+#: main-structure-elements.php:1741
+msgid "Row"
+msgstr "שורה"
+
+#: functions.php:1901 functions.php:2437 main-structure-elements.php:5
+msgid "Section"
+msgstr "סעיף"
+
+#: functions.php:1902 functions.php:2439 functions.php:3067
+msgid "Fullwidth Section"
+msgstr "סעיף ברוחב מלא"
+
+#: functions.php:1903 functions.php:2440 functions.php:3073
+msgid "Specialty Section"
+msgstr "סעיף מיוחד"
+
+#: functions.php:1904 functions.php:2447 main-modules.php:538
+#: main-modules.php:7060 main-modules.php:7465 main-modules.php:10537
+#: main-modules.php:15302
+msgid "Layout"
+msgstr "מתווה"
+
+#: functions.php:1908
+msgid "Include General Settings"
+msgstr "כלול הגדרות כלליות"
+
+#: functions.php:1909
+msgid "Include Advanced Design Settings"
+msgstr "כלול הגדרות עיצוב מתקדמות"
+
+#: functions.php:1910 functions.php:3651
+msgid "Include Custom CSS"
+msgstr "כלול CSS מותאם אישית"
+
+#: functions.php:1918
+msgid "Template Type"
+msgstr "סוג תבנית"
+
+#: functions.php:1955
+msgid "Select category(ies) for new template or type a new name ( optional )"
+msgstr "בחר קטגוריה/יות לתבנית חדשה או הקלד שם חדש (רשות)"
+
+#: functions.php:1998
+msgid "New Template Settings"
+msgstr "הגדרות תבנית חדשות"
+
+#: functions.php:1999 functions.php:3700
+msgid "Template Name"
+msgstr "שם תבנית"
+
+#: functions.php:2394
+msgid "The section should have at least one row."
+msgstr "לחלק הזה חייבת להיות לפחות שורה אחת."
+
+#: functions.php:2395
+msgid "Fullwidth module can't be used outside of the Fullwidth Section."
+msgstr "לא ניתן להשתמש במודול הרוחב המלא מחוץ לחלק הרוחב המלא."
+
+#: functions.php:2396
+msgid "3 column row can't be used in this column."
+msgstr "3 שורות עמודה לא יכולות להיות בעמודה זו."
+
+#: functions.php:2397 functions.php:2920 functions.php:3306
+msgid "Preview"
+msgstr "תצוגה מקדימה"
+
+#: functions.php:2399
+msgid ""
+"Still images cannot be generated from this video service and/or this video "
+"format"
+msgstr "תמונות סטילס לא יכולות להיווצר משירות/פורמט הוידאו הזה"
+
+#: functions.php:2400
+msgid "Geocode was not successful for the following reason"
+msgstr "גיאוקוד נכשל מהסיבה הבאה"
+
+#: functions.php:2401
+msgid "Geocoder failed due to"
+msgstr "גיאוקוד נכשל בגלל"
+
+#: functions.php:2402
+msgid "No results found"
+msgstr "לא נמצאו תוצאות"
+
+#: functions.php:2403
+msgid "No available options for this configuration."
+msgstr "אין אפשרויות זמינות לתצורה זאת."
+
+#: functions.php:2404
+msgid ""
+"You're about to update global module. This change will be applied to all "
+"pages where you use this module. Press OK if you want to update this module"
+msgstr ""
+"אתה עומד לעדכן את המודול הגלובאלי. השינוי הזה ייושם בכל הדפים בהם השתמשת "
+"במודול זה. לחץ OK אם ברצונך לעדכן מודול זה"
+
+#: functions.php:2405
+msgid "You cannot add global rows into global sections"
+msgstr "אתה לא יכול להוסיף שורות גלובאליות לסעיפים גלובאליים"
+
+#: functions.php:2406
+msgid "You cannot add global modules into global sections or rows"
+msgstr "אתה לא יכול להוסיף מודולים לסעיפים גלובאליים או שורות גלובאליות"
+
+#: functions.php:2411
+msgid "Map Pin Address cannot be empty"
+msgstr "כתובת מפה לא יכול להיות ריק"
+
+#: functions.php:2412
+msgid "Invalid Pin and address data. Please try again."
+msgstr "קוד וכתובת מידע לא תקינים, אנא נסה שנית."
+
+#: functions.php:2413
+msgid "You do not have permission to unlock this section."
+msgstr "אין לך הרשאה לפתוח סעיף זה."
+
+#: functions.php:2414
+msgid "You do not have permission to unlock this row."
+msgstr "אתה לא צריך אישור כדי לפתוח שורה זו."
+
+#: functions.php:2415
+msgid "You do not have permission to unlock this module."
+msgstr "אין לך הרשאה לפתוח מודול זה."
+
+#: functions.php:2416
+msgid "You do not have permission to perform this task."
+msgstr "אין לך הרשאה לבצע פעולה זו."
+
+#: functions.php:2417
+msgid ""
+"Unable to perform copy/paste process due to inavailability of localStorage "
+"feature in your browser. Please use latest modern browser (Chrome, Firefox, "
+"or Safari) to perform copy/paste process"
+msgstr ""
+"אין אפשרות לבצע העתק/הדבק התהליך בשל inavailability של localStorage התכונה "
+"בדפדפן שלך. אנא השתמש העדכניות ביותר דפדפן (כרום, פיירפוקס או ספארי) לבצע "
+"העתק/הדבק תהליך"
+
+#: functions.php:2419
+msgid "Did"
+msgstr "האם"
+
+#: functions.php:2420
+msgid "Added"
+msgstr "הוסיף"
+
+#: functions.php:2421
+msgid "Edited"
+msgstr "נערך"
+
+#: functions.php:2422
+msgid "Removed"
+msgstr "הוסר"
+
+#: functions.php:2423
+msgid "Moved"
+msgstr "עבר"
+
+#: functions.php:2424
+msgid "Expanded"
+msgstr "מורחב"
+
+#: functions.php:2425
+msgid "Collapsed"
+msgstr "התמוטט."
+
+#: functions.php:2426
+msgid "Locked"
+msgstr "נעול"
+
+#: functions.php:2427
+msgid "Unlocked"
+msgstr "סמארטפון"
+
+#: functions.php:2428
+msgid "Cloned"
+msgstr "שיבט"
+
+#: functions.php:2429
+msgid "Cleared"
+msgstr "אישור"
+
+#: functions.php:2430
+msgid "Enabled"
+msgstr "זמין"
+
+#: functions.php:2431
+msgid "Disabled"
+msgstr "נכים"
+
+#: functions.php:2432
+msgid "Copied"
+msgstr "העתקתי"
+
+#: functions.php:2433
+msgid "Renamed"
+msgstr "שמם"
+
+#: functions.php:2434
+msgid "Loaded"
+msgstr "טעון"
+
+#: functions.php:2438
+msgid "Saved Section"
+msgstr "הציל סעיף"
+
+#: functions.php:2443
+msgid "Saved Row"
+msgstr "הציל שורה"
+
+#: functions.php:2445
+msgid "Saved Module"
+msgstr "הציל מודול"
+
+#: functions.php:2446
+msgid "Page"
+msgstr "דף"
+
+#: functions.php:2450
+msgid "on Phone"
+msgstr "בטלפון"
+
+#: functions.php:2451
+msgid "on Tablet"
+msgstr "בטבלט"
+
+#: functions.php:2452
+msgid "on Desktop"
+msgstr "במחשב נייח"
+
+#: functions.php:2454
+msgid "Invalid Color"
+msgstr "חוקי צבע"
+
+#: functions.php:2471
+msgid "The Divi Builder"
+msgstr "בנאי הDivi"
+
+#: functions.php:2492
+msgid "Posts by %s"
+msgstr "פוסטים של %s"
+
+#: functions.php:2507
+msgid "% Comments"
+msgstr "% תגובות"
+
+#: functions.php:2509
+msgid "No Comments"
+msgstr "אין תגובות"
+
+#: functions.php:2522
+msgid "by"
+msgstr "על ידי"
+
+#: functions.php:2819 functions.php:2948
+msgid "Rename"
+msgstr "שינוי שם"
+
+#: functions.php:2825
+msgid "Copy"
+msgstr "העתק"
+
+#: functions.php:2831
+msgid "Paste After"
+msgstr "הדבק לאחר"
+
+#: functions.php:2837 functions.php:2843
+msgid "Paste"
+msgstr "הדבק"
+
+#: functions.php:2849 functions.php:2956 functions.php:2957
+msgid "Save to Library"
+msgstr "שמור לספריה"
+
+#: functions.php:2855
+msgid "Unlock"
+msgstr "לבטל את הנעילה"
+
+#: functions.php:2856
+msgid "Lock"
+msgstr "לנעול"
+
+#: functions.php:2864 functions.php:5048
+msgid "Enable"
+msgstr "לאפשר"
+
+#: functions.php:2865 functions.php:5049
+msgid "Disable"
+msgstr "השבת"
+
+#: functions.php:2910 main-modules.php:14514
+msgid "Expand"
+msgstr "מתרחב"
+
+#: functions.php:2911
+msgid "Collapse"
+msgstr "קריסה"
+
+#: functions.php:2915 functions.php:3004 functions.php:3005
+msgid "Undo"
+msgstr "לבטל"
+
+#: functions.php:2916 functions.php:3002 functions.php:3003
+msgid "Redo"
+msgstr "שוב"
+
+#: functions.php:2936 functions.php:3329 functions.php:3519 functions.php:3574
+msgid "Cancel"
+msgstr "ביטול"
+
+#: functions.php:2937 functions.php:3520 functions.php:3575
+msgid "Save"
+msgstr "שמור"
+
+#: functions.php:2949
+msgid "Enter a new name for this module"
+msgstr "הזן שם חדש עבור מודול זה"
+
+#: functions.php:2963 functions.php:2964
+msgid "Load From Library"
+msgstr "טען מספריה"
+
+#: functions.php:2970 functions.php:2971 functions.php:3544
+msgid "Clear Layout"
+msgstr "נקה פריסה"
+
+#: functions.php:3006 functions.php:3007
+msgid "See History"
+msgstr "לראות את ההיסטוריה"
+
+#: functions.php:3014 functions.php:3015 functions.php:3114 functions.php:3115
+#: functions.php:3500
+msgid "Settings"
+msgstr "הגדרות"
+
+#: functions.php:3020 functions.php:3021
+msgid "Clone Section"
+msgstr "שכפל מקטע"
+
+#: functions.php:3025 functions.php:3026
+msgid "Delete Section"
+msgstr "מחק מקטע"
+
+#: functions.php:3030 functions.php:3031
+msgid "Unlock Section"
+msgstr "לפתוח סעיף"
+
+#: functions.php:3049 functions.php:3050
+msgid "Expand Section"
+msgstr "הרחב את המקטע"
+
+#: functions.php:3056 functions.php:3356 functions.php:3399 functions.php:3462
+#: functions.php:4837
+msgid "Add From Library"
+msgstr "הוסף מספריה"
+
+#: functions.php:3061
+msgid "Standard Section"
+msgstr "סעיף סטנדרטי"
+
+#: functions.php:3122 functions.php:3123
+msgid "Clone Row"
+msgstr "שכפל שורה"
+
+#: functions.php:3131 functions.php:3132
+msgid "Delete Row"
+msgstr "מחק שורה"
+
+#: functions.php:3140 functions.php:3141
+msgid "Change Structure"
+msgstr "שנה מבנה"
+
+#: functions.php:3147 functions.php:3148
+msgid "Unlock Row"
+msgstr "לפתוח שורה"
+
+#: functions.php:3173 functions.php:3174
+msgid "Expand Row"
+msgstr "הרחב את השורה"
+
+#: functions.php:3194
+msgid "Add Row"
+msgstr "הוסף שורה"
+
+#: functions.php:3202
+msgid "Insert Column(s)"
+msgstr "הכנס עמוד(ות)"
+
+#: functions.php:3232 functions.php:3233 functions.php:3501
+msgid "Clone Module"
+msgstr "שכפל מודול"
+
+#: functions.php:3243 functions.php:3244
+msgid "Remove Module"
+msgstr "הסר מודול"
+
+#: functions.php:3254 functions.php:3255
+msgid "Unlock Module"
+msgstr "לפתוח את מודול"
+
+#: functions.php:3263 functions.php:3264
+msgid "Module Settings"
+msgstr "הגדרות מודול"
+
+#: functions.php:3289
+msgid "Save & Exit"
+msgstr "שמור וצא"
+
+#: functions.php:3298
+msgid "Save & Add To Library"
+msgstr "שמור והוסף לספריה"
+
+#: functions.php:3384
+msgid "Insert Columns"
+msgstr "הוספת עמודות"
+
+#: functions.php:3386
+msgid "New Row"
+msgstr "שורה חדשה"
+
+#: functions.php:3428
+msgid "Insert Module"
+msgstr "הוספת מודול"
+
+#: functions.php:3429
+msgid "New Module"
+msgstr "מודול חדש"
+
+#: functions.php:3460 functions.php:4824
+msgid "Load Layout"
+msgstr "טען פריסה"
+
+#: functions.php:3461
+msgid "Predefined Layouts"
+msgstr "מערכים מוגדרים מראש"
+
+#: functions.php:3471
+msgid "Insert Module(s)"
+msgstr "הכנס מודול(ים)"
+
+#: functions.php:3531
+msgid "Disable Builder"
+msgstr "נטרל בנאי"
+
+#: functions.php:3532
+msgid ""
+"All content created in the Divi Builder will be lost. Previous content will "
+"be restored."
+msgstr "כל התוכן שנוצר בבנאי הDivi ייאבד. תוכן קודם ישוחזר."
+
+#: functions.php:3533 functions.php:3546 functions.php:3557
+msgid "Do you wish to proceed?"
+msgstr "האם ברצונך להמשיך?"
+
+#: functions.php:3545
+msgid "All of your current page content will be lost."
+msgstr "כל תכולת הדף הנוכחי שלך ייאבד."
+
+#: functions.php:3556
+msgid "All advanced module settings in will be lost."
+msgstr "כל ההגדרות המתקדמות של המודול ייאבדו."
+
+#: functions.php:3588 functions.php:4833
+msgid "Save To Library"
+msgstr "שמור בספריה"
+
+#: functions.php:3589
+msgid "Save your current page to the Divi Library for later use."
+msgstr "שמור את הדף הנוכחי שלך לספריית הDivi לשימוש מאוחר יותר."
+
+#: functions.php:3590
+msgid "Layout Name:"
+msgstr "שם מערך:"
+
+#: functions.php:3604
+msgid "Save And Add To Library"
+msgstr "שמור והוסף לספריה"
+
+#: functions.php:3611
+msgid "Add To Categories:"
+msgstr "הוסף לקטגוריות:"
+
+#: functions.php:3632
+msgid "Create New Category"
+msgstr "צור קטגוריה חדשה"
+
+#: functions.php:3639
+msgid "Include General settings"
+msgstr "כלול הגדרות כלליות"
+
+#: functions.php:3645
+msgid "Include Advanced Design settings"
+msgstr "כלול הגדרות עיצוב מתקדמות"
+
+#: functions.php:3699
+msgid ""
+"Here you can save the current item and add it to your Divi Library for later "
+"use as well."
+msgstr ""
+"כאן אתה לשמור את הפריט הנוכחי שלך ולהוסיף אותו לספריית הDivi שלך לשימוש מאוחר "
+"יותר."
+
+#: functions.php:3701
+msgid "Selective Sync"
+msgstr "סנכרון סלקטיבי"
+
+#: functions.php:3705
+msgid "Please select at least 1 tab to save"
+msgstr "אנא בחר לפחות לשונית אחת לשמירה"
+
+#: functions.php:3706
+msgid "Save as Global:"
+msgstr "שמור כגלובאלי:"
+
+#: functions.php:3707
+msgid "Make this a global item"
+msgstr "הפוך את זה לפריט גלובאלי"
+
+#: functions.php:3735
+msgid "Add Specialty Section"
+msgstr "הוסף מקטע מומחיות"
+
+#: functions.php:3793
+msgid "Mobile"
+msgstr "נייד"
+
+#: functions.php:3794 functions.php:3825 main-modules.php:248
+#: main-modules.php:642 main-modules.php:897 main-modules.php:1101
+#: main-modules.php:1452 main-modules.php:1844 main-modules.php:2094
+#: main-modules.php:2576 main-modules.php:3871 main-modules.php:4463
+#: main-modules.php:4918 main-modules.php:5574 main-modules.php:5765
+#: main-modules.php:5984 main-modules.php:6356 main-modules.php:6788
+#: main-modules.php:7147 main-modules.php:7552 main-modules.php:7918
+#: main-modules.php:8322 main-modules.php:8518 main-modules.php:8687
+#: main-modules.php:9000 main-modules.php:9268 main-modules.php:9819
+#: main-modules.php:10017 main-modules.php:10294 main-modules.php:10735
+#: main-modules.php:11263 main-modules.php:11557 main-modules.php:11757
+#: main-modules.php:12019 main-modules.php:12573 main-modules.php:12932
+#: main-modules.php:13280 main-modules.php:13535 main-modules.php:14059
+#: main-modules.php:14537 main-modules.php:15040 main-modules.php:15403
+#: main-modules.php:15644 main-modules.php:15752 main-modules.php:15847
+#: main-modules.php:16062 main-modules.php:16452 main-modules.php:17148
+#: main-structure-elements.php:474 main-structure-elements.php:1375
+#: main-structure-elements.php:2070
+msgid "Tablet"
+msgstr "טאבלט"
+
+#: functions.php:3795 functions.php:3824 main-modules.php:249
+#: main-modules.php:643 main-modules.php:898 main-modules.php:1102
+#: main-modules.php:1453 main-modules.php:1845 main-modules.php:2095
+#: main-modules.php:2577 main-modules.php:3872 main-modules.php:4464
+#: main-modules.php:4919 main-modules.php:5575 main-modules.php:5766
+#: main-modules.php:5985 main-modules.php:6357 main-modules.php:6789
+#: main-modules.php:7148 main-modules.php:7553 main-modules.php:7919
+#: main-modules.php:8323 main-modules.php:8519 main-modules.php:8688
+#: main-modules.php:9001 main-modules.php:9269 main-modules.php:9820
+#: main-modules.php:10018 main-modules.php:10295 main-modules.php:10736
+#: main-modules.php:11264 main-modules.php:11558 main-modules.php:11758
+#: main-modules.php:12020 main-modules.php:12574 main-modules.php:12933
+#: main-modules.php:13281 main-modules.php:13536 main-modules.php:14060
+#: main-modules.php:14538 main-modules.php:15041 main-modules.php:15404
+#: main-modules.php:15645 main-modules.php:15753 main-modules.php:15848
+#: main-modules.php:16063 main-modules.php:16453 main-modules.php:17149
+#: main-structure-elements.php:475 main-structure-elements.php:1376
+#: main-structure-elements.php:2071
+msgid "Desktop"
+msgstr "שולחן העבודה"
+
+#: functions.php:3826
+msgid "Smartphone"
+msgstr "בסמארטפון"
+
+#: functions.php:4055
+msgid "Configuration error"
+msgstr "שגיאת תצורה"
+
+#: functions.php:4065
+msgid "Please enter first name"
+msgstr "נא להזין שם פרטי"
+
+#: functions.php:4067
+msgid "Incorrect email"
+msgstr "דוא \" ל שגוי"
+
+#: functions.php:4069
+msgid "Configuration error: List is not defined"
+msgstr "שגיאת תצורה: הרשימה לא מוגדר."
+
+#: functions.php:4071
+msgid ""
+"<h2 class=\"et_pb_subscribed\">Subscribed - look for the confirmation email!</"
+"h2>"
+msgstr "<h2 class=\"et_pb_subscribed\">מנויים - חפש את דוא \" ל אישור!</h2>"
+
+#: functions.php:4088
+msgid "Configuration error: api key is not defined"
+msgstr "שגיאת תצורה: מפתח api אינו מוגדר"
+
+#: functions.php:4124
+msgid "Aweber: Wrong configuration data"
+msgstr "Aweber: תצורה שגויה נתונים"
+
+#: functions.php:4155
+msgid "Connecting..."
+msgstr "חיבור..."
+
+#: functions.php:4156
+msgid "Connection failed"
+msgstr "החיבור נכשל"
+
+#: functions.php:4157
+msgid "Removing connection..."
+msgstr "הסרת חיבור..."
+
+#: functions.php:4158
+msgid "Done"
+msgstr "עשיתי"
+
+#: functions.php:4187
+msgid ""
+"Step 1: <a href=\"%1$s\" target=\"_blank\">Generate authorization code</a>"
+msgstr "שלב 1: <a href=\"%1$s\" target=\"_blank\">ליצור קוד אישור</a>"
+
+#: functions.php:4188
+msgid ""
+"Step 2: Paste in the authorization code and click \"Make a connection\" "
+"button: "
+msgstr "שלב 2: הדבק את קוד האישור ולחץ על \"ליצור קשר\" כפתור: "
+
+#: functions.php:4189
+msgid "Make a connection"
+msgstr "לעשות את הקשר"
+
+#: functions.php:4192
+msgid "Aweber is set up properly. You can remove connection here if you wish."
+msgstr "Aweber מוגדר כראוי. באפשרותך להסיר חיבור כאן אם אתה רוצה."
+
+#: functions.php:4193
+msgid "Remove the connection"
+msgstr "הסר את החיבור"
+
+#: functions.php:4201
+msgid "Nonce failed."
+msgstr "Nonce נכשל."
+
+#: functions.php:4207
+msgid "Authorization code is empty."
+msgstr "אישור קוד ריק."
+
+#: functions.php:4218
+msgid ""
+"Authorization code is invalid. Try regenerating it and paste in the new code."
+msgstr "קוד אישור זה אינו תקף. נסה את זה מתחדש ולהדביק את קוד חדש."
+
+#: functions.php:4240
+msgid "Aweber API Exception"
+msgstr "Aweber API מן הכלל."
+
+#: functions.php:4241 main-modules.php:9577 main-modules.php:11169
+msgid "Type"
+msgstr "סוג"
+
+#: functions.php:4242 main-modules.php:9303
+msgid "Message"
+msgstr "הודעה"
+
+#: functions.php:4243
+msgid "Documentation"
+msgstr "תיעוד"
+
+#: functions.php:4253
+msgid "Nonce failed"
+msgstr "Nonce נכשל"
+
+#: functions.php:4268
+msgid "Projects"
+msgstr "פרויקטים"
+
+#: functions.php:4269
+msgid "Project"
+msgstr "הפרויקט"
+
+#: functions.php:4270
+msgid "Add New"
+msgstr "הוסף חדש"
+
+#: functions.php:4271
+msgid "Add New Project"
+msgstr "הוספת פרויקט חדש"
+
+#: functions.php:4272
+msgid "Edit Project"
+msgstr "עריכת פרויקט"
+
+#: functions.php:4273
+msgid "New Project"
+msgstr "פרויקט חדש"
+
+#: functions.php:4274
+msgid "All Projects"
+msgstr "כל הפרויקטים"
+
+#: functions.php:4275
+msgid "View Project"
+msgstr "הצגת הפרויקט"
+
+#: functions.php:4276
+msgid "Search Projects"
+msgstr "חיפוש פרויקטים"
+
+#: functions.php:4277 layouts.php:13
+msgid "Nothing found"
+msgstr "לא נמצאו תוצאות"
+
+#: functions.php:4278 layouts.php:14
+msgid "Nothing found in Trash"
+msgstr "לא נמצאו תוצאות בסל המחזור"
+
+#: functions.php:4305
+msgid "Project Categories"
+msgstr "פרויקט קטגוריות"
+
+#: functions.php:4306
+msgid "Project Category"
+msgstr "פרויקט קטגוריה"
+
+#: functions.php:4307
+msgid "Search Categories"
+msgstr "קטגוריות חיפוש"
+
+#: functions.php:4309
+msgid "Parent Category"
+msgstr "הורה קטגוריה"
+
+#: functions.php:4310
+msgid "Parent Category:"
+msgstr "הורה קטגוריה:"
+
+#: functions.php:4311
+msgid "Edit Category"
+msgstr "עריכת קטגוריה"
+
+#: functions.php:4312
+msgid "Update Category"
+msgstr "עדכון קטגוריה"
+
+#: functions.php:4313
+msgid "Add New Category"
+msgstr "להוסיף קטגוריה חדשה"
+
+#: functions.php:4314
+msgid "New Category Name"
+msgstr "קטגוריה חדשה בשם"
+
+#: functions.php:4315
+msgid "Categories"
+msgstr "קטגוריות"
+
+#: functions.php:4327
+msgid "Project Tags"
+msgstr "פרויקט קטגוריה"
+
+#: functions.php:4328
+msgid "Project Tag"
+msgstr "פרויקט תג"
+
+#: functions.php:4329
+msgid "Search Tags"
+msgstr "חיפוש קטגוריה"
+
+#: functions.php:4330
+msgid "All Tags"
+msgstr "כל קטגוריה"
+
+#: functions.php:4331
+msgid "Parent Tag"
+msgstr "תג האב"
+
+#: functions.php:4332
+msgid "Parent Tag:"
+msgstr "תג האב:"
+
+#: functions.php:4333
+msgid "Edit Tag"
+msgstr "עריכה תג"
+
+#: functions.php:4334
+msgid "Update Tag"
+msgstr "עדכון תג"
+
+#: functions.php:4335
+msgid "Add New Tag"
+msgstr "להוסיף תג חדש"
+
+#: functions.php:4336
+msgid "New Tag Name"
+msgstr "חדש תג השם"
+
+#: functions.php:4337
+msgid "Tags"
+msgstr "קטגוריה"
+
+#: functions.php:4397
+msgid "Read more"
+msgstr "קרא עוד"
+
+#: functions.php:4765
+msgid "Theme Customizer"
+msgstr "התאמה אישית של ערכות נושא"
+
+#: functions.php:4770
+msgid "Module Customizer"
+msgstr "התאמה אישית של מודולים"
+
+#: functions.php:4775
+msgid "Page Options"
+msgstr "אפשרויות דף"
+
+#: functions.php:4786
+msgid "Plugin Options"
+msgstr "תוסף אפשרויות"
+
+#: functions.php:4786
+msgid "Theme Options"
+msgstr "אפשרויות נושא"
+
+#: functions.php:4791
+msgid "Divi Library"
+msgstr "ספריית Divi"
+
+#: functions.php:4797
+msgid "Builder Interface"
+msgstr "בונה ממשק"
+
+#: functions.php:4800
+msgid "Add/Delete Item"
+msgstr "להוסיף/למחוק פריט"
+
+#: functions.php:4804
+msgid "Edit Item"
+msgstr "עריכת פריט"
+
+#: functions.php:4808
+msgid "Move Item"
+msgstr "להעביר פריט"
+
+#: functions.php:4812
+msgid "Disable Item"
+msgstr "השבת הפריט"
+
+#: functions.php:4816
+msgid "Lock Item"
+msgstr "לנעול פריט"
+
+#: functions.php:4820
+msgid "Toggle Divi Builder"
+msgstr "לעבור Divi בונה"
+
+#: functions.php:4830
+msgid "Library Settings"
+msgstr "הגדרות ספריית"
+
+#: functions.php:4841
+msgid "Edit Global Items"
+msgstr "עריכה העולמי פריטים"
+
+#: functions.php:4847
+msgid "Settings Tabs"
+msgstr "הגדרות לשוניות"
+
+#: functions.php:4854
+msgid "Advanced Settings"
+msgstr "הגדרות מתקדמות"
+
+#: functions.php:4864
+msgid "Settings Types"
+msgstr "הגדרות סוגי"
+
+#: functions.php:4867
+msgid "Edit Colors"
+msgstr "עריכת צבעים"
+
+#: functions.php:4871
+msgid "Edit Content"
+msgstr "עריכת תוכן"
+
+#: functions.php:4875
+msgid "Edit Fonts"
+msgstr "עריכה גופנים"
+
+#: functions.php:4879
+msgid "Edit Buttons"
+msgstr "עריכה כפתורים"
+
+#: functions.php:4883 layouts.php:8
+msgid "Edit Layout"
+msgstr "ערוך תבנית"
+
+#: functions.php:4887
+msgid "Edit Configuration"
+msgstr "עריכה תצורה"
+
+#: functions.php:4893
+msgid "Module Use"
+msgstr "מודול משתמשים"
+
+#: functions.php:4933
+msgid "Administrator"
+msgstr "מנהל"
+
+#: functions.php:4934
+msgid "Editor"
+msgstr "עורך"
+
+#: functions.php:4935
+msgid "Author"
+msgstr "מחבר תגובה"
+
+#: functions.php:4936
+msgid "Contributor"
+msgstr "תורם"
+
+#: functions.php:4971
+msgid "Divi Role Editor"
+msgstr "Divi תפקיד עורך"
+
+#: functions.php:4972
+msgid "Save Divi Roles"
+msgstr "להציל את Divi תפקידים"
+
+#: functions.php:5011
+msgid ""
+"Using the Divi Role Editor, you can limit the types of actions that can be "
+"taken by WordPress users of different roles. This is a great way to limit the "
+"functionality available to your customers or guest authors to ensure that "
+"they only have the necessary options available to them."
+msgstr ""
+"באמצעות Divi תפקיד עורך, אתה יכול להגביל את סוגי פעולות שניתן לנקוט על ידי "
+"משתמשי וורדפרס של תפקידים שונים. זוהי דרך מצוינת כדי להגביל את הפונקציונליות "
+"זמינה ללקוחות שלך או אורח סופרים, כדי להבטיח שיש להם את הצורך האפשרויות "
+"הזמינות להם."
+
+#: functions.php:5079
+msgid "Reset Roles"
+msgstr "איפוס תפקידים"
+
+#: functions.php:5080
+msgid ""
+"All of your current role settings will be set to defaults. Do you wish to "
+"proceed?"
+msgstr "כל הגדרות התפקיד הנוכחי יהיה להגדיר ברירות מחדל. האם את רוצה להמשיך?"
+
+#: functions.php:5082 main-modules.php:2933 main-modules.php:2953
+#: main-modules.php:3530 main-modules.php:3550 main-modules.php:3602
+#: main-modules.php:3637 main-modules.php:3694 main-modules.php:3713
+#: main-modules.php:16807 main-modules.php:16827 main-modules.php:16879
+#: main-modules.php:16914 main-modules.php:16971 main-modules.php:16990
+msgid "no"
+msgstr "לא"
+
+#. translators: 1: date, 2: time
+#: functions.php:5424
+msgid "on %1$s at %2$s"
+msgstr "ב%1$s ב%2$s"
+
+#: functions.php:5427
+msgid "(Edit)"
+msgstr "(עריכה)"
+
+#: functions.php:5430
+msgid "Reply"
+msgstr "השאר תגובה"
+
+#: functions.php:5439
+msgid "Your comment is awaiting moderation."
+msgstr "התגובה שלך ממתינה לבדיקה על ידי מנהלי האתר."
+
+#: layouts.php:7
+msgid "Add New Layout"
+msgstr "הוסף תבנית חדשה"
+
+#: layouts.php:9
+msgid "New Layout"
+msgstr "עדכן תבנית"
+
+#: layouts.php:11
+msgid "View Layout"
+msgstr "הצג תבנית"
+
+#: layouts.php:12
+msgid "Search Layouts"
+msgstr "חפש תבניות"
+
+#: layouts.php:40
+msgid "Scope"
+msgstr "תחום"
+
+#: layouts.php:53
+msgid "Layout Type"
+msgstr "סוג מערך"
+
+#: layouts.php:66
+msgid "Module Width"
+msgstr "רוחב המודול"
+
+#: layouts.php:79
+msgid "Category"
+msgstr "קטגוריה"
+
+#: layouts.php:142
+msgid "Built For Any"
+msgstr "נבנה עבור כל"
+
+#: layouts.php:167
+msgid "Built For"
+msgstr "נבנה עבור"
+
+#: layouts.php:168
+msgid "Global Layout"
+msgstr "סידור גלובלי"
+
+#: layouts.php:180
+msgid "Standard"
+msgstr "סטנדרטי"
+
+#: layouts.php:421
+msgid "Homepage Basic"
+msgstr "בסיס דף הבית"
+
+#: layouts.php:429
+msgid "Homepage Shop"
+msgstr "חנות דף הבית"
+
+#: layouts.php:439
+msgid "Homepage Portfolio"
+msgstr "תיק דף הבית"
+
+#: layouts.php:447
+msgid "Homepage Company"
+msgstr "חברת דף הבהית"
+
+#: layouts.php:455
+msgid "Homepage Corporate"
+msgstr "חברות דף הבית"
+
+#: layouts.php:466
+msgid "Homepage Extended"
+msgstr "דף הבית מורכב"
+
+#: layouts.php:475
+msgid "Page Fullwidth"
+msgstr "דף ברוחב מלא"
+
+#: layouts.php:509
+msgid "Page Right Sidebar"
+msgstr "סרגל צדדי בצד ימין"
+
+#: layouts.php:543
+msgid "Page Left Sidebar"
+msgstr "סרגל צדדי בצד שמאל"
+
+#: layouts.php:577
+msgid "Page Dual Sidebars"
+msgstr "סרגל צדדי דואלי"
+
+#: layouts.php:599
+msgid "Portfolio Grid"
+msgstr "רשת תיק"
+
+#: layouts.php:607
+msgid "Portfolio 1 Column"
+msgstr "תיק טור אחד"
+
+#: layouts.php:615
+msgid "Portfolio Fullwidth Carousel"
+msgstr "קרוסלת תיק ברוחב מלא"
+
+#: layouts.php:623
+msgid "Portfolio Fullwidth Grid"
+msgstr "רשת תיק ברוחב מלא"
+
+#: layouts.php:631
+msgid "Project Extended"
+msgstr "פרויקט מורחב  "
+
+#: layouts.php:641
+msgid "Project Extended 2"
+msgstr "פרויקט מורחב 2"
+
+#: layouts.php:654
+msgid "Blog Masonry"
+msgstr "רשת בלוג"
+
+#: layouts.php:662
+msgid "Blog Standard"
+msgstr "בלוג סטנדרט"
+
+#: layouts.php:670
+msgid "Shop Basic"
+msgstr "חנות בסיסית"
+
+#: layouts.php:678
+msgid "Shop Extended"
+msgstr "חנות מורחבת"
+
+#: layouts.php:686
+msgid "Splash Page"
+msgstr "עמוד התזה"
+
+#: layouts.php:697
+msgid "Maintenance Mode"
+msgstr "מצב תחזוקה"
+
+#: layouts.php:706
+msgid "Coming Soon"
+msgstr "בקרוב"
+
+#: layouts.php:714
+msgid "Landing Page"
+msgstr "עמוד נחיתה"
+
+#: layouts.php:723
+msgid "About Me"
+msgstr "אודותיי"
+
+#: layouts.php:732
+msgid "About Us"
+msgstr "אודותנו"
+
+#: layouts.php:741
+msgid "Contact Us"
+msgstr "צור קשר"
+
+#: layouts.php:757
+msgid "Our Team"
+msgstr "הצוות שלנו"
+
+#: layouts.php:870
+msgid "Creative Agency"
+msgstr "סוכנות קריאטייב"
+
+#: layouts.php:879
+msgid "Sales Page"
+msgstr "דף מכירות"
+
+#: layouts.php:915
+msgid "Case Study"
+msgstr "מקרה בוחן"
+
+#: layouts.php:925
+msgid "Product Features"
+msgstr "תכונות מוצר"
+
+#: main-modules.php:4 main-modules.php:1733 main-modules.php:11140
+msgid "Image"
+msgstr "תמונה"
+
+#: main-modules.php:56 main-modules.php:1762 main-modules.php:10230
+#: main-modules.php:16048
+msgid "Left To Right"
+msgstr "משמאל לימין"
+
+#: main-modules.php:57 main-modules.php:1763 main-modules.php:10231
+#: main-modules.php:16049
+msgid "Right To Left"
+msgstr "מימין לשמאל"
+
+#: main-modules.php:58 main-modules.php:1761 main-modules.php:10232
+#: main-modules.php:16050
+msgid "Top To Bottom"
+msgstr "מלמעלה למטה"
+
+#: main-modules.php:59 main-modules.php:1764 main-modules.php:10233
+#: main-modules.php:16051
+msgid "Bottom To Top"
+msgstr "מלמטה למעלה"
+
+#: main-modules.php:60 main-modules.php:10229 main-modules.php:16052
+msgid "Fade In"
+msgstr "פיד-אין"
+
+#: main-modules.php:61 main-modules.php:1765 main-modules.php:10228
+#: main-modules.php:16053
+msgid "No Animation"
+msgstr "ללא אנימציה"
+
+#: main-modules.php:85 main-modules.php:10215 main-modules.php:15947
+msgid "Image URL"
+msgstr "‏URL תמונה"
+
+#: main-modules.php:89 main-modules.php:877 main-modules.php:1256
+#: main-modules.php:1737 main-modules.php:4368 main-modules.php:5960
+#: main-modules.php:10219 main-modules.php:13959 main-modules.php:14001
+#: main-modules.php:14034 main-modules.php:15951
+msgid "Choose an Image"
+msgstr "בחר תמונה"
+
+#: main-modules.php:90 main-modules.php:878 main-modules.php:1257
+#: main-modules.php:1738 main-modules.php:4369 main-modules.php:5961
+#: main-modules.php:10220 main-modules.php:13960 main-modules.php:14002
+#: main-modules.php:14035 main-modules.php:15952
+msgid "Set As Image"
+msgstr "בחר כתמונה"
+
+#: main-modules.php:91 main-modules.php:4370 main-modules.php:5962
+#: main-modules.php:10221 main-modules.php:13961 main-modules.php:14003
+#: main-modules.php:14036 main-modules.php:15953
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"display."
+msgstr "העלה את התמונה הרצויה, או הקלד את URL לתמונה שאתה רוצה להציג."
+
+#: main-modules.php:94 main-modules.php:2985 main-modules.php:15956
+msgid "Image Alternative Text"
+msgstr "טקסט אלטרנטיבי לתמונה"
+
+#: main-modules.php:97 main-modules.php:14009 main-modules.php:15959
+msgid ""
+"This defines the HTML ALT text. A short description of your image can be "
+"placed here."
+msgstr ""
+"זה מגדיר את טקסט האלטרנטיבי לתמונה.  ניתן להכניס כאן תיאור קצר של התמונה "
+
+#: main-modules.php:100 main-modules.php:15962
+msgid "Image Title Text"
+msgstr "טקסט כותרת תמונה"
+
+#: main-modules.php:103 main-modules.php:14015 main-modules.php:15965
+msgid "This defines the HTML Title text."
+msgstr "זה מגדיר את טקסט תמונה  HTML"
+
+#: main-modules.php:106
+msgid "Open in Lightbox"
+msgstr "פתח בLightbox"
+
+#: main-modules.php:118 main-modules.php:15980
+msgid ""
+"Here you can choose whether or not the image should open in Lightbox. Note: "
+"if you select to open the image in Lightbox, url options below will be "
+"ignored."
+msgstr ""
+"כאן אתה יכול לבחור האם התמונה שלך תפתח בלייטבוקס. שים לב: אם אתה בוחר לפתוח "
+"תמונה בלייטבוקס, נתעלם מאפשרויות URLמטה"
+
+#: main-modules.php:121 main-modules.php:15983
+msgid "Link URL"
+msgstr "קישור  URL"
+
+#: main-modules.php:128 main-modules.php:15990
+msgid ""
+"If you would like your image to be a link, input your destination URL here. "
+"No link will be created if this field is left blank."
+msgstr ""
+"אם אתה רוצה שהתמונה שלך תהיה קישור, הכנס את  URL היעד שלך כאן. לא יווצר קישור "
+"אם תשאר שדה זה ריק"
+
+#: main-modules.php:131 main-modules.php:1649 main-modules.php:5498
+#: main-modules.php:5724 main-modules.php:11995 main-modules.php:15993
+msgid "Url Opens"
+msgstr "פתיחת URL"
+
+#: main-modules.php:135 main-modules.php:1653 main-modules.php:4358
+#: main-modules.php:5502 main-modules.php:5728 main-modules.php:11999
+#: main-modules.php:15997
+msgid "In The Same Window"
+msgstr "באותו החלון"
+
+#: main-modules.php:136 main-modules.php:1654 main-modules.php:4359
+#: main-modules.php:5503 main-modules.php:5729 main-modules.php:12000
+#: main-modules.php:15998
+msgid "In The New Tab"
+msgstr "בכרטיסייה חדשה"
+
+#: main-modules.php:139 main-modules.php:1656 main-modules.php:5505
+#: main-modules.php:5731 main-modules.php:12002 main-modules.php:16001
+msgid "Here you can choose whether or not your link opens in a new window"
+msgstr "כאן אתה יכול להחליט האם הקישור ייפתח בחלון חדש"
+
+#: main-modules.php:142 main-modules.php:16004
+msgid "Image Overlay"
+msgstr "תמונת כיסוי"
+
+#: main-modules.php:155 main-modules.php:16017
+msgid ""
+"If enabled, an overlay color and icon will be displayed when a visitors "
+"hovers over the image"
+msgstr "כשאפשרות זו מופעלת, צבע כיסוי ואייקון יוצגו כשמבקרים מחרפים מעל התמונה."
+
+#: main-modules.php:158 main-modules.php:10678 main-modules.php:16020
+msgid "Overlay Icon Color"
+msgstr "צבע אייקון כיסוי"
+
+#: main-modules.php:162 main-modules.php:10682 main-modules.php:16024
+msgid "Here you can define a custom color for the overlay icon"
+msgstr "כאן תוכל לבחור צבע מותאם לאייקון כיסוי"
+
+#: main-modules.php:165 main-modules.php:622 main-modules.php:7128
+#: main-modules.php:7542 main-modules.php:10685 main-modules.php:11244
+#: main-modules.php:15384 main-modules.php:16027
+msgid "Hover Overlay Color"
+msgstr "צבע כיסוי בעת סימון"
+
+#: main-modules.php:169 main-modules.php:10689 main-modules.php:16031
+msgid "Here you can define a custom color for the overlay"
+msgstr "כאן תוכל לבחור צבע מותאם לכיסוי"
+
+#: main-modules.php:172 main-modules.php:629 main-modules.php:7134
+#: main-modules.php:7527 main-modules.php:10692 main-modules.php:11250
+#: main-modules.php:15390 main-modules.php:16034
+msgid "Hover Icon Picker"
+msgstr "בחירת אייקון בעת סימון"
+
+#: main-modules.php:179 main-modules.php:10699 main-modules.php:16041
+msgid "Here you can define a custom icon for the overlay"
+msgstr "כאן תוכל לבחור אייקון מותאם לכיסוי"
+
+#: main-modules.php:182 main-modules.php:10224 main-modules.php:16044
+msgid "Animation"
+msgstr "אנימציה"
+
+#: main-modules.php:186 main-modules.php:1767 main-modules.php:10235
+#: main-modules.php:16055
+msgid "This controls the direction of the lazy-loading animation."
+msgstr "זה קובע את כיוון האנימציה"
+
+#: main-modules.php:189
+msgid "Remove Space Below The Image"
+msgstr "הסר את החלל מתחת לתמונה"
+
+#: main-modules.php:196
+msgid ""
+"Here you can choose whether or not the image should have a space below it."
+msgstr "כאן אתה יכול לבחור אם מתחת לתמונה שלך יהיה חלל"
+
+#: main-modules.php:199
+msgid "Image Alignment"
+msgstr "יישור תמונה"
+
+#: main-modules.php:207
+msgid "Here you can choose the image alignment."
+msgstr "כאן אתה יכול לבחור את יישור התמונה"
+
+#: main-modules.php:210 main-modules.php:1793
+msgid "Image Max Width"
+msgstr "רוחב מקסימלי של תמונה"
+
+#: main-modules.php:218
+msgid "Force Fullwidth"
+msgstr "הפוך לרוחב מלא"
+
+#: main-modules.php:228
+msgid "Always Center Image On Mobile"
+msgstr "תמיד מרכז תמונה בנייד"
+
+#: main-modules.php:244 main-modules.php:638 main-modules.php:893
+#: main-modules.php:1097 main-modules.php:1448 main-modules.php:1840
+#: main-modules.php:2090 main-modules.php:2572 main-modules.php:3867
+#: main-modules.php:4459 main-modules.php:4914 main-modules.php:5570
+#: main-modules.php:5761 main-modules.php:5980 main-modules.php:6352
+#: main-modules.php:6784 main-modules.php:7143 main-modules.php:7548
+#: main-modules.php:7914 main-modules.php:8318 main-modules.php:8514
+#: main-modules.php:8683 main-modules.php:8996 main-modules.php:9264
+#: main-modules.php:9815 main-modules.php:10013 main-modules.php:10290
+#: main-modules.php:10731 main-modules.php:11259 main-modules.php:11553
+#: main-modules.php:11753 main-modules.php:12015 main-modules.php:12569
+#: main-modules.php:12928 main-modules.php:13276 main-modules.php:13531
+#: main-modules.php:14055 main-modules.php:14533 main-modules.php:15036
+#: main-modules.php:15399 main-modules.php:15640 main-modules.php:15748
+#: main-modules.php:15843 main-modules.php:16058 main-modules.php:16448
+#: main-modules.php:17144 main-structure-elements.php:470
+#: main-structure-elements.php:1371 main-structure-elements.php:2066
+msgid "Disable on"
+msgstr "כיבוי מופעל"
+
+#: main-modules.php:247 main-modules.php:641 main-modules.php:896
+#: main-modules.php:1100 main-modules.php:1451 main-modules.php:1843
+#: main-modules.php:2093 main-modules.php:2575 main-modules.php:3870
+#: main-modules.php:4462 main-modules.php:4917 main-modules.php:5573
+#: main-modules.php:5764 main-modules.php:5983 main-modules.php:6355
+#: main-modules.php:6787 main-modules.php:7146 main-modules.php:7551
+#: main-modules.php:7917 main-modules.php:8321 main-modules.php:8517
+#: main-modules.php:8686 main-modules.php:8999 main-modules.php:9267
+#: main-modules.php:9818 main-modules.php:10016 main-modules.php:10293
+#: main-modules.php:10734 main-modules.php:11262 main-modules.php:11556
+#: main-modules.php:11756 main-modules.php:12018 main-modules.php:12572
+#: main-modules.php:12931 main-modules.php:13279 main-modules.php:13534
+#: main-modules.php:14058 main-modules.php:14536 main-modules.php:15039
+#: main-modules.php:15402 main-modules.php:15643 main-modules.php:15751
+#: main-modules.php:15846 main-modules.php:16061 main-modules.php:16451
+#: main-modules.php:17147 main-structure-elements.php:473
+#: main-structure-elements.php:1374 main-structure-elements.php:2069
+msgid "Phone"
+msgstr "טלפון"
+
+#: main-modules.php:253 main-modules.php:647 main-modules.php:902
+#: main-modules.php:1106 main-modules.php:1457 main-modules.php:1849
+#: main-modules.php:2099 main-modules.php:2581 main-modules.php:3876
+#: main-modules.php:4468 main-modules.php:4923 main-modules.php:5579
+#: main-modules.php:5770 main-modules.php:5989 main-modules.php:6361
+#: main-modules.php:6793 main-modules.php:7152 main-modules.php:7557
+#: main-modules.php:7923 main-modules.php:8327 main-modules.php:8523
+#: main-modules.php:8692 main-modules.php:9005 main-modules.php:9273
+#: main-modules.php:9824 main-modules.php:10022 main-modules.php:10299
+#: main-modules.php:10740 main-modules.php:11268 main-modules.php:11562
+#: main-modules.php:11762 main-modules.php:12024 main-modules.php:12578
+#: main-modules.php:12937 main-modules.php:13285 main-modules.php:13540
+#: main-modules.php:14064 main-modules.php:14542 main-modules.php:15045
+#: main-modules.php:15408 main-modules.php:15649 main-modules.php:15757
+#: main-modules.php:15852 main-modules.php:16067 main-modules.php:16457
+#: main-modules.php:17153 main-structure-elements.php:479
+#: main-structure-elements.php:1380 main-structure-elements.php:2075
+msgid "This will disable the module on selected devices"
+msgstr "אפשרות זו תכבה את המודול במכשירים נבחרים."
+
+#: main-modules.php:256 main-modules.php:650 main-modules.php:905
+#: main-modules.php:1109 main-modules.php:1227 main-modules.php:1460
+#: main-modules.php:1852 main-modules.php:2102 main-modules.php:2584
+#: main-modules.php:3061 main-modules.php:3879 main-modules.php:4471
+#: main-modules.php:4926 main-modules.php:5582 main-modules.php:5773
+#: main-modules.php:5992 main-modules.php:6364 main-modules.php:6796
+#: main-modules.php:7155 main-modules.php:7560 main-modules.php:7926
+#: main-modules.php:8330 main-modules.php:8526 main-modules.php:8695
+#: main-modules.php:9008 main-modules.php:9276 main-modules.php:9827
+#: main-modules.php:10025 main-modules.php:10302 main-modules.php:10743
+#: main-modules.php:11271 main-modules.php:11565 main-modules.php:11765
+#: main-modules.php:12027 main-modules.php:12581 main-modules.php:12940
+#: main-modules.php:13288 main-modules.php:13543 main-modules.php:14067
+#: main-modules.php:14545 main-modules.php:15048 main-modules.php:15411
+#: main-modules.php:15652 main-modules.php:15760 main-modules.php:15855
+#: main-modules.php:16070 main-modules.php:16460 main-modules.php:17156
+#: main-structure-elements.php:1180
+msgid "Admin Label"
+msgstr "תווית אדמין"
+
+#: main-modules.php:258 main-modules.php:652 main-modules.php:907
+#: main-modules.php:1111 main-modules.php:1462 main-modules.php:1854
+#: main-modules.php:2104 main-modules.php:2586 main-modules.php:3881
+#: main-modules.php:4473 main-modules.php:4928 main-modules.php:5584
+#: main-modules.php:5775 main-modules.php:5994 main-modules.php:6366
+#: main-modules.php:6798 main-modules.php:7157 main-modules.php:7562
+#: main-modules.php:7928 main-modules.php:8332 main-modules.php:8528
+#: main-modules.php:8697 main-modules.php:9010 main-modules.php:9278
+#: main-modules.php:9829 main-modules.php:10027 main-modules.php:10304
+#: main-modules.php:10745 main-modules.php:11273 main-modules.php:11567
+#: main-modules.php:11767 main-modules.php:12029 main-modules.php:12583
+#: main-modules.php:12942 main-modules.php:13290 main-modules.php:13545
+#: main-modules.php:14069 main-modules.php:14547 main-modules.php:15050
+#: main-modules.php:15413 main-modules.php:15654 main-modules.php:15762
+#: main-modules.php:15857 main-modules.php:16072 main-modules.php:16462
+#: main-modules.php:17158
+msgid ""
+"This will change the label of the module in the builder for easy "
+"identification."
+msgstr "זה ישנה את התווית של המודול בבנייה לזיהוי בקלות"
+
+#: main-modules.php:426
+msgid "Gallery"
+msgstr "גלריה"
+
+#: main-modules.php:462 main-modules.php:5870
+msgid "Caption"
+msgstr "תיאור"
+
+#: main-modules.php:476 main-modules.php:1637 main-modules.php:2254
+#: main-modules.php:5284 main-modules.php:5486 main-modules.php:5864
+#: main-modules.php:5938 main-modules.php:6254 main-modules.php:6682
+#: main-modules.php:7013 main-modules.php:7392 main-modules.php:7811
+#: main-modules.php:8045 main-modules.php:8230 main-modules.php:8263
+#: main-modules.php:8436 main-modules.php:8477 main-modules.php:8835
+#: main-modules.php:8908 main-modules.php:8956 main-modules.php:9135
+#: main-modules.php:9208 main-modules.php:9572 main-modules.php:9770
+#: main-modules.php:10186 main-modules.php:10512 main-modules.php:11110
+#: main-modules.php:11148 main-modules.php:11499 main-modules.php:11853
+#: main-modules.php:12356 main-modules.php:12372 main-modules.php:13700
+#: main-modules.php:13786 main-modules.php:13811 main-modules.php:15231
+#: main-modules.php:16249
+msgid "Title"
+msgstr "כותרת"
+
+#: main-modules.php:491
+msgid "Gallery Item"
+msgstr "פריט גלריה"
+
+#: main-modules.php:495 main-modules.php:7039 main-modules.php:7436
+#: main-modules.php:11144
+msgid "Overlay"
+msgstr "כיסוי"
+
+#: main-modules.php:499 main-modules.php:7043 main-modules.php:7440
+msgid "Overlay Icon"
+msgstr "אייקון כיסוי"
+
+#: main-modules.php:503
+msgid "Gallery Item Title"
+msgstr "כותרת פריט גלריה"
+
+#: main-modules.php:507
+msgid "Gallery Item Caption"
+msgstr "כותרת לפריט מהגלריה"
+
+#: main-modules.php:511
+msgid "Gallery Pagination"
+msgstr "עימוד גלריה"
+
+#: main-modules.php:515 main-modules.php:7456
+msgid "Pagination Active Page"
+msgstr "עימוד לעמוד אקטיבי"
+
+#: main-modules.php:524 main-modules.php:533
+msgid "Gallery Images"
+msgstr "גלריית תמונות"
+
+#: main-modules.php:542 main-modules.php:2296
+msgid "Slider"
+msgstr "סליידר"
+
+#: main-modules.php:543 main-modules.php:7065 main-modules.php:7470
+#: main-modules.php:10542 main-modules.php:15307
+msgid "Grid"
+msgstr "רשת"
+
+#: main-modules.php:545 main-modules.php:10549
+msgid "Toggle between the various blog layout types."
+msgstr "מעבר בין הסוגים השונים של פריסת הבלוג"
+
+#: main-modules.php:557
+msgid "Images Number"
+msgstr "מספר תמונות"
+
+#: main-modules.php:560
+msgid "Define the number of images that should be displayed per page."
+msgstr "הגדר את מספר תמונות שיוצגו בכל עמוד "
+
+#: main-modules.php:564
+msgid "Show Title and Caption"
+msgstr "הצג כותרת וכיתוב"
+
+#: main-modules.php:571
+msgid ""
+"Here you can choose whether to show the images title and caption, if the "
+"image has them."
+msgstr ""
+"כאן אתה יכול לבחור האם להראות את כותרות וכיתוב התמונות, אם לתמונה יש אותם"
+
+#: main-modules.php:574 main-modules.php:7102 main-modules.php:7507
+#: main-modules.php:10647
+msgid "Show Pagination"
+msgstr "הצג עימוד"
+
+#: main-modules.php:581 main-modules.php:7109 main-modules.php:7514
+msgid "Enable or disable pagination for this feed."
+msgstr "הפעל או בטל מספור עמודים לפיד זה"
+
+#: main-modules.php:584 main-modules.php:1411 main-modules.php:1770
+#: main-modules.php:2991 main-modules.php:3622 main-modules.php:4402
+#: main-modules.php:5533 main-modules.php:5751 main-modules.php:5970
+#: main-modules.php:6285 main-modules.php:6717 main-modules.php:7112
+#: main-modules.php:7517 main-modules.php:7851 main-modules.php:8286
+#: main-modules.php:8504 main-modules.php:9795 main-modules.php:10238
+#: main-modules.php:10702 main-modules.php:11524 main-modules.php:11985
+#: main-modules.php:12535 main-modules.php:12827 main-modules.php:13254
+#: main-modules.php:13823 main-modules.php:14448 main-modules.php:15347
+#: main-modules.php:16414 main-modules.php:16899
+msgid "Text Color"
+msgstr "צבע טקסט"
+
+#: main-modules.php:588 main-modules.php:1080 main-modules.php:1271
+#: main-modules.php:1415 main-modules.php:1774 main-modules.php:2996
+#: main-modules.php:3627 main-modules.php:4406 main-modules.php:5538
+#: main-modules.php:5755 main-modules.php:5975 main-modules.php:6290
+#: main-modules.php:6722 main-modules.php:7116 main-modules.php:7521
+#: main-modules.php:7855 main-modules.php:8290 main-modules.php:8508
+#: main-modules.php:9799 main-modules.php:10242 main-modules.php:10706
+#: main-modules.php:11528 main-modules.php:11989 main-modules.php:12539
+#: main-modules.php:12831 main-modules.php:13258 main-modules.php:13827
+#: main-modules.php:14452 main-modules.php:15351 main-modules.php:16418
+#: main-modules.php:16904
+msgid "Dark"
+msgstr "כהה"
+
+#: main-modules.php:589 main-modules.php:1079 main-modules.php:1270
+#: main-modules.php:1416 main-modules.php:1775 main-modules.php:2995
+#: main-modules.php:3626 main-modules.php:4407 main-modules.php:5537
+#: main-modules.php:5756 main-modules.php:5974 main-modules.php:6289
+#: main-modules.php:6721 main-modules.php:7117 main-modules.php:7522
+#: main-modules.php:7856 main-modules.php:8291 main-modules.php:8509
+#: main-modules.php:9800 main-modules.php:10243 main-modules.php:10707
+#: main-modules.php:11529 main-modules.php:11990 main-modules.php:12540
+#: main-modules.php:12832 main-modules.php:13259 main-modules.php:13828
+#: main-modules.php:14453 main-modules.php:15352 main-modules.php:16419
+#: main-modules.php:16903
+msgid "Light"
+msgstr "בהיר"
+
+#: main-modules.php:591 main-modules.php:1777 main-modules.php:4409
+#: main-modules.php:5540 main-modules.php:5758 main-modules.php:5977
+#: main-modules.php:6292 main-modules.php:6724 main-modules.php:7119
+#: main-modules.php:7524 main-modules.php:7858 main-modules.php:8293
+#: main-modules.php:9802 main-modules.php:10710 main-modules.php:11531
+#: main-modules.php:11992 main-modules.php:15354
+msgid ""
+"Here you can choose whether your text should be light or dark. If you are "
+"working with a dark background, then your text should be light. If your "
+"background is light, then your text should be set to dark."
+msgstr ""
+"כאן אתה יכול לבחור האם הטקסט שלך יהיה בהיר או כהה. אם אתה עובד עם רקע כהה, אז "
+"הטקסט שלך צריך להיות בהיר. אם הרקע שלך בהיר, אז הטקסט שלך צריך להיות כהה."
+
+#: main-modules.php:594 main-modules.php:2420 main-modules.php:3766
+#: main-modules.php:14886 main-modules.php:17043
+msgid "Automatic Animation"
+msgstr "אנימציה אוטומטית"
+
+#: main-modules.php:605 main-modules.php:2430 main-modules.php:3776
+#: main-modules.php:14896 main-modules.php:17053
+msgid ""
+"If you would like the slider to slide automatically, without the visitor "
+"having to click the next button, enable this option and then adjust the "
+"rotation speed below if desired."
+msgstr ""
+"אם אתה רוצה שהשקופית תופיע באופן אוטומטית, מבלי שהמשתמש יצטרך להלחיץ על "
+"הכפתור הבא, אפשר אופציה זאת ואז קבע את מהירות המחזור"
+
+#: main-modules.php:608 main-modules.php:2433 main-modules.php:3779
+#: main-modules.php:14899 main-modules.php:17056
+msgid "Automatic Animation Speed (in ms)"
+msgstr "מהירות אנימציה אוטומטית (באלפיות השנייה)"
+
+#: main-modules.php:612 main-modules.php:2437 main-modules.php:3783
+#: main-modules.php:14903 main-modules.php:17060
+msgid ""
+"Here you can designate how fast the slider fades between each slide, if "
+"'Automatic Animation' option is enabled above. The higher the number the "
+"longer the pause between each rotation."
+msgstr ""
+"כאן אתה יכול לציין את מהירות המעבר בין שקופיות, אם תבחר את 'אנימציה "
+"אוטומטית',  המוצגת  לעיל. ככל שהמספר גבוה יותר כך גדלה ההפסקה בין הסיבובים."
+
+#: main-modules.php:615 main-modules.php:7122 main-modules.php:7536
+#: main-modules.php:15378
+msgid "Zoom Icon Color"
+msgstr "צבע אייקון התקרבות"
+
+#: main-modules.php:829 main-modules.php:1006 main-modules.php:1203
+msgid "Video"
+msgstr "וידאו"
+
+#: main-modules.php:844
+msgid "Video Icon"
+msgstr "אייקון וידאו"
+
+#: main-modules.php:853 main-modules.php:1232
+msgid "Video MP4/URL"
+msgstr "וידאו  MP4 URL"
+
+#: main-modules.php:857 main-modules.php:867 main-modules.php:1236
+#: main-modules.php:1246 main-modules.php:3005 main-modules.php:3015
+#: main-structure-elements.php:138 main-structure-elements.php:148
+#: main-structure-elements.php:1093 main-structure-elements.php:1103
+msgid "Upload a video"
+msgstr "העלה וידאו"
+
+#: main-modules.php:858 main-modules.php:1237
+msgid "Choose a Video MP4 File"
+msgstr "בחור קובץ וידאו MP4 "
+
+#: main-modules.php:859 main-modules.php:869 main-modules.php:1238
+#: main-modules.php:1248
+msgid "Set As Video"
+msgstr "קבע כוידאו"
+
+#: main-modules.php:860 main-modules.php:1239
+msgid ""
+"Upload your desired video in .MP4 format, or type in the URL to the video you "
+"would like to display"
+msgstr ""
+"העלה את הסרטון הרצוי שלך בפורמט .MP4, או הכנס את ה- URL  לוידאו שאתה רוצה "
+"להציג"
+
+#: main-modules.php:863 main-modules.php:1242
+msgid "Video Webm"
+msgstr "כאן המשתמש יכול להעלות קובץ לאתר שלו. "
+
+#: main-modules.php:868 main-modules.php:1247
+msgid "Choose a Video WEBM File"
+msgstr "בחר קובץ וידאו  .WEBM"
+
+#: main-modules.php:870 main-modules.php:1249
+msgid ""
+"Upload the .WEBM version of your video here. All uploaded videos should be in "
+"both .MP4 .WEBM formats to ensure maximum compatibility in all browsers."
+msgstr ""
+"העלה גרסת .WEBM של הוידאו כאן. כל הקבצים שמועלים צריכים להיות בגרסאות .MP4 ו."
+"WEBM בכדי להבטיח תצוגה מקסימלית בכל הדפדפנים "
+
+#: main-modules.php:873 main-modules.php:1252
+msgid "Image Overlay URL"
+msgstr "שכבת תמונה  URL"
+
+#: main-modules.php:881 main-modules.php:1260
+msgid "Generate From Video"
+msgstr "צור מוידאו"
+
+#: main-modules.php:884 main-modules.php:1263
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"display over your video. You can also generate a still image from your video."
+msgstr ""
+"העלה את התמונה הרצויה, או הקלד את URL לתמונה שאתה רוצה להציג על המסך שלך. אתה "
+"גם יכול ליצור תמונת סטילס מהוידאו שלך"
+
+#: main-modules.php:887 main-modules.php:1085
+msgid "Play Icon Color"
+msgstr "צבע אייקון ה\"נגן\""
+
+#: main-modules.php:1003
+msgid "Video Slider"
+msgstr "סליידר וידאו"
+
+#: main-modules.php:1028
+msgid "Play Button"
+msgstr "כפתור נגן"
+
+#: main-modules.php:1032
+msgid "Thumbnail Item"
+msgstr "תמונה ממוזערת"
+
+#: main-modules.php:1036
+msgid "Slider Arrows"
+msgstr "חצי מחוון"
+
+#: main-modules.php:1045
+msgid "Display Image Overlays on Main Video"
+msgstr "הצג פריסות תמונה בוידאו הראשי"
+
+#: main-modules.php:1049
+msgid "Hide"
+msgstr "הסתר"
+
+#: main-modules.php:1050
+msgid "Show"
+msgstr "הצג"
+
+#: main-modules.php:1052
+msgid ""
+"This option will cover the player UI on the main video. This image can either "
+"be uploaded in each video setting or auto-generated by Divi."
+msgstr ""
+"אפשרות זו תכסה את ממשק הנגן בווידאו הראשי. תמונה זו יכולה גם להיות תמונה "
+"שהועלתה בכל אחת מהגדרות וידאו או שנוצרה אוטומטית על ידי  Divi ."
+
+#: main-modules.php:1055 main-modules.php:2400 main-modules.php:14866
+msgid "Arrows"
+msgstr "חצים"
+
+#: main-modules.php:1059 main-modules.php:2404 main-modules.php:3525
+#: main-modules.php:14870 main-modules.php:16802
+msgid "Show Arrows"
+msgstr "הצג חצים"
+
+#: main-modules.php:1060 main-modules.php:2405 main-modules.php:14871
+msgid "Hide Arrows"
+msgstr "הסתר חצים"
+
+#: main-modules.php:1062 main-modules.php:2407 main-modules.php:3532
+#: main-modules.php:16809
+msgid "This setting will turn on and off the navigation arrows."
+msgstr "הגדרה זאת תפעיל ותכבה את חצי הניווט"
+
+#: main-modules.php:1065
+msgid "Slider Controls"
+msgstr "בקרת סליידר"
+
+#: main-modules.php:1069
+msgid "Use Thumbnail Track"
+msgstr "השתמש בתמונות ממוזערות"
+
+#: main-modules.php:1070
+msgid "Use Dot Navigation"
+msgstr "השתמש בניווט דוט"
+
+#: main-modules.php:1072
+msgid ""
+"This setting will let you choose to use the thumbnail track controls below "
+"the slider or dot navigation at the bottom of the slider."
+msgstr ""
+"הגדרה זאת תאפשר לך לבחור להשתמש בשליטה של התמונות הממוזערות מתחת לסליידר או "
+"נווט דוט בתחתית הסליידר"
+
+#: main-modules.php:1075
+msgid "Slider Controls Color"
+msgstr "צבע הגדרות סליידר"
+
+#: main-modules.php:1082
+msgid ""
+"This setting will make your slider controls either light or dark in color. "
+"Slider controls are either the arrows on the thumbnail track or the circles "
+"in dot navigation."
+msgstr ""
+"הגדרה זאת תיגרם לסליידר שלך לקבוע צבע בהיר או כהה. הגדרות סליידר הן החצים "
+"בתמונות הממוזערות או בעיגולים של נווט הדוט"
+
+#: main-modules.php:1091
+msgid "Thumbnail Overlay Color"
+msgstr "צבע כיסוי תמונה ממוזערת"
+
+#: main-modules.php:1208
+msgid "New Video"
+msgstr "וידאו חדש"
+
+#: main-modules.php:1209
+msgid "Video Settings"
+msgstr "הגדרות וידאו"
+
+#: main-modules.php:1229
+msgid ""
+"This will change the label of the video in the builder for easy "
+"identification."
+msgstr "זה ישנה את התווית של התמונה זיהוי קל"
+
+#: main-modules.php:1266
+msgid "Slider Arrows Color"
+msgstr "צבע החצים של סליידר"
+
+#: main-modules.php:1273
+msgid "This setting will make your slider arrows either light or dark in color."
+msgstr "הגדרות אלה יהפכו את חצי הסליידר לצבע בהיר או כהה"
+
+#: main-modules.php:1364 main-modules.php:1388
+msgid "Text"
+msgstr "טקסט"
+
+#: main-modules.php:1418 main-modules.php:10245 main-modules.php:12834
+#: main-modules.php:13261 main-modules.php:13830 main-modules.php:14455
+msgid ""
+"Here you can choose the value of your text. If you are working with a dark "
+"background, then your text should be set to light. If you are working with a "
+"light background, then your text should be dark."
+msgstr ""
+"כאן אתה יכול לבחור את הערך של הטקסט שלך. אם אתה עובד עם רקע כהה, אז הטקסט שלך "
+"צריך להיות בהיר. אם אתה עובד עם עם רקע כהה, אז הטקסט שלך צריך להיות כהה."
+
+#: main-modules.php:1421 main-modules.php:1780 main-modules.php:4412
+#: main-modules.php:5543 main-modules.php:6295 main-modules.php:6727
+#: main-modules.php:12524 main-modules.php:12837 main-modules.php:14458
+#: main-modules.php:16403
+msgid "Text Orientation"
+msgstr "כיוון טקסט"
+
+#: main-modules.php:1425 main-modules.php:12845 main-modules.php:13837
+#: main-modules.php:14462
+msgid "This controls the how your text is aligned within the module."
+msgstr "כאן ניתן לקבוע האם כיצד הטקסט מיושר במודול"
+
+#: main-modules.php:1431 main-modules.php:15731 main-modules.php:15840
+msgid "Here you can create the content that will be used within the module."
+msgstr "כאן ניתן ליצור את התוכן בו יעשה שימוש במודול"
+
+#: main-modules.php:1434 main-modules.php:5556 main-modules.php:12896
+#: main-modules.php:15734
+msgid "Max Width"
+msgstr "רוחב מקסימלי"
+
+#: main-modules.php:1528
+msgid "Blurb"
+msgstr "תקציר"
+
+#: main-modules.php:1582 main-modules.php:2346 main-modules.php:2798
+#: main-modules.php:3426 main-modules.php:4730 main-modules.php:5146
+#: main-modules.php:5439 main-modules.php:6140 main-modules.php:6634
+#: main-modules.php:9750 main-modules.php:10152 main-modules.php:10489
+#: main-modules.php:11452 main-modules.php:14809 main-modules.php:16703
+msgid "Header"
+msgstr "כותרת"
+
+#: main-modules.php:1588 main-modules.php:2038 main-modules.php:2226
+#: main-modules.php:2352 main-modules.php:2812 main-modules.php:3432
+#: main-modules.php:4287 main-modules.php:4771 main-modules.php:5191
+#: main-modules.php:5446 main-modules.php:6147 main-modules.php:6641
+#: main-modules.php:8612 main-modules.php:8914 main-modules.php:9756
+#: main-modules.php:10158 main-modules.php:10502 main-modules.php:14818
+#: main-modules.php:16709
+msgid "Body"
+msgstr "גוף"
+
+#: main-modules.php:1608
+msgid "Blurb Image"
+msgstr "תמונת הפסקה"
+
+#: main-modules.php:1612
+msgid "Blurb Title"
+msgstr "כותרת הפסקה"
+
+#: main-modules.php:1616
+msgid "Blurb Content"
+msgstr "תוכן הפסקה"
+
+#: main-modules.php:1640
+msgid "The title of your blurb will appear in bold below your blurb image."
+msgstr "הכותרת של התקציר תופיע מודגשת מתחת לתמונת התקציר"
+
+#: main-modules.php:1643
+msgid "Url"
+msgstr "‏Url"
+
+#: main-modules.php:1646
+msgid ""
+"If you would like to make your blurb a link, input your destination URL here."
+msgstr "אם אתה רוצה להפוך את התקציר שלך ללינק, הכנס כאן את כתובת ה-URL"
+
+#: main-modules.php:1659
+msgid "Use Icon"
+msgstr "השתמש בסמל"
+
+#: main-modules.php:1673
+msgid "Here you can choose whether icon set below should be used."
+msgstr "כאן אתה יכול לבחור האם ייעשה שימוש בסימן שנקבע למטה"
+
+#: main-modules.php:1676 main-modules.php:13867
+msgid "Icon"
+msgstr "אייקון"
+
+#: main-modules.php:1682
+msgid "Choose an icon to display with your blurb."
+msgstr "בחר סימן כדי להציג את התקציר"
+
+#: main-modules.php:1686 main-modules.php:8677 main-modules.php:8871
+#: main-modules.php:8990 main-modules.php:10278 main-modules.php:12230
+msgid "Icon Color"
+msgstr "צבע סמל"
+
+#: main-modules.php:1688
+msgid "Here you can define a custom color for your icon."
+msgstr "כאן תוכל להגדיר צבע מותאם אישית עבור הסמל שלך."
+
+#: main-modules.php:1692
+msgid "Circle Icon"
+msgstr "הקף סמל"
+
+#: main-modules.php:1703
+msgid ""
+"Here you can choose whether icon set above should display within a circle."
+msgstr "כאן אתה יכול לקבוע האם הסמל שלך שנקבע למעלה יהיה מוקף בעיגול"
+
+#: main-modules.php:1707 main-modules.php:8301
+msgid "Circle Color"
+msgstr "צבע העיגול"
+
+#: main-modules.php:1709
+msgid "Here you can define a custom color for the icon circle."
+msgstr "כאן אתה יכול לקבוע צבע מותאם אישית עבור העיגול  של הסמל"
+
+#: main-modules.php:1713
+msgid "Show Circle Border"
+msgstr "הצג את גבול העיגול"
+
+#: main-modules.php:1723
+msgid "Here you can choose whether if the icon circle border should display."
+msgstr "כאן אתה יכול לבחור האם להציג את הגבול של העיגול"
+
+#: main-modules.php:1727
+msgid "Circle Border Color"
+msgstr "צבע גבול העיגול"
+
+#: main-modules.php:1729
+msgid "Here you can define a custom color for the icon circle border."
+msgstr "כאן אתה יכול לבחור צבע מותאם אישית עבור גבול עיגול הסמל שלך"
+
+#: main-modules.php:1740
+msgid "Upload an image to display at the top of your blurb."
+msgstr "העלה תמונות להצגה בחלק העליון של הפרסומת שלך."
+
+#: main-modules.php:1743
+msgid "Image Alt Text"
+msgstr "טקסט אלטרנטיבי לתמונה"
+
+#: main-modules.php:1746
+msgid "Define the HTML ALT text for your image here."
+msgstr "הגדר כאן את הטקסט חלופי עבור התמונה שלך"
+
+#: main-modules.php:1750
+msgid "Image/Icon Placement"
+msgstr "מיקום תמונה/סמל"
+
+#: main-modules.php:1754
+msgid "Here you can choose where to place the icon."
+msgstr "כאן אתה יכול לבחור היכן לממקם את הסמל שלך"
+
+#: main-modules.php:1757
+msgid "Image/Icon Animation"
+msgstr "אנימציית תמונה/סמל"
+
+#: main-modules.php:1784
+msgid "This will control how your blurb text is aligned."
+msgstr "זה ייקבע כיצד טקסט הפרסומת שלך ייושר"
+
+#: main-modules.php:1790 main-modules.php:4422 main-modules.php:5553
+#: main-modules.php:6305 main-modules.php:6737 main-modules.php:8975
+#: main-modules.php:10275
+msgid "Input the main text content for your module here."
+msgstr "הכנס כאן את תוכן הטקסט העיקרי למודול שלך"
+
+#: main-modules.php:1801
+msgid "Use Icon Font Size"
+msgstr "השתמש בגודל הפונט של האייקון"
+
+#: main-modules.php:1814
+msgid "Icon Font Size"
+msgstr "גודל הפונט של האייקון"
+
+#: main-modules.php:2014
+msgid "Tabs"
+msgstr "כרטיסיות"
+
+#: main-modules.php:2017 main-modules.php:2031 main-modules.php:2061
+#: main-modules.php:2195 main-modules.php:2211 main-modules.php:2277
+msgid "Tab"
+msgstr "אטב"
+
+#: main-modules.php:2057
+msgid "Tabs Controls"
+msgstr "בקרי לשוניות"
+
+#: main-modules.php:2065
+msgid "Active Tab"
+msgstr "לשונית פעילה"
+
+#: main-modules.php:2069
+msgid "Tabs Content"
+msgstr "תוכן לשוניות"
+
+#: main-modules.php:2078
+msgid "Active Tab Background Color"
+msgstr "צבע הרקע של לשונית הפעילה"
+
+#: main-modules.php:2084
+msgid "Inactive Tab Background Color"
+msgstr "צבע הרקע של לשונית לא פעילה"
+
+#: main-modules.php:2205
+msgid "New Tab"
+msgstr "כרטיסייה חדשה"
+
+#: main-modules.php:2206
+msgid "Tab Settings"
+msgstr "הגדרות כרטיסייה"
+
+#: main-modules.php:2256 main-modules.php:11856
+msgid "The title will be used within the tab button for this tab."
+msgstr "הכותרת תשמש בתוך לחצן הכרטיסייה לכרטיסייה זו."
+
+#: main-modules.php:2299 main-modules.php:2747 main-modules.php:14515
+#: main-modules.php:14761
+msgid "Slide"
+msgstr "שקופית"
+
+#: main-modules.php:2361 main-modules.php:2829 main-modules.php:3458
+#: main-modules.php:4809 main-modules.php:5215 main-modules.php:5463
+#: main-modules.php:5682 main-modules.php:5706 main-modules.php:6161
+#: main-modules.php:6655 main-modules.php:9157 main-modules.php:12789
+#: main-modules.php:12818 main-modules.php:13166 main-modules.php:13749
+#: main-modules.php:14827 main-modules.php:16735
+msgid "Button"
+msgstr "כפתור"
+
+#: main-modules.php:2367 main-modules.php:2843 main-modules.php:3464
+#: main-modules.php:14833 main-modules.php:16741
+msgid "Slide Description"
+msgstr "תיאור שקופית"
+
+#: main-modules.php:2371 main-modules.php:2839 main-modules.php:3468
+#: main-modules.php:14837 main-modules.php:16745
+msgid "Slide Title"
+msgstr "כותרת שקופית"
+
+#: main-modules.php:2375 main-modules.php:2847 main-modules.php:3472
+#: main-modules.php:14841 main-modules.php:16749
+msgid "Slide Button"
+msgstr "כפתור שקופית"
+
+#: main-modules.php:2379 main-modules.php:3476 main-modules.php:14845
+#: main-modules.php:16753
+msgid "Slide Controllers"
+msgstr "בקרי שקופית"
+
+#: main-modules.php:2383 main-modules.php:3480 main-modules.php:14849
+#: main-modules.php:16757
+msgid "Slide Active Controller"
+msgstr "בקר שקופיות אקטיבי"
+
+#: main-modules.php:2387 main-modules.php:2851 main-modules.php:2920
+#: main-modules.php:3484 main-modules.php:14853 main-modules.php:16761
+msgid "Slide Image"
+msgstr "תמונת שקופית"
+
+#: main-modules.php:2391 main-modules.php:3488 main-modules.php:14857
+#: main-modules.php:16765
+msgid "Slide Arrows"
+msgstr "חצי שקופית"
+
+#: main-modules.php:2410 main-modules.php:3535 main-modules.php:16812
+msgid "Show Controls"
+msgstr "הצג כפתורי בקרה"
+
+#: main-modules.php:2417 main-modules.php:3542 main-modules.php:16819
+msgid ""
+"This setting will turn on and off the circle buttons at the bottom of the "
+"slider."
+msgstr "הגדרה זו תדליק/תכבה את כפתורי העיגולים בתחתית הסליידר"
+
+#: main-modules.php:2440 main-modules.php:3786 main-modules.php:14906
+#: main-modules.php:17063
+msgid "Continue Automatic Slide on Hover"
+msgstr "המשך אוטומטי שקופית על ריחוף"
+
+#: main-modules.php:2448 main-modules.php:3794 main-modules.php:14914
+#: main-modules.php:17071
+msgid "Turning this on will allow automatic sliding to continue on mouse hover."
+msgstr "מפנה זה יאפשר הזזה אוטומטית להמשיך על העכבר מרחף."
+
+#: main-modules.php:2451 main-modules.php:3662 main-modules.php:13972
+#: main-modules.php:14917 main-modules.php:16939
+msgid "Use Parallax effect"
+msgstr "השתמש באפקט Parallax"
+
+#: main-modules.php:2463 main-modules.php:3675 main-modules.php:16952
+msgid ""
+"Enabling this option will give your background images a fixed position as you "
+"scroll."
+msgstr "הפעלת אפשרות זו תיתן לך תמונות רקע קבועה כאשר תגולל את העכבר"
+
+#: main-modules.php:2466 main-modules.php:3678 main-modules.php:13985
+#: main-modules.php:14930 main-modules.php:16955
+msgid "Parallax method"
+msgstr "שיטת פרלקס"
+
+#: main-modules.php:2474 main-modules.php:3686 main-modules.php:13993
+#: main-modules.php:14938 main-modules.php:16963 main-structure-elements.php:207
+msgid "Define the method, used for the parallax effect."
+msgstr "הגדר את השיטה שתשמש ליצרת אפקט פרלקס"
+
+#: main-modules.php:2477 main-modules.php:3729 main-modules.php:14941
+#: main-modules.php:17006
+msgid "Remove Inner Shadow"
+msgstr "הסר צל פנימי"
+
+#: main-modules.php:2486 main-modules.php:2887 main-modules.php:3738
+#: main-modules.php:14950 main-modules.php:17015
+msgid "Background Image Position"
+msgstr "רקע מיקום תמונה"
+
+#: main-modules.php:2491 main-modules.php:2893 main-modules.php:3743
+#: main-modules.php:14955 main-modules.php:17020
+msgid "Top Left"
+msgstr "למעלה משמאל"
+
+#: main-modules.php:2492 main-modules.php:2894 main-modules.php:3744
+#: main-modules.php:14956 main-modules.php:17021
+msgid "Top Center"
+msgstr "המרכז עליון"
+
+#: main-modules.php:2493 main-modules.php:2895 main-modules.php:3745
+#: main-modules.php:14957 main-modules.php:17022
+msgid "Top Right"
+msgstr "ימין למעלה"
+
+#: main-modules.php:2494 main-modules.php:2896 main-modules.php:3746
+#: main-modules.php:14958 main-modules.php:17023
+msgid "Center Right"
+msgstr "במרכז"
+
+#: main-modules.php:2495 main-modules.php:2897 main-modules.php:3747
+#: main-modules.php:14959 main-modules.php:17024
+msgid "Center Left"
+msgstr "מרכז שמאל"
+
+#: main-modules.php:2496 main-modules.php:2898 main-modules.php:3748
+#: main-modules.php:14960 main-modules.php:17025
+msgid "Bottom Left"
+msgstr "השמאלית התחתונה"
+
+#: main-modules.php:2497 main-modules.php:2899 main-modules.php:3749
+#: main-modules.php:14961 main-modules.php:17026
+msgid "Bottom Center"
+msgstr "בתחתית מרכז"
+
+#: main-modules.php:2498 main-modules.php:2900 main-modules.php:3750
+#: main-modules.php:14962 main-modules.php:17027
+msgid "Bottom Right"
+msgstr "הימנית התחתונה"
+
+#: main-modules.php:2503 main-modules.php:2904 main-modules.php:3755
+#: main-modules.php:14967 main-modules.php:17032
+msgid "Background Image Size"
+msgstr "רקע גודל תמונה"
+
+#: main-modules.php:2508 main-modules.php:2910 main-modules.php:3760
+#: main-modules.php:14972 main-modules.php:17037
+msgid "Fit"
+msgstr "מתאים"
+
+#: main-modules.php:2509 main-modules.php:2911 main-modules.php:3761
+#: main-modules.php:14973 main-modules.php:17038
+msgid "Actual Size"
+msgstr "גודל אמיתי"
+
+#: main-modules.php:2514 main-modules.php:3797 main-modules.php:14978
+#: main-modules.php:17074
+msgid "Top Padding"
+msgstr "מרווח עילי"
+
+#: main-modules.php:2522 main-modules.php:3805 main-modules.php:14986
+#: main-modules.php:17082
+msgid "Bottom Padding"
+msgstr "מרווח תחתי"
+
+#: main-modules.php:2530 main-modules.php:3813 main-modules.php:15006
+#: main-modules.php:17090
+msgid "Hide Content On Mobile"
+msgstr "הסתר תוכן בנייד"
+
+#: main-modules.php:2540 main-modules.php:3823 main-modules.php:15016
+#: main-modules.php:17100
+msgid "Hide CTA On Mobile"
+msgstr "הסתר CTA בנייד"
+
+#: main-modules.php:2550 main-modules.php:15026
+msgid "Show Image / Video On Mobile"
+msgstr "הראה תמונה/וידאו בנייד"
+
+#: main-modules.php:2792
+msgid "New Slide"
+msgstr "שקופית חדשה"
+
+#: main-modules.php:2793
+msgid "Slide Settings"
+msgstr "הגדרות שקופית"
+
+#: main-modules.php:2860
+msgid "Heading"
+msgstr "כותרת"
+
+#: main-modules.php:2863
+msgid "Define the title text for your slide."
+msgstr "הגדר את טקסט הכותרת לשקופית שלך"
+
+#: main-modules.php:2866 main-modules.php:3558 main-modules.php:5320
+#: main-modules.php:5508 main-modules.php:5734 main-modules.php:6260
+#: main-modules.php:16835
+msgid "Button Text"
+msgstr "טקסט כפתור"
+
+#: main-modules.php:2869
+msgid "Define the text for the slide button"
+msgstr "הגדר את הטקסט עבור כפתור השקופית"
+
+#: main-modules.php:2872 main-modules.php:5314 main-modules.php:5492
+#: main-modules.php:5718
+msgid "Button URL"
+msgstr "כפתור URL"
+
+#: main-modules.php:2875
+msgid "Input a destination URL for the slide button."
+msgstr "הצגת יעד  URL עבור כפתור השקופית"
+
+#: main-modules.php:2884 main-structure-elements.php:111
+msgid ""
+"If defined, this image will be used as the background for this module. To "
+"remove a background image, simply delete the URL from the settings field."
+msgstr ""
+"אם הוגדר, תמונה זאת תשמש כרגע עבור המודול, בכדי להסיר תמונת רקע, מחק את ה- "
+"URL משדה ההגדרות. "
+
+#: main-modules.php:2909
+msgid "Cover"
+msgstr "כיסוי"
+
+#: main-modules.php:2917 main-modules.php:3610 main-modules.php:14445
+#: main-modules.php:16887
+msgid "Use the color picker to choose a background color for this module."
+msgstr "השתמש בבוחר הצבעים בכדי לבחור צבע רקע למודול זה"
+
+#: main-modules.php:2924
+msgid "Choose a Slide Image"
+msgstr "בחר תמונת שקופית"
+
+#: main-modules.php:2925
+msgid "Set As Slide Image"
+msgstr "קבע כתמונת שקופית"
+
+#: main-modules.php:2926
+msgid ""
+"If defined, this slide image will appear to the left of your slide text. "
+"Upload an image, or leave blank for a text-only slide."
+msgstr ""
+"אם הוגדר, תמונת הסלייד תופיע משמאל לטקסט הסלייד. העלה תמונה או השאר ריק עבור "
+"סלייד עם טקסט בלבד"
+
+#: main-modules.php:2929 main-modules.php:3689 main-modules.php:16966
+msgid "Use Background Overlay"
+msgstr "השתמש בכיוסי רקע"
+
+#: main-modules.php:2934 main-modules.php:2954 main-modules.php:3529
+#: main-modules.php:3549 main-modules.php:3601 main-modules.php:3636
+#: main-modules.php:3693 main-modules.php:3714 main-modules.php:16806
+#: main-modules.php:16826 main-modules.php:16878 main-modules.php:16913
+#: main-modules.php:16970 main-modules.php:16991
+msgid "yes"
+msgstr "כן"
+
+#: main-modules.php:2939 main-modules.php:3699 main-modules.php:16976
+msgid ""
+"When enabled, a custom overlay color will be added above your background "
+"image and behind your slider content."
+msgstr ""
+"כשאפשרות זו מופעלת, צבע כיסוי מותאם יוצג מעל לתמונת הרקע ומאחורי תוכן המחוון."
+
+#: main-modules.php:2942 main-modules.php:3702 main-modules.php:13968
+#: main-modules.php:16979
+msgid "Background Overlay Color"
+msgstr "צבע כיסוי רקע"
+
+#: main-modules.php:2946 main-modules.php:3706 main-modules.php:16983
+msgid "Use the color picker to choose a color for the background overlay."
+msgstr "השתמש בבוחר הצבעים בכדי לבחור צבע לכיסוי רקע."
+
+#: main-modules.php:2949 main-modules.php:3709 main-modules.php:16986
+msgid "Use Text Overlay"
+msgstr "השתמש בכיסוי טקסט"
+
+#: main-modules.php:2959 main-modules.php:3719 main-modules.php:16996
+msgid ""
+"When enabled, a background color is added behind the slider text to make it "
+"more readable atop background images."
+msgstr ""
+"כשאפשרות זו מופעלת, יוצג צבע רקע מאחורי המחוון בכדי שיהיה קריא יותר מעל "
+"לתמונות רקע."
+
+#: main-modules.php:2962 main-modules.php:3722 main-modules.php:16999
+msgid "Text Overlay Color"
+msgstr "צבע כיסוי טקסט"
+
+#: main-modules.php:2966 main-modules.php:3726 main-modules.php:17003
+msgid "Use the color picker to choose a color for the text overlay."
+msgstr "השתמש בבוחר הצבעים בכדי לבחור צבע לכיסוי טקסט."
+
+#: main-modules.php:2969
+msgid "Slide Image Vertical Alignment"
+msgstr "יישור אנכי של תמונת הסלייד"
+
+#: main-modules.php:2976
+msgid ""
+"This setting determines the vertical alignment of your slide image. Your "
+"image can either be vertically centered, or aligned to the bottom of your "
+"slide."
+msgstr ""
+"הגדרה זו קובעת את היישור האנכי של תמונת הסלייד התמונה שלך יכולה גם להיות "
+"מרוכזת בצורה אנכית, או מיושרת לתחתית הסלייד"
+
+#: main-modules.php:2979
+msgid "Slide Video"
+msgstr "וידאו סלייד"
+
+#: main-modules.php:2982
+msgid ""
+"If defined, this video will appear to the left of your slide text. Enter "
+"youtube or vimeo page url, or leave blank for a text-only slide."
+msgstr ""
+"אם הוגדר, הוידאו יופיע משמאל לטקסט הסלייד. הכנס  עמוד URL  של  Youtubeאו "
+"Vimeo, או השאר ריק עבור סלייד עם טקסט בלבד"
+
+#: main-modules.php:2988
+msgid ""
+"If you have a slide image defined, input your HTML ALT text for the image "
+"here."
+msgstr ""
+"אם יש לך שקופית סלייד מוגדרת, הכנס כאן את  HTML של הטקסט האלטרנטיבי עבור "
+"התמונה"
+
+#: main-modules.php:2998 main-modules.php:3629 main-modules.php:16906
+msgid ""
+"Here you can choose whether your text is light or dark. If you have a slide "
+"with a dark background, then choose light text. If you have a light "
+"background, then use dark text."
+msgstr ""
+"כאן אתה יכול לבחור האם הטקסט יהיה בהיר או כהה. אם יש לך סלייד עם רקע כהה אז "
+"בחר בטקסט בהיר. אם יש לך רקע בהיר, בחר בטקסט כהה"
+
+#: main-modules.php:3001 main-structure-elements.php:134
+#: main-structure-elements.php:1089
+msgid "Background Video MP4"
+msgstr "‏MP4 וידאו רקע"
+
+#: main-modules.php:3006 main-structure-elements.php:139
+#: main-structure-elements.php:1094
+msgid "Choose a Background Video MP4 File"
+msgstr "הגדר קובץ MP4 כוידאו רקע "
+
+#: main-modules.php:3007 main-modules.php:3017 main-structure-elements.php:140
+#: main-structure-elements.php:150 main-structure-elements.php:1095
+#: main-structure-elements.php:1105
+msgid "Set As Background Video"
+msgstr "הגדר כוידאו רקע"
+
+#: main-modules.php:3008 main-structure-elements.php:141
+msgid ""
+"All videos should be uploaded in both .MP4 .WEBM formats to ensure maximum "
+"compatibility in all browsers. Upload the .MP4 version here. <b>Important "
+"Note: Video backgrounds are disabled from mobile devices. Instead, your "
+"background image will be used. For this reason, you should define both a "
+"background image and a background video to ensure best results.</b>"
+msgstr ""
+"כל סרטי הוידאו צריכים לעלות בפורמט .MP4  וכן כ .WEBM בכדי להבטיח תאימות "
+"מקסימלית בכל הדפדפנים. העלה את פורמט .MP4  כאן. הודעה חשובה: רקע של וידאו "
+"מבוטלים בהתקנים ניידים. במקום, תמונות הרקע שלך תהיה בשימוש. עבור חלק זה, אתה "
+"צריך להגדיר גם את תמונת הרקגע וגם את וידאו הרקע בכדי להבטיח תוצאות מקסימליות"
+
+#: main-modules.php:3011 main-structure-elements.php:144
+#: main-structure-elements.php:1099
+msgid "Background Video Webm"
+msgstr "וידאו רקע  WEBM"
+
+#: main-modules.php:3016 main-structure-elements.php:149
+#: main-structure-elements.php:1104
+msgid "Choose a Background Video WEBM File"
+msgstr "בחר קובץ  .WEBM כוידאו רקע"
+
+#: main-modules.php:3018 main-structure-elements.php:151
+msgid ""
+"All videos should be uploaded in both .MP4 .WEBM formats to ensure maximum "
+"compatibility in all browsers. Upload the .WEBM version here. <b>Important "
+"Note: Video backgrounds are disabled from mobile devices. Instead, your "
+"background image will be used. For this reason, you should define both a "
+"background image and a background video to ensure best results.</b>"
+msgstr ""
+"כל סרטי הוידאו צריכים לעלות בפורמט .MP4  וכן כ .WEBM בכדי להבטיח תאימות "
+"מקסימלית בכל הדפדפנים. העלה את פורמט .WEBM  כאן. הודעה חשובה: רקע של וידאו "
+"מבוטלים בהתקנים ניידים. במקום, תמונות הרקע שלך תהיה בשימוש. עבור חלק זה, אתה "
+"צריך להגדיר גם את תמונת הרקגע וגם את וידאו הרקע בכדי להבטיח תוצאות מקסימליות"
+
+#: main-modules.php:3021 main-structure-elements.php:154
+#: main-structure-elements.php:1109
+msgid "Background Video Width"
+msgstr "רוחב וידאו רקע"
+
+#: main-modules.php:3024 main-structure-elements.php:157
+msgid ""
+"In order for videos to be sized correctly, you must input the exact width (in "
+"pixels) of your video here."
+msgstr ""
+"בכדאי שהסרטונים יהיו בגודל הנכון, אתה חייב כאן להכניס את הרוחב המדויק של "
+"הוידאו (בפיקסלים)"
+
+#: main-modules.php:3027 main-structure-elements.php:160
+#: main-structure-elements.php:1115
+msgid "Background Video Height"
+msgstr "גובה וידאו רקע"
+
+#: main-modules.php:3030 main-structure-elements.php:163
+msgid ""
+"In order for videos to be sized correctly, you must input the exact height "
+"(in pixels) of your video here."
+msgstr ""
+"בכדי שהסרטונים יהיו בודל הנכון, אתה חייב כאן להכניס את הגובה המדויק של הוידאו "
+"(בפיקסלים)"
+
+#: main-modules.php:3033 main-structure-elements.php:166
+#: main-structure-elements.php:1121
+msgid "Pause Video"
+msgstr "עצור וידאו"
+
+#: main-modules.php:3040 main-structure-elements.php:173
+msgid "Allow video to be paused by other players when they begin playing"
+msgstr "אפשר לוידאו להיעצר על ידי נגנים אחרים כאשר הם מנגנים"
+
+#: main-modules.php:3046
+msgid "Input your main slide text content here."
+msgstr "הכנס כאן את הטקסט העיקרי של הסלייד"
+
+#: main-modules.php:3049 main-modules.php:3855 main-modules.php:17132
+msgid "Arrows Custom Color"
+msgstr "צבע חיצים מותאם אישית"
+
+#: main-modules.php:3055 main-modules.php:3861 main-modules.php:17138
+msgid "Dot Nav Custom Color"
+msgstr "צבע סרגל ניווט הנקודות מותאם אישית"
+
+#: main-modules.php:3063
+msgid ""
+"This will change the label of the slide in the builder for easy "
+"identification."
+msgstr "זה יהיה לשנות את התווית של השקופית את בונה לזיהוי קל."
+
+#: main-modules.php:3066 main-modules.php:3843 main-modules.php:17120
+msgid "Text Overlay Border Radius"
+msgstr "רדיוס גבול טקסט כיסוי"
+
+#: main-modules.php:3347
+msgid "Post Slider"
+msgstr "מחוון פוסט"
+
+#: main-modules.php:3440 main-modules.php:7020 main-modules.php:7399
+#: main-modules.php:10496 main-modules.php:12363 main-modules.php:12376
+#: main-modules.php:13107 main-modules.php:15238 main-modules.php:15274
+#: main-modules.php:16256 main-modules.php:16717
+msgid "Meta"
+msgstr "Meta"
+
+#: main-modules.php:3497 main-modules.php:7070 main-modules.php:7475
+#: main-modules.php:10552 main-modules.php:11186 main-modules.php:15321
+#: main-modules.php:16774
+msgid "Posts Number"
+msgstr "מספרי פוסטים"
+
+#: main-modules.php:3500 main-modules.php:16777
+msgid "Choose how many posts you would like to display in the slider."
+msgstr "בחר כמה פוסטים תרצה להציג במחוון."
+
+#: main-modules.php:3503 main-modules.php:7076 main-modules.php:7481
+#: main-modules.php:10558 main-modules.php:11192 main-modules.php:15315
+#: main-modules.php:16780
+msgid "Include Categories"
+msgstr "כולל קטגוריות"
+
+#: main-modules.php:3509 main-modules.php:16786
+msgid "Choose which categories you would like to include in the slider."
+msgstr "בחר אילו קטגוריות תרצה להציג במחוון"
+
+#: main-modules.php:3512 main-modules.php:11218 main-modules.php:16789
+msgid "Order By"
+msgstr "סדר על פי"
+
+#: main-modules.php:3516 main-modules.php:16793
+msgid "Date: new to old"
+msgstr "תאריך: חדש עד ישן"
+
+#: main-modules.php:3517 main-modules.php:16794
+msgid "Date: old to new"
+msgstr "תאריך: ישן עד חדש"
+
+#: main-modules.php:3518 main-modules.php:16795
+msgid "Title: a-z"
+msgstr "כותרת: a-z"
+
+#: main-modules.php:3519 main-modules.php:16796
+msgid "Title: z-a"
+msgstr "כותרת: z-a"
+
+#: main-modules.php:3520 main-modules.php:16797
+msgid "Random"
+msgstr "אקראי"
+
+#: main-modules.php:3522 main-modules.php:16799
+msgid "Here you can adjust the order in which posts are displayed."
+msgstr "כאן תוכל לשנות את הסדר בו פוסטים יוצגו."
+
+#: main-modules.php:3545 main-modules.php:16822
+msgid "Show Read More Button"
+msgstr "הצג כפתור קרא עוד"
+
+#: main-modules.php:3555 main-modules.php:16832
+msgid "This setting will turn on and off the read more button."
+msgstr "אפשרות זו תכבה ותפעיל את כפתור קרא עוד."
+
+#: main-modules.php:3562
+msgid ""
+"Define the text which will be displayed on \"Read More\" button. leave blank "
+"for default ( Read More )"
+msgstr ""
+"הגדר את הטקסט שיוצג בכפתור \\\"Read More\\\". השאר ריק לברירת מחדל (קרא עוד)."
+
+#: main-modules.php:3565 main-modules.php:16842
+msgid "Content Display"
+msgstr "תצוגת תוכן"
+
+#: main-modules.php:3569 main-modules.php:10587 main-modules.php:16846
+msgid "Show Excerpt"
+msgstr "הצג קטע"
+
+#: main-modules.php:3570 main-modules.php:10588 main-modules.php:16847
+msgid "Show Content"
+msgstr "הצג תוכן"
+
+#: main-modules.php:3576 main-modules.php:16853
+msgid ""
+"Showing the full content will not truncate your posts in the slider. Showing "
+"the excerpt will only display excerpt text."
+msgstr "הצגת תוכן מלא לא תקצר את הפוסטים במחוון. הצגת קטע תציג רק את טקסט הקטע."
+
+#: main-modules.php:3579 main-modules.php:16856
+msgid "Use Post Excerpt if Defined"
+msgstr "השתמש בקטע מתוך פוסט אם מוגדר"
+
+#: main-modules.php:3587 main-modules.php:16864
+msgid ""
+"Disable this option if you want to ignore manually defined excerpts and "
+"always generate it automatically."
+msgstr ""
+"כבה אפשרות זו אם ברצונך להתעם מקטעים שהוגדרו באופן ידני ותמיד לייצר קטעים "
+"באופן אוטומטי."
+
+#: main-modules.php:3590 main-modules.php:16867
+msgid "Automatic Excerpt Length"
+msgstr "אורך קטע אוטומטי"
+
+#: main-modules.php:3594 main-modules.php:16871
+msgid ""
+"Define the length of automatically generated excerpts. Leave blank for "
+"default ( 270 ) "
+msgstr "הגדר את אורך הקטעים המיוצרים אוטומטית. השאר ריק לברירת מחדל (270) "
+
+#: main-modules.php:3597 main-modules.php:16874
+msgid "Show Post Meta"
+msgstr "הראה מטא עבור הפוסט"
+
+#: main-modules.php:3604 main-modules.php:16881
+msgid "This setting will turn on and off the meta section."
+msgstr "אפשרות זו תפעיל ותכבה את אזור המטא."
+
+#: main-modules.php:3617 main-modules.php:16894
+msgid "Choose a Background"
+msgstr "בחר רקע"
+
+#: main-modules.php:3619 main-modules.php:16896
+msgid ""
+"Upload your desired image, or type in the URL to the image you would like to "
+"use as the background for the slider."
+msgstr "העלה תמונה, או הקלד את כתובת התמונה שתרצה להשתמש כרקע עבור המחוון."
+
+#: main-modules.php:3632 main-modules.php:10573 main-modules.php:12471
+#: main-modules.php:16350 main-modules.php:16909
+msgid "Show Featured Image"
+msgstr "הצג תמונה נבחרת"
+
+#: main-modules.php:3642 main-modules.php:16919
+msgid "This setting will turn on and off the featured image in the slider."
+msgstr "אפשרות זו תפעיל ותכבה את התמונה הנבחרת במחוון."
+
+#: main-modules.php:3645 main-modules.php:16922
+msgid "Image Placement"
+msgstr "הצבת תמונה"
+
+#: main-modules.php:3649 main-modules.php:16926
+msgid "Background"
+msgstr "רקע"
+
+#: main-modules.php:3659 main-modules.php:16936
+msgid "Select how you would like to display the featured image in slides"
+msgstr "בחר כיצד תרצה להציג את התמונה הנבחרת בשקופיות."
+
+#: main-modules.php:3833 main-modules.php:17110
+msgid "Show Image On Mobile"
+msgstr "הצג תמונה במובייל"
+
+#: main-modules.php:4163 main-modules.php:10954 main-modules.php:17440
+msgid "by %s"
+msgstr "על ידי %s"
+
+#: main-modules.php:4164 main-modules.php:10964 main-modules.php:17441
+msgid "%s"
+msgstr "%s"
+
+#: main-modules.php:4248
+msgid "Testimonial"
+msgstr "עדות"
+
+#: main-modules.php:4309
+msgid "Testimonial Portrait"
+msgstr "דיוקן ממליץ"
+
+#: main-modules.php:4313
+msgid "Testimonial Description"
+msgstr "תיאור המלצה"
+
+#: main-modules.php:4317
+msgid "Testimonial Author"
+msgstr "כותב ההמלצה"
+
+#: main-modules.php:4321
+msgid "Testimonial Meta"
+msgstr "Meta ההמלצה"
+
+#: main-modules.php:4330
+msgid "Author Name"
+msgstr "שם מחבר"
+
+#: main-modules.php:4333
+msgid "Input the name of the testimonial author."
+msgstr "הכנס את שם מחבר חוות הדעת"
+
+#: main-modules.php:4336
+msgid "Job Title"
+msgstr "כותרת משרה"
+
+#: main-modules.php:4339
+msgid "Input the job title."
+msgstr "הכנס את כותרת המשרה"
+
+#: main-modules.php:4342
+msgid "Company Name"
+msgstr "שם החברה"
+
+#: main-modules.php:4345
+msgid "Input the name of the company."
+msgstr "הכנס את השם שם החברה"
+
+#: main-modules.php:4348
+msgid "Author/Company URL"
+msgstr "‏URL מחבר/חברה"
+
+#: main-modules.php:4351
+msgid "Input the website of the author or leave blank for no link."
+msgstr "הכנס את אתר האינטרנט של המחבר או השאר ריק אם אין קישור"
+
+#: main-modules.php:4354
+msgid "URLs Open"
+msgstr "פתיחת  URLs "
+
+#: main-modules.php:4361
+msgid "Choose whether or not the URL should open in a new window."
+msgstr "בחר האם ה-URL ייפתח בחלון חדש"
+
+#: main-modules.php:4364
+msgid "Portrait Image URL"
+msgstr "‏URL תמונת דיוקן"
+
+#: main-modules.php:4373
+msgid "Quote Icon"
+msgstr "סמל ציטוט"
+
+#: main-modules.php:4377
+msgid "Visible"
+msgstr "גלוי"
+
+#: main-modules.php:4378
+msgid "Hidden"
+msgstr "מוסתר"
+
+#: main-modules.php:4380
+msgid "Choose whether or not the quote icon should be visible."
+msgstr "בחר האם סמל הציטוט יהיה גלוי לעין"
+
+#: main-modules.php:4383 main-modules.php:5514 main-modules.php:6266
+#: main-modules.php:6698 main-modules.php:11534
+msgid "Use Background Color"
+msgstr "השתמש בצבע רקע"
+
+#: main-modules.php:4393 main-modules.php:5524 main-modules.php:6276
+#: main-modules.php:6708 main-modules.php:11544
+msgid ""
+"Here you can choose whether background color setting below should be used or "
+"not."
+msgstr "כאן אתה יכול לבחור האם להשתמש בהגדרות צבע הרקע"
+
+#: main-modules.php:4398 main-modules.php:5530
+msgid "Here you can define a custom background color for your CTA."
+msgstr "כאן אתה יכול להגדיר צבע רקע מותאם אישית לקריאה לפעולה"
+
+#: main-modules.php:4416 main-modules.php:5547
+msgid "This will adjust the alignment of the module text."
+msgstr "זה יתאים את היישור של טקסט המודול"
+
+#: main-modules.php:4425
+msgid "Quote Icon Color"
+msgstr "צבע אייקון הציטוט"
+
+#: main-modules.php:4431
+msgid "Portrait Border Radius"
+msgstr "רדיוס גבול הדיוקן"
+
+#: main-modules.php:4437
+msgid "Portrait Width"
+msgstr "רוחב הדיוקן"
+
+#: main-modules.php:4448
+msgid "Portrait Height"
+msgstr "גובה הדיוקן"
+
+#: main-modules.php:4645
+msgid "Pricing Tables"
+msgstr "שולחנות תמחור"
+
+#: main-modules.php:4649 main-modules.php:5118
+msgid "Pricing Table"
+msgstr "טבלת מחיר  "
+
+#: main-modules.php:4679 main-modules.php:5225
+msgid "Pricing Heading"
+msgstr "כותרות המשנה של התמחור"
+
+#: main-modules.php:4683 main-modules.php:5229
+msgid "Pricing Title"
+msgstr "כותרת התמחור"
+
+#: main-modules.php:4687 main-modules.php:5233
+msgid "Pricing Subtitle"
+msgstr "תת-כותרת תמחור"
+
+#: main-modules.php:4691 main-modules.php:5237
+msgid "Pricing Top"
+msgstr "ראש התמחור"
+
+#: main-modules.php:4695 main-modules.php:4758 main-modules.php:5178
+#: main-modules.php:5241 main-modules.php:5308 main-modules.php:11116
+#: main-modules.php:11156
+msgid "Price"
+msgstr "מחיר"
+
+#: main-modules.php:4699 main-modules.php:5245 main-modules.php:5296
+msgid "Currency"
+msgstr "מטבע"
+
+#: main-modules.php:4703 main-modules.php:5249
+msgid "Frequency"
+msgstr "תדירות"
+
+#: main-modules.php:4707 main-modules.php:5253
+msgid "Pricing Content"
+msgstr "תוכן התמחור"
+
+#: main-modules.php:4711 main-modules.php:5257
+msgid "Pricing Item"
+msgstr "תמחור פריט"
+
+#: main-modules.php:4715 main-modules.php:5261
+msgid "Excluded Item"
+msgstr "פריט שלא נכלל"
+
+#: main-modules.php:4719 main-modules.php:5265
+msgid "Pricing Button"
+msgstr "כפתור התמחור"
+
+#: main-modules.php:4723
+msgid "Featured Table"
+msgstr "שולחן מומלץ"
+
+#: main-modules.php:4740 main-modules.php:5159
+msgid "Subheader"
+msgstr "כותרת משנה"
+
+#: main-modules.php:4752 main-modules.php:5172
+msgid "Currency &amp; Frequency"
+msgstr "מטבע &amp; תדירות"
+
+#: main-modules.php:4818
+msgid "Featured Table Background Color"
+msgstr "צבע הרקע של השולחן המומלץ"
+
+#: main-modules.php:4825
+msgid "Table Header Background Color"
+msgstr "צבע הרקע של כותרת השולחן"
+
+#: main-modules.php:4831
+msgid "Featured Table Header Background Color"
+msgstr "צבע הרקע של הכותרת של השולחן המומלץ"
+
+#: main-modules.php:4838
+msgid "Featured Table Header Text Color"
+msgstr "צבע המלל של הכותרת של השולחן המומלץ"
+
+#: main-modules.php:4845
+msgid "Featured Table Subheader Text Color"
+msgstr "צבע המלל של כותרת המשנה של השולחן המומלץ"
+
+#: main-modules.php:4852
+msgid "Featured Table Price Color"
+msgstr "צבע המחיר של השולחן המומלץ"
+
+#: main-modules.php:4859
+msgid "Featured Table Body Text Color"
+msgstr "צבע מלל הגוף של השולחן המומלץ"
+
+#: main-modules.php:4866
+msgid "Show Bullet"
+msgstr "הראה נקודה"
+
+#: main-modules.php:4879
+msgid "Bullet Color"
+msgstr "צבע הנקודה"
+
+#: main-modules.php:4886
+msgid "Featured Table Bullet Color"
+msgstr "צבע הנקודה של השולחן המומלץ"
+
+#: main-modules.php:4893
+msgid "Remove Featured Table Drop Shadow"
+msgstr "הסר הטלת צל בשולחן המומלץ"
+
+#: main-modules.php:4904
+msgid "Center List Items"
+msgstr "מרכז פריטי רשימה"
+
+#: main-modules.php:5140
+msgid "New Pricing Table"
+msgstr "טבלת מחיר חדשה"
+
+#: main-modules.php:5141
+msgid "Pricing Table Settings"
+msgstr "הגדרות טבלת מחיר"
+
+#: main-modules.php:5274
+msgid "Make This Table Featured"
+msgstr "הפוך את הטבלה הזאת למובלטת"
+
+#: main-modules.php:5281
+msgid "Featuring a table will make it stand out from the rest."
+msgstr "הבלטת טבלה תגרום לה להתבלט ביחס לשאר"
+
+#: main-modules.php:5287
+msgid "Define a title for the pricing table."
+msgstr "הגדר כותרת לטבלת המחיר"
+
+#: main-modules.php:5290 main-modules.php:13790
+msgid "Subtitle"
+msgstr "כותרת משנה"
+
+#: main-modules.php:5293
+msgid "Define a sub title for the table if desired."
+msgstr "הגדר כותרת משנה לטבלה"
+
+#: main-modules.php:5299
+msgid "Input your desired currency symbol here."
+msgstr "בחר כאן את סמל המטבע המועדף עליך"
+
+#: main-modules.php:5302
+msgid "Per"
+msgstr "עבור"
+
+#: main-modules.php:5305
+msgid ""
+"If your pricing is subscription based, input the subscription payment cycle "
+"here."
+msgstr "אם המחיר שלך מבוסס על דמי מנוי, הכנס כאן את מחזורי התשלום של דמי המנוי"
+
+#: main-modules.php:5311
+msgid "Input the value of the product here."
+msgstr "הכנס את הערך של המטבע כאן"
+
+#: main-modules.php:5317
+msgid "Input the destination URL for the signup button."
+msgstr "הכנס כאן את URL  היעד עבור כפתור הרשמה"
+
+#: main-modules.php:5323
+msgid "Adjust the text used from the signup button."
+msgstr "התאם את הטקסט בו נעשה שימוש לכפתור הרשמה"
+
+#: main-modules.php:5331
+msgid ""
+"Input a list of features that are/are not included in the product. Separate "
+"items on a new line, and begin with either a + or - symbol: "
+msgstr ""
+"הכנס רשימה של תכונות שנכללות או לא נכללות במוצר הזה. פריטים נפרדים בשורה חדשה "
+"והתחל ב-בסימן + או - "
+
+#: main-modules.php:5332
+msgid "Included option"
+msgstr "כלול אפשרות"
+
+#: main-modules.php:5333
+msgid "Excluded option"
+msgstr "אל תכלול אפשרות"
+
+#: main-modules.php:5406
+msgid "Call To Action"
+msgstr "קריאה לפעולה"
+
+#: main-modules.php:5469
+msgid "Promo Description"
+msgstr "תיאור"
+
+#: main-modules.php:5473
+msgid "Promo Button"
+msgstr "כפתור"
+
+#: main-modules.php:5477
+msgid "Promo Title"
+msgstr "כותרת שיווקית"
+
+#: main-modules.php:5489
+msgid "Input your value to action title here."
+msgstr "הכנס ערך כדי לפעול כאן"
+
+#: main-modules.php:5495
+msgid "Input the destination URL for your CTA button."
+msgstr "הכנס את URL היעד שלך עבור כפתור 'קריאה לפעולה'"
+
+#: main-modules.php:5511
+msgid "Input your desired button text, or leave blank for no button."
+msgstr "הכנס את טקסט הכפתור הרצוי שלך, או השאר ריק אם אתה לא רוצה בכפתור"
+
+#: main-modules.php:5721
+msgid "Input the destination URL for your button."
+msgstr "הזן את כתובת היעד לכפתור"
+
+#: main-modules.php:5737
+msgid "Input your desired button text."
+msgstr "הזן טקסט לכפתור"
+
+#: main-modules.php:5740
+msgid "Button alignment"
+msgstr ""
+
+#: main-modules.php:5748
+msgid "Here you can define the alignemnt of Button"
+msgstr ""
+
+#: main-modules.php:5839 main-modules.php:5928
+msgid "Audio"
+msgstr "אודיו"
+
+#: main-modules.php:5891
+msgid "Audio Cover Art"
+msgstr "תמונת אודיו"
+
+#: main-modules.php:5895
+msgid "Audio Content"
+msgstr "תכולת אודיו"
+
+#: main-modules.php:5899
+msgid "Audio Title"
+msgstr "כותרת אודיו"
+
+#: main-modules.php:5903
+msgid "Audio Meta"
+msgstr "Meta אודיו"
+
+#: main-modules.php:5907
+msgid "Player Buttons"
+msgstr "כפתורי נגן"
+
+#: main-modules.php:5911
+msgid "Player Timer"
+msgstr "טיימר נגן"
+
+#: main-modules.php:5915
+msgid "Player Sliders"
+msgstr "מחווני נגן"
+
+#: main-modules.php:5919
+msgid "Player Sliders Current"
+msgstr "נגן מחוון נוכחי"
+
+#: main-modules.php:5932
+msgid "Upload an audio file"
+msgstr "העלה קובץ אודיו"
+
+#: main-modules.php:5933
+msgid "Choose an Audio file"
+msgstr "בחר קובץ אודיו"
+
+#: main-modules.php:5934
+msgid "Set As Audio for the module"
+msgstr "קבע כאודיו עבור המודול"
+
+#: main-modules.php:5935
+msgid ""
+"Define the audio file for use in the module. To remove an audio file from the "
+"module, simply delete the URL from the settings field."
+msgstr ""
+"בחר את קובץ האודיו לשימוש במודל. בכדי להסיר קובץ אודיו מהמודול, מחק את ה- URL "
+"משדה ההגדרות"
+
+#: main-modules.php:5941
+msgid "Define a title."
+msgstr "הגדר כותרת"
+
+#: main-modules.php:5944
+msgid "Artist Name"
+msgstr "שם אמן"
+
+#: main-modules.php:5947
+msgid "Define an artist name."
+msgstr "הגדר שם אמן"
+
+#: main-modules.php:5950
+msgid "Album name"
+msgstr "שם אלבום"
+
+#: main-modules.php:5953
+msgid "Define an album name."
+msgstr "הגדר שם אלבום"
+
+#: main-modules.php:5956
+msgid "Cover Art Image URL"
+msgstr "‏URL של תמונת קאבר אמן"
+
+#: main-modules.php:5967 main-modules.php:6281 main-modules.php:6713
+#: main-structure-elements.php:130
+msgid ""
+"Define a custom background color for your module, or leave blank to use the "
+"default color."
+msgstr ""
+"הגדר צבע רקע מותאם אישית עבור למודול שלך, או השאר אותו ריק בכדי להשתמש בצבע "
+"ברירת המחדל."
+
+#: main-modules.php:6100
+msgid "Email Optin"
+msgstr "דוא \" ל Optin"
+
+#: main-modules.php:6128
+msgid "Subscribe"
+msgstr "הירשמו"
+
+#: main-modules.php:6167
+msgid "Newsletter Description"
+msgstr "תיאור הניוזלטר"
+
+#: main-modules.php:6171
+msgid "Newsletter Form"
+msgstr "טופס ניוזלטר"
+
+#: main-modules.php:6175
+msgid "Newsletter Fields"
+msgstr "שדות  ניוזלטר"
+
+#: main-modules.php:6179
+msgid "Newsletter Button"
+msgstr "כפתור ניוזלטר"
+
+#: main-modules.php:6186
+msgid "Select the list"
+msgstr "בחר את הרשימה"
+
+#: main-modules.php:6207
+msgid "Service Provider"
+msgstr "ספק שירות"
+
+#: main-modules.php:6211
+msgid "MailChimp"
+msgstr "‏MailChimp"
+
+#: main-modules.php:6212
+msgid "FeedBurner"
+msgstr "‏FeedBurner"
+
+#: main-modules.php:6213
+msgid "Aweber"
+msgstr "‏Aweber"
+
+#: main-modules.php:6220
+msgid "Here you can choose a service provider."
+msgstr "כאן אתה יכול לבחור ספק שירות"
+
+#: main-modules.php:6223
+msgid "Feed Title"
+msgstr "כותרת פיד"
+
+#: main-modules.php:6230
+msgid "MailChimp lists"
+msgstr "רשימת  MailChimp"
+
+#: main-modules.php:6235
+msgid ""
+"Here you can choose MailChimp list to add customers to. If you don't see any "
+"lists here, you need to make sure MailChimp API key is set in %1$s and you "
+"have at least one list on a MailChimp account. If you added new list, but it "
+"doesn't appear here, activate 'Regenerate MailChimp Lists' option in %1$s.%2$s"
+msgstr ""
+"כאן תוכל לבחור רשימת מיילצ׳ימפ בכדי להוסיף אליה לקוחות. אם אינך רואה כאן "
+"רשימות, עליך לוודא שמפתח API במיילצ׳ימפ מכוון ל%1$s ושבחשבון המיילצ׳ימפ לפחות "
+"רשימה אחת. אם הוספת רשימה חדשה, אך היא אינה מופיעה כאן, הפעל את אפשרות ״צור "
+"מחדש רשימת מיילצ׳ימפ״ בתוך %1$s.%2$s"
+
+#: main-modules.php:6236 main-modules.php:6248
+msgid "Divi Plugin Options"
+msgstr "אפשרויות רכיב Divi"
+
+#: main-modules.php:6236 main-modules.php:6248
+msgid "ePanel"
+msgstr "ePanel"
+
+#: main-modules.php:6237 main-modules.php:6249
+msgid "Don't forget to disable it once the list has been regenerated."
+msgstr "אל תשכח לכבות אותו ברגע שהרשימה נוצרה מחדש."
+
+#: main-modules.php:6242
+msgid "Aweber lists"
+msgstr "רשימות Aweber"
+
+#: main-modules.php:6247
+msgid ""
+"Here you can choose Aweber list to add customers to. If you don't see any "
+"lists here, you need to make sure Aweber is set up properly in %1$s and you "
+"have at least one list on a Aweber account. If you added new list, but it "
+"doesn't appear here, activate 'Regenerate Aweber Lists' option in %1$s.%2$s"
+msgstr ""
+"כאן תוכל לבחור רשימת Aweber בכדי להוסיף אליה לקוחות. אם אינך רואה כאן רשימות, "
+"עליך לוודא שמפתח API בAweber מכוון ל%1$s ושבחשבון הAweber לפחות רשימה אחת. אם "
+"הוספת רשימה חדשה, אך היא אינה מופיעה כאן, הפעל את אפשרות ״צור מחדש רשימת "
+"Aweber״ בתוך %1$s.%2$s"
+
+#: main-modules.php:6257
+msgid "Choose a title of your signup box."
+msgstr "בחר כותרת לתיבת ההרשמה שלך."
+
+#: main-modules.php:6263
+msgid "Here you can change the text used for the signup button."
+msgstr "כאן אתה יכול לשנות את הטקסט של תיבת ההרשמה"
+
+#: main-modules.php:6299 main-modules.php:6731
+msgid "Here you can adjust the alignment of your text."
+msgstr "כאן אתה יכול לכוונן את יישור הטקסט שלך"
+
+#: main-modules.php:6308 main-modules.php:6740
+msgid "Form Field Background Color"
+msgstr "צבע הרקע של אזור הטופס"
+
+#: main-modules.php:6314 main-modules.php:6746
+msgid "Form Field Text Color"
+msgstr "צבע המלל באזור הטופס"
+
+#: main-modules.php:6320 main-modules.php:6752
+msgid "Focus Background Color"
+msgstr "צבע הרקע של אזור מסומן"
+
+#: main-modules.php:6326 main-modules.php:6758
+msgid "Focus Text Color"
+msgstr "צבע המלל של אזור מסומן"
+
+#: main-modules.php:6332 main-modules.php:6764
+msgid "Use Focus Border Color"
+msgstr "השתמש בצבע גבול באזור מסומן"
+
+#: main-modules.php:6345 main-modules.php:6777
+msgid "Focus Border Color"
+msgstr "צבע הגבול של האזור המסומן"
+
+#: main-modules.php:6468
+msgid "First Name"
+msgstr "שם פרטי"
+
+#: main-modules.php:6469
+msgid "Last Name"
+msgstr "שם משפחה"
+
+#: main-modules.php:6470 main-modules.php:9302
+msgid "Email Address"
+msgstr "כתובת דוא\"ל"
+
+#: main-modules.php:6537 main-modules.php:9301 main-modules.php:10203
+msgid "Name"
+msgstr "שם"
+
+#: main-modules.php:6599 main-modules.php:6941
+msgid "Login"
+msgstr "התחבר"
+
+#: main-modules.php:6661
+msgid "Login Description"
+msgstr "תיאור כניסה"
+
+#: main-modules.php:6665
+msgid "Login Form"
+msgstr "תופס כניסה"
+
+#: main-modules.php:6669
+msgid "Login Fields"
+msgstr "שדות כניסה"
+
+#: main-modules.php:6673
+msgid "Login Button"
+msgstr "כפתור כניסה"
+
+#: main-modules.php:6685
+msgid "Choose a title of your login box."
+msgstr "בחר כותרת לתיבת הכניסה שלך"
+
+#: main-modules.php:6688
+msgid "Redirect To The Current Page"
+msgstr "נתב מחדש לעמוד הנוכחי"
+
+#: main-modules.php:6695
+msgid ""
+"Here you can choose whether the user should be redirected to the current page."
+msgstr "כאן אתה יכול לבחור האם המשתמש ינותב מחדש לעמדו הנוכחי"
+
+#: main-modules.php:6902
+msgid "Logged in as %1$s"
+msgstr "‏%1$s מחובר כ"
+
+#: main-modules.php:6904
+msgid "Log out"
+msgstr "התנתק"
+
+#: main-modules.php:6913
+msgid "Username"
+msgstr "שם משתמש"
+
+#: main-modules.php:6914
+msgid "Password"
+msgstr "סיסמא"
+
+#: main-modules.php:6934
+msgid "Forgot your password?"
+msgstr "שכחתם את סיסמתכם?"
+
+#: main-modules.php:6981
+msgid "Portfolio"
+msgstr "תיק  "
+
+#: main-modules.php:7035 main-modules.php:7432
+msgid "Portfolio Image"
+msgstr "תמונת תיק"
+
+#: main-modules.php:7047 main-modules.php:7444 main-modules.php:15258
+#: main-modules.php:15296
+msgid "Portfolio Title"
+msgstr "כותרת תיק"
+
+#: main-modules.php:7051 main-modules.php:7448
+msgid "Portfolio Post Meta"
+msgstr "Meta המתלווה לתיק"
+
+#: main-modules.php:7064 main-modules.php:7469 main-modules.php:10541
+msgid "Fullwidth"
+msgstr "רוחב מלא"
+
+#: main-modules.php:7067 main-modules.php:7472 main-modules.php:15312
+msgid "Choose your desired portfolio layout style."
+msgstr "סגור את סגנון פריסת התיק הנבחר שלך"
+
+#: main-modules.php:7073 main-modules.php:7478
+msgid "Define the number of projects that should be displayed per page."
+msgstr "הגדר את מספר הפרויקטים שיוצגו בכל עמוד"
+
+#: main-modules.php:7079 main-modules.php:7484 main-modules.php:15318
+msgid "Select the categories that you would like to include in the feed."
+msgstr "בחר את הקטגוריות שאתה רוצה לכלול בפיד"
+
+#: main-modules.php:7082 main-modules.php:7487 main-modules.php:12389
+#: main-modules.php:15327 main-modules.php:16268
+msgid "Show Title"
+msgstr "הצג כותרת"
+
+#: main-modules.php:7089 main-modules.php:7494 main-modules.php:15334
+msgid "Turn project titles on or off."
+msgstr "הדלק/כבה כותרות פרוייקט"
+
+#: main-modules.php:7092 main-modules.php:7497 main-modules.php:10627
+msgid "Show Categories"
+msgstr "הצג קטגוריות"
+
+#: main-modules.php:7099 main-modules.php:7504 main-modules.php:10634
+msgid "Turn the category links on or off."
+msgstr "הצג/כבה את קישורי הקטגוריות"
+
+#: main-modules.php:7360
+msgid "Filterable Portfolio"
+msgstr "תיק סינון"
+
+#: main-modules.php:7405
+msgid "Filter"
+msgstr "סנן"
+
+#: main-modules.php:7424
+msgid "Portfolio Filters"
+msgstr "סנני תיק"
+
+#: main-modules.php:7428
+msgid "Active Portfolio Filter"
+msgstr "סנן תיק פעיל"
+
+#: main-modules.php:7452
+msgid "Portfolio Pagination"
+msgstr "עימוד פורטפוליו"
+
+#: main-modules.php:7735
+msgid "All"
+msgstr "כל"
+
+#: main-modules.php:7775
+msgid "Bar Counters"
+msgstr "מונה בארים"
+
+#: main-modules.php:7778 main-modules.php:8002
+msgid "Bar Counter"
+msgstr "סופר שורה"
+
+#: main-modules.php:7817 main-modules.php:8051 main-modules.php:8423
+msgid "Percent"
+msgstr "אחוז"
+
+#: main-modules.php:7834 main-modules.php:8028
+msgid "Counter Title"
+msgstr "כותרת הסופר"
+
+#: main-modules.php:7838 main-modules.php:8032
+msgid "Counter Container"
+msgstr "מכולת הסופר"
+
+#: main-modules.php:7842 main-modules.php:8036
+msgid "Counter Amount"
+msgstr "מספר הסופר"
+
+#: main-modules.php:7863
+msgid ""
+"This will adjust the color of the empty space in the bar (currently gray)."
+msgstr "זה יתאים את הצבע של החלל הריק בסרגל (כרגע אפור)."
+
+#: main-modules.php:7866 main-modules.php:8063 main-modules.php:8296
+msgid "Bar Background Color"
+msgstr "צבע רקע של הבאר"
+
+#: main-modules.php:7868 main-modules.php:8298 main-modules.php:8501
+msgid "This will change the fill color for the bar."
+msgstr "זה ישנה את צבע המילוי של הבאר"
+
+#: main-modules.php:7871
+msgid "Use Percentages"
+msgstr "השתמש באחוזים"
+
+#: main-modules.php:7880
+msgid "Bar Top Padding"
+msgstr "מרווח עילי של השורה"
+
+#: main-modules.php:7888
+msgid "Bar Bottom Padding"
+msgstr "מרווח תחתי של השורה"
+
+#: main-modules.php:7896 main-modules.php:9614
+msgid "Border Radius"
+msgstr "רדיוס גבול"
+
+#: main-modules.php:8020
+msgid "New Bar Counter"
+msgstr "מונה באר חדש"
+
+#: main-modules.php:8021
+msgid "Bar Counter Settings"
+msgstr "הגדרות מונה בארים"
+
+#: main-modules.php:8048
+msgid "Input a title for your bar."
+msgstr "הוסף כותרת לבאר שלך"
+
+#: main-modules.php:8054
+msgid "Define a percentage for this bar."
+msgstr "הצג אחוזים לגרף זה"
+
+#: main-modules.php:8069
+msgid "Label Color"
+msgstr "צבע תווית"
+
+#: main-modules.php:8075
+msgid "Percentage Color"
+msgstr "צבע אחוז"
+
+#: main-modules.php:8203
+msgid "Circle Counter"
+msgstr "מונה עגול"
+
+#: main-modules.php:8236 main-modules.php:8269 main-modules.php:8442
+#: main-modules.php:8483
+msgid "Number"
+msgstr "מספר"
+
+#: main-modules.php:8246
+msgid "Percent Container"
+msgstr "אחוז מיכל"
+
+#: main-modules.php:8250
+msgid "Circle Counter Title"
+msgstr "כותרת סופר מעגלי"
+
+#: main-modules.php:8254
+msgid "Percent Text"
+msgstr "אחוז טקסט"
+
+#: main-modules.php:8266
+msgid "Input a title for the circle counter."
+msgstr "הוסף כותרת עבור מונה עגול"
+
+#: main-modules.php:8273
+msgid ""
+"Define a number for the circle counter. (Don't include the percentage sign, "
+"use the option below.). <strong>Note: You can use only natural numbers from 0 "
+"to 100</strong>"
+msgstr ""
+"הגדר מספר עבור מונה עגול (אל תכלול את סימן האחוזים, השתמש באפשרות מטה). שים "
+"לב: אתה יכול להשתמש רק במספרים מוחלטים מ-0 עד 100"
+
+#: main-modules.php:8276 main-modules.php:8489
+msgid "Percent Sign"
+msgstr "סימן אחוז"
+
+#: main-modules.php:8283 main-modules.php:8496
+msgid ""
+"Here you can choose whether the percent sign should be added after the number "
+"set above."
+msgstr "כאן אתה לבחור האם להוסיף את סימן האחוזים אחרי המספר לעיל"
+
+#: main-modules.php:8307
+msgid "Circle Color Opacity"
+msgstr "שקיפות סופר מעגלי"
+
+#: main-modules.php:8400
+msgid "Number Counter"
+msgstr "מונה מספרים"
+
+#: main-modules.php:8427
+msgid "Number Counter Title"
+msgstr "כותרת סופר מספרים"
+
+#: main-modules.php:8480
+msgid "Input a title for the counter."
+msgstr "הוסף כותרת עבור המונה"
+
+#: main-modules.php:8486
+msgid ""
+"Define a number for the counter. (Don't include the percentage sign, use the "
+"option below.)"
+msgstr "הגדר מספר עבור המונה (אל תכלול את סימן האחוזים, השתמש באפשרות מטה)"
+
+#: main-modules.php:8499
+msgid "Counter Text Color"
+msgstr "צבע טקסט המונה"
+
+#: main-modules.php:8511
+msgid ""
+"Here you can choose whether your title text should be light or dark. If you "
+"are working with a dark background, then your text should be light. If your "
+"background is light, then your text should be set to dark."
+msgstr ""
+"כאן אתה יכול לבחור האם טקסט הכותרת יהיה בהיר או כהה. אם אתה עובד עם רקע כהה, "
+"אז הטקסט צריך להיות בהיר. אם אתה עובד עם רקע בהיר, אז הטקסט צריך להיות כהה."
+
+#: main-modules.php:8589 main-modules.php:8781
+msgid "Accordion"
+msgstr "אקורדיון"
+
+#: main-modules.php:8606 main-modules.php:8640 main-modules.php:8811
+#: main-modules.php:8884
+msgid "Toggle"
+msgstr "‏Toggle"
+
+#: main-modules.php:8644 main-modules.php:8814 main-modules.php:8935
+msgid "Open Toggle"
+msgstr "פתח מתג"
+
+#: main-modules.php:8648 main-modules.php:8818 main-modules.php:8939
+msgid "Toggle Title"
+msgstr "כותרת מתג"
+
+#: main-modules.php:8652 main-modules.php:8822 main-modules.php:8943
+msgid "Toggle Icon"
+msgstr "אייקון מתג"
+
+#: main-modules.php:8656 main-modules.php:8826 main-modules.php:8947
+msgid "Toggle Content"
+msgstr "תוכן מתג"
+
+#: main-modules.php:8665 main-modules.php:8847 main-modules.php:8978
+msgid "Open Toggle Background Color"
+msgstr "צבע הרקע של מתג פתוח"
+
+#: main-modules.php:8671 main-modules.php:8859 main-modules.php:8984
+msgid "Closed Toggle Background Color"
+msgstr "צבע הרקע של מתג סגור"
+
+#: main-modules.php:8838 main-modules.php:8959
+msgid ""
+"The toggle title will appear above the content and when the toggle is closed."
+msgstr "כותרת ה-toggle תופיע מעל התוכן וכאשר ה-toggle סגור"
+
+#: main-modules.php:8853
+msgid "Open Toggle Text Color"
+msgstr "צבע המלל של מתג פתוח"
+
+#: main-modules.php:8865
+msgid "Closed Toggle Text Color"
+msgstr "צבע המלל של מתג סגור"
+
+#: main-modules.php:8962
+msgid "State"
+msgstr "מצב"
+
+#: main-modules.php:8966 template-preview.php:86
+msgid "Close"
+msgstr "סגור"
+
+#: main-modules.php:8967
+msgid "Open"
+msgstr "פתוח"
+
+#: main-modules.php:8969
+msgid ""
+"Choose whether or not this toggle should start in an open or closed state."
+msgstr "בחר האם ה-toggle יתחיל במצב פתוח או סגור"
+
+#: main-modules.php:9106
+msgid "Contact Form"
+msgstr "טופס יצירת קשר"
+
+#: main-modules.php:9109 main-modules.php:9526 main-modules.php:9547
+#: main-modules.php:13138
+msgid "Field"
+msgstr "שדה"
+
+#: main-modules.php:9141
+msgid "Form Field"
+msgstr "אזור הטופס"
+
+#: main-modules.php:9163
+msgid "Contact Title"
+msgstr "כותרת צור קשר"
+
+#: main-modules.php:9167
+msgid "Contact Button"
+msgstr "כפתור צור קשר"
+
+#: main-modules.php:9171
+msgid "Form Fields"
+msgstr "שדה תפסים"
+
+#: main-modules.php:9175 main-modules.php:13201
+msgid "Message Field"
+msgstr "שדה הודעות"
+
+#: main-modules.php:9179
+msgid "Captcha Field"
+msgstr "שדה Captcha"
+
+#: main-modules.php:9183
+msgid "Captcha Text"
+msgstr "טקסט Captcha"
+
+#: main-modules.php:9192
+msgid "Display Captcha"
+msgstr "הצג את Captcha"
+
+#: main-modules.php:9199
+msgid "Turn the captcha on or off using this option."
+msgstr "הפעל/כבה את Captcha באמצעות אפשרות זאת"
+
+#: main-modules.php:9202
+msgid "Email"
+msgstr "אימייל"
+
+#: main-modules.php:9205
+msgid "Input the email address where messages should be sent."
+msgstr "הכנס את כתובת הדואר האלקטרוני אליה יישלחו הודעות"
+
+#: main-modules.php:9211
+msgid "Define a title for your contact form."
+msgstr "הגדר כותרת לטופס יצירת הקשר שלך"
+
+#: main-modules.php:9214
+msgid "Message Pattern"
+msgstr "דפוס הודעה"
+
+#: main-modules.php:9217
+msgid ""
+"Here you can define the custom pattern for the email Message. Fields should "
+"be included in following format - <strong>%%field_id%%</strong>. For example "
+"if you want to include the field with id = <strong>phone</strong> and field "
+"with id = <strong>message</strong>, then you can use the following pattern: "
+"<strong>My message is %%message%% and phone number is %%phone%%</strong>. "
+"Leave blank for default."
+msgstr ""
+"כאן תוכל להגדיר דפוס מותאם להודעת המייל. יש להוסיף שדות באופן הבא - <strong>%"
+"%field_id%%</strong>. לדוגמא, אם ברצונך לכלול שדה עם זיהוי = <strong>phone</"
+"strong> ושדה עם זיהוי = <strong>phone</strong>, השתמש בשורה:  <strong>ההודעה "
+"שלי היא %%message%% ומהספר הטלפון הוא %%phone%%</strong>. השאר ריק לברירת "
+"מחדל."
+
+#: main-modules.php:9220
+msgid "Enable Redirect URL"
+msgstr "אפשר כתובות URL מופנת"
+
+#: main-modules.php:9230
+msgid "Redirect users after successful form submission."
+msgstr "שלח משתמשים לאחר שליחת תופס מוצלחת."
+
+#: main-modules.php:9233
+msgid "Redirect URL"
+msgstr "הפנה מחדש כתובת URL"
+
+#: main-modules.php:9237
+msgid "Type the Redirect URL"
+msgstr "הקלד את כתובת ה-URL להפניה"
+
+#: main-modules.php:9240
+msgid "Success Message"
+msgstr "הודעת הצלחה"
+
+#: main-modules.php:9243
+msgid ""
+"Type the message you want to display after successful form submission. Leave "
+"blank for default"
+msgstr "הקלד את ההודעה שברצונך להציג לאחר מילוי הטופס. השאר ריק לברירת מחדל."
+
+#: main-modules.php:9246
+msgid "Form Background Color"
+msgstr "צבע הרקע של הטופס"
+
+#: main-modules.php:9252
+msgid "Input Border Radius"
+msgstr "רדיוס הגבול של הקלט"
+
+#: main-modules.php:9348
+msgid "Thanks for contacting us"
+msgstr "תודה שיצרתם עימנו קשר."
+
+#: main-modules.php:9368
+msgid "Make sure you entered the captcha."
+msgstr "אנא וודאו שמילאתם את הקפצ'ה."
+
+#: main-modules.php:9377 main-modules.php:9399
+msgid "Make sure you fill in all required fields."
+msgstr "הקפד למלא את כל שדות החובה"
+
+#: main-modules.php:9386
+msgid "Invalid Email."
+msgstr "אימייל לא תקין."
+
+#: main-modules.php:9446
+msgid "New Message From %1$s%2$s"
+msgstr "הודעה חדשה מ %1$s%2$s"
+
+#: main-modules.php:9488
+msgid "Submit"
+msgstr "שלח"
+
+#: main-modules.php:9541
+msgid "New Field"
+msgstr "שדה חדשה"
+
+#: main-modules.php:9542
+msgid "Field Settings"
+msgstr "הגדרות שדה"
+
+#: main-modules.php:9567
+msgid "Field ID"
+msgstr "זיהוי שדה"
+
+#: main-modules.php:9569
+msgid ""
+"Define the unique ID of this field. You should use only English characters "
+"without special characters and spaces."
+msgstr ""
+"הגדר זיהוי ייחודי לשדה זה. השתמש רק באותיות אנגלית ללא תוים מיוחדים ורווחים."
+
+#: main-modules.php:9581 main-modules.php:12814
+msgid "Input Field"
+msgstr "שדה הזנה"
+
+#: main-modules.php:9582 main-modules.php:13209
+msgid "Email Field"
+msgstr "שדה מייל"
+
+#: main-modules.php:9583
+msgid "Textarea"
+msgstr "אזור טקסט"
+
+#: main-modules.php:9585
+msgid "Choose the type of field"
+msgstr "בחר את סוג השדה"
+
+#: main-modules.php:9588
+msgid "Required Field"
+msgstr "שדה חובה"
+
+#: main-modules.php:9595
+msgid "Define whether the field should be required or optional"
+msgstr "הגדר אם שדה זה הכרחי או אפשרי"
+
+#: main-modules.php:9598
+msgid "Make Fullwidth"
+msgstr "הפוך לרוחב מלא"
+
+#: main-modules.php:9605
+msgid ""
+"If enabled, the field will take 100% of the width of the content area, "
+"otherwise it will take 50%"
+msgstr ""
+"כשאפשרות זו מופעלת, השדה יתפוס 100% מרוחב אזור התוכן, אחרת הוא יתפוס 50%."
+
+#: main-modules.php:9727
+msgid "Sidebar"
+msgstr "סרגל צדדי"
+
+#: main-modules.php:9766
+msgid "Widget"
+msgstr "ווידג'ט"
+
+#: main-modules.php:9779
+msgid "Orientation"
+msgstr "כיוון"
+
+#: main-modules.php:9786
+msgid ""
+"Choose which side of the page your sidebar will be on. This setting controls "
+"text orientation and border position."
+msgstr ""
+"בחר באיזה צד של הדף שלך הסרגל הצדדי יופיע. הגדרה זזאת קובעת את כיוון הטקסט "
+"ומיקום הגבול"
+
+#: main-modules.php:9789
+msgid "Widget Area"
+msgstr "איזור וידג'ט"
+
+#: main-modules.php:9792
+msgid ""
+"Select a widget-area that you would like to display. You can create new "
+"widget areas within the Appearances > Widgets tab."
+msgstr ""
+"בחר איזור וידג'ט שאתה רוצה להציג. אתה יכול ליצור איזורי וידג'ט חדש בתוך המראה "
+"של כרטיסיית וידג'ט"
+
+#: main-modules.php:9805
+msgid "Remove Border Separator"
+msgstr "הסר גבול מפריד"
+
+#: main-modules.php:9908
+msgid "Divider"
+msgstr "חוצץ"
+
+#: main-modules.php:9919
+msgid "Don't Show Divider"
+msgstr "אל תראה את החוצץ"
+
+#: main-modules.php:9920
+msgid "Show Divider"
+msgstr "הראה את החוצץ"
+
+#: main-modules.php:9953
+msgid "Color"
+msgstr "צבע"
+
+#: main-modules.php:9955
+msgid "This will adjust the color of the 1px divider line."
+msgstr "זה יתאים את הצבע של קו החוצץ "
+
+#: main-modules.php:9958
+msgid "Visibility"
+msgstr "נראות"
+
+#: main-modules.php:9967
+msgid ""
+"This settings turns on and off the 1px divider line, but does not affect the "
+"divider height."
+msgstr "הגדרות אלה מכבות/מדליקות את קו החוצץ אבל לא משפיעות על גובה החוצץ"
+
+#: main-modules.php:9970
+msgid "Height"
+msgstr "גובה"
+
+#: main-modules.php:9973
+msgid "Define how much space should be added below the divider."
+msgstr "הגדר כמה רווח צריך להיות מתחת למחלק."
+
+#: main-modules.php:9976
+msgid "Divider Style"
+msgstr "סגנון מחלק"
+
+#: main-modules.php:9984
+msgid "Divider Position"
+msgstr "מיקום מחלק"
+
+#: main-modules.php:9989 main-modules.php:14043
+msgid "Vertically Centered"
+msgstr "ממורכז אנכית"
+
+#: main-modules.php:9996
+msgid "Divider Weight"
+msgstr "משקל המחלק"
+
+#: main-modules.php:10003
+msgid "Hide On Mobile"
+msgstr "הסתר בנייד"
+
+#: main-modules.php:10122
+msgid "Person"
+msgstr "אדם"
+
+#: main-modules.php:10178
+msgid "Member Image"
+msgstr "תמונת חבר"
+
+#: main-modules.php:10182
+msgid "Member Description"
+msgstr "תיאור חבר"
+
+#: main-modules.php:10190
+msgid "Member Position"
+msgstr "מיקום חבר"
+
+#: main-modules.php:10194
+msgid "Member Social Links"
+msgstr "קישורים חברתיים של החבר"
+
+#: main-modules.php:10206
+msgid "Input the name of the person"
+msgstr "הכנס את השם של האדם"
+
+#: main-modules.php:10209
+msgid "Position"
+msgstr "תפקיד"
+
+#: main-modules.php:10212
+msgid "Input the person's position."
+msgstr "הכנס את תפקידו של האדם"
+
+#: main-modules.php:10248
+msgid "Facebook Profile Url"
+msgstr "‏URL לפרופיל Facebook"
+
+#: main-modules.php:10251
+msgid "Input Facebook Profile Url."
+msgstr "הכנס URL. של פרופיל  Facebook"
+
+#: main-modules.php:10254
+msgid "Twitter Profile Url"
+msgstr "‏URL לפרופיל Twitter"
+
+#: main-modules.php:10257
+msgid "Input Twitter Profile Url"
+msgstr "הכנס URL. של פרופיל  Twitter"
+
+#: main-modules.php:10260
+msgid "Google+ Profile Url"
+msgstr "‏URL לפרופיל Google+"
+
+#: main-modules.php:10263
+msgid "Input Google+ Profile Url"
+msgstr "הכנס URL. של פרופיל   Google+"
+
+#: main-modules.php:10266
+msgid "LinkedIn Profile Url"
+msgstr "פרופיל LinkedIn URL"
+
+#: main-modules.php:10269
+msgid "Input LinkedIn Profile Url"
+msgstr "הכנס URL. של פרופיל   LinkedIn"
+
+#: main-modules.php:10272
+msgid "Description"
+msgstr "תיאור"
+
+#: main-modules.php:10284 main-modules.php:11238
+msgid "Icon Hover Color"
+msgstr "צבע אייקון מסומן"
+
+#: main-modules.php:10367
+msgid "Facebook"
+msgstr "‏Facebook"
+
+#: main-modules.php:10375 main-modules.php:12141
+msgid "Twitter"
+msgstr "‏Twitter"
+
+#: main-modules.php:10383 main-modules.php:12145
+msgid "Google+"
+msgstr "‏Google+"
+
+#: main-modules.php:10391 main-modules.php:12153
+msgid "LinkedIn"
+msgstr "‏LinkedIn"
+
+#: main-modules.php:10438
+msgid "Blog"
+msgstr "בלוג"
+
+#: main-modules.php:10516
+msgid "Post Meta"
+msgstr "פרסם meta"
+
+#: main-modules.php:10520
+msgid "Pagenavi"
+msgstr "ניווט בדף"
+
+#: main-modules.php:10524 main-modules.php:12380
+msgid "Featured Image"
+msgstr "תמונה נבחרת"
+
+#: main-modules.php:10528 main-modules.php:10596
+msgid "Read More Button"
+msgstr "כפתור 'למידע נוסף'"
+
+#: main-modules.php:10555
+msgid "Choose how much posts you would like to display per page."
+msgstr "בחר כמה פוסטים תרצה שיוצגו בעמוד אחד"
+
+#: main-modules.php:10564
+msgid "Choose which categories you would like to include in the feed."
+msgstr "בחר איזה קטגוריות אתה רוצה שיכללו בפיד"
+
+#: main-modules.php:10567
+msgid "Meta Date Format"
+msgstr "פורמט תאריך"
+
+#: main-modules.php:10570
+msgid ""
+"If you would like to adjust the date format, input the appropriate PHP date "
+"format here."
+msgstr ""
+"אם אתה רוצה להתאים את תבנית התאריך, הכנס כאן את תבנית תאריך PHP המתאימה."
+
+#: main-modules.php:10580
+msgid "This will turn thumbnails on and off."
+msgstr "זה ידליק ויכבה לסירוגין את התמונות הממוזערות"
+
+#: main-modules.php:10593
+msgid ""
+"Showing the full content will not truncate your posts on the index page. "
+"Showing the excerpt will only display your excerpt text."
+msgstr ""
+"מציג את התוכן המלא שלך ולא חותך אותו בעמוד האינדקס. הצגת קטע יציג רק קטע מתוך "
+"הטקסט שלך"
+
+#: main-modules.php:10604
+msgid ""
+"Here you can define whether to show \"read more\" link after the excerpts or "
+"not."
+msgstr "כאן אתה יכול לבחור האם להציג קישור 'למידע נוסף' לאחר הקטעים"
+
+#: main-modules.php:10607 main-modules.php:12415 main-modules.php:16294
+msgid "Show Author"
+msgstr "הצג מחבר"
+
+#: main-modules.php:10614
+msgid "Turn on or off the author link."
+msgstr "הדלק/כבה קישור מחבר"
+
+#: main-modules.php:10617 main-modules.php:12426 main-modules.php:15337
+#: main-modules.php:16305
+msgid "Show Date"
+msgstr "הצג תאריך"
+
+#: main-modules.php:10624
+msgid "Turn the date on or off."
+msgstr "הדלק/כבה את התאריך"
+
+#: main-modules.php:10637
+msgid "Show Comment Count"
+msgstr "להראות אחד נחשב"
+
+#: main-modules.php:10644
+msgid "Turn comment count on and off."
+msgstr "להפוך אחד נחשב לסירוגין."
+
+#: main-modules.php:10654
+msgid "Turn pagination on and off."
+msgstr "הדלק/כבה מספור עמודים"
+
+#: main-modules.php:10657
+msgid "Offset Number"
+msgstr "מספר מקזז"
+
+#: main-modules.php:10660
+msgid "Choose how many posts you would like to offset by"
+msgstr "בחר על ידי כמה פוסטים תרצה להיות מקוזז"
+
+#: main-modules.php:10663
+msgid "Featured Image Overlay"
+msgstr "כיסוי תמונה נבחרת"
+
+#: main-modules.php:10675
+msgid ""
+"If enabled, an overlay color and icon will be displayed when a visitors "
+"hovers over the featured image of a post."
+msgstr ""
+"כשאפשרות זו מופעלת, צבע כיוסי ואייקון יוצגו כשמבקרים מרחפים מעל לתמונה הנבחרת "
+"של פוסט."
+
+#: main-modules.php:10713
+msgid "Grid Tile Background Color"
+msgstr "צבע הרקע של טייל רשת"
+
+#: main-modules.php:10720
+msgid "Use Dropshadow"
+msgstr "השתמש בהטלת צל"
+
+#: main-modules.php:11003
+msgid "read more..."
+msgstr "קראו עוד‪...‬"
+
+#: main-modules.php:11017
+msgid "read more"
+msgstr "קראו עוד"
+
+#: main-modules.php:11081
+msgid "Shop"
+msgstr "קנה"
+
+#: main-modules.php:11132
+msgid "Product"
+msgstr "מוצר"
+
+#: main-modules.php:11136
+msgid "Onsale"
+msgstr "במבצע"
+
+#: main-modules.php:11152
+msgid "Rating"
+msgstr "דירוג"
+
+#: main-modules.php:11160
+msgid "Old Price"
+msgstr "מחיר ישן"
+
+#: main-modules.php:11173
+msgid "Recent Products"
+msgstr "מוצרים אחרונים"
+
+#: main-modules.php:11174
+msgid "Featured Products"
+msgstr "מוצרים נבחרים"
+
+#: main-modules.php:11175
+msgid "Sale Products"
+msgstr "מוצרים בהנחה"
+
+#: main-modules.php:11176
+msgid "Best Selling Products"
+msgstr "המוצרים הנמכרים ביותר"
+
+#: main-modules.php:11177
+msgid "Top Rated Products"
+msgstr "המוצרים עם הדירוג הגבוה ביותר"
+
+#: main-modules.php:11178
+msgid "Product Category"
+msgstr "מוצר קטגוריה"
+
+#: main-modules.php:11183
+msgid "Choose which type of products you would like to display."
+msgstr "בחר איזה סוג של מוצרים אתה רוצה להציג"
+
+#: main-modules.php:11189
+msgid "Control how many products are displayed."
+msgstr "בחר כמה מוצרים יוצגו"
+
+#: main-modules.php:11200
+msgid "Choose which categories you would like to include."
+msgstr "בחר את הקטגוריות שאליהן ברצונך לכלול."
+
+#: main-modules.php:11203
+msgid "Columns Number"
+msgstr "כמות עמודות"
+
+#: main-modules.php:11207
+msgid "default"
+msgstr "ברירת מחדל"
+
+#: main-modules.php:11208 main-modules.php:11209 main-modules.php:11210
+#: main-modules.php:11211 main-modules.php:11212
+msgid "%1$s Columns"
+msgstr "%1$s טורים"
+
+#: main-modules.php:11213
+msgid "1 Column"
+msgstr "טור 1"
+
+#: main-modules.php:11215
+msgid "Choose how many columns to display."
+msgstr "בחר כמה טורים להציג"
+
+#: main-modules.php:11222
+msgid "Default Sorting"
+msgstr "מיון ברירת מחדל"
+
+#: main-modules.php:11223
+msgid "Sort By Popularity"
+msgstr "מיין על פי פופלריות"
+
+#: main-modules.php:11224
+msgid "Sort By Rating"
+msgstr "מיין על פי דירוג"
+
+#: main-modules.php:11225
+msgid "Sort By Date"
+msgstr "מיין על פי תאריך"
+
+#: main-modules.php:11226
+msgid "Sort By Price: Low To High"
+msgstr "מיין לפי מחיר: מהנמוך עד הגבוה"
+
+#: main-modules.php:11227
+msgid "Sort By Price: High To Low"
+msgstr "מיין לפי מחיר: מהגבוה עד הנמוך"
+
+#: main-modules.php:11229
+msgid "Choose how your products should be ordered."
+msgstr "בחר כיצד למיין את המוצרים שלך"
+
+#: main-modules.php:11232
+msgid "Sale Badge Color"
+msgstr "צבע תג מבצע"
+
+#: main-modules.php:11428
+msgid "Countdown Timer"
+msgstr "טיימר ספירה לאחור"
+
+#: main-modules.php:11458
+msgid "Numbers"
+msgstr "מספרים"
+
+#: main-modules.php:11471
+msgid "Label"
+msgstr "תווית"
+
+#: main-modules.php:11495
+msgid "Container"
+msgstr "מכולה"
+
+#: main-modules.php:11503
+msgid "Timer Section"
+msgstr "אזור הטיימר"
+
+#: main-modules.php:11512
+msgid "Countdown Timer Title"
+msgstr "כותרת טיימר ספירה לאחור"
+
+#: main-modules.php:11515
+msgid "This is the title displayed for the countdown timer."
+msgstr "זוהי כותרת שתוצג עבור טיימר ספירה לאחור"
+
+#: main-modules.php:11518
+msgid "Countdown To"
+msgstr "ספירה לאחור ל"
+
+#: main-modules.php:11521
+msgid ""
+"This is the date the countdown timer is counting down to. Your countdown "
+"timer is based on your timezone settings in your <a href=\"%1$s\" target="
+"\"_blank\" title=\"WordPress General Settings\">WordPress General Settings</a>"
+msgstr ""
+"זה התאריך טיימר ספירה לאחור הוא סופר למטה. את טיימר מבוסס על הזמן שלך בהגדרות "
+"שלך. <a href=\"%1$s\" target=\"_blank\" title=\"WordPress\" הגדרות כלליות"
+"\">וורדפרס הגדרות כלליות</a>"
+
+#: main-modules.php:11550
+msgid "Here you can define a custom background color for your countdown timer."
+msgstr "כאן אתה יכול להגדיר רקע מותאם אישית לטיימר ספירה לאחור שלך"
+
+#: main-modules.php:11650
+msgid "Day(s)"
+msgstr "היום(s)"
+
+#: main-modules.php:11651
+msgid "Hour(s)"
+msgstr "שעה(s)"
+
+#: main-modules.php:11652
+msgid "Hrs"
+msgstr "שעות"
+
+#: main-modules.php:11653
+msgid "Minute(s)"
+msgstr "דקה(s)"
+
+#: main-modules.php:11654
+msgid "Min"
+msgstr "דקות"
+
+#: main-modules.php:11655
+msgid "Second(s)"
+msgstr "השני(s)"
+
+#: main-modules.php:11656
+msgid "Sec"
+msgstr "שניות"
+
+#: main-modules.php:11657
+msgid "Day"
+msgstr "יום"
+
+#: main-modules.php:11667
+msgid "Map"
+msgstr "מפה"
+
+#: main-modules.php:11670 main-modules.php:11830 main-modules.php:15579
+msgid "Pin"
+msgstr "פין"
+
+#: main-modules.php:11696 main-modules.php:15602
+msgid "Map Center Address"
+msgstr "כתובת מרכז המפה"
+
+#: main-modules.php:11701 main-modules.php:11866 main-modules.php:15607
+msgid "Find"
+msgstr "מצא"
+
+#: main-modules.php:11704 main-modules.php:15610
+msgid ""
+"Enter an address for the map center point, and the address will be geocoded "
+"and displayed on the map below."
+msgstr "הכנס כתובת לנקודת מרכז המפה, על הכתובת ייערך גיאוקוד ותוצג על המפה מתחת"
+
+#: main-modules.php:11724 main-modules.php:15630
+msgid "Mouse Wheel Zoom"
+msgstr "זום גלגל עכבר"
+
+#: main-modules.php:11731 main-modules.php:15637
+msgid ""
+"Here you can choose whether the zoom level will be controlled by mouse wheel "
+"or not."
+msgstr "כאן אתה יכול להחליט האם רמת הזום ניתנת לשליטה באמצעות גלגל העכבר"
+
+#: main-modules.php:11734
+msgid "Use Grayscale Filter"
+msgstr "השתמש בפילטר סולם אפור"
+
+#: main-modules.php:11747
+msgid "Grayscale Filter Amount (%)"
+msgstr "כמות פילטר סולם אפור (%)"
+
+#: main-modules.php:11846
+msgid "New Pin"
+msgstr "סיכה חדשה"
+
+#: main-modules.php:11847
+msgid "Pin Settings"
+msgstr "הגדרות סיכה"
+
+#: main-modules.php:11859
+msgid "Map Pin Address"
+msgstr "כתובת סיכת מפה"
+
+#: main-modules.php:11863
+msgid ""
+"Enter an address for this map pin, and the address will be geocoded and "
+"displayed on the map below."
+msgstr ""
+"הכנס כתובת של סיכת המפה, והכתובת תהיה מקודדת גיאוגרפית ותוצג על המפה בהמשך"
+
+#: main-modules.php:11891 main-modules.php:14052
+msgid ""
+"Here you can define the content that will be placed within the infobox for "
+"the pin."
+msgstr "כאן אתה יכול להגדיר תוכן שיוצג בתיבת המידע עבור הסיכה"
+
+#: main-modules.php:11934
+msgid "Social Media Follow"
+msgstr "עקוב ברשת חברתית"
+
+#: main-modules.php:11937 main-modules.php:12092 main-modules.php:12130
+msgid "Social Network"
+msgstr "רשת חברתית  "
+
+#: main-modules.php:11958
+msgid "Social Follow"
+msgstr "מעקב חברתי"
+
+#: main-modules.php:11962 main-modules.php:12117
+msgid "Social Icon"
+msgstr "אייקון חברתי"
+
+#: main-modules.php:11966 main-modules.php:12005 main-modules.php:12121
+msgid "Follow Button"
+msgstr "כפתור עקוב"
+
+#: main-modules.php:11975
+msgid "Link Shape"
+msgstr "צורת הקישור"
+
+#: main-modules.php:11979
+msgid "Rounded Rectangle"
+msgstr "מלבן מעוגל"
+
+#: main-modules.php:11980
+msgid "Circle"
+msgstr "עיגול"
+
+#: main-modules.php:11982
+msgid "Here you can choose the shape of your social network icons."
+msgstr "כאן אתה יכול לבחור את עיצוב של סמלי רשתות חברתיות"
+
+#: main-modules.php:12012
+msgid ""
+"Here you can choose whether or not to include the follow button next to the "
+"icon."
+msgstr "כאן אתה יכול לבחור האם לכלול את כפתור עקוב ליד הסמל"
+
+#: main-modules.php:12112
+msgid "New Social Network"
+msgstr "רשת חברתית חדשה"
+
+#: main-modules.php:12113
+msgid "Social Network Settings"
+msgstr "הגדרות רשת חברתית"
+
+#: main-modules.php:12135
+msgid "Select a Network"
+msgstr "בחר רשת"
+
+#: main-modules.php:12137
+msgid "facebook"
+msgstr "‏facebook"
+
+#: main-modules.php:12149
+msgid "Pinterest"
+msgstr "‏Pinterest"
+
+#: main-modules.php:12157
+msgid "tumblr"
+msgstr "‏tumblr"
+
+#: main-modules.php:12161
+msgid "Instagram"
+msgstr "‏Instagram"
+
+#: main-modules.php:12165
+msgid "skype"
+msgstr "‏skype"
+
+#: main-modules.php:12169
+msgid "flikr"
+msgstr "‏flikr"
+
+#: main-modules.php:12173
+msgid "MySpace"
+msgstr "‏MySpace"
+
+#: main-modules.php:12177
+msgid "dribbble"
+msgstr "‏dribbble"
+
+#: main-modules.php:12181
+msgid "Youtube"
+msgstr "‏Youtube"
+
+#: main-modules.php:12185
+msgid "Vimeo"
+msgstr "‏Vimeo"
+
+#: main-modules.php:12189
+msgid "RSS"
+msgstr "‏RSS"
+
+#: main-modules.php:12198
+msgid "Choose the social network"
+msgstr "בחר את הרשת החברתית "
+
+#: main-modules.php:12205
+msgid "Account URL"
+msgstr "‏URL חשבון"
+
+#: main-modules.php:12208
+msgid "The URL for this social network link."
+msgstr "ה-  URL של קישור הרששת החברתית"
+
+#: main-modules.php:12212
+msgid "Account Name"
+msgstr "שם החשבון"
+
+#: main-modules.php:12215
+msgid "The Skype account name."
+msgstr "את חשבון Skype שם."
+
+#: main-modules.php:12219
+msgid "Skype Button Action"
+msgstr "סקייפ לחצן פעולה"
+
+#: main-modules.php:12223
+msgid "Call"
+msgstr "לקרוא"
+
+#: main-modules.php:12224
+msgid "Chat"
+msgstr "צ ' אט"
+
+#: main-modules.php:12227
+msgid "Here you can choose which action to execute on button click"
+msgstr "כאן אתה יכול לבחור איזה פעולה לבצע לחיצה על כפתור"
+
+#: main-modules.php:12232
+msgid "This will change the icon color."
+msgstr "זה ישנה את צבע הסמל"
+
+#: main-modules.php:12269
+msgid "Follow"
+msgstr "עקבו"
+
+#: main-modules.php:12297
+msgid "Post Title"
+msgstr "כותרת פרסום"
+
+#: main-modules.php:12396 main-modules.php:16275
+msgid "Here you can choose whether or not display the Post Title"
+msgstr "כאן אתה יכול לבחור אם להראות או לא להראות את כותרת הפרסום"
+
+#: main-modules.php:12399 main-modules.php:16278
+msgid "Show Meta"
+msgstr "הראה meta"
+
+#: main-modules.php:12412 main-modules.php:16291
+msgid "Here you can choose whether or not display the Post Meta"
+msgstr "כאן אתה יכול לבחור אם להראות או לא להראות את ה Meta של הפרסום"
+
+#: main-modules.php:12423 main-modules.php:16302
+msgid "Here you can choose whether or not display the Author Name in Post Meta"
+msgstr "כאן אתה יכול לבחור אם להראות או לא להראות את שם הכותב ב Meta של הפרסום"
+
+#: main-modules.php:12437 main-modules.php:16316
+msgid "Here you can choose whether or not display the Date in Post Meta"
+msgstr "כאן אתה יכול לבחור אם להראות או לא להראות את התאריך ב Meta של הפרסום"
+
+#: main-modules.php:12441 main-modules.php:16320
+msgid "Date Format"
+msgstr "פורמט תאריך"
+
+#: main-modules.php:12445 main-modules.php:16324
+msgid "Here you can define the Date Format in Post Meta. Default is 'M j, Y'"
+msgstr ""
+"כאן אתה יכול להגדיר את פורמט התאריך ב Metaשל הפוסט. ברירת המחדל היא 'M j, Y'"
+
+#: main-modules.php:12449 main-modules.php:16328
+msgid "Show Post Categories"
+msgstr "הראה קטגוריית פרסום"
+
+#: main-modules.php:12457 main-modules.php:16336
+msgid ""
+"Here you can choose whether or not display the Categories in Post Meta. Note: "
+"This option doesn't work with custom post types."
+msgstr ""
+"כאן אתה יכול לבחור אם להראות או לא להראות את הקטגוריות ב Metaשל הפוסט. הערה: "
+"אפשרות זאת לא עובדת עם סוגי פרסומים מותאמים אישית."
+
+#: main-modules.php:12460 main-modules.php:16339
+msgid "Show Comments Count"
+msgstr "הראה כמות תגובות"
+
+#: main-modules.php:12468 main-modules.php:16347
+msgid ""
+"Here you can choose whether or not display the Comments Count in Post Meta."
+msgstr ""
+"כאן אתה יכול לבחור אם להראות או לא להראות את כמות התגובות ב Metaשל הפוסט."
+
+#: main-modules.php:12481 main-modules.php:16360
+msgid "Here you can choose whether or not display the Featured Image"
+msgstr "כאן אתה יכול לבחור אם להראות או לא להראות את התמונה המומלצת"
+
+#: main-modules.php:12484 main-modules.php:16363
+msgid "Featured Image Placement"
+msgstr "מיקום תמונה מומלצת"
+
+#: main-modules.php:12488 main-modules.php:16367
+msgid "Below Title"
+msgstr "כותרת מתחת"
+
+#: main-modules.php:12489 main-modules.php:16368
+msgid "Above Title"
+msgstr "כותרת מעל"
+
+#: main-modules.php:12490 main-modules.php:16369
+msgid "Title/Meta Background Image"
+msgstr "תמונת רקע של הכותרת"
+
+#: main-modules.php:12496 main-modules.php:16375
+msgid "Here you can choose where to place the Featured Image"
+msgstr "כאן אתה יכול לבחור איפה למקם את התמונה המומלצת"
+
+#: main-modules.php:12499 main-modules.php:16378 main-structure-elements.php:186
+#: main-structure-elements.php:1131
+msgid "Use Parallax Effect"
+msgstr "השתמש באפקט פרלקס"
+
+#: main-modules.php:12510 main-modules.php:16389
+msgid ""
+"Here you can choose whether or not use parallax effect for the featured image"
+msgstr "כאן אתה יכול לבחור אם להשתמש או לא להשתמש באפקט parallax לתמונה המומלצת"
+
+#: main-modules.php:12521 main-modules.php:16400
+msgid "Here you can choose which parallax method to use for the featured image"
+msgstr "כאן אתה יכול לבחור באיזו שיטת parallax להשתמש בתמונה המומלצת"
+
+#: main-modules.php:12532 main-modules.php:16411
+msgid "Here you can choose the orientation for the Title/Meta text"
+msgstr "כאן אתה יכול לבחור את הכיוון של מלל הכותרת"
+
+#: main-modules.php:12542 main-modules.php:16421
+msgid "Here you can choose the color for the Title/Meta text"
+msgstr "כאן אתה יכול לבחור את הצבע של מלל הכותרת"
+
+#: main-modules.php:12545 main-modules.php:16424
+msgid "Use Text Background Color"
+msgstr "השתמש בצבע רקע לטקסט"
+
+#: main-modules.php:12555 main-modules.php:16434
+msgid ""
+"Here you can choose whether or not use the background color for the Title/"
+"Meta text"
+msgstr "כאן אתה יכול לבחור אם להשתמש או להשתמש בצבע הרקע עבור מלל הכותרת"
+
+#: main-modules.php:12558 main-modules.php:16437
+msgid "Text Background Color"
+msgstr "צבע רקע המלל"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "0 comments"
+msgstr "אפס תגובות"
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "1 comment"
+msgstr "תגובת אחת."
+
+#: main-modules.php:12663 main-modules.php:16541
+msgid "comments"
+msgstr "תגובות"
+
+#: main-modules.php:12742
+msgid "Search"
+msgstr "חיפוש"
+
+#: main-modules.php:12773
+msgid "Input"
+msgstr "הזנה"
+
+#: main-modules.php:12848
+msgid "Exclude Pages"
+msgstr "אל תכלול עמודים"
+
+#: main-modules.php:12855
+msgid "Turning this on will exclude Pages from search results"
+msgstr "כשאפשרות זו מופעלת, עמודים לא יכללו בתוצאות חיפוש."
+
+#: main-modules.php:12858
+msgid "Exclude Posts"
+msgstr "אל תכלול פוסטים"
+
+#: main-modules.php:12868
+msgid "Turning this on will exclude Posts from search results"
+msgstr "כשאפשרות זו מופעלת, פוסטים לא יכללו בתוצאות חיפוש."
+
+#: main-modules.php:12871
+msgid "Exclude Categories"
+msgstr "אל תכלול קטגוריות"
+
+#: main-modules.php:12878
+msgid ""
+"Choose which categories you would like to exclude from the search results."
+msgstr "בחר אילו קטגוריות אינך רוצה לכלול בתוצאות החיפוש."
+
+#: main-modules.php:12881
+msgid "Hide Button"
+msgstr "הסתר כפתור"
+
+#: main-modules.php:12888
+msgid "Turning this on will hide the Search button"
+msgstr "הפעלת אפשרות זו תסתיר את כפתור החיפוש"
+
+#: main-modules.php:12891
+msgid "Placeholder Text"
+msgstr "טקסט שומר מקום"
+
+#: main-modules.php:12893
+msgid "Type the text you want to use as placeholder for the search field."
+msgstr "הקלד את הטקסט שברצונך להציג כשומר מקום בשדה החיפוש."
+
+#: main-modules.php:12910
+msgid "Button and Border Color"
+msgstr "צבע כפתור וגבול"
+
+#: main-modules.php:12916
+msgid "Input Field Background Color"
+msgstr "צבע רקע שדה הזנה"
+
+#: main-modules.php:12922
+msgid "Placeholder Color"
+msgstr "צבע שומר מקום"
+
+#: main-modules.php:13123
+msgid "Comment"
+msgstr "תגובה"
+
+#: main-modules.php:13155
+msgid "Field border"
+msgstr "גבול שדה"
+
+#: main-modules.php:13173
+msgid "Comments Count"
+msgstr ""
+
+#: main-modules.php:13177
+msgid "Comment Body"
+msgstr ""
+
+#: main-modules.php:13181
+msgid "Comment Meta"
+msgstr ""
+
+#: main-modules.php:13185
+msgid "Comment Content"
+msgstr ""
+
+#: main-modules.php:13189
+msgid "Comment Avatar"
+msgstr ""
+
+#: main-modules.php:13193
+msgid "Reply Button"
+msgstr ""
+
+#: main-modules.php:13197
+msgid "New Comment Title"
+msgstr ""
+
+#: main-modules.php:13205
+msgid "Name Field"
+msgstr ""
+
+#: main-modules.php:13213
+msgid "Website Field"
+msgstr ""
+
+#: main-modules.php:13217
+msgid "Submit Button"
+msgstr ""
+
+#: main-modules.php:13227
+msgid "Show author avatar"
+msgstr "הצג תמונת הכותב"
+
+#: main-modules.php:13236
+msgid "Show reply button"
+msgstr "הצג כפתור השב"
+
+#: main-modules.php:13245
+msgid "Show comments count"
+msgstr "הצג ספירת תגובות"
+
+#: main-modules.php:13264
+msgid "Fields Background Color"
+msgstr "צבע רקע שדות"
+
+#: main-modules.php:13270
+msgid "Fields Border Radius"
+msgstr "רדיוס גבול שדות"
+
+#: main-modules.php:13397
+msgid "Post Navigation"
+msgstr "ניווט פוסט"
+
+#: main-modules.php:13417 main-modules.php:13446
+msgid "Links"
+msgstr "קישורים"
+
+#: main-modules.php:13450
+msgid "Previous Link"
+msgstr "קישור קודם"
+
+#: main-modules.php:13454
+msgid "Previous Link Arrow"
+msgstr ""
+
+#: main-modules.php:13458
+msgid "Next Link"
+msgstr "קישור הבא"
+
+#: main-modules.php:13462
+msgid "Next Link Arrow"
+msgstr ""
+
+#: main-modules.php:13471
+msgid "In the same category"
+msgstr "בתוך אותה קטגוריה"
+
+#: main-modules.php:13481
+msgid ""
+"Here you can define whether previous and next posts must be within the same "
+"taxonomy term as the current post"
+msgstr ""
+"כאן תוכל לבחור אם פוסט הבא וקודם חייבים להיות בתוך אותם מושגי טקסונומיה כמו "
+"הפוסט הנוכחי."
+
+#: main-modules.php:13484
+msgid "Custom Taxonomy Name"
+msgstr "שם טקסונומיה מותאם"
+
+#: main-modules.php:13488
+msgid ""
+"Leave blank if you're using this module on a Project or Post. Otherwise type "
+"the taxonomy name to make the 'In the Same Category' option work correctly"
+msgstr ""
+"השאר ריק אם הינך משתמש במודול זה בפרוייקט או בפוסט. אחרת, הקלד את שם המיון "
+"בכדי שאפשרות ״בתוך אותה קטגוריה״ תפעל כראוי"
+
+#: main-modules.php:13491
+msgid "Hide Previous Post Link"
+msgstr "הסתר קישור לפוסט קודם"
+
+#: main-modules.php:13501
+msgid "Here you can choose whether to hide or show the previous post link"
+msgstr "כאן תוכל לבחור אם להסתיר או להציג קשיור לפוסט הקודם."
+
+#: main-modules.php:13504
+msgid "Hide Next Post Link"
+msgstr "הסתר קישור לפוסט הבא"
+
+#: main-modules.php:13514
+msgid "Here you can choose whether to hide or show the next post link"
+msgstr "כאן תוכל לבחור אם להסתיר או להציג קשיור לפוסט הבא."
+
+#: main-modules.php:13517
+msgid "Previous Link Text"
+msgstr "טקסט לקישור הקודם"
+
+#: main-modules.php:13521
+msgid ""
+"Define custom text for the previous link. You can use the <strong>%title</"
+"strong> variable to include the post title. Leave blank for default."
+msgstr ""
+"הגדר טקסט מותאם לקישור הקודם. ניתן להשתמש במשתנה  <strong>%title</strong> כדי "
+"לכלול את שם הפוסט. השאר ריק לברירת מחדל."
+
+#: main-modules.php:13524
+msgid "Next Link Text"
+msgstr "טקסט לקישור הבא"
+
+#: main-modules.php:13528
+msgid ""
+"Define custom text for the next link. You can use the <strong>%title</strong> "
+"variable to include the post title. Leave blank for default."
+msgstr ""
+"הגדר טקסט מותאם לקישור הבא. ניתן להשתמש במשתנה  <strong>%title</strong> כדי "
+"לכלול את שם הפוסט. השאר ריק לברירת מחדל."
+
+#: main-modules.php:13629
+msgid "Fullwidth Header"
+msgstr "כותרת רוחב מלא"
+
+#: main-modules.php:13691
+msgid "Title Styling"
+msgstr "עיצוב כותרת"
+
+#: main-modules.php:13692
+msgid "Subhead Styling"
+msgstr "עיצוב תת-כותרת"
+
+#: main-modules.php:13693
+msgid "Content Styling"
+msgstr "עיצוב תוכן"
+
+#: main-modules.php:13716
+msgid "Subhead"
+msgstr "תת-כותרת"
+
+#: main-modules.php:13758 main-modules.php:13794
+msgid "Button One"
+msgstr "כפתור אחד"
+
+#: main-modules.php:13764 main-modules.php:13798
+msgid "Button Two"
+msgstr "כפתור שני"
+
+#: main-modules.php:13774
+msgid "Header Container"
+msgstr "כותרת מיכל"
+
+#: main-modules.php:13778
+msgid "Header Image"
+msgstr "תמונת כותרת"
+
+#: main-modules.php:13782
+msgid "Logo"
+msgstr "לוגו"
+
+#: main-modules.php:13802
+msgid "Scroll Down Button"
+msgstr "כפתור גלילה למטה"
+
+#: main-modules.php:13814
+msgid "Enter your page title here."
+msgstr "הכנס כאן את כתובת העמוד שלך"
+
+#: main-modules.php:13817
+msgid "Subheading Text"
+msgstr "טקסט כותרת משנה"
+
+#: main-modules.php:13820
+msgid ""
+"If you would like to use a subhead, add it here. Your subhead will appear "
+"below your title in a small font."
+msgstr ""
+"אם אתה רוצה להשתמש בכותרת משנה, הוסף אותה כאן. כותרת המשנה שלך תופיע מתחת "
+"לכותרת בפונט קטן"
+
+#: main-modules.php:13833
+msgid "Text & Logo Orientation"
+msgstr "כיוון טקסט ולוגו"
+
+#: main-modules.php:13841
+msgid "Make Fullscreen"
+msgstr "עבור למסך מלא"
+
+#: main-modules.php:13851
+msgid "Here you can choose whether the header is expanded to fullscreen size."
+msgstr "כאן אתה יכול לבחור אם הכותרת מוגדלת לגודל של מסך מלא"
+
+#: main-modules.php:13854
+msgid "Show Scroll Down Button"
+msgstr "הראה כפתור גלילה מטה"
+
+#: main-modules.php:13864
+msgid "Here you can choose whether the scroll down button is shown."
+msgstr "כאן אתה יכול לבחור אם כפתור הגלילה מטה מוצג"
+
+#: main-modules.php:13873
+msgid "Choose an icon to display for the scroll down button."
+msgstr "בחר אייקון להצגת כפתור הגלילה מטה"
+
+#: main-modules.php:13877
+msgid "Scroll Down Icon Color"
+msgstr "צבע אייקון הגלילה מטה"
+
+#: main-modules.php:13883
+msgid "Scroll Down Icon Size"
+msgstr "גודל אייקון הגלילה מטה"
+
+#: main-modules.php:13896
+msgid "Title Font Color"
+msgstr "צבע גופן הכותרת"
+
+#: main-modules.php:13903
+msgid "Subhead Font Color"
+msgstr "צבע גופן כותרת המשנה"
+
+#: main-modules.php:13910
+msgid "Content Font Color"
+msgstr "צבע גופן התוכן"
+
+#: main-modules.php:13917
+msgid "Text Max Width"
+msgstr "מקס טקסט רוחב"
+
+#: main-modules.php:13931 main-modules.php:13943
+msgid "Button %1$s Text"
+msgstr "מלל כפתור %1$s"
+
+#: main-modules.php:13934 main-modules.php:13946
+msgid "Enter the text for the Button."
+msgstr "הכנס את המלל עבור הכפתור"
+
+#: main-modules.php:13937 main-modules.php:13949
+msgid "Button %1$s URL"
+msgstr "קישור כפתור %1$s"
+
+#: main-modules.php:13940 main-modules.php:13952
+msgid "Enter the URL for the Button."
+msgstr "הכנס את הURL עבור הכפתור"
+
+#: main-modules.php:13955
+msgid "Background Image URL"
+msgstr "URL של תמונת רקע"
+
+#: main-modules.php:13982 main-modules.php:14927
+msgid ""
+"If enabled, your background images will have a fixed position as your scroll, "
+"creating a fun parallax-like effect."
+msgstr ""
+"אם תפעיל אפשרות זאת, לתמונות הרקע שלך יהיה מקום קבוע כאשר תגוגלל את העכבר, מה "
+"שייצור אפקט פרלקס כייפי"
+
+#: main-modules.php:13997
+msgid "Logo Image URL"
+msgstr "קישור של תמונת לוגו"
+
+#: main-modules.php:14006
+msgid "Logo Image Alternative Text"
+msgstr "הלוגו לתמונה טקסט חלופי"
+
+#: main-modules.php:14012
+msgid "Logo Title"
+msgstr "לוגו כותרת"
+
+#: main-modules.php:14018
+msgid "Text Vertical Alignment"
+msgstr "יישור טקסט אנכי"
+
+#: main-modules.php:14025
+msgid ""
+"This setting determines the vertical alignment of your content. Your content "
+"can either be vertically centered, or aligned to the bottom."
+msgstr ""
+"הגדרה זאת קובעת את היישור האנכי של התוכן שלך. התוכן שלך יכול להיות ממורכז "
+"אנכית או מיושר לתחתית."
+
+#: main-modules.php:14030
+msgid "Header Image URL"
+msgstr "URL של תמונת כותרת"
+
+#: main-modules.php:14039
+msgid "Image Vertical Alignment"
+msgstr "יישור תמונה אנכי"
+
+#: main-modules.php:14046
+msgid "This controls the orientation of the image within the module."
+msgstr "זה שולט בכיוון של התמונה בתוך המודול"
+
+#: main-modules.php:14347
+msgid "Fullwidth Menu"
+msgstr "תפריט רוחב מלא"
+
+#: main-modules.php:14375 main-modules.php:14431
+msgid "Menu"
+msgstr "תפריט"
+
+#: main-modules.php:14404
+msgid "Menu Link"
+msgstr "קישור לתפריט"
+
+#: main-modules.php:14408
+msgid "Active Menu Link"
+msgstr "קישור לתפריט פעיל"
+
+#: main-modules.php:14412
+msgid "Dropdown Menu Container"
+msgstr "מיכל תפריט נפתח"
+
+#: main-modules.php:14416
+msgid "Dropdown Menu Links"
+msgstr "קישורים תפריט נפתח"
+
+#: main-modules.php:14438
+msgid "Select a menu that should be used in the module"
+msgstr "בחר תפריט שאתה רוצה להשתמש בו במודול"
+
+#: main-modules.php:14439
+msgid "Click here to create new menu"
+msgstr "לץ כאן כדי ליצור תפריט חדש"
+
+#: main-modules.php:14465
+msgid "Sub-Menus Open"
+msgstr "תפריט משנה ייפתח"
+
+#: main-modules.php:14469
+msgid "Downwards"
+msgstr "למטה"
+
+#: main-modules.php:14470
+msgid "Upwards"
+msgstr "למעלה"
+
+#: main-modules.php:14472
+msgid ""
+"Here you can choose the direction that your sub-menus will open. You can "
+"choose to have them open downwards or upwards."
+msgstr ""
+"כאן אתה יכול לבחור לאיזה כיוון תפריט המשנה ייפתח. אתה יכול לקבוע שהם ייפתחו "
+"למטה או למעלה"
+
+#: main-modules.php:14475
+msgid "Make Menu Links Fullwidth"
+msgstr "צור תפריט קישורים Fullwidth"
+
+#: main-modules.php:14485
+msgid "Active Link Color"
+msgstr "צבע לינק פעיל"
+
+#: main-modules.php:14491
+msgid "Dropdown Menu Background Color"
+msgstr "צבע הרקע של התפריט המופל"
+
+#: main-modules.php:14497
+msgid "Dropdown Menu Line Color"
+msgstr "צבע הקו של התפריט המופל"
+
+#: main-modules.php:14503
+msgid "Dropdown Menu Text Color"
+msgstr "צבע המלל של התפריט המופל"
+
+#: main-modules.php:14509
+msgid "Dropdown Menu Animation"
+msgstr "האנימציה של התפריט המופל"
+
+#: main-modules.php:14513
+msgid "Fade"
+msgstr "מתעמעם"
+
+#: main-modules.php:14516
+msgid "Flip"
+msgstr "מתהפך"
+
+#: main-modules.php:14521
+msgid "Mobile Menu Background Color"
+msgstr "נייד צבע רקע של תפריט"
+
+#: main-modules.php:14527
+msgid "Mobile Menu Text Color"
+msgstr "נייד תפריט צבע טקסט"
+
+#: main-modules.php:14633
+msgid "Home"
+msgstr "בית"
+
+#: main-modules.php:14757
+msgid "Fullwidth Slider"
+msgstr "סליידר רוחב מלא"
+
+#: main-modules.php:14873
+msgid "This setting allows you to turn the navigation arrows on or off."
+msgstr "הגדרה זאת מאפשרת להדליק ולכבות את חצי הניווט"
+
+#: main-modules.php:14876
+msgid "Controls"
+msgstr "בקרה"
+
+#: main-modules.php:14880
+msgid "Show Slider Controls"
+msgstr "הצג הגדרות סליידר"
+
+#: main-modules.php:14881
+msgid "Hide Slider Controls"
+msgstr "הסתר הגדרות סליידר"
+
+#: main-modules.php:14883
+msgid ""
+"Disabling this option will remove the circle button at the bottom of the "
+"slider."
+msgstr "כיבוי אופציה זאת תסיר את כפתור העיגול בתחתית הסליידר"
+
+#: main-modules.php:15201
+msgid "Fullwidth Portfolio"
+msgstr "תיק רוחב מלא"
+
+#: main-modules.php:15262
+msgid "Portfolio Item"
+msgstr "פריט פורטפוליו"
+
+#: main-modules.php:15266
+msgid "Item Overlay"
+msgstr "פריט כיסוי"
+
+#: main-modules.php:15270
+msgid "Item Title"
+msgstr "כותרת פריט"
+
+#: main-modules.php:15278
+msgid "Navigation Arrows"
+msgstr "חצי ניווט"
+
+#: main-modules.php:15299
+msgid "Title displayed above the portfolio."
+msgstr "הכותרת שתוצג מעל התיק"
+
+#: main-modules.php:15306
+msgid "Carousel"
+msgstr "קרוסלה"
+
+#: main-modules.php:15324
+msgid ""
+"Control how many projects are displayed. Leave blank or use 0 to not limit "
+"the amount."
+msgstr "בקרה של כמה פרויקטים יוצגו . השאר ריק או השתמש ב-0 עד ללא הגבלת כמות"
+
+#: main-modules.php:15344
+msgid "Turn the date display on or off."
+msgstr "הדלק/כבה את תצוגת התאריך"
+
+#: main-modules.php:15357
+msgid "Automatic Carousel Rotation"
+msgstr "סיבוב קרוסלה אוטומטי"
+
+#: main-modules.php:15368
+msgid ""
+"If you the carousel layout option is chosen and you would like the carousel "
+"to slide automatically, without the visitor having to click the next button, "
+"enable this option and then adjust the rotation speed below if desired."
+msgstr ""
+"אם פריסת הקרוסלה נבחרה ואתה רוצה שהקרוסלה תגלוש באופן אוטומטי, מבלי שהמבקר "
+"צריך ללחוץ על הכפתור הבא, אפשר אופציה זאת וקבע את מהירות ההחלפה מטה "
+
+#: main-modules.php:15371
+msgid "Automatic Carousel Rotation Speed (in ms)"
+msgstr "מהירות מחזור אוטומטי של הקרוסלה (באלפיות השנייה)"
+
+#: main-modules.php:15375
+msgid ""
+"Here you can designate how fast the carousel rotates, if 'Automatic Carousel "
+"Rotation' option is enabled above. The higher the number the longer the pause "
+"between each rotation. (Ex. 1000 = 1 sec)"
+msgstr ""
+"כאן אתה יכול להחליט באיזה מהירות הקרוסלה תסובב,  אם תבחר למעלה באופציה של "
+"\"מהירות קרוסלה אוטומטית\". ככל שהמספר יהיה יותר גבוה כך ההפסקה בין כל סיבוב "
+"תגדל (לדוגמא 1000=שנייה אחת)"
+
+#: main-modules.php:15575
+msgid "Fullwidth Map"
+msgstr "מפה ברוחב מלא"
+
+#: main-modules.php:15709
+msgid "Code"
+msgstr "קוד"
+
+#: main-modules.php:15820
+msgid "Fullwidth Code"
+msgstr "קוד ברוחב מלא"
+
+#: main-modules.php:15902
+msgid "Fullwidth Image"
+msgstr "תמונה ברוחב מלא"
+
+#: main-modules.php:15968
+msgid "Open In Lightbox"
+msgstr "פתח בלייטבוקס"
+
+#: main-modules.php:16189
+msgid "Fullwidth Post Title"
+msgstr "כותרת פרסום ברוחב מלא"
+
+#: main-modules.php:16623
+msgid "Fullwidth Post Slider"
+msgstr "מחוון פוסט ברחוב מלא"
+
+#: main-modules.php:16839
+msgid ""
+"Define the text which will be displayed on \"Read More\" button. Leave blank "
+"for default ( Read More )"
+msgstr ""
+"הגדר את הטקסט שיוצג בכפתור \"Read More\". השאר ריק לברירת מחדל (קרא עוד)."
+
+#: main-structure-elements.php:114
+msgid "Transparent Background Color"
+msgstr "צבע רקע שקוף"
+
+#: main-structure-elements.php:124
+msgid ""
+"Enabling this option will remove the background color of this section, "
+"allowing the website background color or background image to show through."
+msgstr ""
+"הפעלת האפשרות הזאת תסיר את צבע הרקע של הסעיף הזה, מאפשר לרקע האתר או לרקע "
+"התמונה להראות דרך הסעיף."
+
+#: main-structure-elements.php:176
+msgid "Show Inner Shadow"
+msgstr "הצג צל פנימי"
+
+#: main-structure-elements.php:183
+msgid ""
+"Here you can select whether or not your section has an inner shadow. This can "
+"look great when you have colored backgrounds or background images."
+msgstr ""
+"כאן אתה יכול להכניס האם למקטע שלך יש או אין צל פנימי. זה יכול להיראות מצוין "
+"כאשר יש לך רקע צבעוני או תמונות רקע"
+
+#: main-structure-elements.php:196
+msgid ""
+"If enabled, your background image will stay fixed as your scroll, creating a "
+"fun parallax-like effect."
+msgstr ""
+"אם תאפשר, תמונת הרקע שלך תישאר קבועה כאשר אתה תגולל עם העכבר, ותיצור אפקט "
+"פרלקס כייפי"
+
+#: main-structure-elements.php:214 main-structure-elements.php:1049
+#: main-structure-elements.php:1857
+msgid ""
+"Adjust padding to specific values, or leave blank to use the default padding."
+msgstr "כוון מרווח לערכים מדויקים, או השאר ריק כדי להשתמש במרווחי ברירת המחדל."
+
+#: main-structure-elements.php:223 main-structure-elements.php:1058
+#: main-structure-elements.php:1866
+msgid "Keep Custom Padding on Mobile"
+msgstr "שמור מרווח מותאם אישית בנייד"
+
+#: main-structure-elements.php:230 main-structure-elements.php:1065
+#: main-structure-elements.php:1873
+msgid "Allow custom padding to be retained on mobile screens"
+msgstr "אפשר למרווח מותאם אישית להישמר על מסכים ניידים"
+
+#: main-structure-elements.php:233
+msgid "Make This Section Fullwidth"
+msgstr "להפוך סעיף זה Fullwidth"
+
+#: main-structure-elements.php:244 main-structure-elements.php:964
+msgid "Use Custom Width"
+msgstr "השתמש ברוחב מותאם מראש"
+
+#: main-structure-elements.php:259 main-structure-elements.php:979
+msgid "Unit"
+msgstr "יחידה"
+
+#: main-structure-elements.php:263 main-structure-elements.php:983
+msgid "px"
+msgstr "פיקסלים"
+
+#: main-structure-elements.php:277 main-structure-elements.php:289
+#: main-structure-elements.php:996 main-structure-elements.php:1008
+msgid "Custom Width"
+msgstr "רוחב מותאם אישית"
+
+#: main-structure-elements.php:301 main-structure-elements.php:1155
+#: main-structure-elements.php:1901
+msgid "Equalize Column Heights"
+msgstr "השווה גבהיי טורים"
+
+#: main-structure-elements.php:311 main-structure-elements.php:1020
+#: main-structure-elements.php:1876
+msgid "Use Custom Gutter Width"
+msgstr "שימוש מותאם אישית הביוב רוחב"
+
+#: main-structure-elements.php:324 main-structure-elements.php:1033
+#: main-structure-elements.php:1889
+msgid "Gutter Width"
+msgstr "מרווח טורים"
+
+#: main-structure-elements.php:953
+msgid "Make This Row Fullwidth"
+msgstr "הפוך את השורה הזאת לרוחב מלא"
+
+#: main-structure-elements.php:961
+msgid ""
+"Enable this option to extend the width of this row to the edge of the browser "
+"window."
+msgstr ""
+"הפעל את האפשרות הזאת על מנת להרחיב את הרוחב של השורה הזאת לקצה חלון הדפדפן."
+
+#: main-structure-elements.php:976
+msgid ""
+"Change to Yes if you would like to adjust the width of this row to a non-"
+"standard width."
+msgstr "שנה לכן אם ברצונך לשנות את רוחב השורה הזאת לרוחב לא סטנדרטי."
+
+#: main-structure-elements.php:1005 main-structure-elements.php:1017
+msgid "Define custom width for this Row"
+msgstr "הגדר רוחב מותאם אישית עבור השורה הזאת"
+
+#: main-structure-elements.php:1030 main-structure-elements.php:1886
+msgid "Enable this option to define custom gutter width for this row."
+msgstr "בחר באפשרות זו כדי להגדיר מותאם אישית הביוב רוחב עבור שורה זו."
+
+#: main-structure-elements.php:1042 main-structure-elements.php:1898
+msgid "Adjust the spacing between each column in this row."
+msgstr "כוון את המרווח בין כל טור בשורה זאת"
+
+#: main-structure-elements.php:1170 main-structure-elements.php:1916
+msgid "Keep Column Padding on Mobile"
+msgstr "ממשיך הטור ריפוד ניידים"
+
+#: main-structure-elements.php:1182
+msgid ""
+"This will change the label of the row in the builder for easy identification "
+"when collapsed."
+msgstr "זה יהיה לשנות את התוויות של שורה הקבלן זיהוי קל כאשר התמוטט."
+
+#: template-preview.php:9 template-preview.php:64
+msgid "Authentication failed. You cannot preview this item."
+msgstr "האימות נכשל. ניתן להציג תצוגה מקדימה של פריט זה."
+
+#: template-preview.php:14
+msgid "Authentication failed. You are not logged in."
+msgstr "האימות נכשל. אתה לא מחובר."
+
+#: template-preview.php:19 template-preview.php:67
+msgid "Authentication failed. You have no permission to preview this item."
+msgstr "האימות נכשל. אין לך הרשאה כדי להציג תצוגה מקדימה של פריט זה."
+
+#: template-preview.php:74
+msgid "Loading preview..."
+msgstr "טעינת תצוגה מקדימה..."
+
+#: template-preview.php:82
+msgid "Link Disabled"
+msgstr "קישור זמין"
+
+#: template-preview.php:83
+msgid "During preview, link to different page is disabled"
+msgstr "במהלך התצוגה המקדימה, קישור אל דף אחר אינו זמין"
+
+#: layouts.php:4
+msgctxt "Layout type general name"
+msgid "Layouts"
+msgstr "תבניות"
+
+#: layouts.php:5
+msgctxt "Layout type singular name"
+msgid "Layout"
+msgstr "תבנית"
+
+#: layouts.php:6
+msgctxt "Layout item"
+msgid "Add New"
+msgstr "הוסף חדש"
+
+#: main-modules.php:4166 main-modules.php:10984 main-modules.php:17443
+msgctxt "number of comments"
+msgid "1 Comment"
+msgid_plural "%s Comments"
+msgstr[0] "תגובת אחת."
+msgstr[1] "‏%s תגובות"
+
+#: main-modules.php:6040
+msgctxt "Audio Module meta information"
+msgid "by <strong>%1$s</strong>"
+msgstr "על ידי <strong>%1$s</strong>"
+
+#: main-modules.php:9448
+msgctxt "contact form title separator"
+msgid " - %s"
+msgstr " - %s"
+
+#: main-modules.php:13593
+msgctxt "Previous post link"
+msgid "&larr;"
+msgstr ""
+
+#: main-modules.php:13594
+msgctxt "Next post link"
+msgid "&rarr;"
+msgstr ""
+
+#~ msgid ""
+#~ "Type the message you want to display after successfull form submission. "
+#~ "Leave blank for default"
+#~ msgstr "הקלד את ההודעה שברצונך להציג לאחר מילוי הטופס. השאר ריק לברירת מחדל."
+
+#~ msgid ""
+#~ "Define custom text for the previous link. You can use <strong>%title</"
+#~ "strong> variable to include the post title. Leave blank for default."
+#~ msgstr ""
+#~ "הגדר טקסט מותאם לקישור הקודם. ניתן להשתמש במשתנה  <strong>%title</strong> "
+#~ "כדי לכלול את שם הפוסט. השאר ריק לברירת מחדל."
+
+#~ msgid ""
+#~ "Define custom text for the next link. You can use <strong>%title</strong> "
+#~ "variable to include the post title. Leave blank for default."
+#~ msgstr ""
+#~ "הגדר טקסט מותאם לקישור הבא. ניתן להשתמש במשתנה  <strong>%title</strong> "
+#~ "כדי לכלול את שם הפוסט. השאר ריק לברירת מחדל."
+
+#~ msgid " - %s"
+#~ msgstr " - %s"
+
+#~ msgid "﻿This post is password protected. Enter the password to view comments."
+#~ msgstr "פוסט זה מוגן בסיסמה. הכנס את הסיסמה כדי לראות את התגובות."
+
+#~ msgid ""
+#~ "Define the length of automatically generated excerpts. Leave blank for "
+#~ "default ( 270 )"
+#~ msgstr "הגדר את אורך הקטעים המיוצרים אוטומטית. השאר ריק לברירת מחדל (270)."
+
+#~ msgid "by <strong>%1$s</strong>"
+#~ msgstr "מאת <strong>%1$s</strong>"
