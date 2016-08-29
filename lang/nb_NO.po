@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Divi 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2016-01-25 14:31:21+00:00\n"
-"PO-Revision-Date: 2016-01-25 17:47+0300\n"
+"POT-Creation-Date: 2016-03-30 15:17:43+00:00\n"
+"PO-Revision-Date: 2016-03-30 01:03+0300\n"
 "Last-Translator: Birgit Fostervold <birgitf@gmail.com>\n"
 "Language-Team: Birgit Fostervold <http://birdesigns.com>\n"
 "Language: nb\n"
@@ -21,6 +21,7 @@ msgstr ""
 "X-Poedit-SearchPath-1: ..\n"
 "X-Poedit-SearchPathExcluded-0: ../includes/builder\n"
 "X-Poedit-SearchPathExcluded-1: ../node_modules\n"
+"X-Poedit-SearchPathExcluded-2: ../core\n"
 
 #: comments.php:4
 msgid "This post is password protected. Enter the password to view comments."
@@ -36,7 +37,7 @@ msgstr "0 kommentarer"
 msgid "1 Comment"
 msgstr "1 kommentar"
 
-#: comments.php:13 epanel/core_functions.php:469
+#: comments.php:13 epanel/core_functions.php:514
 msgid "Comments"
 msgstr "Kommentarer"
 
@@ -64,151 +65,143 @@ msgstr "Legg til kommentar"
 msgid "Leave a Reply to %s"
 msgstr "Legg igjen et svar til %s"
 
-#: epanel/core_functions.php:25
+#: epanel/core_functions.php:31
 msgid "Help"
 msgstr "Hjelp"
 
-#: epanel/core_functions.php:92
+#: epanel/core_functions.php:108
 msgid "Options"
 msgstr "Alternativer"
 
-#: epanel/core_functions.php:92 functions.php:8222
+#: epanel/core_functions.php:108 functions.php:8237
 msgid "Theme Options"
 msgstr "Temaalternativer"
 
-#: epanel/core_functions.php:110
+#: epanel/core_functions.php:127
 msgid "settings saved."
 msgstr "innstillinger lagret."
 
-#: epanel/core_functions.php:113
+#: epanel/core_functions.php:130
 msgid "settings reset."
 msgstr "innstillinger nullstilt."
 
-#: epanel/core_functions.php:122 epanel/core_functions.php:417
+#: epanel/core_functions.php:139 epanel/core_functions.php:462
 msgid "Save Changes"
 msgstr "Lagre endringer"
 
-#: epanel/core_functions.php:131
+#: epanel/core_functions.php:148 epanel/core_functions.php:733
 msgid "%s Theme Options"
 msgstr "%s Temaalternativer"
 
-#: epanel/core_functions.php:138
+#: epanel/core_functions.php:155
 msgid "Reset to Defaults"
 msgstr "Tilbakestill til standard"
 
-#: epanel/core_functions.php:142 options_divi.php:38
+#: epanel/core_functions.php:160 options_divi.php:38
 msgid "General"
 msgstr "Generelt"
 
-#: epanel/core_functions.php:145
+#: epanel/core_functions.php:163
 msgid "Navigation"
 msgstr "Navigasjon"
 
-#: epanel/core_functions.php:148 functions.php:663
+#: epanel/core_functions.php:166 functions.php:671
 msgid "Layout"
 msgstr "Layout"
 
-#: epanel/core_functions.php:151
+#: epanel/core_functions.php:169
 msgid "Ads"
 msgstr "Reklamer"
 
-#: epanel/core_functions.php:154
+#: epanel/core_functions.php:172
 msgid "Colorization"
 msgstr "Farge"
 
-#: epanel/core_functions.php:157
+#: epanel/core_functions.php:175
 msgid "SEO"
 msgstr "SEO"
 
-#: epanel/core_functions.php:160
+#: epanel/core_functions.php:178
 msgid "Integration"
 msgstr "Integrasjon"
 
-#: epanel/core_functions.php:239 epanel/core_functions.php:426
+#: epanel/core_functions.php:264 epanel/core_functions.php:471
 msgid "Reset"
 msgstr "Nullstill"
 
-#: epanel/core_functions.php:240
+#: epanel/core_functions.php:265
 msgid "Upload"
 msgstr "Last opp"
 
-#: epanel/core_functions.php:267
+#: epanel/core_functions.php:292
 msgid "You don't have pages"
 msgstr "Du har ingen sider"
 
-#: epanel/core_functions.php:427
-msgid ""
-"This will return all of the settings throughout the options page to their "
-"default values. <strong>Are you sure you want to do this?</strong>"
-msgstr ""
-"Dette vil gjenopprette alle tilpassede innstillinger til deres opprinnelige "
-"verdier. <strong>Er du sikker på at du ønsker dette?</strong>"
-
-#: epanel/core_functions.php:431 includes/functions/choices.php:92
+#: epanel/core_functions.php:476 includes/functions/choices.php:92
 msgid "Yes"
 msgstr "Ja"
 
-#: epanel/core_functions.php:434 includes/functions/choices.php:93
+#: epanel/core_functions.php:479 includes/functions/choices.php:93
 msgid "No"
 msgstr "Nei"
 
-#: epanel/core_functions.php:448
+#: epanel/core_functions.php:493
 msgid "Enable"
 msgstr "Aktiver"
 
-#: epanel/core_functions.php:450
+#: epanel/core_functions.php:495
 msgid "Disable"
 msgstr "Deaktiver"
 
-#: epanel/core_functions.php:457
+#: epanel/core_functions.php:502
 msgid "Author"
 msgstr "Forfatter"
 
-#: epanel/core_functions.php:461
+#: epanel/core_functions.php:506
 msgid "Date"
 msgstr "Dato"
 
-#: epanel/core_functions.php:465 options_divi.php:300
+#: epanel/core_functions.php:510 options_divi.php:316
 msgid "Categories"
 msgstr "Kategorier"
 
-#: epanel/core_functions.php:646
+#: epanel/core_functions.php:691
 msgid "Choose an Image"
 msgstr "Velg et bilde"
 
-#: epanel/custom_functions.php:195
+#: epanel/custom_functions.php:199
 msgid "&hellip;"
 msgstr "&hellip;"
 
-#: epanel/custom_functions.php:499 header.php:188 header.php:231
+#: epanel/custom_functions.php:503 header.php:188 header.php:231
 msgid "Home"
 msgstr "Hjem"
 
-#: epanel/custom_functions.php:796
+#: epanel/custom_functions.php:800
 msgid "Archives"
 msgstr "Arkiv"
 
-#: epanel/custom_functions.php:798
+#: epanel/custom_functions.php:802
 msgid "Search results for \"%s\""
 msgstr "Søkeresultater for \"%s\""
 
-#: epanel/custom_functions.php:800
+#: epanel/custom_functions.php:804
 msgid "404 Not Found"
 msgstr "404 Ikke funnet"
 
-#: epanel/custom_functions.php:870
+#: epanel/custom_functions.php:874
 msgid "Currently viewing archives from %1$s"
 msgstr "Viser arkiv fra %1$s"
 
-#: epanel/custom_functions.php:883
+#: epanel/custom_functions.php:887
 msgid "Search Results for: %s"
 msgstr "Søkeresultater for %s"
 
-#: epanel/custom_functions.php:1124
+#: epanel/custom_functions.php:1128
 msgid "Image doesn't exist"
 msgstr "Bilde eksisterer ikke"
 
-#: epanel/custom_functions.php:1341
+#: epanel/custom_functions.php:1347
 msgid ""
 "<div class=\"updated\"><p>This is a fresh installation of %1$s theme. Don't "
 "forget to go to <a href=\"%2$s\">ePanel</a> to set it up. This message will "
@@ -220,7 +213,7 @@ msgstr ""
 "beskjeden vil forsvinne så snart du har klikket knappen Lagre i <a href="
 "\"%2$s\">temaets side for alternativer</a>.</p></div>"
 
-#: epanel/custom_functions.php:1355
+#: epanel/custom_functions.php:1361
 msgid ""
 "There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox"
 "\" title=\"%1$s\">View version %3$s details</a>. <em>Before you can update "
@@ -234,7 +227,7 @@ msgstr ""
 "com/members-area/documentation.html#updater\" target=\"_blank\">Elegant "
 "Updater Plugin</a> for å autentisere ditt abonnement.</em>"
 
-#: epanel/custom_functions.php:1359
+#: epanel/custom_functions.php:1365
 msgid ""
 "Before you can update your Elegant Themes, you must first install the <a "
 "href=\"https://www.elegantthemes.com/members-area/documentation.html#updater"
@@ -270,7 +263,7 @@ msgstr "Brukernavn: "
 msgid "Password: "
 msgstr "Passord: "
 
-#: epanel/shortcodes/shortcodes.php:294 functions.php:3778
+#: epanel/shortcodes/shortcodes.php:294 functions.php:3786
 msgid "Login"
 msgstr "Innlogging"
 
@@ -455,11 +448,11 @@ msgstr "Automatisk størrelsesendring"
 msgid "+ Add One More Tab"
 msgstr "+ Legg til en fane"
 
-#: epanel/shortcodes/shortcodes.php:1335 functions.php:3444
+#: epanel/shortcodes/shortcodes.php:1335 functions.php:3452
 msgid "Image Height"
 msgstr "Bildehøyde"
 
-#: epanel/shortcodes/shortcodes.php:1336 functions.php:3424
+#: epanel/shortcodes/shortcodes.php:1336 functions.php:3432
 msgid "Image Width"
 msgstr "Bildebredde"
 
@@ -467,19 +460,19 @@ msgstr "Bildebredde"
 msgid "Designed by %1$s | Powered by %2$s"
 msgstr "Designet av %1$s | Drevet med %2$s"
 
-#: functions.php:32
+#: functions.php:40
 msgid "Primary Menu"
 msgstr "Hovedmeny"
 
-#: functions.php:33
+#: functions.php:41
 msgid "Secondary Menu"
 msgstr "Sekundærmeny"
 
-#: functions.php:34 functions.php:678
+#: functions.php:42 functions.php:686
 msgid "Footer Menu"
 msgstr "Bunnmeny"
 
-#: functions.php:81
+#: functions.php:89
 msgid ""
 "Welcome to Divi! Before diving in to your new theme, please visit the <a "
 "style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank"
@@ -489,618 +482,618 @@ msgstr ""
 "besøk til <a style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target="
 "\"_blank\">Divi Documentation</a>-siden for detaljerte veiledninger."
 
-#: functions.php:206
+#: functions.php:214
 msgid "Select Page"
 msgstr "Velg en side"
 
-#: functions.php:247
+#: functions.php:255
 msgid "Divi Page Settings"
 msgstr "Divi-innstillinger for Side"
 
-#: functions.php:249
+#: functions.php:257
 msgid "Divi Post Settings"
 msgstr "Divi-innstillinger for Innlegg"
 
-#: functions.php:250
+#: functions.php:258
 msgid "Divi Product Settings"
 msgstr "Divi-innstillinger for Produkt"
 
-#: functions.php:251
+#: functions.php:259
 msgid "Divi Project Settings"
 msgstr "Divi-innstillinger for Prosjekt"
 
-#: functions.php:258
+#: functions.php:266
 msgid "Skills"
 msgstr "Kvalifikasjoner"
 
-#: functions.php:261
+#: functions.php:269
 msgid "Posted on"
 msgstr "Publisert"
 
-#: functions.php:285 options_divi.php:95
+#: functions.php:293 options_divi.php:103
 msgid "Right Sidebar"
 msgstr "Høyre sidekolonne"
 
-#: functions.php:286 options_divi.php:96
+#: functions.php:294 options_divi.php:104
 msgid "Left Sidebar"
 msgstr "Venstre sidekolonne"
 
-#: functions.php:287 options_divi.php:97
+#: functions.php:295 options_divi.php:105
 msgid "Full Width"
 msgstr "Full bredde"
 
-#: functions.php:291
+#: functions.php:299
 msgid "Light"
 msgstr "Lys"
 
-#: functions.php:292
+#: functions.php:300
 msgid "Dark"
 msgstr "Mørk"
 
-#: functions.php:305
+#: functions.php:313
 msgid "Page Layout"
 msgstr "Sidelayout"
 
-#: functions.php:319
+#: functions.php:327
 msgid "Dot Navigation"
 msgstr "Punktnavigasjon"
 
-#: functions.php:322 functions.php:331
+#: functions.php:330 functions.php:339
 msgid "Off"
 msgstr "Av"
 
-#: functions.php:323 functions.php:332
+#: functions.php:331 functions.php:340
 msgid "On"
 msgstr "På"
 
-#: functions.php:327
+#: functions.php:335
 msgid "Hide Nav Before Scroll"
 msgstr "Skjul menyen før scrolling"
 
-#: functions.php:330 functions.php:5617 includes/functions/choices.php:24
+#: functions.php:338 functions.php:5625 includes/functions/choices.php:24
 #: includes/functions/choices.php:40
 msgid "Default"
 msgstr "Standard"
 
-#: functions.php:338
+#: functions.php:346
 msgid "Post Title"
 msgstr "Innleggstittel"
 
-#: functions.php:341 functions.php:376
+#: functions.php:349 functions.php:384
 msgid "Show"
 msgstr "Vis"
 
-#: functions.php:342 functions.php:375
+#: functions.php:350 functions.php:383
 msgid "Hide"
 msgstr "Skjul"
 
-#: functions.php:347
+#: functions.php:355
 msgid "Use Background Color"
 msgstr "Bruk bakgrunnsfarge"
 
-#: functions.php:352 functions.php:5653
+#: functions.php:360 functions.php:5661
 msgid "Hex Value"
 msgstr "Fargeverdi (hex)"
 
-#: functions.php:356 functions.php:1976 functions.php:2003 functions.php:2130
-#: functions.php:2652 functions.php:2752 functions.php:2957
+#: functions.php:364 functions.php:1984 functions.php:2011 functions.php:2138
+#: functions.php:2660 functions.php:2760 functions.php:2965
 msgid "Text Color"
 msgstr "Tekstfarge"
 
-#: functions.php:372
+#: functions.php:380
 msgid "Project Navigation"
 msgstr "Prosjektnavigering"
 
-#: functions.php:518 functions.php:530 functions.php:8300
+#: functions.php:526 functions.php:538 functions.php:8316
 msgid "you don't have sufficient permissions to access this page"
 msgstr "du har ikke tilstrekkelige rettigheter for tilgang til denne siden"
 
-#: functions.php:578 options_divi.php:305 options_divi.php:445
+#: functions.php:586 options_divi.php:321 options_divi.php:461
 msgid "General Settings"
 msgstr "Generelt"
 
-#: functions.php:583
+#: functions.php:591
 msgid "Site Identity"
 msgstr "Nettstedsprofil"
 
-#: functions.php:588
+#: functions.php:596
 msgid "Layout Settings"
 msgstr "Layout"
 
-#: functions.php:593
+#: functions.php:601
 msgid "Typography"
 msgstr "Typografi"
 
-#: functions.php:598
+#: functions.php:606
 msgid "Mobile Styles"
 msgstr "Mobile stiler"
 
-#: functions.php:603
+#: functions.php:611
 msgid "Tablet"
 msgstr "Nettbrett"
 
-#: functions.php:608
+#: functions.php:616
 msgid "Phone"
 msgstr "Telefon"
 
-#: functions.php:613
+#: functions.php:621
 msgid "Mobile Menu"
 msgstr "Mobilmeny"
 
-#: functions.php:618
+#: functions.php:626
 msgid "Background"
 msgstr "Bakgrunn"
 
-#: functions.php:623
+#: functions.php:631
 msgid "Header & Navigation"
 msgstr "Toppområde og navigasjon"
 
-#: functions.php:628
+#: functions.php:636
 msgid "Header Format"
 msgstr "Format på toppområdet"
 
-#: functions.php:633
+#: functions.php:641
 msgid "Primary Menu Bar"
 msgstr "Hovedmenylinje"
 
-#: functions.php:638
+#: functions.php:646
 msgid "Secondary Menu Bar"
 msgstr "Sekundær menylinje"
 
-#: functions.php:643
+#: functions.php:651
 msgid "Slide In & Fullscreen Header Settings"
 msgstr "Slide in & fullskjerm header innstillinger"
 
-#: functions.php:648
+#: functions.php:656
 msgid "Fixed Navigation Settings"
 msgstr "Innstillinger for festet meny"
 
-#: functions.php:653
+#: functions.php:661
 msgid "Header Elements"
 msgstr "Toppområde-elementer"
 
-#: functions.php:658
+#: functions.php:666
 msgid "Footer"
 msgstr "Bunnområde"
 
-#: functions.php:668
+#: functions.php:676
 msgid "Widgets"
 msgstr "Widgeter"
 
-#: functions.php:673
+#: functions.php:681
 msgid "Footer Elements"
 msgstr "Bunnområde-elementer"
 
-#: functions.php:683
+#: functions.php:691
 msgid "Bottom Bar"
 msgstr "Bunnlinje"
 
-#: functions.php:688 functions.php:1409
+#: functions.php:696 functions.php:1417
 msgid "Color Schemes"
 msgstr "Fargevariasjoner"
 
-#: functions.php:690
+#: functions.php:698
 msgid ""
 "Note: Color settings set above should be applied to the Default color scheme."
 msgstr ""
 "Merk: benytt helst standard fargevalg dersom du ønsker å bruke egendefinerte "
 "farger i innstillingene ovenfor"
 
-#: functions.php:694
+#: functions.php:702
 msgid "Buttons"
 msgstr "Knapper"
 
-#: functions.php:699
+#: functions.php:707
 msgid "Buttons Style"
 msgstr "Knappestil"
 
-#: functions.php:704
+#: functions.php:712
 msgid "Buttons Hover Style"
 msgstr "Knappestil for mouseover"
 
-#: functions.php:709 functions.php:4957
+#: functions.php:717 functions.php:4965
 msgid "Blog"
 msgstr "Blogg"
 
-#: functions.php:714
+#: functions.php:722
 msgid "Post"
 msgstr "Innlegg"
 
-#: functions.php:731
+#: functions.php:739
 msgid "Meta Text Size"
 msgstr "Informasjonstekst skriftstørrelse"
 
-#: functions.php:750
+#: functions.php:758
 msgid "Meta Line Height"
 msgstr "Informasjonstekst linjehøyde"
 
-#: functions.php:769
+#: functions.php:777
 msgid "Meta Letter Spacing"
 msgstr "Informasjonstekst bokstavmellomrom"
 
-#: functions.php:788 functions.php:5026 functions.php:5105
+#: functions.php:796 functions.php:5034 functions.php:5113
 msgid "Meta Font Style"
 msgstr "Informasjonstekst skriftsstil"
 
-#: functions.php:803 functions.php:1209 functions.php:1281 functions.php:1300
-#: functions.php:2398
+#: functions.php:811 functions.php:1217 functions.php:1289 functions.php:1308
+#: functions.php:2406
 msgid "Header Text Size"
 msgstr "Overskrift tekststørrelse"
 
-#: functions.php:822 functions.php:1247
+#: functions.php:830 functions.php:1255
 msgid "Header Line Height"
 msgstr "Overskrift linjehøyde"
 
-#: functions.php:841 functions.php:1228
+#: functions.php:849 functions.php:1236
 msgid "Header Letter Spacing"
 msgstr "Overskrift bokstavmellomrom"
 
-#: functions.php:860 functions.php:1266 functions.php:2417 functions.php:3313
-#: functions.php:3491 functions.php:3606 functions.php:3669 functions.php:3748
-#: functions.php:3812 functions.php:4603 functions.php:5299 functions.php:5405
+#: functions.php:868 functions.php:1274 functions.php:2425 functions.php:3321
+#: functions.php:3499 functions.php:3614 functions.php:3677 functions.php:3756
+#: functions.php:3820 functions.php:4611 functions.php:5307 functions.php:5413
 msgid "Header Font Style"
 msgstr "Overskrift skriftstil"
 
-#: functions.php:874
+#: functions.php:882
 msgid "Enable Boxed Layout"
 msgstr "Aktivér bokslayout"
 
-#: functions.php:888
+#: functions.php:896
 msgid "Website Content Width"
 msgstr "Bredde på innholdsdelen"
 
-#: functions.php:907
+#: functions.php:915
 msgid "Website Gutter Width"
 msgstr "Kolonnemellomrom"
 
-#: functions.php:925
+#: functions.php:933
 msgid "Use Custom Sidebar Width"
 msgstr "Egendefinert bredde på sidekolonne"
 
-#: functions.php:939
+#: functions.php:947
 msgid "Sidebar Width"
 msgstr "Bredde på sidekolonne"
 
-#: functions.php:958 functions.php:977 functions.php:996
+#: functions.php:966 functions.php:985 functions.php:1004
 msgid "Section Height"
 msgstr "Seksjonshøyde"
 
-#: functions.php:1015 functions.php:1034 functions.php:1053
+#: functions.php:1023 functions.php:1042 functions.php:1061
 msgid "Row Height"
 msgstr "Radhøyde"
 
-#: functions.php:1072
+#: functions.php:1080
 msgid "Stretch Background Image"
 msgstr "Strekk bakgrunnsbildet"
 
-#: functions.php:1079 functions.php:1673 functions.php:2031 functions.php:2102
-#: functions.php:2116 functions.php:2638 functions.php:2766 functions.php:2971
+#: functions.php:1087 functions.php:1681 functions.php:2039 functions.php:2110
+#: functions.php:2124 functions.php:2646 functions.php:2774 functions.php:2979
 msgid "Background Color"
 msgstr "Bakgrunnsfarge"
 
-#: functions.php:1086
+#: functions.php:1094
 msgid "Background Image"
 msgstr "Bakgrunnsbilde"
 
-#: functions.php:1092
+#: functions.php:1100
 msgid "Background Repeat"
 msgstr "Repetisjon av bakgrunnsbildet"
 
-#: functions.php:1096
+#: functions.php:1104
 msgid "No Repeat"
 msgstr "Ingen repetisjon"
 
-#: functions.php:1097
+#: functions.php:1105
 msgid "Tile"
 msgstr "Gjenta bakgrunnsbildet"
 
-#: functions.php:1098
+#: functions.php:1106
 msgid "Tile Horizontally"
 msgstr "Gjenta horisontalt"
 
-#: functions.php:1099
+#: functions.php:1107
 msgid "Tile Vertically"
 msgstr "Gjenta vertikalt"
 
-#: functions.php:1104 functions.php:1115
+#: functions.php:1112 functions.php:1123
 msgid "Background Position"
 msgstr "Plassering av bakgrunnsbildet"
 
-#: functions.php:1108 includes/functions/choices.php:106
+#: functions.php:1116 includes/functions/choices.php:106
 msgid "Left"
 msgstr "Venstre"
 
-#: functions.php:1109
+#: functions.php:1117
 msgid "Center"
 msgstr "Midtstilt"
 
-#: functions.php:1110 includes/functions/choices.php:105
+#: functions.php:1118 includes/functions/choices.php:105
 msgid "Right"
 msgstr "Høyre"
 
-#: functions.php:1119
+#: functions.php:1127
 msgid "Scroll"
 msgstr "Scroll med innholdet"
 
-#: functions.php:1120
+#: functions.php:1128
 msgid "Fixed"
 msgstr "Fast posisjon"
 
-#: functions.php:1133 functions.php:1171 functions.php:1190
+#: functions.php:1141 functions.php:1179 functions.php:1198
 msgid "Body Text Size"
 msgstr "Innholdstekst tekststørrelse"
 
-#: functions.php:1152
+#: functions.php:1160
 msgid "Body Line Height"
 msgstr "Innholdstekst linjehøyde"
 
-#: functions.php:1320
+#: functions.php:1328
 msgid "Header Font"
 msgstr "Overskriftsfont"
 
-#: functions.php:1336
+#: functions.php:1344
 msgid "Body Font"
 msgstr "Innholdstekstfont"
 
-#: functions.php:1353
+#: functions.php:1361
 msgid "Body Link Color"
 msgstr "Innholdstekst lenkefarge"
 
-#: functions.php:1367
+#: functions.php:1375
 msgid "Body Text Color"
 msgstr "Innholdstekst tekstfarge"
 
-#: functions.php:1381
+#: functions.php:1389
 msgid "Header Text Color"
 msgstr "Overskrift tekstfarge"
 
-#: functions.php:1395
+#: functions.php:1403
 msgid "Theme Accent Color"
 msgstr "Temaets kontrastfarge"
 
-#: functions.php:1425
+#: functions.php:1433
 msgid "Header Style"
 msgstr "Stil for toppområdet"
 
-#: functions.php:1439
+#: functions.php:1447
 msgid "Enable Vertical Navigation"
 msgstr "Aktivér vertikal meny"
 
-#: functions.php:1453
+#: functions.php:1461
 msgid "Vertical Menu Orientation"
 msgstr "Vertikal menyorientering"
 
-#: functions.php:1469
+#: functions.php:1477
 msgid "Hide Navigation Until Scroll"
 msgstr "Skjul meny til man scroller"
 
-#: functions.php:1484 functions.php:2354
+#: functions.php:1492 functions.php:2362
 msgid "Show Social Icons"
 msgstr "Vis sosiale nettverk-ikoner"
 
-#: functions.php:1498
+#: functions.php:1506
 msgid "Show Search Icon"
 msgstr "Vis søkeikon"
 
-#: functions.php:1512
+#: functions.php:1520
 msgid "Show Top Bar"
 msgstr "Vis toppbar"
 
-#: functions.php:1526
+#: functions.php:1534
 msgid "Menu Width"
 msgstr "Menybredde"
 
-#: functions.php:1545 functions.php:1583
+#: functions.php:1553 functions.php:1591
 msgid "Menu Text Size"
 msgstr "Menytekststørrelse"
 
-#: functions.php:1564 functions.php:1602
+#: functions.php:1572 functions.php:1610
 msgid "Top Bar Text Size"
 msgstr "Toppbar tekststørrelse"
 
-#: functions.php:1621 functions.php:1840 functions.php:1924 functions.php:2584
-#: functions.php:2832 functions.php:3018
+#: functions.php:1629 functions.php:1848 functions.php:1932 functions.php:2592
+#: functions.php:2840 functions.php:3026
 msgid "Letter Spacing"
 msgstr "Bokstavmellomrom"
 
-#: functions.php:1641 functions.php:1860 functions.php:1944
+#: functions.php:1649 functions.php:1868 functions.php:1952
 msgid "Font"
 msgstr "Skrifttype"
 
-#: functions.php:1658 functions.php:1877 functions.php:1961 functions.php:2603
-#: functions.php:2666
+#: functions.php:1666 functions.php:1885 functions.php:1969 functions.php:2611
+#: functions.php:2674
 msgid "Font Style"
 msgstr "Skriftstil"
 
-#: functions.php:1687
+#: functions.php:1695
 msgid "Menu Link Color"
 msgstr "Menylinkfarge"
 
-#: functions.php:1701 functions.php:2017
+#: functions.php:1709 functions.php:2025
 msgid "Active Link Color"
 msgstr "Farge på aktiv lenke"
 
-#: functions.php:1715
+#: functions.php:1723
 msgid "Top Bar Text Color"
 msgstr "Toppbar tekstfarge"
 
-#: functions.php:1729
+#: functions.php:1737
 msgid "Search Bar Text Color"
 msgstr "Søkelinje tekstfarge"
 
-#: functions.php:1743
+#: functions.php:1751
 msgid "Search Bar Background Color"
 msgstr "Søkelinje bakgrunnsfarge"
 
-#: functions.php:1756 functions.php:1899
+#: functions.php:1764 functions.php:1907
 msgid "Make Full Width"
 msgstr "Gjør til fullbredde"
 
-#: functions.php:1769 functions.php:1989 functions.php:2205
+#: functions.php:1777 functions.php:1997 functions.php:2213
 msgid "Hide Logo Image"
 msgstr "Skjul logobilde"
 
-#: functions.php:1783
+#: functions.php:1791
 msgid "Menu Height"
 msgstr "Menyhøyde"
 
-#: functions.php:1802
+#: functions.php:1810
 msgid "Logo Max Height"
 msgstr "Logobilde makshøyde"
 
-#: functions.php:1821 functions.php:1905 functions.php:2238 functions.php:2733
+#: functions.php:1829 functions.php:1913 functions.php:2246 functions.php:2741
 msgid "Text Size"
 msgstr "Tekststørrelse"
 
-#: functions.php:2045 functions.php:2144
+#: functions.php:2053 functions.php:2152
 msgid "Dropdown Menu Background Color"
 msgstr "Nedtrekksmeny bakgrunnsfarge"
 
-#: functions.php:2059
+#: functions.php:2067
 msgid "Dropdown Menu Line Color"
 msgstr "Nedtrekksmeny linjefarge"
 
-#: functions.php:2073 functions.php:2158
+#: functions.php:2081 functions.php:2166
 msgid "Dropdown Menu Text Color"
 msgstr "Nedtrekksmeny tekstfarge"
 
-#: functions.php:2087 functions.php:2172
+#: functions.php:2095 functions.php:2180
 msgid "Dropdown Menu Animation"
 msgstr "Nedtrekksmeny animasjon"
 
-#: functions.php:2219
+#: functions.php:2227
 msgid "Fixed Menu Height"
 msgstr "Høyde for festet meny"
 
-#: functions.php:2257
+#: functions.php:2265
 msgid "Primary Menu Background Color"
 msgstr "Hovedmeny bakgrunnsfarge"
 
-#: functions.php:2271
+#: functions.php:2279
 msgid "Secondary Menu Background Color"
 msgstr "Sekundærmeny bakgrunnsfarge"
 
-#: functions.php:2285
+#: functions.php:2293
 msgid "Primary Menu Link Color"
 msgstr "Hovedmeny lenkefarge"
 
-#: functions.php:2299
+#: functions.php:2307
 msgid "Secondary Menu Link Color"
 msgstr "Sekundærmeny lenkefarge"
 
-#: functions.php:2313
+#: functions.php:2321
 msgid "Active Primary Menu Link Color"
 msgstr "Hovedmeny farge aktivt menypunkt"
 
-#: functions.php:2327
+#: functions.php:2335
 msgid "Phone Number"
 msgstr "Telefonnummer"
 
-#: functions.php:2340
+#: functions.php:2348
 msgid "Email"
 msgstr "E-post"
 
-#: functions.php:2368
+#: functions.php:2376
 msgid "Column Layout"
 msgstr "Kolonnelayout"
 
-#: functions.php:2384
+#: functions.php:2392
 msgid "Footer Background Color"
 msgstr "Bunnområde bakgrunnsfarge"
 
-#: functions.php:2432
+#: functions.php:2440
 msgid "Body/Link Text Size"
 msgstr "Innholdstekst skriftstørrelse"
 
-#: functions.php:2451
+#: functions.php:2459
 msgid "Body/Link Line Height"
 msgstr "Innholdstekst linjehøyde"
 
-#: functions.php:2470
+#: functions.php:2478
 msgid "Body Font Style"
 msgstr "Innholdstekst skriftstil"
 
-#: functions.php:2485
+#: functions.php:2493
 msgid "Widget Text Color"
 msgstr "Widget tekstfarge"
 
-#: functions.php:2499
+#: functions.php:2507
 msgid "Widget Link Color"
 msgstr "Widget lenkefarge"
 
-#: functions.php:2513
+#: functions.php:2521
 msgid "Widget Header Color"
 msgstr "Widget overskriftsfarge"
 
-#: functions.php:2527
+#: functions.php:2535
 msgid "Widget Bullet Color"
 msgstr "Widget prikkfarge"
 
-#: functions.php:2542
+#: functions.php:2550
 msgid "Footer Menu Background Color"
 msgstr "Bunnmeny bakgrunnsfarge"
 
-#: functions.php:2556
+#: functions.php:2564
 msgid "Footer Menu Text Color"
 msgstr "Bunnmeny tekstfarge"
 
-#: functions.php:2570
+#: functions.php:2578
 msgid "Footer Menu Active Link Color"
 msgstr "Bunnmeny farge aktivt menypunkt"
 
-#: functions.php:2618 functions.php:2681
+#: functions.php:2626 functions.php:2689
 msgid "Font Size"
 msgstr "Skriftstørrelse"
 
-#: functions.php:2700
+#: functions.php:2708
 msgid "Social Icon Size"
 msgstr "Sosiale nettverk-ikoner størrelse"
 
-#: functions.php:2719
+#: functions.php:2727
 msgid "Social Icon Color"
 msgstr "Sosiale nettverk-ikoner farge"
 
-#: functions.php:2780
+#: functions.php:2788
 msgid "Border Width"
 msgstr "Kantlinjebredde"
 
-#: functions.php:2799 functions.php:2985
+#: functions.php:2807 functions.php:2993
 msgid "Border Color"
 msgstr "Kantlinjefarge"
 
-#: functions.php:2813 functions.php:2999
+#: functions.php:2821 functions.php:3007
 msgid "Border Radius"
 msgstr "Kantlinjeradius"
 
-#: functions.php:2851 functions.php:5342
+#: functions.php:2859 functions.php:5350
 msgid "Button Font Style"
 msgstr "Knapper skriftstil"
 
-#: functions.php:2867
+#: functions.php:2875
 msgid "Buttons Font"
 msgstr "Knapper skrifttype"
 
-#: functions.php:2884
+#: functions.php:2892
 msgid "Add Button Icon"
 msgstr "Legg til knappeikon"
 
-#: functions.php:2899
+#: functions.php:2907
 msgid "Select Icon"
 msgstr "Velg ikon"
 
-#: functions.php:2913
+#: functions.php:2921
 msgid "Icon Color"
 msgstr "Ikonfarge"
 
-#: functions.php:2927
+#: functions.php:2935
 msgid "Icon Placement"
 msgstr "Ikonplassering"
 
-#: functions.php:2942
+#: functions.php:2950
 msgid "Only Show Icon on Hover"
 msgstr "Bare vis ikon ved mouseover"
 
-#: functions.php:3036 includes/widgets/widget-about.php:50
+#: functions.php:3044 includes/widgets/widget-about.php:50
 #: includes/widgets/widget-ads.php:180 includes/widgets/widget-ads.php:188
 #: includes/widgets/widget-ads.php:196 includes/widgets/widget-ads.php:204
 #: includes/widgets/widget-ads.php:212 includes/widgets/widget-ads.php:220
@@ -1108,394 +1101,398 @@ msgstr "Bare vis ikon ved mouseover"
 msgid "Image"
 msgstr "Bilde"
 
-#: functions.php:3037
+#: functions.php:3045
 msgid "Image Module Settings"
 msgstr "Innstillinger for bildemodul"
 
-#: functions.php:3048
+#: functions.php:3056
 msgid "Animation"
 msgstr "Animasjon"
 
-#: functions.php:3049
+#: functions.php:3057
 msgid "This controls default direction of the lazy-loading animation."
 msgstr ""
 "Dette setter standardretning for lasting av den sakte-lastende animasjonen."
 
-#: functions.php:3059
+#: functions.php:3067
 msgid "Gallery"
 msgstr "Galleri"
 
-#: functions.php:3072 functions.php:3855 functions.php:3964
+#: functions.php:3080 functions.php:3863 functions.php:3972
 msgid "Zoom Icon Color"
 msgstr "Zoome-ikon farge"
 
-#: functions.php:3087 functions.php:3870 functions.php:3979
+#: functions.php:3095 functions.php:3878 functions.php:3987
 msgid "Hover Overlay Color"
 msgstr "Overleggsfarge på mouseover"
 
-#: functions.php:3102 functions.php:3208 functions.php:3885 functions.php:3994
-#: functions.php:4263 functions.php:4342 functions.php:4384 functions.php:4484
+#: functions.php:3110 functions.php:3216 functions.php:3893 functions.php:4002
+#: functions.php:4271 functions.php:4350 functions.php:4392 functions.php:4492
 msgid "Title Font Size"
 msgstr "Overskrift skriftstørrelse"
 
-#: functions.php:3122 functions.php:3228 functions.php:3905 functions.php:4014
-#: functions.php:4283 functions.php:4362 functions.php:4990 functions.php:5069
+#: functions.php:3130 functions.php:3236 functions.php:3913 functions.php:4022
+#: functions.php:4291 functions.php:4370 functions.php:4998 functions.php:5077
 msgid "Title Font Style"
 msgstr "Overskrift skriftstil"
 
-#: functions.php:3138 functions.php:3921 functions.php:4030
+#: functions.php:3146 functions.php:3929 functions.php:4038
 msgid "Caption Font Size"
 msgstr "Bildetekst skriftstørrelse"
 
-#: functions.php:3158 functions.php:3941 functions.php:4050
+#: functions.php:3166 functions.php:3949 functions.php:4058
 msgid "Caption Font Style"
 msgstr "Bildetekst skriftstil"
 
-#: functions.php:3168
+#: functions.php:3176
 msgid "Blurb"
 msgstr "Sammendrag"
 
-#: functions.php:3181 functions.php:3293 functions.php:3471 functions.php:3586
-#: functions.php:3649 functions.php:3728 functions.php:3792 functions.php:4583
-#: functions.php:5279 functions.php:5385
+#: functions.php:3189 functions.php:3301 functions.php:3479 functions.php:3594
+#: functions.php:3657 functions.php:3736 functions.php:3800 functions.php:4591
+#: functions.php:5287 functions.php:5393
 msgid "Header Font Size"
 msgstr "Overskrift skriftstørrelse"
 
-#: functions.php:3195
+#: functions.php:3203
 msgid "Tabs"
 msgstr "Faner"
 
-#: functions.php:3245 functions.php:3622 functions.php:3764 functions.php:3828
+#: functions.php:3253 functions.php:3630 functions.php:3772 functions.php:3836
 msgid "Padding"
 msgstr "Luft"
 
-#: functions.php:3259
+#: functions.php:3267
 msgid "Slider"
 msgstr "Slideshow"
 
-#: functions.php:3273 functions.php:5365
+#: functions.php:3281 functions.php:5373
 msgid "Top & Bottom Padding"
 msgstr "Luft i topp og bunn"
 
-#: functions.php:3329 functions.php:5421
+#: functions.php:3337 functions.php:5429
 msgid "Content Font Size"
 msgstr "Innhold skriftstørrelse"
 
-#: functions.php:3349 functions.php:5441
+#: functions.php:3357 functions.php:5449
 msgid "Content Font Style"
 msgstr "Innhold skriftstil"
 
-#: functions.php:3359
+#: functions.php:3367
 msgid "Testimonial"
 msgstr "Kundeutsagn"
 
-#: functions.php:3372 functions.php:4891
+#: functions.php:3380 functions.php:4899
 msgid "Name Font Style"
 msgstr "Navn skriftstil"
 
-#: functions.php:3388
+#: functions.php:3396
 msgid "Details Font Style"
 msgstr "Detaljer skriftstil"
 
-#: functions.php:3404
+#: functions.php:3412
 msgid "Portrait Border Radius"
 msgstr "Portrett kantlinjeradius"
 
-#: functions.php:3458
+#: functions.php:3466
 msgid "Pricing Table"
 msgstr "Pristabell"
 
-#: functions.php:3507 functions.php:3685 functions.php:4907
+#: functions.php:3515 functions.php:3693 functions.php:4915
 msgid "Subheader Font Size"
 msgstr "Underoverskrift skriftstørrelse"
 
-#: functions.php:3527 functions.php:3705 functions.php:4927
+#: functions.php:3535 functions.php:3713 functions.php:4935
 msgid "Subheader Font Style"
 msgstr "Underoverskrift skriftstil"
 
-#: functions.php:3543 functions.php:5200
+#: functions.php:3551 functions.php:5208
 msgid "Price Font Size"
 msgstr "Pris skriftstørrelse"
 
-#: functions.php:3563
+#: functions.php:3571
 msgid "Pricing Font Style"
 msgstr "Pris skriftstil"
 
-#: functions.php:3573
+#: functions.php:3581
 msgid "Call To Action"
 msgstr "Call To Action-knapp"
 
-#: functions.php:3636
+#: functions.php:3644
 msgid "Audio"
 msgstr "Lyd"
 
-#: functions.php:3715
+#: functions.php:3723
 msgid "Email Optin"
 msgstr "E-postliste"
 
-#: functions.php:3842
+#: functions.php:3850
 msgid "Portfolio"
 msgstr "Portfolio"
 
-#: functions.php:3951
+#: functions.php:3959
 msgid "Filterable Portfolio"
 msgstr "Filtrérbar portfolio"
 
-#: functions.php:4066
+#: functions.php:4074
 msgid "Filters Font Size"
 msgstr "Filternavn skriftstørrelse"
 
-#: functions.php:4086
+#: functions.php:4094
 msgid "Filters Font Style"
 msgstr "Filternavn skriftstil"
 
-#: functions.php:4096
+#: functions.php:4104
 msgid "Bar Counter"
 msgstr "Søylediagram"
 
-#: functions.php:4109
+#: functions.php:4117
 msgid "Label Font Size"
 msgstr "Etiketter skriftstørrelse"
 
-#: functions.php:4129
+#: functions.php:4137
 msgid "Label Font Style"
 msgstr "Etiketter skriftstil"
 
-#: functions.php:4145
+#: functions.php:4153
 msgid "Percent Font Size"
 msgstr "Prosent skriftstørrelse"
 
-#: functions.php:4165
+#: functions.php:4173
 msgid "Percent Font Style"
 msgstr "Prosent skriftstil"
 
-#: functions.php:4181
+#: functions.php:4189
 msgid "Bar Padding"
 msgstr "Søyle luft (bredde)"
 
-#: functions.php:4201
+#: functions.php:4209
 msgid "Bar Border Radius"
 msgstr "Søyle kantlinjeradius"
 
-#: functions.php:4215
+#: functions.php:4223
 msgid "Circle Counter"
 msgstr "Kakediagram"
 
-#: functions.php:4227 functions.php:4306
+#: functions.php:4235 functions.php:4314
 msgid "Number Font Size"
 msgstr "Tall skriftstørrelse"
 
-#: functions.php:4247 functions.php:4326
+#: functions.php:4255 functions.php:4334
 msgid "Number Font Style"
 msgstr "Tall skriftstil"
 
-#: functions.php:4293
+#: functions.php:4301
 msgid "Number Counter"
 msgstr "Talldiagram"
 
-#: functions.php:4372
+#: functions.php:4380
 msgid "Accordion"
 msgstr "Sammenfoldet område"
 
-#: functions.php:4404 functions.php:4504
+#: functions.php:4412 functions.php:4512
 msgid "Opened Title Font Style"
 msgstr "Åpen seksjon overskriftstil"
 
-#: functions.php:4420 functions.php:4520
+#: functions.php:4428 functions.php:4528
 msgid "Closed Title Font Style"
 msgstr "Lukket seksjon overskriftstil"
 
-#: functions.php:4436 functions.php:4536
+#: functions.php:4444 functions.php:4544
 msgid "Toggle Icon Size"
 msgstr "Lukke-/åpneikon størrrelse"
 
-#: functions.php:4457 functions.php:4556
+#: functions.php:4465 functions.php:4564
 msgid "Toggle Padding"
 msgstr "Lukke-/åpneikon luft"
 
-#: functions.php:4471
+#: functions.php:4479
 msgid "Toggle"
 msgstr "Lukke-/åpneikon"
 
-#: functions.php:4570
+#: functions.php:4578
 msgid "Contact Form"
 msgstr "Kontaktskjema"
 
-#: functions.php:4619
+#: functions.php:4627
 msgid "Input Font Size"
 msgstr "Inndatafelt skriftstørrelse"
 
-#: functions.php:4639
+#: functions.php:4647
 msgid "Input Font Style"
 msgstr "Inndatafelt skriftstil"
 
-#: functions.php:4655
+#: functions.php:4663
 msgid "Input Field Padding"
 msgstr "Inndatafelt luft"
 
-#: functions.php:4675
+#: functions.php:4683
 msgid "Captcha Font Size"
 msgstr "Captcha skriftstørrelse"
 
-#: functions.php:4695
+#: functions.php:4703
 msgid "Captcha Font Style"
 msgstr "Captcha skriftstil"
 
-#: functions.php:4705 includes/functions/sidebars.php:4
+#: functions.php:4713 includes/functions/sidebars.php:4
 msgid "Sidebar"
 msgstr "Sidekolonne"
 
-#: functions.php:4718
+#: functions.php:4726
 msgid "Widget Header Font Size"
 msgstr "Widget overskrift skriftstørrelse"
 
-#: functions.php:4738
+#: functions.php:4746
 msgid "Widget Header Font Style"
 msgstr "Widget overskrift skriftstil"
 
-#: functions.php:4754
+#: functions.php:4762
 msgid "Remove Vertical Divider"
 msgstr "Fjern vertikal delelinje"
 
-#: functions.php:4763
+#: functions.php:4771
 msgid "Divider"
 msgstr "Delelinje"
 
-#: functions.php:4775
+#: functions.php:4783
 msgid "Show Divider"
 msgstr "Vis delelinje"
 
-#: functions.php:4790
+#: functions.php:4798
 msgid "Divider Style"
 msgstr "Delelinjestil"
 
-#: functions.php:4807
+#: functions.php:4815
 msgid "Divider Weight"
 msgstr "Delelinjetykkelse"
 
-#: functions.php:4827
+#: functions.php:4835
 msgid "Divider Height"
 msgstr "Delelinjehøyde"
 
-#: functions.php:4847
+#: functions.php:4855
 msgid "Divider Position"
 msgstr "Delelinjeposisjon"
 
-#: functions.php:4858
+#: functions.php:4866
 msgid "Person"
 msgstr "Person"
 
-#: functions.php:4871
+#: functions.php:4879
 msgid "Name Font Size"
 msgstr "Navn skriftstørrelse"
 
-#: functions.php:4943
+#: functions.php:4951
 msgid "Social Network Icon Size"
 msgstr "Ikonstørrelse for sosiale nettverk"
 
-#: functions.php:4970 functions.php:5049
+#: functions.php:4978 functions.php:5057
 msgid "Post Title Font Size"
 msgstr "Innleggstittel skrifttstørrelse"
 
-#: functions.php:5006 functions.php:5085
+#: functions.php:5014 functions.php:5093
 msgid "Meta Font Size"
 msgstr "Informasjonstekst skriftstørrelse"
 
-#: functions.php:5036
+#: functions.php:5044
 msgid "Blog Grid"
 msgstr "Blogg/artikler rutenett"
 
-#: functions.php:5115
+#: functions.php:5123
 msgid "Shop"
 msgstr "Butikk"
 
-#: functions.php:5128
+#: functions.php:5136
 msgid "Product Name Font Size"
 msgstr "Produktnavn skriftstørrelse"
 
-#: functions.php:5148
+#: functions.php:5156
 msgid "Product Name Font Style"
 msgstr "Produktnavn skriftstil"
 
-#: functions.php:5164
+#: functions.php:5172
 msgid "Sale Badge Font Size"
 msgstr "Rabattmerke skriftstørrelse"
 
-#: functions.php:5184
+#: functions.php:5192
 msgid "Sale Badge Font Style"
 msgstr "Rabattmerke skriftstil"
 
-#: functions.php:5220
+#: functions.php:5228
 msgid "Price Font Style"
 msgstr "Pris skriftstil"
 
-#: functions.php:5236
+#: functions.php:5244
 msgid "Sale Price Font Size"
 msgstr "Rabattpris skriftstørrelse"
 
-#: functions.php:5256
+#: functions.php:5264
 msgid "Sale Price Font Style"
 msgstr "Rabattpris skriftstil"
 
-#: functions.php:5266
+#: functions.php:5274
 msgid "Countdown"
 msgstr "Nedtelling"
 
-#: functions.php:5309
+#: functions.php:5317
 msgid "Social Follow"
 msgstr "Følg på sosiale nettverk"
 
-#: functions.php:5322
+#: functions.php:5330
 msgid "Follow Font & Icon Size"
 msgstr "Sosiale nettverk-ikoner skrift- og ikonstørrelse"
 
-#: functions.php:5352
+#: functions.php:5360
 msgid "Fullwidth Slider"
 msgstr "Fullbredde slideshow"
 
-#: functions.php:7745
+#: functions.php:7753
 msgid "0 comments"
 msgstr "0 kommentarer"
 
-#: functions.php:7745
+#: functions.php:7753
 msgid "1 comment"
 msgstr "1 Kommentar"
 
-#: functions.php:7745
+#: functions.php:7753
 msgid "comments"
 msgstr "kommentarer"
 
-#: functions.php:7828
+#: functions.php:7836
 msgid "Password Protected"
 msgstr "Passordbeskyttet"
 
-#: functions.php:7829
+#: functions.php:7837
 msgid "To view this protected post, enter the password below"
 msgstr "Skriv inn passord nedenfor for å vise innlegget"
 
-#: functions.php:7832
+#: functions.php:7840
 msgid "Password"
 msgstr "Passord"
 
-#: functions.php:7833
+#: functions.php:7841
 msgid "Submit"
 msgstr "Send"
 
-#: functions.php:8226 functions.php:8261
+#: functions.php:8241 functions.php:8277
 msgid "Theme Customizer"
 msgstr "Tematilpasser"
 
-#: functions.php:8230 functions.php:8274
+#: functions.php:8245 functions.php:8290
 msgid "Module Customizer"
 msgstr "Modultilpasser"
 
-#: functions.php:8232
+#: functions.php:8247
 msgid "Role Editor"
 msgstr "Rolleredigering"
 
-#: functions.php:8235
+#: functions.php:8250
 msgid "Divi Library"
 msgstr "Divi-bibliotek"
+
+#: functions.php:8428
+msgid "Divi Customizer Settings"
+msgstr "Divi egendefinerte innstillinger"
 
 #: header.php:143 header.php:271
 msgid "Search &hellip;"
@@ -1854,11 +1851,19 @@ msgstr ""
 "Aktiver dette hvis du ønsker å erstatte standard WordPress galleri med Divi-"
 "stil galleri."
 
-#: options_divi.php:77
+#: options_divi.php:75
+msgid "Color Pickers Default Palette"
+msgstr "Standardpalett for fargevelger"
+
+#: options_divi.php:80
+msgid "Define the default color palette for color pickers in the Divi Builder."
+msgstr "Definer den standard fargepaletten for fargevelgere i Divi Builder."
+
+#: options_divi.php:85
 msgid "Grab the first post image"
 msgstr "Hent automatisk det første bildet i innlegget."
 
-#: options_divi.php:81
+#: options_divi.php:89
 msgid ""
 "By default thumbnail images are created using custom fields. However, if you "
 "would rather use the images that are already in your post for your thumbnail "
@@ -1873,11 +1878,11 @@ msgstr ""
 "første bildet i hvert innlegg. Merk at bildene må være lastet opp til samme "
 "server som nettsiden."
 
-#: options_divi.php:84
+#: options_divi.php:92
 msgid "Blog Style Mode"
 msgstr "Bloggstilmodus"
 
-#: options_divi.php:88
+#: options_divi.php:96
 msgid ""
 "By default the theme truncates your posts on index/homepages automatically "
 "to create post previews. If you would rather show your posts in full on "
@@ -1888,19 +1893,19 @@ msgstr ""
 "dersom du heller ønsker at innleggene skal vises i sin helhet, som i en "
 "tradisjonell blogg."
 
-#: options_divi.php:91
+#: options_divi.php:99
 msgid "Shop Page & Category Page Layout for WooCommerce"
 msgstr "Utseende for butikk- og kategorisiden til WooCommerce"
 
-#: options_divi.php:100
+#: options_divi.php:108
 msgid "Here you can choose Shop Page & Category Page Layout for WooCommerce."
 msgstr "Her kan du velge utseende for butikk- og kategorisider i WooCommerce."
 
-#: options_divi.php:104
+#: options_divi.php:112
 msgid "MailChimp API Key"
 msgstr "MailChimp API-nøkkel"
 
-#: options_divi.php:109
+#: options_divi.php:117
 msgid ""
 "Enter your MailChimp API key. You can create an api key <a target=\"_blank\" "
 "href=\"%1$s\">here</a>"
@@ -1908,19 +1913,19 @@ msgstr ""
 "Skriv inn din MailChimp API-nøkkel. Du kan opprette en API-nøkkel <a target="
 "\"_blank\" href=\"%1$s\">her</a>"
 
-#: options_divi.php:112
+#: options_divi.php:120
 msgid "Aweber Authorization"
 msgstr "Aweber-autorisering"
 
-#: options_divi.php:114
+#: options_divi.php:122
 msgid "Authorize your Aweber account here."
 msgstr "Autorisér din Aweber-konto her."
 
-#: options_divi.php:118
+#: options_divi.php:126
 msgid "Regenerate MailChimp Lists"
 msgstr "Regenerér MailChimp-lister"
 
-#: options_divi.php:122
+#: options_divi.php:130
 msgid ""
 "By default, MailChimp lists are cached for one day. If you added new list, "
 "but it doesn't appear within the Email Optin module settings, activate this "
@@ -1930,11 +1935,11 @@ msgstr ""
 "dersom du har laget ny liste og denne ikke vises under \"E-postliste\". Ikke "
 "glem å deaktivere når listen er blitt regenerert."
 
-#: options_divi.php:124
+#: options_divi.php:132
 msgid "Regenerate Aweber Lists"
 msgstr "Regenerér Aweber-lister"
 
-#: options_divi.php:128
+#: options_divi.php:136
 msgid ""
 "By default, Aweber lists are cached for one day. If you added new list, but "
 "it doesn't appear within the Email Optin module settings, activate this "
@@ -1944,76 +1949,76 @@ msgstr ""
 "dersom du har laget ny liste og denne ikke vises under \"E-postliste\". Ikke "
 "glem å deaktivere når listen er blitt regenerert."
 
-#: options_divi.php:130
+#: options_divi.php:138
 msgid "Show Facebook Icon"
 msgstr "Vis Facebook-ikon"
 
-#: options_divi.php:134
+#: options_divi.php:142
 msgid "Here you can choose to display the Facebook Icon on your homepage. "
 msgstr "Her kan du velge å vise eller skjule ikon for Facebook. "
 
-#: options_divi.php:136
+#: options_divi.php:144
 msgid "Show Twitter Icon"
 msgstr "Vis Twitter-ikon"
 
-#: options_divi.php:140
+#: options_divi.php:148
 msgid "Here you can choose to display the Twitter Icon. "
 msgstr "Her kan du velge å vise eller skjule ikon for Twitter. "
 
-#: options_divi.php:142
+#: options_divi.php:150
 msgid "Show Google+ Icon"
 msgstr "Vis Google+ ikon"
 
-#: options_divi.php:146
+#: options_divi.php:154
 msgid "Here you can choose to display the Google+ Icon on your homepage. "
 msgstr "Her kan du velge å vise eller skjule ikon for Google+. "
 
-#: options_divi.php:148
+#: options_divi.php:156
 msgid "Show RSS Icon"
 msgstr "Vis RSS-ikon"
 
-#: options_divi.php:152
+#: options_divi.php:160
 msgid "Here you can choose to display the RSS Icon. "
 msgstr "Her kan du velge å vise eller skjule ikon for RSS. "
 
-#: options_divi.php:154
+#: options_divi.php:162
 msgid "Facebook Profile Url"
 msgstr "Facebookprofil URL"
 
-#: options_divi.php:159
+#: options_divi.php:167
 msgid "Enter the URL of your Facebook Profile. "
 msgstr "Skriv inn URL til din Facebookprofil. "
 
-#: options_divi.php:161
+#: options_divi.php:169
 msgid "Twitter Profile Url"
 msgstr "Twitterprofil URL"
 
-#: options_divi.php:166
+#: options_divi.php:174
 msgid "Enter the URL of your Twitter Profile."
 msgstr "Skriv inn URL til din Twitterprofil."
 
-#: options_divi.php:168
+#: options_divi.php:176
 msgid "Google+ Profile Url"
 msgstr "Google+profil URL"
 
-#: options_divi.php:173
+#: options_divi.php:181
 msgid "Enter the URL of your Google+ Profile. "
 msgstr "Skriv inn URL til din Google+profil. "
 
-#: options_divi.php:175
+#: options_divi.php:183
 msgid "RSS Icon Url"
 msgstr "RSS URL"
 
-#: options_divi.php:180
+#: options_divi.php:188
 msgid "Enter the URL of your RSS feed. "
 msgstr ""
 "Skriv inn URL til din RSS-strøm (oftest http:// [ ditt domene ] /feed). "
 
-#: options_divi.php:182
+#: options_divi.php:190
 msgid "Number of Products displayed on WooCommerce archive pages"
 msgstr "Antall produkter som vises på WooCommerce samlesider"
 
-#: options_divi.php:186
+#: options_divi.php:194
 msgid ""
 "Here you can designate how many WooCommerce products are displayed on the "
 "archive page. This option works independently from the Settings > Reading "
@@ -2022,11 +2027,11 @@ msgstr ""
 "Her kan du angi hvor mange produkter som skal vises på hver samleside. Dette "
 "alternativet fungerer uavhengig av lesealternativene i wp-admin."
 
-#: options_divi.php:190
+#: options_divi.php:198
 msgid "Number of Posts displayed on Category page"
 msgstr "Antall innlegg som vises på kategorisider"
 
-#: options_divi.php:194
+#: options_divi.php:202
 msgid ""
 "Here you can designate how many recent articles are displayed on the "
 "Category page. This option works independently from the Settings > Reading "
@@ -2035,11 +2040,11 @@ msgstr ""
 "Her kan du angi hvor mange innlegg som skal vises på hver kategoriside. "
 "Dette alternativet fungerer uavhengig av lesealternativene i wp-admin."
 
-#: options_divi.php:198
+#: options_divi.php:206
 msgid "Number of Posts displayed on Archive pages"
 msgstr "Antall innlegg som vises på arkivsider"
 
-#: options_divi.php:202
+#: options_divi.php:210
 msgid ""
 "Here you can designate how many recent articles are displayed on the Archive "
 "pages. This option works independently from the Settings > Reading options "
@@ -2048,11 +2053,11 @@ msgstr ""
 "Her kan du angi hvor mange artikler som skal vises på hver arkivside. Dette "
 "alternativet fungerer uavhengig av lesealternativene i wp-admin."
 
-#: options_divi.php:206
+#: options_divi.php:214
 msgid "Number of Posts displayed on Search pages"
 msgstr "Antall innlegg som vises på søkesider"
 
-#: options_divi.php:210
+#: options_divi.php:218
 msgid ""
 "Here you can designate how many recent articles are displayed on the Search "
 "results pages. This option works independently from the Settings > Reading "
@@ -2061,11 +2066,11 @@ msgstr ""
 "Her kan du angi hvor mange innlegg som skal vises på søkeresultatsidene. "
 "Dette alternativet fungerer uavhengig av lesealternativene i wp-admin."
 
-#: options_divi.php:214
+#: options_divi.php:222
 msgid "Number of Posts displayed on Tag pages"
 msgstr "Antall innlegg som vises på emneknaggsider"
 
-#: options_divi.php:218
+#: options_divi.php:226
 msgid ""
 "Here you can designate how many recent articles are displayed on the Tag "
 "pages. This option works independently from the Settings > Reading options "
@@ -2074,11 +2079,11 @@ msgstr ""
 "Her kan du angi hvor mange innlegg som skal vises på hver emneknaggside. "
 "Dette alternativet fungerer uavhengig av lesealternativene i wp-admin."
 
-#: options_divi.php:222
+#: options_divi.php:230
 msgid "Date format"
 msgstr "Datoformat"
 
-#: options_divi.php:226
+#: options_divi.php:234
 msgid ""
 "This option allows you to change how your dates are displayed. For more "
 "information please refer to the WordPress codex here:<a href='http://codex."
@@ -2089,57 +2094,57 @@ msgstr ""
 "vennligst referer til WordPress-kodeksen her:<a href='http://codex.wordpress."
 "org/Formatting_Date_and_Time' target='_blank'>Formatting Date and Time</a>"
 
-#: options_divi.php:230
+#: options_divi.php:238
 msgid "Use excerpts when defined"
 msgstr "Bruk utdrag når de er angitt"
 
-#: options_divi.php:234
+#: options_divi.php:242
 msgid "This will enable the use of excerpts in posts or pages."
 msgstr ""
 "Dette aktiverer bruk av utdrag for innlegg og sider. Utdrag fylles ut i eget "
 "felt på redigeringssiden, under tekstbehandleren."
 
-#: options_divi.php:237
+#: options_divi.php:245
 msgid "Responsive shortcodes"
 msgstr "Responsive kodesnutter"
 
-#: options_divi.php:241
+#: options_divi.php:249
 msgid "Enable this option to make shortcodes respond to various screen sizes"
 msgstr ""
 "Aktivér dette alternativet for å gjøre kodesnutter (shortcodes) responsive "
 "for ulike skjermstørrelser."
 
-#: options_divi.php:244
+#: options_divi.php:252
 msgid "Google Fonts subsets"
 msgstr "Google Fonts undergrupper"
 
-#: options_divi.php:248
+#: options_divi.php:256
 msgid "This will enable Google Fonts for Non-English languages."
 msgstr "Dette vil aktivere Google Fonts for ikke-engelske språk."
 
-#: options_divi.php:251
+#: options_divi.php:259
 msgid "Back To Top Button"
 msgstr "Tilbake til toppen-knapp"
 
-#: options_divi.php:255
+#: options_divi.php:263
 msgid "Enable this option to display Back To Top Button while scrolling"
 msgstr ""
 "Aktivér dette alternativet for å vise Tilbake til toppen-knapp når man "
 "scroller"
 
-#: options_divi.php:258
+#: options_divi.php:266
 msgid "Smooth Scrolling"
 msgstr "Smidig scrolling"
 
-#: options_divi.php:262
+#: options_divi.php:270
 msgid "Enable this option to get the smooth scrolling effect with mouse wheel"
 msgstr "Aktiver dette alternativet for smidig scrolleeffekt med musehjulet"
 
-#: options_divi.php:265
+#: options_divi.php:273
 msgid "Disable Translations"
 msgstr "Deaktivér oversettelser"
 
-#: options_divi.php:269
+#: options_divi.php:277
 msgid ""
 "Disable translations if you don't want to display translated theme strings "
 "on your site."
@@ -2147,25 +2152,33 @@ msgstr ""
 "Deaktivér oversettelser dersom du ikke ønsker å vise oversatte temastrenger "
 "på nettstedet."
 
-#: options_divi.php:272
+#: options_divi.php:280
 msgid "Custom CSS"
 msgstr "Egendefinert CSS"
 
-#: options_divi.php:276
+#: options_divi.php:284
 msgid "Here you can add custom css to override or extend default styles."
 msgstr ""
 "Her kan du legge til egendefinert CSS for å overstyre eller utvide "
 "opprinnelige stiler."
 
-#: options_divi.php:295
+#: options_divi.php:289
+msgid "Memory Limit Increase"
+msgstr "Heving av minnegrense"
+
+#: options_divi.php:291
+msgid "Here you can disable automatic memory limit increase."
+msgstr "Her kan du deaktivere automatisk heving av minnegrense."
+
+#: options_divi.php:311
 msgid "Pages"
 msgstr "Sider"
 
-#: options_divi.php:313
+#: options_divi.php:329
 msgid "Exclude pages from the navigation bar"
 msgstr "Ekskludér sider fra menylinjen"
 
-#: options_divi.php:317
+#: options_divi.php:333
 msgid ""
 "Here you can choose to remove certain pages from the navigation menu. All "
 "pages marked with an X will not appear in your navigation bar. "
@@ -2173,11 +2186,11 @@ msgstr ""
 "Her kan du velge å fjerne enkeltsider fra menylinjen. Sider merket med X vil "
 "ikke vises. "
 
-#: options_divi.php:321 options_divi.php:371
+#: options_divi.php:337 options_divi.php:387
 msgid "Show dropdown menus"
 msgstr "Vis nedtrekksmenyer"
 
-#: options_divi.php:325
+#: options_divi.php:341
 msgid ""
 "If you would like to remove the dropdown menus from the pages navigation bar "
 "disable this feature."
@@ -2185,11 +2198,11 @@ msgstr ""
 "Deaktivér denne funksjonen dersom du ønsker å fjerne nedtrekksmenyer fra "
 "menylinjen."
 
-#: options_divi.php:328
+#: options_divi.php:344
 msgid "Display Home link"
 msgstr "Vis Hjem-lenke"
 
-#: options_divi.php:332
+#: options_divi.php:348
 msgid ""
 "By default the theme creates a Home link that, when clicked, leads back to "
 "your blog's homepage. If, however, you are using a static homepage and have "
@@ -2202,19 +2215,19 @@ msgstr ""
 "duplikatlenke. Ved et slikt tilfelle bør du deaktivere denne funksjonen for "
 "å fjerne den automatiske lenken."
 
-#: options_divi.php:335
+#: options_divi.php:351
 msgid "Sort Pages Links"
 msgstr "Sortér sidelenker"
 
-#: options_divi.php:339
+#: options_divi.php:355
 msgid "Here you can choose to sort your pages links."
 msgstr "Her kan du velge hvordan du ønsker å sortere dine sidelenker."
 
-#: options_divi.php:342
+#: options_divi.php:358
 msgid "Order Pages Links by Ascending/Descending"
 msgstr "Ordne sidelenker i stigende/synkende rekkefølge"
 
-#: options_divi.php:346
+#: options_divi.php:362
 msgid ""
 "Here you can choose to reverse the order that your pages links are "
 "displayed. You can choose between ascending and descending."
@@ -2222,11 +2235,11 @@ msgstr ""
 "Her du snu rekkefølgen for visning av sidelenker. Du kan velge mellom "
 "stigende og synkende."
 
-#: options_divi.php:349 options_divi.php:385
+#: options_divi.php:365 options_divi.php:401
 msgid "Number of dropdown tiers shown"
 msgstr "Antall nedtrekksnivåer som skal vises"
 
-#: options_divi.php:353 options_divi.php:389
+#: options_divi.php:369 options_divi.php:405
 msgid ""
 "This options allows you to control how many teirs your pages dropdown menu "
 "has. Increasing the number allows for additional menu items to be shown."
@@ -2234,11 +2247,11 @@ msgstr ""
 "Dette alternativet lar deg kontrollere hvor mange nivåer nedtrekksmenyer på "
 "nettstedet har. Ved å øke dette nummeret vil ytterligere menynivåer vises."
 
-#: options_divi.php:363
+#: options_divi.php:379
 msgid "Exclude categories from the navigation bar"
 msgstr "Ekskludér kategorier fra menylinjen"
 
-#: options_divi.php:367
+#: options_divi.php:383
 msgid ""
 "Here you can choose to remove certain categories from the navigation menu. "
 "All categories marked with an X will not appear in your navigation bar. "
@@ -2246,7 +2259,7 @@ msgstr ""
 "Her kan du velge å fjerne enkeltkategorier fra menylinjen. Kategorier merket "
 "med X vil ikke vises. "
 
-#: options_divi.php:375
+#: options_divi.php:391
 msgid ""
 "If you would like to remove the dropdown menus from the categories "
 "navigation bar disable this feature."
@@ -2254,11 +2267,11 @@ msgstr ""
 "Deaktivér denne funksjonen dersom du ønsker å fjerne nedtrekksmenyer fra "
 "kategorimenyen."
 
-#: options_divi.php:378
+#: options_divi.php:394
 msgid "Hide empty categories"
 msgstr "Skjul tomme kategorier"
 
-#: options_divi.php:382
+#: options_divi.php:398
 msgid ""
 "If you would like categories to be displayed in your navigationbar that "
 "don't have any posts in them then disable this option. By default empty "
@@ -2268,11 +2281,11 @@ msgstr ""
 "dersom du ønsker å vise kategorier i menyen selv om de ikke inneholder noen "
 "innlegg."
 
-#: options_divi.php:393
+#: options_divi.php:409
 msgid "Sort Categories Links by Name/ID/Slug/Count/Term Group"
 msgstr "Sortér kategorilenker etter Navn/ID/Kortnavn/Antall/Termgruppe"
 
-#: options_divi.php:397
+#: options_divi.php:413
 msgid ""
 "By default pages are sorted by name. However if you would rather have them "
 "sorted by ID you can adjust this setting."
@@ -2280,11 +2293,11 @@ msgstr ""
 "I utgangspunktet sorteres sider etter navn. Dersom du heller ønsker å "
 "sortere etter ID, kan du justere denne innstillingen."
 
-#: options_divi.php:400
+#: options_divi.php:416
 msgid "Order Category Links by Ascending/Descending"
 msgstr "Ordne kategorilenker etter stigende eller synkende rekkefølge"
 
-#: options_divi.php:404
+#: options_divi.php:420
 msgid ""
 "Here you can choose to reverse the order that your categories links are "
 "displayed. You can choose between ascending and descending."
@@ -2292,11 +2305,11 @@ msgstr ""
 "Her kan du snu rekkefølgen for visning av kategorilenker. Du kan velge "
 "mellom stigende og synkende."
 
-#: options_divi.php:413
+#: options_divi.php:429
 msgid "Disable top tier dropdown menu links"
 msgstr "Deaktivér nedtrekksmenylinker på toppnivå"
 
-#: options_divi.php:417
+#: options_divi.php:433
 msgid ""
 "In some cases users will want to create parent categories or links as "
 "placeholders to hold a list of child links or categories. In this case it is "
@@ -2310,19 +2323,19 @@ msgstr ""
 "en organisatorisk funksjon, og aktivering av dette alternativet fjerner "
 "lenkene fra disse slik at de ikke lenger er klikkbare."
 
-#: options_divi.php:435
+#: options_divi.php:451
 msgid "Single Post Layout"
 msgstr "Layout enkeltinnlegg"
 
-#: options_divi.php:440
+#: options_divi.php:456
 msgid "Single Page Layout"
 msgstr "Layout enkeltside"
 
-#: options_divi.php:453
+#: options_divi.php:469
 msgid "Choose which items to display in the postinfo section"
 msgstr "Velg hvilke elementer som skal vises i informasjonsseksjonen"
 
-#: options_divi.php:457
+#: options_divi.php:473
 msgid ""
 "Here you can choose which items appear in the postinfo section on single "
 "post pages. This is the area, usually below the post title, which displays "
@@ -2334,11 +2347,11 @@ msgstr ""
 "og lister ut grunnleggende informasjon om innlegget. De uthevede elementene "
 "vist under vil være synlige. "
 
-#: options_divi.php:461
+#: options_divi.php:477
 msgid "Show comments on posts"
 msgstr "Vis kommentarer på innlegg"
 
-#: options_divi.php:465
+#: options_divi.php:481
 msgid ""
 "You can disable this option if you want to remove the comments and comment "
 "form from single post pages. "
@@ -2346,11 +2359,11 @@ msgstr ""
 "Du kan deaktivere dette alternativet dersom du ønsker å fjerne kommentarer "
 "og kommentarskjemaet fra innleggene. "
 
-#: options_divi.php:468
+#: options_divi.php:484
 msgid "Place Thumbs on Posts"
 msgstr "Vis \"Fremhevet bilde\" i innlegg"
 
-#: options_divi.php:472
+#: options_divi.php:488
 msgid ""
 "By default thumbnails are placed at the beginning of your post on single "
 "post pages. If you would like to remove this initial thumbnail image to "
@@ -2362,11 +2375,11 @@ msgstr ""
 "du også har lagt bildet i selve innholdsdelen av innlegget, enkeltvis eller "
 "i galleri. "
 
-#: options_divi.php:481
+#: options_divi.php:497
 msgid "Place Thumbs on Pages"
 msgstr "Vis \"Fremhevet bilde\" på sider"
 
-#: options_divi.php:485
+#: options_divi.php:501
 msgid ""
 "By default thumbnails are not placed on pages (they are only used on posts). "
 "However, if you want to use thumbnails on pages you can! Just enable this "
@@ -2376,11 +2389,11 @@ msgstr ""
 "bilde\" på sider (de brukes bare i innlegg). Aktivér denne funksjonen her "
 "dersom du allikevel ønsker å vise disse bildene på enkeltsider."
 
-#: options_divi.php:488
+#: options_divi.php:504
 msgid "Show comments on pages"
 msgstr "Vis kommentarer på sider"
 
-#: options_divi.php:492
+#: options_divi.php:508
 msgid ""
 "By default comments are not placed on pages, however, if you would like to "
 "allow people to comment on your pages simply enable this option. "
@@ -2388,11 +2401,11 @@ msgstr ""
 "I utgangspunktet vises ikke kommentarer på sider. Deaktivér dette valget her "
 "dersom du allikevel ønsker å ha kommentarfelt på sider. "
 
-#: options_divi.php:501
+#: options_divi.php:517
 msgid "Post info section"
 msgstr "Innleggsinformasjon"
 
-#: options_divi.php:505
+#: options_divi.php:521
 msgid ""
 "Here you can choose which items appear in the postinfo section on pages. "
 "This is the area, usually below the post title, which displays basic "
@@ -2403,33 +2416,33 @@ msgstr ""
 "lister ut grunnleggende informasjon om innleggene. De uthevede elementene "
 "vist under vil være synlige. "
 
-#: options_divi.php:508
+#: options_divi.php:524
 msgid "Show Thumbs on Index pages"
 msgstr "Vis \"Framhevet bilde\" på samlesider"
 
-#: options_divi.php:512
+#: options_divi.php:528
 msgid "Enable this option to show thumbnails on Index Pages."
 msgstr ""
 "Aktivér dette alternativet for å vise bilder fra feltet \"Framhevet bilde"
 "\" (eller første bilde fra selve innlegget) på samlesider."
 
-#: options_divi.php:529
+#: options_divi.php:545
 msgid "Homepage SEO"
 msgstr "SEO for nettstedet"
 
-#: options_divi.php:534
+#: options_divi.php:550
 msgid "Single Post Page SEO"
 msgstr "SEO for enkeltinnlegg"
 
-#: options_divi.php:539
+#: options_divi.php:555
 msgid "Index Page SEO"
 msgstr "SEO for samlesider"
 
-#: options_divi.php:547
+#: options_divi.php:563
 msgid " Enable custom title "
 msgstr " Egendefinert metatittel "
 
-#: options_divi.php:551
+#: options_divi.php:567
 msgid ""
 "By default the theme uses a combination of your blog name and your blog "
 "description, as defined when you created your blog, to create your homepage "
@@ -2442,11 +2455,11 @@ msgstr ""
 "med mer. Aktivér dette alternativet og fyll ut feltet nedenfor dersom du "
 "heller ønsker å bruke en egendefinert tekst. "
 
-#: options_divi.php:554
+#: options_divi.php:570
 msgid " Enable meta description"
 msgstr " Egendefinert metabeskrivelse"
 
-#: options_divi.php:558
+#: options_divi.php:574
 msgid ""
 "By default the theme uses your blog description, as defined when you created "
 "your blog, to fill in the meta description field. If you would like to use a "
@@ -2459,11 +2472,11 @@ msgstr ""
 "fyll ut feltet nedenfor dersom du heller ønsker å bruke en egendefinert "
 "tekst. "
 
-#: options_divi.php:561
+#: options_divi.php:577
 msgid " Enable meta keywords"
 msgstr " Egendefinerte metanøkkelord"
 
-#: options_divi.php:565
+#: options_divi.php:581
 msgid ""
 "By default the theme does not add keywords to your header. Most search "
 "engines don't use keywords to rank your site anymore, but some people define "
@@ -2476,11 +2489,11 @@ msgstr ""
 "nettsteder, men du kan aktivere dette alternativet og fylle ut feltet "
 "nedenfor dersom du allikevel ønsker å legge til nøkkelord. "
 
-#: options_divi.php:568 options_divi.php:695
+#: options_divi.php:584 options_divi.php:711
 msgid " Enable canonical URL's"
 msgstr " Kanoniske URL-er"
 
-#: options_divi.php:572 options_divi.php:646 options_divi.php:699
+#: options_divi.php:588 options_divi.php:662 options_divi.php:715
 msgid ""
 "Canonicalization helps to prevent the indexing of duplicate content by "
 "search engines, and as a result, may help avoid duplicate content penalties "
@@ -2504,11 +2517,11 @@ msgstr ""
 "til innlegget samt domenenavnet definert under Innstillinger > Generelt i wp-"
 "admin."
 
-#: options_divi.php:575
+#: options_divi.php:591
 msgid "Homepage custom title (if enabled)"
 msgstr "Egendefinert metatittel (dersom aktivert)"
 
-#: options_divi.php:579
+#: options_divi.php:595
 msgid ""
 "If you have enabled custom titles you can add your custom title here. "
 "Whatever you type here will be placed between the < title >< /title > tags "
@@ -2519,11 +2532,11 @@ msgstr ""
 ">< /title > HTML-tagger  i header.php og vises i tittelfeltet til "
 "nettleseren."
 
-#: options_divi.php:583
+#: options_divi.php:599
 msgid "Homepage meta description (if enabled)"
 msgstr "Egendefinert metabeskrivelse (dersom aktivert)"
 
-#: options_divi.php:587
+#: options_divi.php:603
 msgid ""
 "If you have enabled meta descriptions you can add your custom description "
 "here."
@@ -2531,11 +2544,11 @@ msgstr ""
 "Hvis du har aktivert \"Egendefinert metabeskrivelse\" for nettstedet kan du "
 "skrive inn denne her. Denne teksten vil kun leses av maskiner og søkemotorer."
 
-#: options_divi.php:591
+#: options_divi.php:607
 msgid "Homepage meta keywords (if enabled)"
 msgstr "Egendefinerte metanøkkelord (dersom aktivert)"
 
-#: options_divi.php:595
+#: options_divi.php:611
 msgid ""
 "If you have enabled meta keywords you can add your custom keywords here. "
 "Keywords should be separated by comas. For example: wordpress,themes,"
@@ -2545,11 +2558,11 @@ msgstr ""
 "skrive inn disse her. Nøkkelordene bør være adskilt av komma, for eksempel: "
 "wordpress,themes,templates,elegant"
 
-#: options_divi.php:599 options_divi.php:673
+#: options_divi.php:615 options_divi.php:689
 msgid "If custom titles are disabled, choose autogeneration method"
 msgstr "Visningsalternativ for autogenerert metatittelfelt "
 
-#: options_divi.php:604
+#: options_divi.php:620
 msgid ""
 "If you are not using cutsom post titles you can still have control over how "
 "your titles are generated. Here you can choose which order you would like "
@@ -2561,11 +2574,11 @@ msgstr ""
 "rekkefølge du ønsker at innleggstitler og nettstedstittel blir vist, eller "
 "du kan fjerne nettstedstittel helt fra metatittelen."
 
-#: options_divi.php:607 options_divi.php:681 options_divi.php:717
+#: options_divi.php:623 options_divi.php:697 options_divi.php:733
 msgid "Define a character to separate BlogName and Post title"
 msgstr "Skilletegn mellom nettsidetittel og innleggstittel"
 
-#: options_divi.php:611 options_divi.php:685
+#: options_divi.php:627 options_divi.php:701
 msgid ""
 "Here you can change which character separates your blog title and post name "
 "when using autogenerated post titles. Common values are | or -"
@@ -2574,11 +2587,11 @@ msgstr ""
 "innleggstittelen når det brukes automatisk genererte metatitler i "
 "nettleserens tittelfelt. Vanlige valg er | eller -"
 
-#: options_divi.php:621
+#: options_divi.php:637
 msgid "Enable custom titles"
 msgstr "Egendefinert innleggsmetatittel"
 
-#: options_divi.php:625
+#: options_divi.php:641
 msgid ""
 "By default the theme creates post titles based on the title of your post and "
 "your blog name. If you would like to make your meta title different than "
@@ -2592,11 +2605,11 @@ msgstr ""
 "hjelp av tilpassede felt under teksteditoren bruke en annen tekst enn "
 "originaltittelen i tittelfeltet. "
 
-#: options_divi.php:628
+#: options_divi.php:644
 msgid "Enable custom description"
 msgstr "Egendefinert innleggsmetabeskrivelse"
 
-#: options_divi.php:632
+#: options_divi.php:648
 msgid ""
 "If you would like to add a meta description to your post you can do so using "
 "custom fields. This option must be enabled for descriptions to be displayed "
@@ -2608,11 +2621,11 @@ msgstr ""
 "under teksteditoren. Metabeskrivelser fanges opp av søkemotorer og "
 "spesialnettlesere. "
 
-#: options_divi.php:635
+#: options_divi.php:651
 msgid "Enable custom keywords"
 msgstr "Egendefinerte innleggsmetanøkkelord"
 
-#: options_divi.php:639
+#: options_divi.php:655
 msgid ""
 "If you would like to add meta keywords to your post you can do so using "
 "custom fields. This option must be enabled for keywords to be displayed on "
@@ -2624,15 +2637,15 @@ msgstr ""
 "under teksteditoren. Metanøkkelord fanges opp av enkelte søkemotorer og "
 "spesialnettlesere. "
 
-#: options_divi.php:642
+#: options_divi.php:658
 msgid "Enable canonical URL's"
 msgstr "Kanoniske URL-er"
 
-#: options_divi.php:649
+#: options_divi.php:665
 msgid "Custom field Name to be used for title"
 msgstr "Feltnavn for \"Egendefinert innleggsmetatittel\""
 
-#: options_divi.php:653
+#: options_divi.php:669
 msgid ""
 "When you define your title using custom fields you should use this value for "
 "the custom field Name. The Value of your custom field should be the custom "
@@ -2643,11 +2656,11 @@ msgstr ""
 "navnet til det tilpassede feltet, men så blir det lagret i nedtrekkslisten "
 "for senere bruk."
 
-#: options_divi.php:657
+#: options_divi.php:673
 msgid "Custom field Name to be used for description"
 msgstr "Feltnavn for \"Egendefinert innleggsmetabeskrivelse\""
 
-#: options_divi.php:661
+#: options_divi.php:677
 msgid ""
 "When you define your meta description using custom fields you should use "
 "this value for the custom field Name. The Value of your custom field should "
@@ -2658,11 +2671,11 @@ msgstr ""
 "dette navnet til det tilpassede feltet, men så blir det lagret i "
 "nedtrekkslisten for senere bruk."
 
-#: options_divi.php:665
+#: options_divi.php:681
 msgid "Custom field Name to be used for keywords"
 msgstr "Feltnavn for \"Egendefinerte innleggsmetanøkkelord\""
 
-#: options_divi.php:669
+#: options_divi.php:685
 msgid ""
 "When you define your keywords using custom fields you should use this value "
 "for the custom field Name. The Value of your custom field should be the meta "
@@ -2673,7 +2686,7 @@ msgstr ""
 "navnet til det tilpassede feltet, men så blir det lagret i nedtrekkslisten "
 "for senere bruk."
 
-#: options_divi.php:678
+#: options_divi.php:694
 msgid ""
 "If you are not using cutsom post titles you can still have control over hw "
 "your titles are generated. Here you can choose which order you would like "
@@ -2685,11 +2698,11 @@ msgstr ""
 "velge i hvilken rekkefølge du ønsker at innleggstitler og nettstedstittel "
 "blir vist, eller du kan fjerne nettstedstittel helt fra metatittelfeltet."
 
-#: options_divi.php:702
+#: options_divi.php:718
 msgid "Enable meta descriptions"
 msgstr "Aktivér metabeskrivelser"
 
-#: options_divi.php:706
+#: options_divi.php:722
 msgid ""
 "Check this box if you want to display meta descriptions on category/archive "
 "pages. The description is based off the category description you choose when "
@@ -2699,11 +2712,11 @@ msgstr ""
 "kategoribeskrivelsen du skriver inn når du oppretter eller redigerer en "
 "kategori. Metabeskrivelser fanges opp av søkemotorer og spesialnettlesere."
 
-#: options_divi.php:709
+#: options_divi.php:725
 msgid "Choose title autogeneration method"
 msgstr "Visningsalternativ for autogenerert metatittelfelt "
 
-#: options_divi.php:714
+#: options_divi.php:730
 msgid ""
 "Here you can choose how your titles on index pages are generated. You can "
 "change which order your blog name and index title are displayed, or you can "
@@ -2713,7 +2726,7 @@ msgstr ""
 "kan endre rekkefølge for visning av samlesidetittel og nettstedstittel, "
 "eller du kan fjerne nettstedstittel helt fra metatittelfeltet."
 
-#: options_divi.php:721
+#: options_divi.php:737
 msgid ""
 "Here you can change which character separates your blog title and index page "
 "name when using autogenerated post titles. Common values are | or -"
@@ -2722,15 +2735,15 @@ msgstr ""
 "samlesidetittelen når det brukes automatisk genererte metatitler i "
 "nettleserens tittelfelt. Vanlige valg er | eller -"
 
-#: options_divi.php:740
+#: options_divi.php:756
 msgid "Code Integration"
 msgstr "Kodeintegrering"
 
-#: options_divi.php:748
+#: options_divi.php:764
 msgid "Enable header code"
 msgstr "Aktivér < head > kode"
 
-#: options_divi.php:752
+#: options_divi.php:768
 msgid ""
 "Disabling this option will remove the header code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2739,11 +2752,11 @@ msgstr ""
 "delen av HTML-dokumentet, men den vil forbli lagret for eventuell fremtidig "
 "bruk."
 
-#: options_divi.php:755
+#: options_divi.php:771
 msgid "Enable body code"
 msgstr "Aktivér < body > kode"
 
-#: options_divi.php:759
+#: options_divi.php:775
 msgid ""
 "Disabling this option will remove the body code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2752,11 +2765,11 @@ msgstr ""
 "delen av HTML-dokumentet, men den vil forbli lagret for eventuell fremtidig "
 "bruk."
 
-#: options_divi.php:762
+#: options_divi.php:778
 msgid "Enable single top code"
 msgstr "Aktivér kode i toppen av innlegg"
 
-#: options_divi.php:766
+#: options_divi.php:782
 msgid ""
 "Disabling this option will remove the single top code below from your blog. "
 "This allows you to remove the code while saving it for later use."
@@ -2764,11 +2777,11 @@ msgstr ""
 "Deaktivering av dette alternativet vil fjerne innskrevet kode nedenfor fra "
 "visning i innlegg, men den vil forbli lagret for eventuell fremtidig bruk."
 
-#: options_divi.php:769
+#: options_divi.php:785
 msgid "Enable single bottom code"
 msgstr "Aktivér kode i bunnen av innlegg"
 
-#: options_divi.php:773
+#: options_divi.php:789
 msgid ""
 "Disabling this option will remove the single bottom code below from your "
 "blog. This allows you to remove the code while saving it for later use."
@@ -2776,11 +2789,11 @@ msgstr ""
 "Deaktivering av dette alternativet vil fjerne innskrevet kode nedenfor fra "
 "visning i innlegg, men den vil forbli lagret for eventuell fremtidig bruk."
 
-#: options_divi.php:776
+#: options_divi.php:792
 msgid "Add code to the < head > of your blog"
 msgstr "Legg til kode i < head >"
 
-#: options_divi.php:780
+#: options_divi.php:796
 msgid ""
 "Any code you place here will appear in the head section of every page of "
 "your blog. This is useful when you need to add javascript or css to all "
@@ -2790,13 +2803,13 @@ msgstr ""
 "på nettstedet. Dette er nyttig når du har behov for å legge til Javascript "
 "eller CSS til alle sider."
 
-#: options_divi.php:783
+#: options_divi.php:799
 msgid ""
 "Add code to the < body > (good for tracking codes such as google analytics)"
 msgstr ""
 "Legg til kode < body > (for eksempel sporingsverktøy, som Google Analytics)"
 
-#: options_divi.php:787
+#: options_divi.php:803
 msgid ""
 "Any code you place here will appear in body section of all pages of your "
 "blog. This is usefull if you need to input a tracking pixel for a state "
@@ -2806,11 +2819,11 @@ msgstr ""
 "på nettstedet.  Dette er nyttig hvis du vil legge inn en sporingspiksel for "
 "besøksteller, fra for eksempel Google Analytics."
 
-#: options_divi.php:790
+#: options_divi.php:806
 msgid "Add code to the top of your posts"
 msgstr "Legg til kode til toppen av innlegg"
 
-#: options_divi.php:794 options_divi.php:801
+#: options_divi.php:810 options_divi.php:817
 msgid ""
 "Any code you place here will be placed at the top of all single posts. This "
 "is useful if you are looking to integrating things such as social "
@@ -2819,19 +2832,19 @@ msgstr ""
 "Kode du skriver inn her vil vises i toppen av alle innlegg. Dette er nyttig "
 "for integrering av kode som for eksempel sosiale delings- og bokmerkelenker."
 
-#: options_divi.php:797
+#: options_divi.php:813
 msgid "Add code to the bottom of your posts, before the comments"
 msgstr "Legg til kode til bunnen av innlegg, før kommentarfelt"
 
-#: options_divi.php:819
+#: options_divi.php:835
 msgid "Manage Un-widgetized Advertisements"
 msgstr "Administrér reklame"
 
-#: options_divi.php:827
+#: options_divi.php:843
 msgid "Enable Single Post 468x60 banner"
 msgstr "Aktivér 468x60 banner for enkeltinnlegg"
 
-#: options_divi.php:831
+#: options_divi.php:847
 msgid ""
 "Enabling this option will display a 468x60 banner ad on the bottom of your "
 "post pages below the single post content. If enabled you must fill in the "
@@ -2841,29 +2854,29 @@ msgstr ""
 "av alle innlegg, under selve innholdet men over kommentarfeltet. Dersom det "
 "er aktivert må du skrive inn URL for bannerbilde og destinasjon nedenfor."
 
-#: options_divi.php:834
+#: options_divi.php:850
 msgid "Input 468x60 advertisement banner image"
 msgstr "Sett inn 468x60 reklamebanner"
 
-#: options_divi.php:838
+#: options_divi.php:854
 msgid "Here you can provide 468x60 banner image url"
 msgstr "Her kan du skrive inn URL for et 468x60 banner"
 
-#: options_divi.php:842
+#: options_divi.php:858
 msgid "Input 468x60 advertisement destination url"
 msgstr "Sett inn mållenke for reklamebanner"
 
-#: options_divi.php:846
+#: options_divi.php:862
 msgid "Here you can provide 468x60 banner destination url"
 msgstr ""
 "Her skriver du inn mållenken for reklamebanneret, altså URL-en den besøkende "
 "skal klikke seg til"
 
-#: options_divi.php:850
+#: options_divi.php:866
 msgid "Input 468x60 adsense code"
 msgstr "Sett inn 468x60 Google Adsense-kode"
 
-#: options_divi.php:854
+#: options_divi.php:870
 msgid "Place your adsense code here."
 msgstr "Skriv inn din kode for Google Adsense-reklame her."
 
@@ -2874,57 +2887,25 @@ msgstr "Sider:"
 #. Translators: If there are characters in your language that are not supported
 #. by Open Sans, translate this to 'off'. Do not translate into your own
 #. language.
-#: functions.php:105
+#: functions.php:113
 msgctxt "Open Sans font: on or off"
 msgid "on"
-msgstr ""
+msgstr " "
 
-#: functions.php:8036
+#: functions.php:8044
+#, fuzzy
 msgctxt "WooCommerce items number"
 msgid "1 Item"
 msgid_plural "%1$s Items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " "
+msgstr[1] " "
 
 #: single-project.php:68
 msgctxt "Previous post link"
 msgid "&larr;"
-msgstr ""
+msgstr " "
 
 #: single-project.php:69
 msgctxt "Next post link"
 msgid "&rarr;"
-msgstr ""
-
-#~ msgid "%1$s %2$s"
-#~ msgstr "%1$s %2$s"
-
-#~ msgid "Items"
-#~ msgstr "Elementer"
-
-#~ msgid "Saving..."
-#~ msgstr "Lagrer..."
-
-#~ msgid "Options Saved."
-#~ msgstr "Alternativer lagret."
-
-#~ msgid "Ad Management"
-#~ msgstr "Annonser"
-
-#~ msgid "Support Docs"
-#~ msgstr "Dokumentasjon"
-
-#~ msgid "Documentation"
-#~ msgstr "Dokumentasjon"
-
-#~ msgid "on %1$s at %2$s"
-#~ msgstr "datert %1$s kl %2$s"
-
-#~ msgid "(Edit)"
-#~ msgstr "(Endre)"
-
-#~ msgid "Reply"
-#~ msgstr "Svar"
-
-#~ msgid "Your comment is awaiting moderation."
-#~ msgstr "Kommentaren din er lagt til godkjenning."
+msgstr " "

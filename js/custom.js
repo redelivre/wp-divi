@@ -29,7 +29,8 @@
 		$et_header_style_split = $('.et_header_style_split'),
 		$et_top_navigation = $('#et-top-navigation'),
 		$logo = $('#logo'),
-		$et_pb_first_row = $( 'body.et_pb_pagebuilder_layout .et_pb_section:first-child' );
+		$et_pb_first_row = $( 'body.et_pb_pagebuilder_layout .et_pb_section:first-child' ),
+		et_is_touch_device = 'ontouchstart' in window || navigator.maxTouchPoints;
 
 	$(document).ready( function(){
 		var $et_top_menu = $( 'ul.nav' ),
@@ -213,6 +214,34 @@
 					$body.addClass( 'et_hide_nav_disabled' );
 				}
 			}
+		}
+
+		function et_page_load_scroll_to_anchor() {
+			var $map_container = $( window.et_location_hash + ' .et_pb_map_container' ),
+				$map = $map_container.children( '.et_pb_map' ),
+				$target = $( window.et_location_hash );
+
+			// Make the target element visible again
+			$target.css( 'display', window.et_location_hash_style );
+
+			var distance = ( 'undefined' !== typeof( $target.offset().top ) ) ? $target.offset().top : 0,
+				speed = ( distance > 4000 ) ? 1600 : 800;
+
+			if ( $map_container.length ) {
+				google.maps.event.trigger( $map[0], 'resize' );
+			}
+
+			// Allow the header sizing functions enough time to finish before scrolling the page
+			setTimeout( function() {
+				et_pb_smooth_scroll( $target, false, speed, 'swing');
+
+				// During the page scroll animation, the header's height might change.
+				// Do the scroll animation again to ensure its accuracy.
+				setTimeout( function() {
+					et_pb_smooth_scroll( $target, false, 150, 'linear' );
+				}, speed + 25 );
+
+			}, 700 );
 		}
 
 		function et_fix_page_container_position(){
@@ -587,6 +616,11 @@
 
 			et_fix_page_container_position();
 
+			if ( window.hasOwnProperty( 'et_location_hash' ) && '' !== window.et_location_hash ) {
+				// Handle the page scroll that we prevented earlier in the <head>
+				et_page_load_scroll_to_anchor();
+			}
+
 			if ( et_header_style_left && !et_vertical_navigation) {
 				$logo_width = $( '#logo' ).width();
 				if ( et_is_rtl ) {
@@ -703,7 +737,7 @@
 			}
 		} );
 
-		$( 'a[href*=#]:not([href=#])' ).click( function() {
+		$( 'a[href*="#"]:not([href="#"])' ).click( function() {
 			var $this_link = $( this ),
 				has_closest_smooth_scroll_disabled = $this_link.closest( '.et_smooth_scroll_disabled' ).length,
 				has_closest_woocommerce_tabs = ( $this_link.closest( '.woocommerce-tabs' ).length && $this_link.closest( '.tabs' ).length ),
@@ -810,11 +844,15 @@
 		$( '#et_top_search' ).click( function() {
 			var $search_container = $( '.et_search_form_container' );
 
-			$( '.et_menu_container' ).removeClass( 'et_pb_menu_visible' ).removeClass( 'et_pb_no_animation' ).addClass('et_pb_menu_hidden');
-			$search_container.removeClass( 'et_pb_search_form_hidden' ).removeClass( 'et_pb_no_animation' ).addClass('et_pb_search_visible');
+			if ( $search_container.hasClass('et_pb_is_animating') ) {
+				return;
+			}
+
+			$( '.et_menu_container' ).removeClass( 'et_pb_menu_visible et_pb_no_animation' ).addClass('et_pb_menu_hidden');
+			$search_container.removeClass( 'et_pb_search_form_hidden et_pb_no_animation' ).addClass('et_pb_search_visible et_pb_is_animating');
 			setTimeout( function() {
 				$( '.et_menu_container' ).addClass( 'et_pb_no_animation' );
-				$search_container.addClass( 'et_pb_no_animation' );
+				$search_container.addClass( 'et_pb_no_animation' ).removeClass('et_pb_is_animating');
 			}, 1000);
 			$search_container.find( 'input' ).focus();
 
@@ -822,11 +860,15 @@
 		});
 
 		function et_hide_search() {
-			$( '.et_menu_container' ).removeClass('et_pb_menu_hidden').removeClass( 'et_pb_no_animation' ).addClass( 'et_pb_menu_visible' );
-			$( '.et_search_form_container' ).removeClass('et_pb_search_visible').removeClass( 'et_pb_no_animation' ).addClass( 'et_pb_search_form_hidden' );
+			if ( $( '.et_search_form_container' ).hasClass('et_pb_is_animating') ) {
+				return;
+			}
+
+			$( '.et_menu_container' ).removeClass( 'et_pb_menu_hidden et_pb_no_animation' ).addClass( 'et_pb_menu_visible' );
+			$( '.et_search_form_container' ).removeClass('et_pb_search_visible et_pb_no_animation' ).addClass( 'et_pb_search_form_hidden et_pb_is_animating' );
 			setTimeout( function() {
 				$( '.et_menu_container' ).addClass( 'et_pb_no_animation' );
-				$( '.et_search_form_container' ).addClass( 'et_pb_no_animation' );
+				$( '.et_search_form_container' ).addClass( 'et_pb_no_animation' ).removeClass('et_pb_is_animating');
 			}, 1000);
 		}
 
@@ -903,7 +945,11 @@
 		}
 
 		if ( $('#logo').length ) {
-			et_define_logo_dimension();
+			// Wait until logo is loaded before performing logo dimension fix
+			// This comes handy when the page is heavy due to the use of images or other assets
+			$('#logo').attr( 'src', $('#logo').attr('src') ).load( function(){
+				et_define_logo_dimension();
+			} );
 		}
 
 		// Set width for adsense in footer widget
@@ -1017,23 +1063,25 @@
 		et_toggle_slide_menu();
 	});
 
-	// open slide menu on swipe left
-	$et_window.on( 'swipeleft', function( event ) {
-		var window_width = parseInt( $et_window.width() ),
-			swipe_start = parseInt( event.swipestart.coords[0] ); // horizontal coordinates of the swipe start
+	if ( et_is_touch_device ) {
+		// open slide menu on swipe left
+		$et_window.on( 'swipeleft', function( event ) {
+			var window_width = parseInt( $et_window.width() ),
+				swipe_start = parseInt( event.swipestart.coords[0] ); // horizontal coordinates of the swipe start
 
-		// if swipe started from the right edge of screen then open slide menu
-		if ( 30 >= window_width - swipe_start ) {
-			et_toggle_slide_menu( 'open' );
-		}
-	} );
+			// if swipe started from the right edge of screen then open slide menu
+			if ( 30 >= window_width - swipe_start ) {
+				et_toggle_slide_menu( 'open' );
+			}
+		} );
 
-	// close slide menu on swipe right
-	$et_window.on( 'swiperight', function( event ){
-		if ( $( 'body' ).hasClass( 'et_pb_slide_menu_active' ) ) {
-			et_toggle_slide_menu( 'close' );
-		}
-	});
+		// close slide menu on swipe right
+		$et_window.on( 'swiperight', function( event ){
+			if ( $( 'body' ).hasClass( 'et_pb_slide_menu_active' ) ) {
+				et_toggle_slide_menu( 'close' );
+			}
+		});
+	}
 
 	$( '#page-container' ).on( 'click', '.et_toggle_fullscreen_menu', function() {
 		var $menu_container = $( '.et_header_style_fullscreen .et_slide_in_menu_container' ),

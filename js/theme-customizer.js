@@ -2343,6 +2343,15 @@
 		} );
 	} );
 
+	wp.customize( 'et_divi[menu_margin_top]', function( value ) {
+		value.bind( function( to ) {
+			var style_id = 'style#menu_margin_top',
+				$style_content = '<style id="menu_margin_top">@media only screen and ( min-width: 981px ) { .et_vertical_nav #et-top-navigation { margin-top: ' + to + 'px } }</style>';
+
+			et_customizer_update_styles( style_id, $style_content );
+		} );
+	} );
+
 	wp.customize( 'et_divi[minimized_menu_height]', function( value ) {
 		value.bind( function( to ) {
 			// Update height data

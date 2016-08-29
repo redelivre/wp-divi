@@ -2,9 +2,14 @@ var ET_PageBuilder = ET_PageBuilder || {};
 
 window.wp = window.wp || {};
 
-( function($) {
+window.et_builder_version = '2.7.10';
 
-	( function et_builder_load_backbone_templates() {
+( function($) {
+	var et_error_modal_shown = window.et_error_modal_shown,
+		et_is_loading_missing_modules = false,
+		et_pb_bulder_loading_attempts = 0;
+
+	function et_builder_load_backbone_templates( reload_template ) {
 
 		// run et_pb_append_templates as many times as needed
 		var et_pb_templates_count = 0,
@@ -15,13 +20,49 @@ window.wp = window.wp || {};
 			product_version       = et_pb_options.product_version,
 			local_storage_buffer  = '',
 			processed_modules_count = 0,
+			reload_template = _.isUndefined( reload_template ) ? false : reload_template,
 			missing_modules = {
 				missing_modules_array: []
 			},
 			et_pb_templates_interval;
 
-		if ( et_should_load_from_local_storage() ) {
+		if ( ! reload_template ) {
+			if ( ! $( 'script[src="' + et_pb_options.builder_js_src + '"]' ).length ) {
+				$( '.et-pb-cache-update' ).show();
+			}
 
+			$( 'body' ).on( 'click', '.et_builder_increase_memory', function() {
+				var $this_button = $(this);
+
+				$.ajax({
+					type: "POST",
+					dataType: 'json',
+					url: et_pb_options.ajaxurl,
+					data: {
+						action : 'et_pb_increase_memory_limit',
+						et_admin_load_nonce : et_pb_options.et_admin_load_nonce
+					},
+					success: function( data ) {
+						if ( ! _.isUndefined( data.success ) ) {
+							$this_button.addClass( 'et_builder_modal_action_button_success' ).text( et_pb_options.memory_limit_increased );
+						} else {
+							$this_button.addClass( 'et_builder_modal_action_button_fail' ).prop( 'disabled', true ).text( et_pb_options.memory_limit_not_increased );
+						}
+					}
+				});
+
+				return false;
+			} );
+
+			$( 'body' ).on( 'click', '.et_pb_reload_builder', function() {
+				location.reload();
+
+				return false;
+			} );
+
+		}
+
+		if ( et_should_load_from_local_storage() ) {
 			for ( et_ls_module_index in et_ls_all_modules ) {
 				var et_ls_module_slug      = et_ls_all_modules[ et_ls_module_index ],
 					et_ls_template_slug    = et_ls_prefix + et_ls_module_slug,
@@ -37,7 +78,8 @@ window.wp = window.wp || {};
 				}
 
 				// perform ajax request if missing_modules_array length equals to the templates amount setting or if all the modules processed and we need to retrieve something
-				if ( ( missing_modules['missing_modules_array'].length === parseInt( et_pb_options.et_builder_templates_amount ) ) || ( missing_modules['missing_modules_array'].length && ( et_ls_all_modules.length === processed_modules_count ) ) ) {
+				if ( ! et_is_loading_missing_modules && ( ( missing_modules['missing_modules_array'].length === parseInt( et_pb_options.et_builder_templates_amount ) ) || ( missing_modules['missing_modules_array'].length && ( et_ls_all_modules.length === processed_modules_count ) ) ) ) {
+					et_is_loading_missing_modules = true;
 					$.ajax({
 						type: "POST",
 						dataType: 'json',
@@ -49,6 +91,8 @@ window.wp = window.wp || {};
 							et_admin_load_nonce : et_pb_options.et_admin_load_nonce
 						},
 						success: function( data ) {
+							et_is_loading_missing_modules = false;
+
 							try {
 								localStorage.setItem( et_ls_prefix + data['slug'], data['template'] );
 							} catch(e) {
@@ -172,6 +216,28 @@ window.wp = window.wp || {};
 					et_admin_load_nonce : et_pb_options.et_admin_load_nonce,
 					et_templates_start_from : start_from
 				},
+				error: function() {
+					var $failure_notice_template = $( '#et-builder-failure-notice-template' );
+
+					if ( et_error_modal_shown ) {
+						return;
+					}
+
+					if ( ! $failure_notice_template.length ) {
+						return;
+					}
+
+					if ( $( '.et_pb_failure_notification_modal' ).length ) {
+						return;
+					}
+
+					if ( et_builder_has_storage_support() ) {
+						localStorage.removeItem( et_ls_prefix + 'settings_date' );
+						localStorage.removeItem( et_ls_prefix + 'settings_product_version' );
+					}
+
+					$( 'body' ).addClass( 'et_pb_stop_scroll' ).append( $failure_notice_template.html() );
+				},
 				success: function( data ) {
 					//append retrieved templates to body
 					for ( var name in data.templates ) {
@@ -189,7 +255,9 @@ window.wp = window.wp || {};
 			});
 		}
 
-	} )();
+	}
+	et_builder_load_backbone_templates();
+
 
 	$( document ).ready( function() {
 
@@ -306,7 +374,7 @@ window.wp = window.wp || {};
 					child_views = {};
 
 				_.each( views, function( view, key ) {
-					if ( view['model']['attributes']['parent'] === parent_id )
+					if ( typeof view !== 'undefined' && view['model']['attributes']['parent'] === parent_id )
 						child_views[key] = view;
 				} );
 
@@ -320,7 +388,7 @@ window.wp = window.wp || {};
 					grand_children;
 
 				_.each( views, function( view, key ) {
-					if ( view['model']['attributes']['parent'] === parent_id ) {
+					if ( typeof view !== 'undefined' && view['model']['attributes']['parent'] === parent_id ) {
 						grand_children = this_el.getChildrenViews( view['model']['attributes']['cid'] );
 
 						if ( ! _.isEmpty( grand_children ) ) {
@@ -416,10 +484,12 @@ window.wp = window.wp || {};
 					num = 0;
 
 				_.each( views, function( view ) {
-					var type = view['model']['attributes']['type'];
+					if ( typeof view !== 'undefined' ) {
+						var type = view['model']['attributes']['type'];
 
-					if ( view['model']['attributes']['parent'] === module_cid && ( type === element_name || type === ( element_name + '_inner' ) ) )
-						num++;
+						if ( view['model']['attributes']['parent'] === module_cid && ( type === element_name || type === ( element_name + '_inner' ) ) )
+							num++;
+					}
 				} );
 
 				return num;
@@ -430,8 +500,10 @@ window.wp = window.wp || {};
 					num = 0;
 
 				_.each( views, function( view ) {
-					if ( view['model']['attributes']['type'] === module_name )
-						num++;
+					if ( typeof view !== 'undefined' ) {
+						if ( view['model']['attributes']['type'] === module_name )
+							num++;
+					}
 				} );
 
 				return num;
@@ -464,7 +536,125 @@ window.wp = window.wp || {};
 
 			addAdminLabel : function ( optionsNames ) {
 				return _.union( optionsNames, ['admin_label'] );
-			}
+			},
+
+			removeGlobalAttributes : function ( view, keep_attributes ) {
+				var this_class                 = this,
+					keep_attributes            = _.isUndefined( keep_attributes ) ? false : keep_attributes,
+					global_item_cid            = _.isUndefined( view.model.attributes.global_parent_cid ) ? view.model.attributes.cid : view.model.attributes.global_parent_cid,
+					global_item_view           = this.getView( global_item_cid );
+					global_item_children_views = this.getChildrenViews( global_item_cid );
+
+				// Modify global item's attributes
+				if ( this.is_global( global_item_view.model ) ) {
+					if ( keep_attributes ) {
+						global_item_view.model.set( 'et_pb_temp_global_module', global_item_view.model.get( 'et_pb_global_module' ) );
+					}
+
+					global_item_view.model.unset( 'et_pb_global_module' );
+				}
+
+				// Modify global item children's attributes
+				_.each( global_item_children_views, function( global_item_children_view ) {
+					if ( this_class.is_global_children( global_item_children_view.model ) ) {
+						if ( keep_attributes ) {
+							global_item_children_view.model.set( 'et_pb_temp_global_parent', global_item_children_view.model.get( 'et_pb_global_parent' ) );
+						}
+
+						global_item_children_view.model.unset( 'et_pb_global_parent' );
+					}
+
+					if ( this_class.has_global_parent_cid( global_item_children_view.model ) ) {
+						if ( keep_attributes ) {
+							global_item_children_view.model.set( 'et_pb_temp_global_parent_cid', global_item_children_view.model.get( 'global_parent_cid' ) );
+						}
+
+						global_item_children_view.model.unset( 'global_parent_cid' );
+					}
+				});
+			},
+
+			removeTemporaryGlobalAttributes : function ( view, restore_attributes ) {
+				var this_class         = this,
+					restore_attributes = _.isUndefined( restore_attributes ) ? false : restore_attributes,
+					global_item_model = _.isUndefined( view.model.attributes.et_pb_temp_global_module ) ? ET_PageBuilder_Modules.findWhere({ et_pb_temp_global_module : view.model.attributes.et_pb_temp_global_parent }) : view.model,
+					global_item_cid   = global_item_model.attributes.cid,
+					global_item_view  = ET_PageBuilder_Layout.getView( global_item_cid );
+					global_item_children_views = ET_PageBuilder_Layout.getChildrenViews( global_item_cid );
+
+				if ( this.is_temp_global( global_item_view.model ) ) {
+					if ( restore_attributes ) {
+						global_item_view.model.set( 'et_pb_global_module', global_item_view.model.get( 'et_pb_temp_global_module' ) );
+					}
+
+					global_item_view.model.unset( 'et_pb_temp_global_module' );
+				}
+
+				_.each( global_item_children_views, function( global_item_children_view ) {
+					if ( this_class.is_temp_global_children( global_item_children_view.model ) ) {
+						if ( restore_attributes ) {
+							global_item_children_view.model.set( 'et_pb_global_parent', global_item_children_view.model.get( 'et_pb_temp_global_parent' ) );
+						}
+
+						global_item_children_view.model.unset( 'et_pb_temp_global_parent' );
+					}
+
+					if ( this_class.has_temp_global_parent_cid( global_item_children_view.model ) ) {
+						if ( restore_attributes ) {
+							global_item_children_view.model.set( 'global_parent_cid', global_item_children_view.model.get( 'et_pb_temp_global_parent_cid' ) );
+						}
+
+						global_item_children_view.model.unset( 'et_pb_temp_global_parent_cid' );
+					}
+				});
+
+				if ( restore_attributes ) {
+					// Update global template
+					et_pb_update_global_template( global_item_cid );
+				}
+			},
+
+			is_app : function( model ) {
+				if ( model.attributes.type === 'app' ) {
+					return true;
+				}
+
+				return false;
+			},
+
+			is_global : function( model ) {
+				// App cannot be global module. Its model.get() returns error
+				if ( this.is_app( model ) ) {
+					return false;
+				}
+
+				return model.has( 'et_pb_global_module' ) && model.get( 'et_pb_global_module' ) !== '' ? true : false;
+			},
+
+			is_global_children : function( model ) {
+				// App cannot be global module. Its model.get() returns error
+				if ( this.is_app( model ) ) {
+					return false;
+				}
+
+				return model.has( 'et_pb_global_parent' ) && model.get( 'et_pb_global_parent' ) !== '' ? true : false;
+			},
+
+			has_global_parent_cid : function( model ) {
+				return model.has( 'global_parent_cid' ) && model.get( 'global_parent_cid' ) !== '' ? true : false;
+			},
+
+			is_temp_global : function( model ) {
+				return model.has( 'et_pb_temp_global_module' ) && model.get( 'et_pb_temp_global_module' ) !== '' ? true : false;
+			},
+
+			is_temp_global_children : function( model ) {
+				return model.has( 'et_pb_temp_global_parent' ) && model.get( 'et_pb_temp_global_parent' ) !== '' ? true : false;
+			},
+
+			has_temp_global_parent_cid : function( model ) {
+				return model.has( 'et_pb_temp_global_parent_cid' ) && model.get( 'et_pb_temp_global_parent_cid' ) !== '' ? true : false;
+			},
 
 		} );
 
@@ -623,6 +813,7 @@ window.wp = window.wp || {};
 				'click.et_pb_row > .et-pb-right-click-trigger-overlay' : 'hideRightClickOptions',
 				'click > .et-pb-locked-overlay' : 'showRightClickOptions',
 				'contextmenu > .et-pb-locked-overlay' : 'showRightClickOptions',
+				'click' : 'setABTesting',
 			},
 
 			initialize : function() {
@@ -662,6 +853,29 @@ window.wp = window.wp || {};
 					et_pb_handle_clone_class( this.$el );
 				}
 
+				if ( ! _.isUndefined( this.model.get( 'et_pb_temp_global_module' ) ) ) {
+					this.$el.addClass( 'et_pb_global_temp' );
+				}
+
+				// Split Testing related class
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					if ( ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_subject' );
+
+						// Apply subject rank coloring
+						ET_PageBuilder_AB_Testing.set_subject_rank_coloring( this );
+					}
+
+					if ( ET_PageBuilder_AB_Testing.is_goal( this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_goal' );
+					}
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'section' ) ) {
+						this.$el.addClass( 'et_pb_ab_no_permission' );
+					}
+				}
+
 				this.makeRowsSortable();
 
 				return this;
@@ -689,6 +903,20 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'section' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+				}
+
 				if ( '' !== $current_target && $current_target.closest( '.et_pb_section_specialty' ).length ) {
 					var $specialty_section_columns = $current_target.closest( '.et_pb_section_specialty' ).find( '.et-pb-section-content > .et-pb-column' ),
 						columns_layout = '';
@@ -708,6 +936,8 @@ window.wp = window.wp || {};
 				et_modal_view_rendered = modal_view.render();
 
 				if ( false === et_modal_view_rendered ) {
+					et_builder_load_backbone_templates( true );
+
 					setTimeout( function() {
 						that.showSettings();
 					}, 500 );
@@ -744,6 +974,10 @@ window.wp = window.wp || {};
 
 				et_pb_close_all_right_click_options();
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'added', 'section' );
 
@@ -765,6 +999,10 @@ window.wp = window.wp || {};
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
 
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'added', 'fullwidth_section' );
@@ -789,6 +1027,10 @@ window.wp = window.wp || {};
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
 
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'added', 'specialty_section' );
@@ -819,6 +1061,10 @@ window.wp = window.wp || {};
 
 				et_pb_close_all_right_click_options();
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
 				$( 'body' ).append( main_view.render().el );
 
 				generate_templates_view( 'include_global', '', 'section', $( '.et-pb-saved-modules-tab' ), 'regular', 0, 'all' );
@@ -836,6 +1082,11 @@ window.wp = window.wp || {};
 				// Add attribute to shortcode
 				this.options.model.attributes.et_pb_collapsed = 'off';
 
+				// Carousel effect for split testing subject
+				if ( ET_PageBuilder_AB_Testing.is_active() && this.model.get( 'et_pb_ab_subject' ) === 'on' ) {
+					ET_PageBuilder_AB_Testing.subject_carousel( this.model.get( 'cid' ) );
+				}
+
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'expanded', 'section' );
 
@@ -845,6 +1096,10 @@ window.wp = window.wp || {};
 
 			unlockSection : function( event ) {
 				event.preventDefault();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
 
 				var this_el = this,
 					$parent = this_el.$el.closest('.et_pb_section'),
@@ -904,6 +1159,25 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'section' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.has_goal( this.model ) && ! ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_clone_section_has_goal' );
+						return;
+					}
+				}
+
 				var $cloned_element = this.$el.clone(),
 					content,
 					clone_section,
@@ -934,11 +1208,86 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				// Split Testing adjustment
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Disable sortable of Split testing item for user with no ab_testing permission
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'section' ) ) {
+						return;
+					}
+				}
+
 				this_el.$el.find( sortable_el ).sortable( {
 					connectWith: connectWith,
 					delay: 100,
 					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
 					update : function( event, ui ) {
+						// Split Testing adjustment
+						if ( ET_PageBuilder_AB_Testing.is_active() ) {
+							var $sortable_el = this_el.$el.find( sortable_el );
+
+							// Check for permission user first
+							if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( $( ui.item ).children('.et-pb-row-content').attr( 'data-cid' ), 'row' ) ) {
+								ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+								$sortable_el.sortable('cancel');
+								et_reinitialize_builder_layout();
+								return;
+							} else {
+								// User has proper permission. Verify whether the action is permissible or not
+								// IMPORTANT: update event is fired twice, once when the module is moved from its origin and once when the
+								// module is landed on its destination. This causes two different way in deciding $sender and $target
+								var $item       = $( ui.item ),
+									$sender    = _.isEmpty( $( ui.sender ) ) ? $( event.target ).parents('.et_pb_section')  : $( ui.sender ).parents('.et_pb_section'),
+									$target    = _.isEmpty( $( ui.sender ) ) ? $( event.toElement ).parents('.et_pb_section') : $( event.target ).parents('.et_pb_section'),
+									is_subject  = $item.hasClass('et_pb_ab_subject'),
+									is_goal     = $item.hasClass('et_pb_ab_goal'),
+									has_subject = $item.find('.et_pb_ab_subject').length,
+									has_goal    = $item.find('.et_pb_ab_goal').length,
+									is_sender_inside_subject = $sender.closest('.et_pb_ab_subject').length,
+									is_target_inside_subject = $target.closest('.et_pb_ab_subject').length,
+									is_target_inside_goal = $target.closest('.et_pb_ab_goal').length;
+
+								// Row is goal, being moved to subject-section
+								if ( is_goal && ! is_subject && is_target_inside_subject ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_goal_into_subject');
+									$sortable_el.sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+
+								// Row has goal, being moved to subject-section
+								if ( has_goal && is_target_inside_subject ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_goal_into_subject' );
+									$sortable_el.sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+
+								// Row is subject, being moved to goal-section
+								if ( is_subject && ! is_goal && is_target_inside_goal ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_subject_into_goal');
+									$sortable_el.sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+
+								// Row has subject, being moved to goal-section
+								if ( has_subject && is_target_inside_goal ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_subject_into_goal');
+									$sortable_el.sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+
+								// Row is a goal inside subject, being moved to anywhere
+								if ( is_goal && is_sender_inside_subject ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_row_goal_out_from_subject');
+									$sortable_el.sortable('cancel');
+									et_reinitialize_builder_layout();
+								}
+							}
+						}
+
 						if ( ! $( ui.item ).closest( event.target ).length ) {
 
 							// don't allow to move the row to another section if the section has only one row
@@ -1033,7 +1382,9 @@ window.wp = window.wp || {};
 			},
 
 			removeChildViews : function() {
-				_.each( this.child_views, function( view ) {
+				var child_views = ET_PageBuilder_Layout.getChildViews( this.model.attributes.cid );
+
+				_.each( child_views, function( view ) {
 					if ( typeof view.model !== 'undefined' )
 						view.model.destroy();
 
@@ -1051,6 +1402,34 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() && _.isUndefined( remove_all ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'section' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.is_unremovable_subject( this.model ) && _.isUndefined( remove_all ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.has_goal( this.model ) && ! ET_PageBuilder_AB_Testing.is_subject( this.model ) && _.isUndefined( remove_all ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_remove_section_has_goal' );
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.has_unremovable_subject( this.model ) && _.isUndefined( remove_all ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_remove_section_has_unremovable_subject' );
+						return;
+					}
+				}
+
 				if ( this.model.get( 'et_pb_fullwidth' ) === 'on' ) {
 					this.removeChildViews();
 				} else {
@@ -1061,7 +1440,7 @@ window.wp = window.wp || {};
 							// remove column in specialty section
 							row.removeColumn();
 						} else {
-							row.removeRow();
+							row.removeRow( false, true );
 						}
 					} );
 				}
@@ -1100,6 +1479,9 @@ window.wp = window.wp || {};
 				if ( event ) {
 					ET_PageBuilder_Events.trigger( 'et-module:removed' );
 				}
+
+				// Run Split Testing updater
+				ET_PageBuilder_AB_Testing.update();
 			},
 
 			isSectionLocked : function() {
@@ -1139,6 +1521,13 @@ window.wp = window.wp || {};
 				} else {
 					this.$el.removeClass( 'et_pb_disabled' );
 				}
+			},
+
+			setABTesting : function ( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				ET_PageBuilder_AB_Testing.set( this, event );
 			}
 		} );
 
@@ -1164,6 +1553,7 @@ window.wp = window.wp || {};
 				'click.et_pb_row > .et-pb-right-click-trigger-overlay' : 'hideRightClickOptions',
 				'click > .et-pb-locked-overlay' : 'showRightClickOptions',
 				'contextmenu > .et-pb-locked-overlay' : 'showRightClickOptions',
+				'click' : 'setABTesting',
 			},
 
 			initialize : function() {
@@ -1209,6 +1599,28 @@ window.wp = window.wp || {};
 					et_pb_handle_clone_class( this.$el );
 				}
 
+				if ( ET_PageBuilder_Layout.is_temp_global( this.model ) ) {
+					this.$el.addClass( 'et_pb_global_temp' );
+				}
+
+				// Split Testing related class
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					if ( ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_subject' );
+
+						// Apply subject rank coloring
+						ET_PageBuilder_AB_Testing.set_subject_rank_coloring( this );
+					}
+
+					if ( ET_PageBuilder_AB_Testing.is_goal( this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_goal' );
+					}
+
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'row' ) ) {
+						this.$el.addClass( 'et_pb_ab_no_permission' );
+					}
+				}
+
 				return this;
 			},
 
@@ -1233,11 +1645,27 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'row' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+				}
+
 				modal_view = new ET_PageBuilder.ModalView( view_settings );
 
 				et_modal_view_rendered = modal_view.render();
 
 				if ( false === et_modal_view_rendered ) {
+					et_builder_load_backbone_templates( true );
+
 					setTimeout( function() {
 						that.showSettings();
 					}, 500 );
@@ -1271,6 +1699,10 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
 				var view,
 					this_view = this;
 
@@ -1300,6 +1732,20 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'row' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+				}
+
 				this.model.set( 'change_structure', 'true', { silent : true } );
 
 				this.model.set( 'open_view', 'column_settings', { silent : true } );
@@ -1327,6 +1773,11 @@ window.wp = window.wp || {};
 				// Add attribute to shortcode
 				this.options.model.attributes.et_pb_collapsed = 'off';
 
+				// Carousel effect for split testing subject
+				if ( ET_PageBuilder_AB_Testing.is_active() && this.model.get( 'et_pb_ab_subject' ) === 'on' ) {
+					ET_PageBuilder_AB_Testing.subject_carousel( this.model.get( 'cid' ) );
+				}
+
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'expanded', 'row' );
 
@@ -1336,6 +1787,10 @@ window.wp = window.wp || {};
 
 			unlockRow : function( event ) {
 				event.preventDefault();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
 
 				var this_el = this,
 					$parent = this_el.$el.closest('.et_pb_row'),
@@ -1407,6 +1862,16 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'add_row' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+				}
+
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'added', 'row' );
 
@@ -1428,6 +1893,26 @@ window.wp = window.wp || {};
 
 				if ( this.isRowLocked() ) {
 					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ) ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+
+					// Row with goal (unless the row is subject) cannot be cloned
+					if ( ET_PageBuilder_AB_Testing.has_goal( this.model ) && ! ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_clone_row_has_goal' );
+						return;
+					}
 				}
 
 				if ( this.$el.closest( '.et_pb_section.et_pb_global' ).length && typeof parent_view.model.get( 'et_pb_template_type' ) === 'undefined' ) {
@@ -1455,6 +1940,34 @@ window.wp = window.wp || {};
 
 				if ( this.isRowLocked() || ET_PageBuilder_Layout.isChildrenLocked( this.model.get( 'cid' ) ) ) {
 					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() && _.isUndefined( force ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ) ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.is_unremovable_subject( this.model ) && _.isUndefined( force ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.has_goal( this.model ) && ! ET_PageBuilder_AB_Testing.is_subject( this.model ) && _.isUndefined( force ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_remove_row_has_goal' );
+						return;
+					}
+
+					if ( ET_PageBuilder_AB_Testing.has_unremovable_subject( this.model ) && _.isUndefined( force ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_remove_row_has_unremovable_subject' );
+						return;
+					}
 				}
 
 				if ( event ) {
@@ -1501,6 +2014,9 @@ window.wp = window.wp || {};
 				if ( '' !== global_module_cid ) {
 					et_pb_update_global_template( global_module_cid );
 				}
+
+				// Run Split Testing updater
+				ET_PageBuilder_AB_Testing.update();
 			},
 
 			isRowLocked : function() {
@@ -1548,6 +2064,13 @@ window.wp = window.wp || {};
 				} else {
 					this.$el.removeClass( 'et_pb_disabled' );
 				}
+			},
+
+			setABTesting : function ( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				ET_PageBuilder_AB_Testing.set( this, event );
 			}
 		} );
 
@@ -1758,8 +2281,9 @@ window.wp = window.wp || {};
 			saveSettings : function( event, close_modal ) {
 				var that = this,
 					global_module_cid = '',
+					this_view = ET_PageBuilder_Layout.getView( that.model.get( 'cid' ) ),
 					this_parent_view = typeof that.model.get( 'parent' ) !== 'undefined' ? ET_PageBuilder_Layout.getView( that.model.get( 'parent' ) ) : '',
-					global_holder_view = '' !== this_parent_view && ( typeof that.model.get( 'et_pb_global_module' ) === 'undefined' || '' === that.model.get( 'et_pb_global_module' ) ) ? this_parent_view : ET_PageBuilder_Layout.getView( that.model.get( 'cid' ) ),
+					global_holder_view = '' !== this_parent_view && ( typeof that.model.get( 'et_pb_global_module' ) === 'undefined' || '' === that.model.get( 'et_pb_global_module' ) ) ? this_parent_view : this_view,
 					update_template_only = false,
 					close_modal = _.isUndefined( close_modal ) ? true : close_modal;
 
@@ -1837,6 +2361,11 @@ window.wp = window.wp || {};
 				et_pb_hide_active_color_picker( that );
 
 				et_pb_close_modal_view( that, 'trigger_event' );
+
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					// Update subject rank coloring and subject ID
+					ET_PageBuilder_AB_Testing.set_subject_rank_coloring( this_view );
+				}
 			},
 
 			preview : function( event ) {
@@ -2145,6 +2674,15 @@ window.wp = window.wp || {};
 					this.model.set( 'et_pb_parent_locked', 'on', { silent : true } );
 				}
 
+				// Split Testing adjustment
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Disable sortable of Split testing item for user with no ab_testing permission
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'column' ) ) {
+						return this;
+					}
+				}
+
 				this.$el.sortable( {
 					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
 					connectWith: connect_with,
@@ -2222,6 +2760,56 @@ window.wp = window.wp || {};
 						}
 					},
 					update : function( event, ui ) {
+						// Split Testing adjustment :: module as subject / goal
+						if ( ET_PageBuilder_AB_Testing.is_active() ) {
+							var is_row_inner = $( ui.item ).hasClass( 'et_pb_row' ),
+								cid = is_row_inner ? $( ui.item ).children( '.et-pb-row-content' ).attr( 'data-cid' ) : $( ui.item ).attr( 'data-cid' );
+
+							// Check for permission user first
+							if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( cid ) ) {
+								ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+								this_el.$el.sortable('cancel');
+								et_reinitialize_builder_layout();
+								return;
+							} else {
+								// User has proper permission. Verify whether the action is permissible or not
+								// IMPORTANT: update event is fired twice, once when the module is moved from its origin and once when the
+								// module is landed on its destination. This causes two different way in deciding $sender and $target
+								var $item      = $( ui.item ),
+									$sender    = _.isEmpty( $( ui.sender ) ) ? $( event.target )  : $( ui.sender ),
+									$target    = _.isEmpty( $( ui.sender ) ) ? $( event.toElement ).parent() : $( event.target ),
+									is_subject = $item.hasClass('et_pb_ab_subject'),
+									is_goal    = $item.hasClass('et_pb_ab_goal'),
+									is_sender_inside_subject = $sender.closest('.et_pb_ab_subject').length,
+									is_target_inside_subject = $target.closest('.et_pb_ab_subject').length,
+									is_target_inside_goal = $target.closest('.et_pb_ab_goal').length;
+
+								// Goal inside subject cannot be moved outside subject
+								if ( is_goal && ! is_subject && is_sender_inside_subject ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_module_goal_out_from_subject' );
+									$( this_el.$el ).sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+
+								// Goal outside subject cannot be moved inside subject
+								if ( is_goal && ! is_subject && ! is_sender_inside_subject && is_target_inside_subject ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_goal_into_subject' );
+									$( this_el.$el ).sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+
+								// Subject cannot be moved into goal (assuming goal is row or section)
+								if ( is_subject && ! is_goal && is_target_inside_goal ) {
+									ET_PageBuilder_AB_Testing.alert( 'cannot_move_subject_into_goal' );
+									$( this_el.$el ).sortable('cancel');
+									et_reinitialize_builder_layout();
+									return;
+								}
+							}
+						}
+
 						var model,
 							$module_block,
 							module_cid = ui.item.data( 'cid' );
@@ -2296,6 +2884,20 @@ window.wp = window.wp || {};
 
 				if ( this.isColumnLocked() )
 					return;
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'add_module' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+				}
 
 				if ( ! $add_module_button.parent().is( event.delegateTarget ) ) {
 					return;
@@ -2405,7 +3007,7 @@ window.wp = window.wp || {};
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
-			},
+			}
 
 		} );
 
@@ -2843,7 +3445,7 @@ window.wp = window.wp || {};
 				// Replace encoded double quotes with normal quotes,
 				// escaping is applied in modules templates
 				_.each( this.model.attributes, function( value, key, list ) {
-					if ( typeof value === 'string' && key !== 'et_pb_content_new' && -1 === $.inArray( key, $icon_font_options ) ) {
+					if ( typeof value === 'string' && key !== 'et_pb_content_new' && -1 === $.inArray( key, $icon_font_options ) && ! /^\%\%\d+\%\%$/.test( $.trim( value ) ) ) {
 						return list[ key ] = value.replace( /%22/g, '"' );
 					}
 				} );
@@ -2881,6 +3483,7 @@ window.wp = window.wp || {};
 				if ( $color_picker.length ) {
 					$color_picker.wpColorPicker({
 						defaultColor : $color_picker.data('default-color'),
+						palettes : '' !== et_pb_options.page_color_palette ? et_pb_options.page_color_palette.split( '|' ) : et_pb_options.default_color_palette.split( '|' ),
 						change       : function( event, ui ) {
 							var $this_el      = $(this),
 								$reset_button = $this_el.closest( '.et-pb-option-container' ).find( '.et-pb-reset-setting' ),
@@ -3215,7 +3818,6 @@ window.wp = window.wp || {};
 
 						setTimeout( function() {
 							var map_pins = ET_PageBuilder_Layout.getChildViews( view_cid );
-							var bounds = new google.maps.LatLngBounds();
 							if ( _.size( map_pins ) ) {
 								_.each( map_pins, function( map_pin, key ) {
 
@@ -3224,24 +3826,14 @@ window.wp = window.wp || {};
 										return;
 									}
 
-									var position = new google.maps.LatLng( parseFloat( map_pin.model.get('et_pb_pin_address_lat') ) , parseFloat( map_pin.model.get('et_pb_pin_address_lng') ) );
-
 									markers[key] = new google.maps.Marker({
 										map: $map.map,
-										position: position,
+										position: new google.maps.LatLng( parseFloat( map_pin.model.get('et_pb_pin_address_lat') ) , parseFloat( map_pin.model.get('et_pb_pin_address_lng') ) ),
 										title: map_pin.model.get('et_pb_title'),
 										icon: { url: et_pb_options.images_uri + '/marker.png', size: new google.maps.Size( 46, 43 ), anchor: new google.maps.Point( 16, 43 ) },
 										shape: { coord: [1, 1, 46, 43], type: 'rect' }
 									});
-
-									bounds.extend( position );
 								});
-
-								if ( ! _.isUndefined( $map.map.getBounds() ) && ! _.isNull( $map.map.getBounds() ) ) {
-									bounds.extend( $map.map.getBounds().getNorthEast() );
-									bounds.extend( $map.map.getBounds().getSouthWest() );
-								}
-								$map.map.fitBounds( bounds );
 							}
 						}, 500 );
 
@@ -3882,7 +4474,8 @@ window.wp = window.wp || {};
 			},
 
 			saveSettings : function( event ) {
-				var attributes = {},
+				var this_view = this,
+					attributes = {},
 					this_model_defaults = this.model.get( 'module_defaults' ) || '';
 
 				event.preventDefault();
@@ -3907,6 +4500,7 @@ window.wp = window.wp || {};
 
 					// do not save the default values into module attributes
 					if ( '' !== this_model_defaults && typeof this_model_defaults[id] !== 'undefined' && this_model_defaults[id] === setting_value ) {
+						this_view.model.unset( id );
 						return true;
 					}
 
@@ -4011,6 +4605,7 @@ window.wp = window.wp || {};
 				'click .et-pb-unlock' : 'unlockModule',
 				'contextmenu' : 'showRightClickOptions',
 				'click' : 'hideRightClickOptions',
+				'click' : 'setABTesting',
 			},
 
 			render : function() {
@@ -4039,6 +4634,23 @@ window.wp = window.wp || {};
 					et_pb_handle_clone_class( this.$el );
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					if ( ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_subject' );
+
+						// Apply subject rank coloring
+						ET_PageBuilder_AB_Testing.set_subject_rank_coloring( this );
+					}
+
+					if ( ET_PageBuilder_AB_Testing.is_goal( this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_goal' );
+					}
+
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'module', this.model ) ) {
+						this.$el.addClass( 'et_pb_ab_no_permission' )
+					}
+				}
+
 				return this;
 			},
 
@@ -4053,8 +4665,22 @@ window.wp = window.wp || {};
 
 				event.preventDefault();
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
 				if ( this.isModuleLocked() ) {
 					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'module' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
 				}
 
 				if ( typeof this.model.get( 'et_pb_global_module' ) !== 'undefined' ) {
@@ -4114,8 +4740,24 @@ window.wp = window.wp || {};
 					event.preventDefault();
 				}
 
+				et_pb_close_all_right_click_options();
+
 				if ( this.isModuleLocked() ) {
 					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'module' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
 				}
 
 				if ( typeof this.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== this.model.get( 'et_pb_global_module' ) ) {
@@ -4130,6 +4772,8 @@ window.wp = window.wp || {};
 					et_modal_view_rendered = modal_view.render();
 
 					if ( false === et_modal_view_rendered ) {
+						et_builder_load_backbone_templates( true );
+
 						setTimeout( function() {
 							that.showSettings();
 						}, 500 );
@@ -4164,6 +4808,25 @@ window.wp = window.wp || {};
 					return;
 				}
 
+				if ( ET_PageBuilder_AB_Testing.is_selecting() && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+					return;
+				}
+
+				// Split Testing-related action
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+					// Check for user permission and module status
+					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'module' ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+						return;
+					}
+
+					// Check for unremovable subject status
+					if ( ET_PageBuilder_AB_Testing.is_unremovable_subject( this.model ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+						return;
+					}
+				}
+
 				if ( event ) {
 					event.preventDefault();
 
@@ -4189,10 +4852,17 @@ window.wp = window.wp || {};
 				if ( '' !== global_module_cid ) {
 					et_pb_update_global_template( global_module_cid );
 				}
+
+				// Run Split Testing updater
+				ET_PageBuilder_AB_Testing.update();
 			},
 
 			unlockModule : function( event ) {
 				event.preventDefault();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
 
 				var this_el = this,
 					$parent = this_el.$el.closest('.et_pb_module_block'),
@@ -4250,6 +4920,13 @@ window.wp = window.wp || {};
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
+			},
+
+			setABTesting : function ( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				ET_PageBuilder_AB_Testing.set( this, event );
 			}
 		} );
 
@@ -4263,6 +4940,8 @@ window.wp = window.wp || {};
 
 			events : {
 				'click .et-pb-right-click-rename' : 'rename',
+				'click .et-pb-right-click-start-ab-testing' : 'startABTesting',
+				'click .et-pb-right-click-end-ab-testing' : 'endABTesting',
 				'click .et-pb-right-click-save-to-library' : 'saveToLibrary',
 				'click .et-pb-right-click-undo' : 'undo',
 				'click .et-pb-right-click-redo' : 'redo',
@@ -4274,7 +4953,8 @@ window.wp = window.wp || {};
 				'click .et-pb-right-click-paste-after' : 'pasteAfter',
 				'click .et-pb-right-click-paste-app' : 'pasteApp',
 				'click .et-pb-right-click-paste-column' : 'pasteColumn',
-				'click .et-pb-right-click-preview' : 'preview'
+				'click .et-pb-right-click-preview' : 'preview',
+				'click .et-pb-right-click-disable-global' : 'disableGlobal'
 			},
 
 			initialize : function( attributes, skip_render ) {
@@ -4285,6 +4965,10 @@ window.wp = window.wp || {};
 				this.et_pb_has_storage_support        = et_pb_has_storage_support();
 				this.has_compatible_clipboard_content = ET_PB_Clipboard.get( this.getClipboardType() );
 				this.history_noun                     = this.type === 'row_inner' ? 'row' : this.type;
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
+					return;
+				}
 
 				// Divi Library adjustment
 				if ( et_pb_options.is_divi_library === '1' && this.has_compatible_clipboard_content !== false ) {
@@ -4371,10 +5055,63 @@ window.wp = window.wp || {};
 				this.closeAllRightClickOptions();
 			},
 
+			startABTesting : function ( event ) {
+
+				// Close right click options UI
+				this.closeAllRightClickOptions();
+
+				// Turn on Split Testing state
+				ET_PageBuilder_AB_Testing.toggle_status( true );
+
+				// Disable publish button
+				ET_PageBuilder_App.disable_publish = true;
+
+				$( '#publish' ).addClass( 'disabled' );
+
+				// Check DB existence
+				ET_PageBuilder_AB_Testing.check_create_db();
+
+				// Turn on Split testing subject selection mode
+				ET_PageBuilder_App.is_selecting_ab_testing_subject = true;
+
+				// Adding nescesarry class for Split testing subject selection mode's UI
+				$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_subject' );
+			},
+
+			endABTesting : function ( event ) {
+				// Close right click options UI
+				this.closeAllRightClickOptions();
+
+				// Set split test to off
+				ET_PageBuilder_AB_Testing.toggle_status( false );
+
+				// Turn off Split testing subject selection mode
+				ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
+
+				// Check against "on to off" or "off to off" state
+				if ( ET_PageBuilder_AB_Testing.count_subjects() > 0 ) {
+					et_pb_create_prompt_modal( 'turn_off_ab_testing' );
+				}
+			},
+
+			disableGlobal : function ( event ) {
+				event.preventDefault();
+
+				// Close right click options UI
+				this.closeAllRightClickOptions();
+
+				// Remove global attributes from the module
+				ET_PageBuilder_Layout.removeGlobalAttributes( this );
+
+				// Update content and reinit layout
+				et_reinitialize_builder_layout();
+			},
+
 			saveToLibrary : function ( event ) {
 				event.preventDefault();
 
 				var model          = this.options.model,
+					type           = model.attributes.type,
 					view_settings  = {
 						model : model,
 						collection : ET_PageBuilder_Modules,
@@ -4385,6 +5122,11 @@ window.wp = window.wp || {};
 
 				// Close right click options UI
 				this.closeAllRightClickOptions();
+
+				if ( ET_PageBuilder_AB_Testing.is_active() && ( ET_PageBuilder_AB_Testing.is_split_test_item( model ) || type === 'app' ) ) {
+					ET_PageBuilder_AB_Testing.alert( 'cannot_save_' + type + '_layout_has_ab_testing' );
+					return;
+				}
 
 				if ( this.type === 'app' ) {
 					// Init save current page to library modal view
@@ -4660,6 +5402,11 @@ window.wp = window.wp || {};
 					history_verb = 'expanded';
 				}
 
+				// Carousel effect for split testing subject
+				if ( ET_PageBuilder_AB_Testing.is_active() && this.model.get( 'et_pb_ab_subject' ) === 'on' ) {
+					ET_PageBuilder_AB_Testing.subject_carousel( cid );
+				}
+
 				// Update global module
 				this.updateGlobalModule();
 
@@ -4725,12 +5472,22 @@ window.wp = window.wp || {};
 				clipboard_content = ET_PB_Clipboard.get( clipboard_type );
 				clipboard_content = JSON.parse( clipboard_content );
 
+				// If current clipboard content is Split testing subject, assign new subject ID
+				if ( ! _.isUndefined( clipboard_content.et_pb_ab_subject ) || 'on' === clipboard_content.et_pb_ab_subject ) {
+					clipboard_content.et_pb_ab_subject_id = ET_PageBuilder_AB_Testing.get_subject_id();
+				}
+
 				if ( has_cloned_cid ) {
 					clipboard_content.cloned_cid = this.model.get( 'cid' );
 				}
 
 				// Paste views recursively
 				this.setPasteViews( clipboard_content, parent, 'main_parent' );
+
+				// Carousel effect for split testing subject
+				if ( ET_PageBuilder_AB_Testing.is_active() && ( clipboard_content.type === 'row' || clipboard_content.type === 'row_inner' || clipboard_content.type === 'section' ) && clipboard_content.et_pb_ab_subject === 'on' ) {
+					ET_PageBuilder_AB_Testing.subject_carousel( clipboard_content.cid );
+				}
 
 				// Trigger events
 				ET_PageBuilder_Events.trigger( 'et-advanced-module:updated' );
@@ -4861,6 +5618,11 @@ window.wp = window.wp || {};
 					delete view.et_pb_template_type;
 				}
 
+				// If current view is Split testing subject, assign new subject ID
+				if ( ! _.isUndefined( view.et_pb_ab_subject ) || 'on' === view.et_pb_ab_subject ) {
+					view.et_pb_ab_subject_id = ET_PageBuilder_AB_Testing.get_subject_id();
+				}
+
 				// Delete unused childviews
 				delete view.childviews;
 
@@ -4878,9 +5640,9 @@ window.wp = window.wp || {};
 			updateGlobalModule : function () {
 				var global_module_cid;
 
-				if ( ! _.isUndefined( this.options.model.get( 'et_pb_global_module' ) ) ) {
+				if ( ! ET_PageBuilder_Layout.is_global( this.model ) ) {
 					global_module_cid = this.options.model.get( 'cid' );
-				} else if ( ! _.isUndefined( this.options.model.get( 'et_pb_global_parent' ) ) ) {
+				} else if ( ! ET_PageBuilder_Layout.is_global_children( this.model ) ) {
 					global_module_cid = this.options.model.get( 'global_parent_cid' );
 				}
 
@@ -4890,21 +5652,54 @@ window.wp = window.wp || {};
 			},
 
 			hasOption : function( option_name ) {
-				var has_option = false;
+				var cid          = typeof this.model.get === 'function' ? this.model.get( 'cid' ) : false,
+					has_option   = false,
+					type         = this.options.model.attributes.type,
+					is_ab_active = ET_PageBuilder_AB_Testing.is_active(),
+					is_ab_goal   = is_ab_active ? ET_PageBuilder_AB_Testing.is_goal( this.model ) : false,
+					is_ab_goal_children = is_ab_active ? ET_PageBuilder_AB_Testing.is_goal_children( this.model ) : false,
+					has_ab_goal  = is_ab_active ? ET_PageBuilder_AB_Testing.has_goal( this.model ) : false,
+					is_ab_subject= is_ab_active ? ET_PageBuilder_AB_Testing.is_subject( this.model ) : false,
+					is_ab_subject_children = is_ab_active ? ET_PageBuilder_AB_Testing.is_subject_children( this.model ) : false,
+					is_ab_allowed_change = is_ab_active ? ET_PageBuilder_AB_Testing.is_user_has_permission( cid, 'right_click_change' ) : true,
+					is_ab_allowed_copy = is_ab_active ? ET_PageBuilder_AB_Testing.is_user_has_permission( cid, 'copy' ) : true,
+					is_ab_allowed_paste = is_ab_active ? ET_PageBuilder_AB_Testing.is_user_has_permission( cid, 'paste' ) : true;
 
 				switch( option_name ) {
 					case "rename" :
 							if ( this.hasOptionSupport( [ "module", "section", "row_inner", "row" ] ) &&
-								 this.options.model.attributes.et_pb_locked !== "on" ) {
+								 this.options.model.attributes.et_pb_locked !== "on" &&
+								 is_ab_allowed_change ) {
 								has_option = true;
 							}
 						break;
 					case "save-to-library" :
 							if ( this.hasOptionSupport( [ "app", "section", "row_inner", "row", "module" ] ) &&
-								 _.isUndefined( this.options.model.attributes.et_pb_global_module ) &&
-								 _.isUndefined( this.options.model.attributes.et_pb_global_parent ) &&
+								 ! ET_PageBuilder_Layout.is_global( this.options.model ) &&
+								 ! ET_PageBuilder_Layout.is_global_children( this.options.model ) &&
 								 this.options.model.attributes.et_pb_locked !== "on" &&
+								 ! ( ET_PageBuilder_AB_Testing.is_active() && ( ET_PageBuilder_AB_Testing.is_split_test_item( this.options.model ) || type === 'app' ) ) &&
 								 et_pb_options.is_divi_library !== "1" ) {
+								has_option = true;
+							}
+						break;
+					case "start-ab-testing" :
+							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
+								 ! is_ab_active ) {
+								has_option = true;
+							}
+						break;
+					case "end-ab-testing" :
+							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
+								( is_ab_subject || is_ab_goal || is_ab_subject_children || is_ab_goal_children ) &&
+								is_ab_active ) {
+								has_option = true;
+							}
+						break;
+					case "disable-global" :
+							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
+								 ( ET_PageBuilder_Layout.is_global( this.options.model ) || ET_PageBuilder_Layout.is_global_children( this.options.model) )
+							) {
 								has_option = true;
 							}
 						break;
@@ -4924,19 +5719,22 @@ window.wp = window.wp || {};
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
 								 this.options.model.attributes.et_pb_locked !== "on" &&
 								 this.hasDisabledParent() === false &&
-								 _.isUndefined( this.model.attributes.et_pb_skip_module ) ) {
+								 _.isUndefined( this.model.attributes.et_pb_skip_module ) &&
+								 is_ab_allowed_change ) {
 								has_option = true;
 							}
 						break;
 					case "lock" :
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
-								 _.isUndefined( this.model.attributes.et_pb_skip_module ) ) {
+								 _.isUndefined( this.model.attributes.et_pb_skip_module ) &&
+								 is_ab_allowed_change ) {
 								has_option = true;
 							}
 						break;
 					case "collapse" :
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row" ] ) &&
 								 this.options.model.attributes.et_pb_locked !== "on" &&
+								 ! ( ET_PageBuilder_AB_Testing.is_active() && this.options.model.get( 'et_pb_ab_subject' ) === "on" && ( this.options.model.get( 'et_pb_collapsed' ) === "off" || _.isUndefined( this.options.model.get( 'et_pb_collapsed' ) ) )  ) &&
 								 _.isUndefined( this.model.attributes.et_pb_skip_module ) ) {
 								has_option = true;
 							}
@@ -4945,7 +5743,10 @@ window.wp = window.wp || {};
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
 								 this.et_pb_has_storage_support &&
 								 this.options.model.attributes.et_pb_locked !== "on" &&
-								 _.isUndefined( this.model.attributes.et_pb_skip_module ) ) {
+								 _.isUndefined( this.model.attributes.et_pb_skip_module ) &&
+								 is_ab_allowed_copy &&
+								 ! is_ab_goal &&
+								 ! has_ab_goal ) {
 								has_option = true;
 							}
 						break;
@@ -4953,6 +5754,7 @@ window.wp = window.wp || {};
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
 								 this.et_pb_has_storage_support &&
 								 this.has_compatible_clipboard_content &&
+								 is_ab_allowed_paste &&
 								 this.options.model.attributes.et_pb_locked !== "on" ) {
 								has_option = true;
 							}
@@ -5221,6 +6023,15 @@ window.wp = window.wp || {};
 
 					ET_PageBuilder_App.createLayoutFromContent( et_prepare_template_content( shortcode ), '', '', { is_reinit : 'reinit' } );
 
+					// Auto turn on Split Testing if the history has Split testing data
+					if ( ET_PageBuilder_AB_Testing.is_active_based_on_models() ) {
+						ET_PageBuilder_AB_Testing.toggle_status( true );
+
+						et_reinitialize_builder_layout();
+					} else {
+						ET_PageBuilder_AB_Testing.toggle_status( false );
+					}
+
 					$builder_container.css( { 'height' : 'auto' } );
 
 					// remove loading state
@@ -5249,6 +6060,8 @@ window.wp = window.wp || {};
 				'contextmenu #et-pb-histories-visualizer-overlay' : 'closeHistory',
 				'click .et-pb-layout-buttons-redo' : 'redo',
 				'click .et-pb-layout-buttons-undo' : 'undo',
+				'click .et-pb-layout-buttons-view-ab-stats' : 'viewABStats',
+				'click .et-pb-layout-buttons-settings' : 'settings',
 				'contextmenu .et-pb-layout-buttons-save' : 'showRightClickOptions',
 				'contextmenu .et-pb-layout-buttons-load' : 'showRightClickOptions',
 				'contextmenu .et-pb-layout-buttons-clear' : 'showRightClickOptions',
@@ -5287,7 +6100,7 @@ window.wp = window.wp || {};
 
 				this.addLoadingAnimation();
 
-				$('#et_pb_main_container_right_click_overlay').remove();
+				$( '#et_pb_main_container_right_click_overlay' ).remove();
 
 				this.$el.prepend('<div id="et_pb_main_container_right_click_overlay" />');
 
@@ -5326,6 +6139,11 @@ window.wp = window.wp || {};
 			saveLayout : function( event ) {
 				event.preventDefault();
 
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					ET_PageBuilder_AB_Testing.alert( 'cannot_save_app_layout_has_ab_testing' );
+					return;
+				}
+
 				et_pb_close_all_right_click_options();
 
 				et_pb_create_prompt_modal( 'save_layout' );
@@ -5337,6 +6155,11 @@ window.wp = window.wp || {};
 				var view;
 
 				et_pb_close_all_right_click_options();
+
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					ET_PageBuilder_AB_Testing.alert( 'cannot_load_layout_has_ab_testing' );
+					return;
+				}
 
 				view = new ET_PageBuilder.ModalView( {
 					attributes : {
@@ -5353,6 +6176,11 @@ window.wp = window.wp || {};
 
 				et_pb_close_all_right_click_options();
 
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					ET_PageBuilder_AB_Testing.alert( 'cannot_clear_layout_has_ab_testing' );
+					return;
+				}
+
 				et_pb_create_prompt_modal( 'clear_layout' );
 			},
 
@@ -5365,6 +6193,14 @@ window.wp = window.wp || {};
 					active_model_index = _.isUndefined( active_model ) ? ( this.options.history.models.length - 1 ) : this.options.history.indexOf( active_model );
 
 				return active_model_index;
+			},
+
+			isDoingCombination : function() {
+				if ( _.isUndefined( this.is_doing_combination ) ) {
+					return false;
+				} else {
+					return this.is_doing_combination;
+				}
 			},
 
 			enableHistory : function() {
@@ -5523,6 +6359,28 @@ window.wp = window.wp || {};
 				}, 600 );
 			},
 
+			viewABStats : function( event ) {
+				event.preventDefault();
+
+				// View Split Testing stats is disabled on Divi Library
+				if ( et_pb_options.is_divi_library === "1" ) {
+					return;
+				}
+
+				et_pb_create_prompt_modal( 'view_ab_stats' );
+			},
+
+			settings : function( event ) {
+				event.preventDefault();
+
+				// Builder settings is disabled on Divi Library
+				if ( et_pb_options.is_divi_library === "1" ) {
+					return;
+				}
+
+				et_pb_create_prompt_modal( 'open_settings' );
+			},
+
 			getRedoModel : function() {
 				var model = this.options.history.at( this.getHistoriesIndex() + 1 );
 
@@ -5622,7 +6480,7 @@ window.wp = window.wp || {};
 			},
 
 			addHistory : function( content ) {
-				if ( this.enableHistory() ) {
+				if ( this.enableHistory() && ! this.isDoingCombination() ) {
 					var date = new Date(),
 						hour = date.getHours() > 12 ? date.getHours() - 12 : date.getHours(),
 						minute = date.getMinutes(),
@@ -5675,6 +6533,27 @@ window.wp = window.wp || {};
 					var fix_shortcodes = true,
 						content = '';
 
+					// check whether the tinyMCE container is loaded already if not - try again.
+					if ( typeof window.tinyMCE !== 'undefined' && window.tinyMCE.get( 'content' ) && ! window.tinyMCE.get( 'content' ).isHidden() && ! $( 'iframe#content_ifr' ).length ) {
+						et_pb_bulder_loading_attempts++;
+
+						//show failure modal after 30 unsuccessful attempts
+						if ( 30 < et_pb_bulder_loading_attempts ) {
+							var $failure_notice_template = $( '#et-builder-failure-notice-template' );
+
+							ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+							$( '#et_pb_main_container' ).removeClass( 'et_pb_loading_animation' );
+
+							$( 'body' ).addClass( 'et_pb_stop_scroll' ).append( $failure_notice_template.html() );
+
+							return;
+						}
+
+						this_el.maybeGenerateInitialLayout();
+						return;
+					}
+
 					/*
 					 * Visual editor adds paragraph tags around shortcodes,
 					 * it causes &nbsp; to be inserted into a module content area
@@ -5716,7 +6595,9 @@ window.wp = window.wp || {};
 
 					// start listening to any collection events after all modules have been generated
 					this_el.listenTo( this_el.collection, 'change reset add', _.debounce( this_el.saveAsShortcode, 128 ) );
-				}, 1000 );
+
+					ET_PageBuilder_AB_Testing.update();
+				}, 500 );
 			},
 
 			wp_regexp_not_global : _.memoize( function( tag ) {
@@ -6124,6 +7005,8 @@ window.wp = window.wp || {};
 
 				this.addHistory( shortcode );
 
+				ET_PageBuilder_AB_Testing.update();
+
 				setTimeout( function(){
 					// Save to content is performed each time, except when a layout is being loaded
 					var action = action_setting || '';
@@ -6380,6 +7263,19 @@ window.wp = window.wp || {};
 					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-section-add, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
 					delay: 100,
 					update : function( event, ui ) {
+						// Split Testing adjustment :: section as/has subject/goal
+						if ( ET_PageBuilder_AB_Testing.is_active() ) {
+							var section_cid = $( ui.item ).children( '.et-pb-section-content' ).attr( 'data-cid' );
+
+							// Check user permission
+							if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( section_cid, 'section' ) ) {
+								ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+								this_el.$el.sortable( 'cancel' );
+								et_reinitialize_builder_layout();
+								return;
+							}
+						}
+
 						// Enable history saving and set meta for history
 						this_el.allowHistorySaving( 'moved', 'section' );
 
@@ -6908,9 +7804,1549 @@ window.wp = window.wp || {};
 
 			et_pb_globals_loaded = 0,
 
-			et_pb_processed_yoast_content = false;
+			et_pb_processed_yoast_content = false,
+
+			et_pb_quick_tags_init_done = {};
 
 		ET_PageBuilder.Events = ET_PageBuilder_Events;
+
+		var ET_PageBuilder_AB_Testing = {
+			is_active : function () {
+				return $( '#et_pb_use_ab_testing' ).length && 'on' === $( '#et_pb_use_ab_testing' ).val() ? true : false;
+			},
+
+			toggle_status : function( status ) {
+				var $input = $( '#et_pb_use_ab_testing' ),
+					status = _.isUndefined( status ) ? false : status;
+
+				if ( status ) {
+					$input.val( 'on' );
+					this.toggle_portability( false );
+				} else {
+					$input.val( 'off' );
+				}
+			},
+
+			toggle_portability : function( status ) {
+				var $portability_button   = $( '.et-pb-app-portability-button' ),
+					disable_class         = 'et-core-disabled',
+					is_currently_disabled = $portability_button.hasClass( disable_class );
+
+				// If no explicit status passed, do toggling
+				if ( _.isUndefined( status ) ) {
+					status = is_currently_disabled ? true : false;
+				}
+
+				// false === disabling
+				if ( status ) {
+					$portability_button.removeClass( disable_class );
+				} else {
+					$portability_button.addClass( disable_class );
+				}
+			},
+
+			get_stats_refresh_interval : function () {
+				return $( '#et_pb_ab_stats_refresh_interval' ).length ? $( '#et_pb_ab_stats_refresh_interval' ).val() : 'hourly';
+			},
+
+			get_shortcode_tracking_status : function() {
+				return $( '#_et_pb_enable_shortcode_tracking' ).length && '' !== $( '#_et_pb_enable_shortcode_tracking' ).val() ? $( '#_et_pb_enable_shortcode_tracking' ).val() : 'off';
+			},
+
+			is_active_based_on_models : function () {
+				var subjects = ET_PageBuilder_Modules.where({ et_pb_ab_subject : 'on' }),
+					goal     = ET_PageBuilder_Modules.where({ et_pb_ab_goal : 'on'});
+
+				return ( subjects.length > 1 && goal.length > 0 );
+			},
+
+			has_permission : function () {
+				if ( et_pb_ab_js_options.has_permission === '1' ) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+
+			check_create_db : function () {
+				if ( 'exists' !== et_pb_options.ab_db_status ) {
+					$.ajax( {
+						type: "POST",
+						url: et_pb_options.ajaxurl,
+						data:
+						{
+							action : 'et_pb_create_ab_tables',
+							et_pb_ab_nonce : et_pb_options.ab_testing_builder_nonce,
+						},
+						success: function( response ) {
+							if ( ! response.length || 'success' !== response ) {
+								return false;
+							}
+
+							et_pb_options.ab_db_status = 'exists';
+						}
+					} );
+				}
+
+				return true;
+			},
+
+			is_selecting_subject : function() {
+				if ( ! _.isUndefined( ET_PageBuilder_App.is_selecting_ab_testing_subject ) && ET_PageBuilder_App.is_selecting_ab_testing_subject === true ) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+
+			is_selecting_goal : function() {
+				if ( ! _.isUndefined( ET_PageBuilder_App.is_selecting_ab_testing_goal ) && ET_PageBuilder_App.is_selecting_ab_testing_goal === true ) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+
+			is_selecting_winner : function() {
+				if ( ! _.isUndefined( ET_PageBuilder_App.is_selecting_ab_testing_winner ) && ET_PageBuilder_App.is_selecting_ab_testing_winner === true ) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+
+			is_selecting : function() {
+				if ( this.is_selecting_subject() || this.is_selecting_goal() || this.is_selecting_winner() ) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+
+			is_subject : function( model ) {
+				if ( this.is_active() && ! ET_PageBuilder_Layout.is_app( model ) && model.has( 'et_pb_ab_subject' ) && model.get( 'et_pb_ab_subject' ) === 'on' ) {
+					return true;
+				}
+
+				return false;
+			},
+
+			is_subject_children : function( model ) {
+				var parent_views = ET_PageBuilder_Layout.getParentViews( model.attributes.parent ),
+					result = false;
+
+				if ( ! _.isEmpty( parent_views ) ) {
+					_.each( parent_views, function( parent_view ) {
+						if ( ! _.isUndefined( parent_view.model.get( 'et_pb_ab_subject' ) ) && parent_view.model.get( 'et_pb_ab_subject' ) === 'on' ) {
+							result = true;
+						}
+					} );
+				}
+
+				return result;
+			},
+
+			is_unremovable_subject : function( model ) {
+				if ( this.is_active() && this.is_subject( model ) && this.subjects().length < 3 ) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+
+			is_goal : function( model ) {
+				if ( this.is_active() && ! ET_PageBuilder_Layout.is_app( model ) && model.has( 'et_pb_ab_goal' ) && model.get( 'et_pb_ab_goal' ) === 'on' ) {
+					return true;
+				}
+
+				return false;
+			},
+
+			is_goal_children : function ( model ) {
+				var parent_views = ET_PageBuilder_Layout.getParentViews( model.attributes.parent ),
+					result = false;
+
+				if ( ! _.isEmpty( parent_views ) ) {
+					_.each( parent_views, function( parent_view ) {
+						if ( ! ET_PageBuilder_Layout.is_app( model ) && parent_view.model.has( 'et_pb_ab_goal' ) && parent_view.model.get( 'et_pb_ab_goal' ) === 'on' ) {
+							result = true;
+						}
+					} );
+				}
+
+				return result;
+			},
+
+			is_user_has_permission : function( cid, context, model ) {
+				if ( ! cid ) {
+					return false;
+				}
+
+				// Get view
+				var view                = ET_PageBuilder_Layout.getView( cid ),
+					model               = _.isUndefined( model ) ? view.model : model,
+					has_permission      = ET_PageBuilder_AB_Testing.has_permission(),
+					is_subject          = ET_PageBuilder_AB_Testing.is_subject( model ),
+					is_subject_children = ET_PageBuilder_AB_Testing.is_subject_children( model ),
+					has_subject         = ET_PageBuilder_AB_Testing.has_subject( model ),
+					is_goal             = ET_PageBuilder_AB_Testing.is_goal( model ),
+					is_goal_children    = ET_PageBuilder_AB_Testing.is_goal_children( model ),
+					has_goal            = ET_PageBuilder_AB_Testing.has_goal( model ),
+					status;
+
+				if ( context === 'section' ) {
+					status = is_subject || has_subject || is_goal || has_goal;
+				} else if ( context === 'module' ) {
+					status = is_subject || is_subject_children || is_goal || is_goal_children;
+				} else if ( context === 'add_module' ) {
+					status = is_subject || is_subject_children || is_goal || is_goal_children;
+				} else if ( context === 'add_row' ) {
+					status = is_subject_children || is_goal_children;
+				} else if ( context === 'paste' ) {
+					status = is_subject_children || is_goal_children;
+				} else if ( context === 'copy' ) {
+					status = is_subject || has_subject || is_goal || has_goal;
+				} else {
+					status = is_subject || is_subject_children || has_subject || is_goal || is_goal_children || has_goal;
+				}
+
+				// User with no ab_testing permisson cannot modify Split testing-related item
+				if ( ! has_permission && status ) {
+					return false;
+				}
+
+				return true;
+			},
+
+			is_split_test_item : function( model ) {
+				if (
+					this.is_subject( model ) ||
+					this.is_subject_children( model ) ||
+					this.has_subject( model ) ||
+					this.is_goal( model ) ||
+					this.is_goal_children( model ) ||
+					this.has_goal( model )
+				) {
+					return true;
+				}
+
+				return false;
+			},
+
+			filter_goals : function( models ) {
+				var goals = _.filter( models, function( model ) {
+					if ( model.has( 'et_pb_ab_goal' ) && model.get( 'et_pb_ab_goal' ) === 'on' ) {
+						return true;
+					}
+
+					return false;
+				});
+
+				return goals;
+			},
+
+			filter_subjects : function( models ) {
+				var subjects = _.filter( models, function( model ) {
+					if ( model.has( 'et_pb_ab_subject' ) && model.get( 'et_pb_ab_subject' ) === 'on' ) {
+						return true;
+					}
+
+					return false;
+				});
+
+				return subjects;
+			},
+
+			filter_models_by_cids : function( cids, models ) {
+				var filtered_models;
+
+				models = _.isUndefined( models ) ? ET_PageBuilder_Modules.models : models;
+
+				filtered_models = _.filter( models, function( model ) {
+					if ( $.inArray( model.get( 'parent' ), cids ) !== -1 ) {
+						return true;
+					}
+
+					return false;
+				});
+
+				return filtered_models;
+			},
+
+			pluck_cids_from_models : function( models ) {
+				var cids = [];
+
+				_.each( models, function( model ){
+					cids.push( model.get( 'cid' ) );
+				});
+
+				return cids;
+			},
+
+			has_goal : function ( model ) {
+				var cid = typeof model.get === 'function' ? model.get( 'cid' ) : false,
+					has_goal = false;
+
+				if ( this.is_active() && cid !== false ) {
+					_.each( ET_PageBuilder_Layout.getChildrenViews( cid ), function( child_view ) {
+						if ( child_view.model.get( 'et_pb_ab_goal' ) === 'on' ) {
+							has_goal = true;
+						}
+					});
+				}
+
+				return has_goal;
+			},
+
+			has_subject : function( model ) {
+				var cid = typeof model.get === 'function' ? model.get( 'cid' ) : false,
+					has_subject = false;
+
+				if ( this.is_active() ) {
+					_.each( ET_PageBuilder_Layout.getChildrenViews( cid ), function( child_view ) {
+						if ( child_view.model.get( 'et_pb_ab_subject' ) === 'on' ) {
+							has_subject = true;
+						}
+					});
+				}
+
+				return has_subject;
+			},
+
+			has_unremovable_subject : function( model ) {
+				var cid = model.get( 'cid' ),
+					type = model.get( 'type' ),
+					rows,
+					row_is_subject,
+					rows_cid = [],
+					row_inner,
+					row_inner_is_goal,
+					columns,
+					columns_cid = [],
+					modules,
+					module_is_subject;
+
+				if ( this.is_active() ) {
+
+					if ( type === 'section' ) {
+						// Get row's models
+						rows = ET_PageBuilder_Modules.where({ parent : cid } );
+
+						// Look for row as subjects
+						row_is_subject = this.filter_subjects( rows );
+
+						// Return true if this section gets deleted, remaining subject will be less than two
+						if ( ( this.count_subjects() - row_is_subject.length ) < 2 ) {
+							return true;
+						}
+
+						// Get row's cids
+						rows_cid = this.pluck_cids_from_models( rows );
+
+						// Specialty Section's adjustment :: it has one level deep tp get into rows_cid
+						if ( ! _.isUndefined( model.get( 'et_pb_specialty' ) ) && model.get( 'et_pb_specialty' ) === 'on' ) {
+							// Look for row_inner models
+							row_inner = this.filter_models_by_cids( rows_cid );
+
+							// Look for row_inner as subject
+							row_inner_is_subject = this.filter_subjects( row_inner );
+
+							// Return true if this row_inner gets deleted, remaining subject will be less than two
+							if ( ( this.count_subjects() - row_inner_is_subject.length ) < 2 ) {
+								return true;
+							}
+
+							// Passes row_inner cids as row cids
+							rows_cid = this.pluck_cids_from_models( row_inner );
+						}
+					}
+
+					if ( type === 'row' || type === 'row_inner' ) {
+						// Set cid as row cids
+						rows_cid = [cid];
+					}
+
+					if ( type === 'section' || type === 'row_inner' || type === 'row' ) {
+						// Get column's models
+						columns = this.filter_models_by_cids( rows_cid );
+
+						// Get column's cids
+						columns_cid = this.pluck_cids_from_models( columns );
+
+						// Get module's models
+						modules = this.filter_models_by_cids( columns_cid );
+
+						// Look for module as subject
+						module_is_subject = this.filter_subjects( modules );
+
+						// Return true if this row gets deleted, remaining subject will be less than two
+						if ( ( this.count_subjects() - module_is_subject.length ) < 2 ) {
+							return true;
+						}
+					}
+				}
+
+				return false;
+			},
+
+			subjects : function () {
+				var subjects = ET_PageBuilder_Modules.where({ et_pb_ab_subject : 'on' })
+
+				return subjects;
+			},
+
+			subject_ids : function () {
+				var subjects = this.subjects(),
+					subject_ids = [];
+
+				if ( subjects.length > 0 ) {
+					_.each( subjects, function( subject ) {
+						if ( subject.has( 'et_pb_ab_subject_id' ) ) {
+							subject_ids.push( subject.get( 'et_pb_ab_subject_id' ) );
+						}
+					} );
+				}
+
+				return subject_ids;
+			},
+
+			count_subjects : function() {
+				return this.subjects().length;
+			},
+
+			get_subject_id : function() {
+				if ( 0 === this.count_subjects() ) {
+					return 0;
+				}
+
+				var all_subjects = this.subjects(),
+					subject_ids = [];
+
+				_.each( all_subjects, function( subject ) {
+					if ( subject.has( 'et_pb_ab_subject_id' ) ) {
+						subject_ids.push( parseInt( subject.get( 'et_pb_ab_subject_id' ) ) );
+					} else {
+						subject_ids.push( 0 );
+					}
+				} );
+
+				return ( Math.max.apply( Math, subject_ids ) + 1 ).toString();
+			},
+
+			set_subject : function( view, waiting ) {
+				var that = this;
+
+				// make sure ab testing database tables created otherwise wait until creating process is finished
+				if ( 'exists' !== et_pb_options.ab_db_status ) {
+					setTimeout( function() {
+						that.set_subject( view, 'waiting' );
+					}, 500 );
+
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+					return;
+				}
+
+				// finish the loading gif if it was started
+				if ( typeof waiting !== 'undefined' && 'waiting' === waiting ) {
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+				}
+
+				// Assign attribute
+				view.model.set( 'et_pb_ab_subject', 'on' );
+				view.model.set( 'et_pb_ab_subject_id', that.get_subject_id() );
+
+				// Mark as selected
+				view.$el.addClass( 'et_pb_ab_subject' );
+
+				// Turn off subject selecting mode
+				ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
+				$( '#et_pb_layout' ).removeClass( 'et_pb_select_ab_testing_subject' );
+
+				// Turn on goal selecting mode if needed
+				if ( ET_PageBuilder_AB_Testing.count_subjects() < 2 ) {
+					ET_PageBuilder_App.is_selecting_ab_testing_goal = true;
+
+					$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_goal' );
+
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_goal' );
+				}
+
+				// Update shortcode layout
+				ET_PageBuilder_App.saveAsShortcode();
+			},
+
+			set_subject_rank_coloring : function( view ) {
+				var subjects_rank = et_pb_ab_js_options.subjects_rank,
+					subject_id = view.model.has( 'et_pb_ab_subject_id' ) ? 'subject_' + view.model.get( 'et_pb_ab_subject_id' ) : false,
+					type = view.model.get( 'type' ),
+					title_selector = '.et-pb-module-title';
+
+				// Adjust title selector
+				switch( type ) {
+					case 'section' :
+						title_selector = '.et-pb-section-title';
+						break;
+					case 'row_inner' :
+						title_selector = '.et-pb-row-title';
+						break;
+					case 'row' :
+						title_selector = '.et-pb-row-title';
+						break;
+				}
+
+				if ( subject_id && ! _.isUndefined( subjects_rank[subject_id] ) && ! _.isUndefined( subjects_rank[subject_id]['rank'] ) && ! _.isUndefined( subjects_rank[subject_id]['percentage'] ) ) {
+
+					view.$el.addClass( 'rank-' + subjects_rank[subject_id]['rank'] );
+
+					view.$el.find(title_selector).append( " (" + subjects_rank[subject_id]['percentage'] + ")" );
+				}
+
+				// Add subject ID marker
+				if ( view.model.has( 'et_pb_ab_subject_id' )  ) {
+					if ( type === 'module' ) {
+						view.$el.find('.et-pb-ab-subject-id').remove();
+						view.$el.find('.et-pb-remove').after( $('<span />', { class : 'et-pb-ab-subject-id' } ).text( view.model.get( 'et_pb_ab_subject_id' ) ) );
+					} else {
+						view.$el.find('.et-pb-ab-subject-id').remove();
+						view.$el.find(title_selector).append( $('<span />', { class : 'et-pb-ab-subject-id' } ).text( view.model.get( 'et_pb_ab_subject_id' ) ) );
+					}
+				}
+			},
+
+			set : function ( view, event ) {
+				if ( this.is_selecting_subject() ) {
+
+					// Disguiese all global-item related attributes into while being used as Split test
+					if ( ET_PageBuilder_Layout.is_global( view.model ) || ET_PageBuilder_Layout.is_global_children( view.model ) ) {
+						ET_PageBuilder_Layout.removeGlobalAttributes( view, true );
+					}
+
+					this.set_subject( view );
+
+					setTimeout( function() {
+						ET_PageBuilder_App.disable_publish = true;
+						$( '#publish' ).addClass( 'disabled' );
+					}, 750 );
+
+					return;
+				} else if ( this.is_selecting_goal() ) {
+					// Prevent row / section of selected subject to be set as subject
+					if ( this.has_subject( view.model ) ) {
+						this.alert( 'cannot_select_subject_parent_as_goal' );
+						return;
+					}
+
+					// Mark as doing combination. This force disables enable_history
+					ET_PageBuilder_App.is_doing_combination = true;
+
+					// Disguise all global-item related attributes while being used as Split test goal
+					// global item behaviour removes Split testing goal attributes when its setting modal
+					// saves modified configuration
+					if ( ET_PageBuilder_Layout.is_global( view.model ) || ET_PageBuilder_Layout.is_global_children( view.model ) ) {
+						ET_PageBuilder_Layout.removeGlobalAttributes( view, true );
+					}
+
+					// Assign attribute
+					view.model.set( 'et_pb_ab_goal', 'on' );
+
+					// Mark as selected
+					view.$el.addClass( 'et_pb_ab_goal' );
+
+					// Turn off goal selecting mode
+					ET_PageBuilder_App.is_selecting_ab_testing_goal = false;
+					$( '#et_pb_layout' ).removeClass( 'et_pb_select_ab_testing_goal' );
+
+					// update post meta with the Goal Module slug
+					$( '#et_pb_ab_goal_module' ).val( view.options.model.attributes.module_type );
+
+					// Duplicate subject
+					var subject_model = ET_PageBuilder_Modules.findWhere({ et_pb_ab_subject : 'on' }),
+						subject_view = _.isUndefined( subject_model.cid ) ? false : ET_PageBuilder_Layout.getView( subject_model.get( 'cid' ) );
+
+					if ( subject_view ) {
+						var clone_subject,
+							view_settings = {
+								model      : subject_view.model,
+								view       : subject_view.$el,
+								view_event : event
+							};
+
+						clone_subject = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+						clone_subject.copy( event );
+
+						clone_subject.pasteAfter( event );
+
+						ET_PageBuilder_AB_Testing.alert( 'configure_ab_testing_alternative' );
+
+						// Update Split Testing Status
+						this.update();
+					}
+
+					// Update shortcode layout & rebuild the UI
+					et_reinitialize_builder_layout();
+
+					// Wait until et_reinitialize_builder_layout() sequences have been finished
+					// to disable is_doing_combination status
+					setTimeout( function() {
+						ET_PageBuilder_App.is_doing_combination = false;
+
+						ET_PageBuilder_App.allowHistorySaving( 'turnon', 'abtesting' );
+
+						// Display view stats icon
+						$( '#et_pb_layout .et-pb-app-view-ab-stats-button' ).addClass( 'active' );
+
+						delete ET_PageBuilder_App.disable_publish;
+						$( '#publish' ).removeClass( 'disabled' );
+					}, 650 );
+
+					return;
+				} else if ( this.is_selecting_winner() ) {
+					if ( view.options.model.has( 'et_pb_ab_subject' ) && view.options.model.get( 'et_pb_ab_subject' ) === 'on' ) {
+						// Find other blocks model then remove it
+						var ab_testing_subjects = ET_PageBuilder_Modules.where({ et_pb_ab_subject : 'on' }),
+							view_type,
+							view;
+
+						// Mark as doing combination. This force disables enable_history
+						ET_PageBuilder_App.is_doing_combination = true;
+
+						// Turn off Split testing's winner selecting mode
+						ET_PageBuilder_App.is_selecting_ab_testing_winner = false;
+
+						// Loop subjects
+						_.each( ab_testing_subjects, function( subject ) {
+
+							// Remove unselected subject
+							if ( view.model.attributes.cid !== subject.attributes.cid ) {
+								subject_view = ET_PageBuilder_Layout.getView( subject.attributes.cid );
+								view_type = subject_view.model.get( 'type' );
+
+								if ( view_type === 'section' ) {
+									subject_view.removeSection();
+								} else if ( view_type === 'row' || view_type === 'row_inner' ) {
+									subject_view.removeRow();
+								} else if ( view_type === 'module' ) {
+									subject_view.removeModule();
+								}
+							}
+						});
+
+						// Remove Split testing related data
+						view.model.unset( 'et_pb_ab_subject' );
+						view.model.unset( 'et_pb_ab_subject_id' );
+
+						// Auto expand collapsed winner
+						if ( view.model.has( 'et_pb_collapsed' ) && view.model.get( 'et_pb_collapsed' ) === 'on' ) {
+							view.model.unset( 'et_pb_collapsed' );
+						}
+
+						// Return all disguised global item into actual global item
+						if ( ET_PageBuilder_Layout.is_temp_global( view.model ) || ET_PageBuilder_Layout.is_temp_global_children( view.model ) ) {
+
+							et_pb_create_prompt_modal( 'set_global_subject_winner', undefined, undefined, undefined, { view : view } );
+
+							return;
+						}
+
+						// Turn off Split testing sequence
+						this.turn_off_ab_testing_sequence();
+
+						return;
+					} else {
+						// Prompt modal box to select winner
+						ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_winner_first' );
+						return;
+					}
+				}
+			},
+
+			turn_off_ab_testing_sequence : function () {
+				// Reset subjects_rank data
+				et_pb_ab_js_options.subjects_rank = {};
+
+				// Save as shortcode & rebuild builder
+				et_reinitialize_builder_layout();
+
+				// Wait until et_reinitialize_builder_layout() sequences have been finished
+				// to disable is_doing_combination status
+				setTimeout( function() {
+					ET_PageBuilder_App.is_doing_combination = false;
+
+					ET_PageBuilder_App.allowHistorySaving( 'turnoff', 'abtesting' );
+
+					delete ET_PageBuilder_App.disable_publish;
+					$( '#publish' ).removeClass( 'disabled' );
+				}, 650 );
+
+				// Remove nescesarry class for Split testing winner selection mode's UI
+				$( '#et_pb_layout' ).removeClass( 'et_pb_select_ab_testing_winner' );
+
+				// Hide view stats icon
+				$( '#et_pb_layout .et-pb-app-view-ab-stats-button' ).removeClass( 'active' );
+
+				// Re-enable portability
+				this.toggle_portability( true );
+
+				// clear stats for disabled test
+				$.ajax({
+					type : "POST",
+					url : et_pb_options.ajaxurl,
+					data : {
+						action : 'et_pb_ab_clear_stats',
+						et_pb_ab_nonce : et_pb_options.ab_testing_builder_nonce,
+						et_pb_test_id : et_pb_ab_js_options.test_id
+					},
+					success : function( response ) {
+						// Reset report data
+						et_pb_ab_js_options.has_report = false;
+						ET_PageBuilder_App.ab_stats = {};
+					}
+				});
+			},
+
+			update_saved_subject_ids : function () {
+				var subject_ids = this.subject_ids(),
+					formatted_subject_ids = subject_ids.join();
+
+				$( '#et_pb_ab_subjects' ).val( formatted_subject_ids );
+			},
+
+			update_layout : function () {
+				if ( this.is_active() ) {
+					/* Layout adjustment */
+					setTimeout( function() {
+						// Add disable subject removal class
+						var $et_pb_layout = $( '#et_pb_layout' );
+
+						if ( ET_PageBuilder_AB_Testing.count_subjects() < 3 ) {
+							$et_pb_layout.addClass( 'et_pb_ab_disable_subject_removal' );
+						} else {
+							$et_pb_layout.removeClass( 'et_pb_ab_disable_subject_removal' );
+						}
+					}, 100 );
+
+					/* Individual subject adjustment */
+
+					// Section
+					if ( $( '.et_pb_section.et_pb_ab_subject' ).length ) {
+						$( '.et_pb_ab_subject_first' ).removeClass( 'et_pb_ab_subject_first' );
+						$( '.et_pb_ab_subject_last' ).removeClass( 'et_pb_ab_subject_last' );
+
+						$( '.et_pb_section' ).each(function(){
+							var $section = $(this);
+
+							$section.find( '.et_pb_section.et_pb_ab_subject:first' ).addClass( 'et_pb_ab_subject_first' );
+							$section.find( '.et_pb_section.et_pb_ab_subject:last' ).addClass( 'et_pb_ab_subject_last' );
+						});
+
+						// Loop sections, adjust section class
+						$( '.et_pb_section.et_pb_ab_subject' ).each(function() {
+							var $section = $(this);
+
+							if ( ! $section.prev().hasClass( 'et_pb_ab_subject' ) ) {
+								$section.addClass( 'et_pb_ab_subject_first' );
+							}
+
+							if ( ! $section.next().hasClass( 'et_pb_ab_subject' ) ) {
+								$section.addClass( 'et_pb_ab_subject_last' );
+							}
+						});
+					}
+
+					// Row
+					if ( $( '.et_pb_row.et_pb_ab_subject' ).length ) {
+						$( '.et_pb_ab_subject_first' ).removeClass( 'et_pb_ab_subject_first' );
+						$( '.et_pb_ab_subject_last' ).removeClass( 'et_pb_ab_subject_last' );
+
+						$( '.et_pb_section' ).each(function(){
+							var $section = $(this);
+
+							$section.find( '.et_pb_row.et_pb_ab_subject:first' ).addClass( 'et_pb_ab_subject_first' );
+							$section.find( '.et_pb_row.et_pb_ab_subject:last' ).addClass( 'et_pb_ab_subject_last' );
+						});
+
+						// Loop rows, adjust row class
+						$( '.et_pb_row.et_pb_ab_subject' ).each(function() {
+							var $row = $(this);
+
+							if ( ! $row.prev().hasClass( 'et_pb_ab_subject' ) ) {
+								$row.addClass( 'et_pb_ab_subject_first' );
+							}
+
+							if ( ! $row.next().hasClass( 'et_pb_ab_subject' ) ) {
+								$row.addClass( 'et_pb_ab_subject_last' );
+							}
+						});
+					}
+
+					if ( $( '.et_pb_row.et_pb_ab_subject.et_pb_ab_no_permission' ).length || $( '.et_pb_row.et_pb_ab_goal.et_pb_ab_no_permission' ).length ) {
+						$( '.et_pb_row.et_pb_ab_subject.et_pb_ab_no_permission, .et_pb_row.et_pb_ab_goal.et_pb_ab_no_permission' ).each( function() {
+							var $row = $(this);
+
+							$row.closest( '.et_pb_section' ).addClass( 'et_pb_ab_no_permission_parent' );
+						});
+					}
+
+					// Module
+					if ( $( '.et_pb_module_block.et_pb_ab_subject' ).length ) {
+						$( '.et_pb_ab_subject_first' ).removeClass( 'et_pb_ab_subject_first' );
+						$( '.et_pb_ab_subject_last' ).removeClass( 'et_pb_ab_subject_last' );
+
+						// Loop columns, adjust module class
+						$( '.et-pb-column' ).each(function(){
+							var $column = $(this);
+
+							$column.find( '.et_pb_module_block.et_pb_ab_subject:first' ).addClass( 'et_pb_ab_subject_first' );
+							$column.find( '.et_pb_module_block.et_pb_ab_subject:last' ).addClass( 'et_pb_ab_subject_last' );
+						});
+
+						// Loop subjects, adjust module class
+						$( '.et_pb_module_block.et_pb_ab_subject' ).each(function(){
+							var $module = $(this);
+
+							if ( ! $module.prev().hasClass( 'et_pb_ab_subject' ) ) {
+								$module.addClass( 'et_pb_ab_subject_first' );
+							}
+
+							if ( ! $module.next().hasClass( 'et_pb_ab_subject' ) ) {
+								$module.addClass( 'et_pb_ab_subject_last' );
+							}
+						});
+					}
+
+
+					if ( $( '.et_pb_module_block.et_pb_ab_subject.et_pb_ab_no_permission' ).length || $( '.et_pb_module_block.et_pb_ab_goal.et_pb_ab_no_permission' ).length ) {
+						$( '.et_pb_module_block.et_pb_ab_subject.et_pb_ab_no_permission, .et_pb_module_block.et_pb_ab_goal.et_pb_ab_no_permission' ).each( function() {
+							var $module_block = $(this);
+
+							$module_block.closest( '.et_pb_row' ).addClass( 'et_pb_ab_no_permission_parent' );
+							$module_block.closest( '.et_pb_section' ).addClass( 'et_pb_ab_no_permission_parent' );
+						});
+					}
+
+					// Make sure that there is at least one expanded subject for carousel effect
+					var expand_first_subject = true,
+						$first_subject,
+						first_subject_cid,
+						first_subject_view;
+
+					_.each( this.subjects(), function( subject ){
+						if ( ! subject.has( 'et_pb_collapsed' ) || subject.get( 'et_pb_collapsed' ) === 'off' ) {
+							expand_first_subject = false;
+						}
+					});
+
+					if ( expand_first_subject ) {
+						$first_subject = $('.et_pb_ab_subject:first');
+						first_subject_cid = $first_subject.children( '.et-pb-data-cid' ).attr( 'data-cid' );
+						first_subject_view = ET_PageBuilder_Layout.getView( first_subject_cid );
+
+						if ( $first_subject.length && ! _.isUndefined( first_subject_view ) ) {
+							$first_subject.removeClass( 'et_pb_collapsed' );
+
+							first_subject_view.model.set( 'et_pb_collapsed', 'off' );
+						}
+					}
+				}
+			},
+
+			update : function () {
+				this.update_saved_subject_ids();
+				this.update_layout();
+			},
+
+			is_alert_valid : function( alert_id ) {
+				// Prevent similar alert to be toggled twice
+				if ( ! _.isUndefined( ET_PageBuilder_App.ab_last_visible_alert ) && ET_PageBuilder_App.ab_last_visible_alert === alert_id ) {
+					return false;
+				}
+
+				// Log last visible alert
+				ET_PageBuilder_App.ab_last_visible_alert = alert_id;
+
+				return true;
+			},
+
+			alert : function( alert_id ) {
+				// Prevent similar alert to be toggled twice
+				if ( ! this.is_alert_valid( alert_id ) ) {
+					return;
+				}
+
+				// Display alert
+				et_pb_create_prompt_modal( 'ab_testing_alert', undefined, undefined, undefined, { id : alert_id } );
+			},
+
+			alert_yes_no : function( alert_id ) {
+				// Prevent similar alert to be toggled twice
+				if ( ! this.is_alert_valid( alert_id ) ) {
+					return;
+				}
+
+				// Display alert
+				et_pb_create_prompt_modal( 'ab_testing_alert_yes_no', undefined, undefined, undefined, { id : alert_id } );
+			},
+
+			get_all_subjects_stats_settings : function( analysis ) {
+				var $tab              = $( '.view-stats-tab[data-analysis="' + analysis + '"]' ),
+					$subjects_filter  = $tab.find( '.et-pb-ab-view-stats-subjects-filter' ),
+					$durations_filter = $tab.find( '.et-pb-ab-view-stats-time-filter' ),
+					$analysis_tab_nav = $tab.find( '.et-pb-options-tabs-links' ),
+					table_column_key  = ['first', 'second', 'third', 'fourth', 'fifth'],
+					settings = {
+						subject_statuses : [],
+						subject_ids : [],
+						table : {
+							thead : [],
+							tbody : {},
+							tfoot : []
+						}
+					},
+					data;
+
+				if ( ! $durations_filter.find( '.active' ).length ) {
+					$durations_filter.find('a[data-duration="' + et_pb_ab_js_options.refresh_interval_duration + '"]').addClass('active');
+				}
+
+				data = ET_PageBuilder_App.ab_stats[ $durations_filter.find( '.active' ).attr( 'data-duration' ) ];
+
+				// Get active subjects
+				$subjects_filter.find( 'a' ).each(function(){
+					var $filter = $(this),
+						subject_status = ! $filter.hasClass( 'inactive' ),
+						subject_has_data = ! $filter.parent( 'li' ).hasClass( 'et-pb-no-data' ),
+						subject_id = $filter.attr( 'data-subject-id' );
+
+					if ( subject_has_data ) {
+						settings.subject_statuses.push( subject_status );
+					}
+
+					if ( subject_status && subject_has_data ) {
+						settings.subject_ids.push( parseInt( subject_id ) );
+					}
+				});
+
+				// Push table's heading data
+				for ( var thead_tr_index = 0; thead_tr_index < 5; thead_tr_index++ ) {
+					settings.table.thead[ table_column_key[ thead_tr_index ] ] = et_pb_ab_js_options['view_stats_thead_titles'][ analysis ][ thead_tr_index ];
+				}
+
+				// Push table's body data
+				if ( ! _.isUndefined( data ) ) {
+					_.each( data.subjects_id, function( subject_id ) {
+						var subject_key = 'subject_' + subject_id,
+							subject_model = ET_PageBuilder_Modules.findWhere({ et_pb_ab_subject_id : subject_id }),
+							subject_name  = _.isUndefined( subject_model ) || ! subject_model.has( 'admin_label' ) ? false : subject_model.get( 'admin_label' );
+
+						if ( ! subject_name || $.inArray( parseInt( subject_id ), settings.subject_ids ) === -1 ) {
+							return;
+						}
+
+						settings.table.tbody[ subject_key ] = {
+							first : subject_id,
+							second : subject_name,
+							third : data['subjects_totals'][ subject_key ][ et_pb_ab_js_options['analysis_formula'][ analysis ]['denominator'] ],
+							fourth : data['subjects_totals'][ subject_key ][ et_pb_ab_js_options['analysis_formula'][ analysis ]['numerator'] ],
+							fifth : data['subjects_totals'][ subject_key ][ analysis ]+ '%'
+						};
+					});
+
+					settings.table.tfoot = {
+						first : et_pb_ab_js_options.total_title,
+						second : null,
+						third : data['events_totals'][ et_pb_ab_js_options['analysis_formula'][ analysis ]['denominator'] ],
+						fourth : data['events_totals'][ et_pb_ab_js_options['analysis_formula'][ analysis ]['numerator'] ],
+						fifth : data['events_totals'][ analysis ] + '%'
+					};
+				}
+
+				return settings;
+			},
+
+			switch_view_stats_tab : function() {
+				var $tab_nav = $( '.et-pb-options-tabs-links' ),
+					$tabs_wrapper = $( '.et-pb-ab-view-stats-content.has-data' ),
+					active_analysis = $tab_nav.find( 'li.et-pb-options-tabs-links-active' ).attr( 'data-analysis' );
+
+				$tabs_wrapper.find( '.view-stats-tab' ).removeClass( 'active' );
+				$tabs_wrapper.find( '.view-stats-tab[data-analysis="' + active_analysis + '"]' ).addClass( 'active' );
+			},
+
+			display_stats_tabs : function( data ) {
+				var this_el                 = this,
+					thead_template          = _.template("<tr><th><%= first %></th><th><%= second %></th><th><%= third %></th><th><%= fourth %></th><th><%= fifth %></th></tr>"),
+					tbody_row_template      = _.template("<tr><td><%= first %></td><td><%= second %></td><td><%= third %></td><td><%= fourth %></td><td><%= fifth %></td></tr>"),
+					tfoot_template          = _.template("<tr><td colspan='2'><%= first %></td></td><td><%= third %></td><td><%= fourth %></td><td><%= fifth %></td></tr>"),
+					$prompt_modal = $( '.et_pb_prompt_modal.et_pb_ab_view_stats' ),
+					goal_model    = ET_PageBuilder_Modules.findWhere({ et_pb_ab_goal : "on"}),
+					goal_module_type = goal_model.get( 'module_type' ),
+					subject_ids = 	$('#et_pb_ab_subjects').val().split(",");
+
+				if ( ! _.isEmpty( data.subjects_totals ) || et_pb_ab_js_options.has_report ) {
+
+					// Hide conversions tabs, adjust conversion copy
+					if ( $.inArray( goal_module_type, et_pb_ab_js_options.have_conversions  ) === -1 ) {
+						$( '.et_pb_options_tab_ab_stat_conversion, .view-stats-tab.tab-conversions' ).remove();
+						$( '.et_pb_options_tab_ab_stat_clicks' ).addClass( 'et-pb-options-tabs-links-active' );
+					} else if ( goal_module_type === 'et_pb_shop' ) {
+						$( '.et_pb_options_tab_ab_stat_conversion a' ).text( et_pb_ab_js_options.sales_title );
+					}
+
+					// remove the shortcode tracking tab if this option disabled
+					if ( 'on' !== ET_PageBuilder_AB_Testing.get_shortcode_tracking_status() ) {
+						$( '.et_pb_options_tab_ab_stat_shortcode_conversions' ).remove();
+					}
+
+					// Initiate on each tab
+					$prompt_modal.find( '.view-stats-tab' ).each(function() {
+						var $tab     = $(this),
+							analysis = $tab.attr( 'data-analysis' ),
+							$line_chart          = $( '#ab-testing-stats-' + analysis ),
+							$pie_chart           = $( '#ab-testing-stats-pie-' + analysis ),
+							$ab_testing_table       = $( '#view-stats-table-' + analysis ),
+							$ab_testing_table_thead = $ab_testing_table.find( 'thead' ),
+							$ab_testing_table_tbody = $ab_testing_table.find( 'tbody' ),
+							$ab_testing_table_tfoot = $ab_testing_table.find( 'tfoot' ),
+							$subjects_filter        = $tab.find( '.et-pb-ab-view-stats-subjects-filter' ),
+							$durations_filter       = $tab.find( '.et-pb-ab-view-stats-time-filter' ),
+							$pie_chart_legends      = $tab.find( '.ab-testing-stats-pie-legends' ),
+							$analysis_tab_nav       = $( '.et_pb_ab_view_stats .et-pb-options-tabs-links' ),
+							line_chart_data = {
+								labels: data.dates,
+								datasets: []
+							},
+							pie_chart_data = [],
+							line_chart,
+							line_chart_datasets,
+							pie_chart,
+							pie_chart_segments,
+							stats_settings;
+
+						// Append line and pie graph legends
+						_.each( subject_ids, function( subject_id ){
+							var subject_key   = 'subject_' + subject_id,
+								subject_model = ET_PageBuilder_Modules.findWhere({ et_pb_ab_subject_id : subject_id }),
+								subject_name  = _.isUndefined( subject_model ) || ! subject_model.has( 'admin_label' ) ? false : subject_model.get( 'admin_label' );
+
+							if ( ! subject_name ) {
+								return;
+							}
+
+							// Generate subject toggle button
+							$toggle_subject = $( '<li />' ).append( $( '<a />', { href : '#', 'data-subject-id' : subject_id } ).text( subject_name ) );
+							$legend_subject = $( '<li />', { 'data-subject-id' : subject_id  } ).append( $( '<a />', { href : '#' } ).text( subject_name ) ).prepend( $( '<span />' ) );
+
+							$subjects_filter.append( $toggle_subject );
+							$pie_chart_legends.append( $legend_subject );
+						});
+
+						// Loop each subject data and insert needed UI
+						if ( ! _.isEmpty( data ) && ! _.isUndefined( data ) && data ) {
+
+							// Draw graph
+							draw_graphs = this_el.draw_graphs(
+								analysis,
+								data,
+								line_chart,
+								pie_chart,
+								$line_chart,
+								$pie_chart,
+								$ab_testing_table,
+								$ab_testing_table_thead,
+								$ab_testing_table_tbody,
+								$ab_testing_table_tfoot,
+								thead_template,
+								tbody_row_template,
+								tfoot_template,
+								true
+							);
+
+							// Update tab's variables
+							line_chart          = draw_graphs.line_chart;
+							pie_chart           = draw_graphs.pie_chart;
+							line_chart_data     = draw_graphs.line_chart_data;
+							pie_chart_data      = draw_graphs.pie_chart_data;
+							line_chart_datasets = draw_graphs.line_chart_datasets;
+							pie_chart_segments  = draw_graphs.pie_chart_segments;
+						} else {
+							var $active_durations_filter = $durations_filter.find( 'a[data-duration="' + et_pb_ab_js_options.refresh_interval_duration + '"]' );
+
+							$active_durations_filter.addClass( 'active' );
+
+							$tab.addClass( 'no-tab-data' );
+						}
+
+						// Toggle subject stats and graph
+						$subjects_filter.on( 'click', 'a', function(e) {
+							e.preventDefault();
+
+							var $link = $(this),
+								subject_id = $link.attr( 'data-subject-id' );
+
+							// Toggle subject nav
+							$(this).toggleClass( 'inactive' );
+
+							$pie_chart_legends.find( 'li[data-subject-id="'+ subject_id +'"]' ).toggleClass( 'inactive' );
+
+							// Filter by subject
+							filter_subject = this_el.filter_stats_subject(
+								analysis,
+								line_chart,
+								pie_chart,
+								line_chart_datasets,
+								pie_chart_segments,
+								$ab_testing_table,
+								$ab_testing_table_thead,
+								$ab_testing_table_tbody,
+								$ab_testing_table_tfoot,
+								thead_template,
+								tbody_row_template,
+								tfoot_template
+							);
+
+							line_chart = filter_subject.line_chart;
+							pie_chart = filter_subject.pie_chart;
+						});
+
+						// Toggle legend
+						$pie_chart_legends.on( 'click', 'a', function(e) {
+							e.preventDefault();
+
+							var $link = $(this),
+								li = $link.parent( 'li' ),
+								subject_id = li.attr( 'data-subject-id' );
+
+							$subjects_filter.find( 'a[data-subject-id="' + subject_id + '"]' ).trigger( 'click' );
+						});
+
+						// Switch between tabs
+						$analysis_tab_nav.on( 'click', 'a', function(e) {
+							e.preventDefault();
+
+							// skip the refresh button
+							if ( $( this ).hasClass( 'et-pb-ab-refresh-stats' ) ) {
+								return;
+							}
+
+							$analysis_tab_nav.find( 'li' ).removeClass( 'et-pb-options-tabs-links-active' );
+
+							$(this).parent( 'li' ).addClass( 'et-pb-options-tabs-links-active' );
+
+							this_el.switch_view_stats_tab();
+						});
+
+						// Change time context of the graph
+						$durations_filter.on( 'click', 'a', function(e) {
+							e.preventDefault();
+
+							var $filter        = $(this),
+								duration       = $filter.attr( 'data-duration' ),
+								$prompt_modal  = $( '.et_pb_prompt_modal.et_pb_ab_view_stats' );
+
+							$durations_filter.find( 'a' ).removeClass( 'active' );
+
+							$filter.addClass( 'active' );
+
+							if ( _.isUndefined( ET_PageBuilder_App.ab_stats[ duration ] ) || ! ET_PageBuilder_App.ab_stats[ duration ] ) {
+								// Start loading bar
+								ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+								// Get Split statistics data
+								$.ajax({
+									type : "POST",
+									url : et_pb_options.ajaxurl,
+									data : {
+										action : 'et_pb_ab_builder_data',
+										et_pb_ab_nonce : et_pb_options.ab_testing_builder_nonce,
+										et_pb_ab_test_id : et_pb_ab_js_options.test_id,
+										et_pb_ab_duration : duration
+									},
+									success : function( data ) {
+										// Remove no tab data state
+										$tab.removeClass( 'no-tab-data' );
+
+										// Stop loading bar
+										ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+										if ( 'false' === data ) {
+											// Display no-data notification
+											$tab.addClass( 'no-tab-data' );
+											return;
+										}
+
+										data = $.parseJSON( data );
+
+										// Save graph data for quick retrieval if there are data found
+										ET_PageBuilder_App.ab_stats[ duration ] = data;
+
+										// Update graph
+										draw_graphs = this_el.draw_graphs(
+											analysis,
+											data,
+											line_chart,
+											pie_chart,
+											$line_chart,
+											$pie_chart,
+											$ab_testing_table,
+											$ab_testing_table_thead,
+											$ab_testing_table_tbody,
+											$ab_testing_table_tfoot,
+											thead_template,
+											tbody_row_template,
+											tfoot_template
+										);
+
+										// Update tab's variables
+										line_chart          = draw_graphs.line_chart;
+										pie_chart           = draw_graphs.pie_chart;
+										line_chart_data     = draw_graphs.line_chart_data;
+										pie_chart_data      = draw_graphs.pie_chart_data;
+										line_chart_datasets = draw_graphs.line_chart_datasets;
+										pie_chart_segments  = draw_graphs.pie_chart_segments;
+									}
+								});
+							} else {
+								// Remove no tab data state
+								$tab.removeClass( 'no-tab-data' );
+
+								// Get appropriate data based on duration
+								data = ET_PageBuilder_App.ab_stats[ duration ];
+
+								// Update graph
+								draw_graphs = this_el.draw_graphs(
+									analysis,
+									data,
+									line_chart,
+									pie_chart,
+									$line_chart,
+									$pie_chart,
+									$ab_testing_table,
+									$ab_testing_table_thead,
+									$ab_testing_table_tbody,
+									$ab_testing_table_tfoot,
+									thead_template,
+									tbody_row_template,
+									tfoot_template
+								);
+
+								// Update tab's variables
+								line_chart          = draw_graphs.line_chart;
+								pie_chart           = draw_graphs.pie_chart;
+								line_chart_data     = draw_graphs.line_chart_data;
+								pie_chart_data      = draw_graphs.pie_chart_data;
+								line_chart_datasets = draw_graphs.line_chart_datasets;
+								pie_chart_segments  = draw_graphs.pie_chart_segments;
+							}
+						});
+					})
+
+					// Refresh split test
+					$prompt_modal.on( 'click', '.et-pb-ab-refresh-stats', function() {
+						ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+						$.ajax({
+							type : "POST",
+							url : et_pb_options.ajaxurl,
+							data : {
+								action : 'et_pb_ab_clear_cache',
+								et_pb_ab_nonce : et_pb_options.ab_testing_builder_nonce,
+								et_pb_test_id : et_pb_ab_js_options.test_id
+							},
+							success : function( data ) {
+								ET_PageBuilder_App.ab_stats = {};
+
+								// emulate click on the current filter link to re-draw the current graph
+								$( '.et-pb-ab-view-stats-time-filter' ).find( 'a.active' ).click();
+							}
+						});
+					} );
+
+					// Display UI
+					$prompt_modal.addClass( 'et-pb-loaded' ).find( '.et-pb-ab-view-stats-content.has-data, .et-pb-options-tabs-links' ).css({ 'opacity' : 1 });
+
+					this_el.switch_view_stats_tab();
+
+				} else {
+					// Display no-data notification
+					$prompt_modal.find( '.et-pb-ab-view-stats-content.has-data, .et-pb-options-tabs-links' ).hide();
+					$prompt_modal.find( '.et-pb-ab-view-stats-content.no-data' ).css({ 'opacity' : 1, 'display' : 'block' });
+					return;
+				}
+			},
+
+			draw_graphs : function( analysis, data, line_chart, pie_chart, $line_chart, $pie_chart, $ab_testing_table, $ab_testing_table_thead, $ab_testing_table_tbody, $ab_testing_table_tfoot, thead_template, tbody_row_template, tfoot_template, skip_subject_filtering  ) {
+				var line_chart_data = {
+						labels: $.merge( [""], data.dates ),
+						datasets: []
+					},
+					pie_chart_data = [],
+					$tab = $line_chart.closest( '.view-stats-tab' ),
+					$toggle_subject = $tab.find( '.et-pb-ab-view-stats-subjects-filter' ),
+					$legend_subject = $tab.find( '.ab-testing-stats-pie-legends' );
+
+				_.each( data.subjects_id, function( subject_id ){
+					var subject_key   = 'subject_' + subject_id,
+						subject_model = ET_PageBuilder_Modules.findWhere({ et_pb_ab_subject_id : subject_id }),
+						subject_name  = _.isUndefined( subject_model ) || _.isUndefined( subject_model.attributes.admin_label ) ? false : subject_model.attributes.admin_label,
+						$toggle_subject_item = $toggle_subject.find( 'a[data-subject-id="' + subject_id + '"]' ),
+						$legend_subject_item = $legend_subject.find( 'li[data-subject-id="' + subject_id + '"] span' );
+
+					if ( ! subject_name ) {
+						return;
+					}
+
+					// Update toggle and legend item if needed
+					if ( _.isUndefined( $toggle_subject_item.attr( 'style' ) ) ) {
+						$toggle_subject_item.css({ 'backgroundColor' : data['subjects_totals'][ subject_key ]['color'] } );
+					}
+
+					if ( _.isUndefined( $legend_subject_item.attr( 'style' ) ) ) {
+						$legend_subject_item.css({ 'backgroundColor' : data['subjects_totals'][ subject_key ]['color'] } );
+					}
+
+					// Generate line chart data
+					line_chart_data.datasets.push({
+						subject_id : subject_id,
+						label: subject_name,
+						fillColor: "transparent",
+						strokeColor: data['subjects_totals'][ subject_key ]['color'],
+						pointColor: data['subjects_totals'][ subject_key ]['color'],
+						pointStrokeColor: "#fff",
+						data: $.merge( [ null ], _.values( data['subjects_analysis'][ subject_key ][ analysis ] ) )
+					});
+
+					// Generate pie chart data
+					pie_chart_data.push({
+						value : ( data['subjects_totals'][ subject_key ][ analysis ] ),
+						color : data['subjects_totals'][ subject_key ]['color'],
+						label : '#' + subject_id + ': ' + subject_name
+					});
+				});
+
+				// Reset hide/show state of toggle subject and pie chart legend
+				$toggle_subject.find('li').removeClass( 'et-pb-no-data' );
+				$legend_subject.find('li').removeClass( 'et-pb-no-data' );
+
+				// Hide/show toggle and legend
+				_.each( $( '#et_pb_ab_subjects' ).val().split( ',' ), function( subject_id ) {
+					if ( $.inArray( subject_id, data.subjects_id ) === -1 ) {
+						$toggle_subject.find( 'a[data-subject-id="' + subject_id + '"]' ).parent( 'li' ).addClass( 'et-pb-no-data' );
+						$legend_subject.find( 'li[data-subject-id="' + subject_id + '"]' ).addClass( 'et-pb-no-data' );
+					}
+				} )
+
+				// Define stats settings
+				stats_settings = this.get_all_subjects_stats_settings( analysis );
+
+				// Draw Table
+				$ab_testing_table_thead.empty().html( $( thead_template( stats_settings.table.thead ) ) );
+
+				$ab_testing_table_tbody.empty();
+
+				_.each( stats_settings.table.tbody, function( row ){
+					$ab_testing_table_tbody.append( $( tbody_row_template( row ) ) );
+				});
+
+				$ab_testing_table_tfoot.empty().html( $( tfoot_template( stats_settings.table.tfoot ) ) );
+
+				if ( _.size( stats_settings.table.tbody ) > 1 ) {
+					// Make table sortable
+					$ab_testing_table.tablesorter();
+
+					var $ab_testing_table_first_head_column = $ab_testing_table.find( 'thead th:first' );
+
+					if ( ! $ab_testing_table_first_head_column.hasClass( '.headerSortDown' ) ) {
+						setTimeout( function(){
+							$ab_testing_table_first_head_column.trigger( 'click' );
+						}, 500 );
+					}
+				}
+
+				// Draw Line Chart
+				if ( ! _.isUndefined( line_chart ) ) {
+					line_chart.destroy();
+				}
+
+				// make the tab's content visible to draw the graphs
+				$line_chart.closest( '.view-stats-tab' ).addClass( 'et_pb_ab_visible_tab' );
+
+				line_chart = new Chart( $line_chart.get(0).getContext("2d") ).Line(
+					line_chart_data,
+					{
+						scaleFontSize : 13,
+						scaleFontColor : "#a1a9b1",
+						scaleLabel: "<%=value%>%",
+						scaleGridLineWidth : 2,
+						scaleLineWidth: 2,
+						tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%",
+						multiTooltipTemplate: "<%= value %>%",
+						datasetStrokeWidth : 4,
+						pointDotStrokeWidth : 2,
+						pointDotRadius : 7
+					}
+				);
+
+				// Save datasets
+				line_chart_datasets = line_chart.datasets;
+
+				// Draw Pie chart
+				if ( ! _.isUndefined( pie_chart ) ) {
+					pie_chart.destroy();
+				}
+
+				// initialize the pie chart only if canvas visible to avoid js errors
+				if ( $pie_chart.is( ':visible' ) ) {
+					pie_chart = new Chart( $pie_chart.get(0).getContext("2d") ).Pie(
+						pie_chart_data,
+						{
+							animationEasing : 'easeInCubic',
+							animationSteps : 50,
+							tooltipTemplate: "<%if (label){%><%=label%><%}%>"
+						}
+					);
+
+					// Save segments
+					pie_chart_segments = pie_chart.segments;
+				}
+
+				// Filter by subject
+				if ( _.isUndefined( skip_subject_filtering ) ) {
+					filter_subject = this.filter_stats_subject(
+						analysis,
+						line_chart,
+						pie_chart,
+						line_chart_datasets,
+						pie_chart_segments,
+						$ab_testing_table,
+						$ab_testing_table_thead,
+						$ab_testing_table_tbody,
+						$ab_testing_table_tfoot,
+						thead_template,
+						tbody_row_template,
+						tfoot_template
+					);
+					line_chart = filter_subject.line_chart;
+					pie_chart  = filter_subject.pie_chart;
+				}
+
+				// remove visible class after graphs were generated
+				$line_chart.closest( '.view-stats-tab' ).removeClass( 'et_pb_ab_visible_tab' );
+
+				return {
+					line_chart : line_chart,
+					pie_chart : pie_chart,
+					line_chart_data : line_chart_data,
+					pie_chart_data : pie_chart_data,
+					line_chart_datasets : line_chart_datasets,
+					pie_chart_segments : pie_chart_segments
+				}
+			},
+
+			filter_stats_subject : function( analysis, line_chart, pie_chart, line_chart_datasets, pie_chart_segments, $ab_testing_table, $ab_testing_table_thead, $ab_testing_table_tbody, $ab_testing_table_tfoot, thead_template, tbody_row_template, tfoot_template ) {
+				// Get settings and modify chart data
+				var stats_settings          = this.get_all_subjects_stats_settings( analysis ),
+					updated_line_chart_data = _.compact( _.map( line_chart_datasets, function( item, key ) { return stats_settings.subject_statuses[ key ] ? item : false } ) ),
+					updated_pie_chart_data  = _.compact( _.map( pie_chart_segments, function( item, key ) { return stats_settings.subject_statuses[ key ] ? item : false } ) ),
+					table_row_size;
+
+				// Update line chart
+				line_chart.datasets = updated_line_chart_data;
+				line_chart.update();
+
+				// Emptying table
+				$ab_testing_table_thead.empty();
+				$ab_testing_table_tbody.empty();
+				$ab_testing_table_tfoot.empty();
+
+				// Update table's head
+				$ab_testing_table_thead.html( $( thead_template( stats_settings.table.thead ) ) );
+
+				_.each( stats_settings.table.tbody, function( row ){
+					$ab_testing_table_tbody.append( $( tbody_row_template( row ) ) );
+				});
+
+				// Update table row size
+				table_row_size = _.size( stats_settings.table.tbody );
+
+				// Initiate table sorter and manually sorting table by triggering click if there is a body table
+				if ( table_row_size > 1 ) {
+					// Make table sortable
+					$ab_testing_table.tablesorter();
+
+					var $ab_testing_table_first_head_column = $ab_testing_table.find( 'thead th:first' );
+
+					if ( ! $ab_testing_table_first_head_column.hasClass( '.headerSortDown' ) ) {
+						setTimeout( function(){
+							$ab_testing_table_first_head_column.trigger( 'click' );
+						}, 500 );
+					}
+				}
+
+				// Update table footer calculation
+				if ( table_row_size > 0 ) {
+					tfoot_third_data  = _.pluck( stats_settings.table.tbody, 'third' );
+					tfoot_fourth_data = _.pluck( stats_settings.table.tbody, 'fourth' );
+					tfoot_fifth_data  = _.map( _.pluck( stats_settings.table.tbody, 'fifth' ), function( num ) { return parseFloat( num ) });
+					tfoot_third       = _.reduce( tfoot_third_data, function( a, b ) { return a + b; }, 0 );
+					tfoot_fourth      = _.reduce( tfoot_fourth_data, function( a, b ) { return a + b; }, 0 );
+					tfoot_fifth       = ( _.reduce( tfoot_fifth_data, function( a, b ) { return a + b; }, 0 ) / _.size( tfoot_fifth_data ) ).toFixed(2) + '%';
+
+					$ab_testing_table_tfoot.html( $( tfoot_template( {
+						first : et_pb_ab_js_options.total_title,
+						second : null,
+						third : tfoot_third,
+						fourth : tfoot_fourth,
+						fifth : tfoot_fifth
+					} ) ) );
+				}
+
+				// Update pie chart
+				pie_chart.segments = updated_pie_chart_data;
+				pie_chart.update();
+
+				return {
+					line_chart : line_chart,
+					pie_chart : pie_chart
+				}
+			},
+
+			remove_post_meta : function(){
+				// Update all Split testing related hidden post meta data so it will be removed when the page is updated
+				this.toggle_status( false );
+				$( '#et_pb_ab_subjects' ).val( '' );
+			},
+
+			subject_carousel : function( cid ) {
+				var current_subject_view = ET_PageBuilder_Layout.getView( cid ),
+					subject_models       = ET_PageBuilder_Modules.where({ 'et_pb_ab_subject' : 'on' }),
+					collapse_status      = current_subject_view.model.get( 'et_pb_collapsed' ),
+					collapse_status_others = collapse_status === 'on' ? 'off' : 'on';
+
+				_.each( subject_models, function( subject_model ){
+					var subject_view = ET_PageBuilder_Layout.getView( subject_model.attributes.cid );
+
+					if ( subject_view.model.get( 'cid' ) === current_subject_view.model.get( 'cid' ) ) {
+						if ( collapse_status === 'on' ) {
+							subject_view.model.set( 'et_pb_collapsed', 'off' );
+						}
+					} else {
+						if ( collapse_status === 'on'  ) {
+							subject_view.model.set( 'et_pb_collapsed', 'on' );
+						} else {
+							subject_view.model.set( 'et_pb_collapsed', collapse_status_others );
+						}
+					}
+
+					if ( subject_view.model.get( 'et_pb_collapsed' ) === 'on' ) {
+						subject_view.$el.addClass( 'et_pb_collapsed' );
+					} else {
+						subject_view.$el.removeClass( 'et_pb_collapsed' );
+					}
+				});
+			}
+		};
 
 		$et_pb_content.remove();
 
@@ -6977,17 +9413,30 @@ window.wp = window.wp || {};
 
 			ET_PageBuilder_Events.trigger( 'et-deactivate-builder' );
 
+			// If Split testing is active, remove all Split testing related post meta
+			if ( ET_PageBuilder_AB_Testing.is_active() ) {
+				ET_PageBuilder_AB_Testing.remove_post_meta();
+			}
+
 			//trigger window resize event to trigger tinyMCE editor toolbar sizes recalculation.
 			$( window ).trigger( 'resize' );
 		}
 
-		function et_pb_create_prompt_modal( action, cid_or_element, module_width, columns_layout ) {
+		function et_pb_create_prompt_modal( action, cid_or_element, module_width, columns_layout, template_settings ) {
 			var	on_top_class = -1 !== $.inArray( action, [ 'save_template', 'reset_advanced_settings' ] ) ? ' et_modal_on_top' : '',
 				on_top_both_actions_class = 'reset_advanced_settings' === action ? ' et_modal_on_top_both_actions' : '',
 				$modal = $( '<div class="et_pb_modal_overlay' + on_top_class + on_top_both_actions_class + '" data-action="' + action + '"></div>' ),
 				modal_interface = $( '#et-builder-prompt-modal-' + action ).length ? $( '#et-builder-prompt-modal-' + action ).html() : $( '#et-builder-prompt-modal' ).html(),
 				modal_content = _.template( $( '#et-builder-prompt-modal-' + action + '-text' ).html() ),
-				modal_attributes = {};
+				modal_attributes = {},
+				$yes_no_button_wrapper,
+				$yes_no_button,
+				$yes_no_select;
+
+			et_pb_close_all_right_click_options();
+
+			// Lock body scroll
+			$('body').addClass('et_pb_stop_scroll');
 
 			if ( 'save_template' === action ) {
 				var current_view = ET_PageBuilder_Layout.getView( cid_or_element.model.get( 'cid' ) ),
@@ -7000,11 +9449,274 @@ window.wp = window.wp || {};
 				modal_attributes.module_type = current_view.model.get( 'type' );
 			}
 
+			if ( ! _.isUndefined( template_settings ) ) {
+				$.extend( modal_attributes, template_settings );
+			}
+
 			$modal.append( modal_interface );
 
 			$modal.find( '.et_pb_prompt_modal' ).prepend( modal_content( modal_attributes ) );
 
+			if ( 'open_settings' === action ) {
+				var $et_pb_enable_ab_testing = $modal.find( '#et_pb_enable_ab_testing' ),
+					$et_pb_stats_refresh_option = $modal.find( '#et_pb_ab_refresh_interval' ),
+					$et_pb_shortcode_tracking_option = $modal.find( '#et_pb_enable_shortcode_tracking' ),
+					$et_pb_shortcode_tracking_val = ET_PageBuilder_AB_Testing.get_shortcode_tracking_status(),
+					$et_pb_enable_ab_value = ET_PageBuilder_AB_Testing.is_active() ? 'on' : 'off',
+					$et_pb_stats_refresh_value = ET_PageBuilder_AB_Testing.get_stats_refresh_interval();
+
+				$modal.addClass( 'et_pb_builder_settings' );
+
+				$et_pb_enable_ab_testing.children( 'option' ).removeAttr( 'selected' );
+
+				$et_pb_enable_ab_testing.children( 'option[value="' + $et_pb_enable_ab_value + '"]' ).attr( 'selected', 'selected' );
+
+				$et_pb_shortcode_tracking_option.children( 'option[value="' + $et_pb_shortcode_tracking_val + '"]' ).attr( 'selected', 'selected' );
+
+				$et_pb_stats_refresh_option.children( 'option[value="' + $et_pb_stats_refresh_value + '"]' ).attr( 'selected', 'selected' );
+
+				// update the shortcode
+				et_pb_update_tracking_shortcode();
+
+				$modal.find( '.et_pb_prompt_field_list' ).each(function() {
+					var $field_list           = $(this);
+						id                    = $field_list.attr( 'data-id' ),
+						type                  = $field_list.attr( 'data-type' ),
+						autoload              = $field_list.attr( 'data-autoload' ),
+						$saving_input         = $( '#_' + id ),
+						saved_value           = $saving_input.val();
+
+					switch ( type ) {
+						case ( 'yes_or_no' ) :
+							var $yn_wrapper = $field_list.find( '.et_pb_yes_no_button_wrapper' ),
+								$yn_button  = $field_list.find( '.et_pb_yes_no_button' ),
+								$yn_select  = $field_list.find( 'select' ),
+								yn_value    = $yn_select.val();
+
+							// Determine Y/N button state on load
+							if ( yn_value === 'on' ) {
+								$yn_button.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
+							} else {
+								$yn_button.removeClass( 'et_pb_on_state' ).addClass( 'et_pb_off_state' );
+							}
+
+							// On button click
+							$yn_button.click( function() {
+								var $yn_button = $(this);
+
+								if ( $yn_button.hasClass( 'et_pb_off_state' ) ) {
+									$yn_button.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
+									$yn_select.val( 'on' );
+								} else {
+									$yn_button.removeClass( 'et_pb_on_state' ).addClass( 'et_pb_off_state' );
+									$yn_select.val( 'off' );
+								}
+
+								$yn_select.trigger( 'change' );
+							});
+
+							// On select change
+							$yn_select.change( function() {
+								var $yn_select = $(this),
+									value      = $yn_select.val();
+
+								if ( value === 'on' ) {
+									$yn_button.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
+								} else {
+									$yn_button.removeClass( 'et_pb_on_state' ).addClass( 'et_pb_off_state' );
+								}
+
+								// Updated affected ids
+								if ( $field_list.data( 'affects' ) !== '' ) {
+									var affects = $field_list.attr( 'data-affects' ),
+										affected_ids = affects.split( '|' );
+
+									_.each( affected_ids, function( affected_id ){
+										var $selector = $modal.find( '.et_pb_prompt_field_list[data-id="' + affected_id + '"]' ),
+											visibility_dependency = $selector.attr( 'data-visibility-dependency' );
+
+										if ( value === visibility_dependency && $field_list.hasClass( 'et-pb-visible' ) ) {
+											$selector.addClass( 'et-pb-visible' );
+											$selector.find( 'select' ).trigger( 'change' );
+										} else {
+											$selector.removeClass( 'et-pb-visible' );
+
+											// hide all dependant options if hidden option affects someting
+											if ( $selector.data( 'affects' ) !== '' ) {
+												var affected_ids =  $selector.data( 'affects' ).split( '|' );
+												_.each( affected_ids, function( affected_id ) {
+													var $selector = $modal.find( '.et_pb_prompt_field_list[data-id="' + affected_id + '"]' );
+
+													$selector.removeClass( 'et-pb-visible' );
+												} );
+											}
+										}
+									});
+								}
+							});
+
+							// Trigger select on load to initiate necesarry change
+							$yn_select.trigger( 'change' );
+							break;
+
+						case ( 'colorpicker' ) :
+							var $input_colorpicker = $field_list.find( '.input-colorpicker' );
+
+								$input_colorpicker.val( saved_value ).wpColorPicker({
+									width: 313
+								});
+							break;
+
+						case ( 'colorpalette' ) :
+							var $palette_wrapper               = $(this),
+								$colorpalette_colorpickers     = $palette_wrapper.find( '.input-colorpalette-colorpicker' ),
+								colorpalette_colorpicker_index = 0,
+								saved_palette                  = saved_value.split( '|' );
+
+							$colorpalette_colorpickers.each(function(){
+								var $colorpalette_colorpicker      = $(this),
+									colorpalette_colorpicker_color = saved_palette[ colorpalette_colorpicker_index ];
+
+								$colorpalette_colorpicker.val( colorpalette_colorpicker_color ).wpColorPicker({
+									hide : false,
+									default : $(this).data( 'default-color' ),
+									width: 313,
+									palettes : false,
+									change : function( event, ui ) {
+										var $input     = $(this),
+											data_index = $input.attr( 'data-index'),
+											$preview   = $modal.find( '.colorpalette-item-' + data_index ),
+											color      = ui.color.toString();
+
+										$input.val( color );
+										$preview.css({ 'backgroundColor' : color });
+									}
+								});
+
+								$colorpalette_colorpicker.trigger( 'change' );
+
+								$colorpalette_colorpicker.siblings('.wp-picker-clear').on('click', function(e){
+									e.preventDefault();
+
+									$colorpalette_colorpicker.wpColorPicker( 'color', colorpalette_colorpicker_color )
+								})
+
+								colorpalette_colorpicker_index++;
+							});
+
+							$palette_wrapper.on( 'click', '.colorpalette-item', function(e){
+								e.preventDefault();
+
+								var $colorpalette_item = $(this),
+									data_index         = $colorpalette_item.attr( 'data-index' );
+
+								// Hide other colorpalette colorpicker
+								$palette_wrapper.find( '.colorpalette-colorpicker').removeClass( 'active' );
+
+								// Display selected colorpalette colorpicker
+								$palette_wrapper.find( '.colorpalette-colorpicker[data-index="' + data_index + '"]').addClass( 'active' );
+							});
+							break;
+
+						case ( 'range' ) :
+							var $input_range           = $field_list.find( 'input[type="range"]' ),
+								value                  = $input_range.val(),
+								input_min              = $input_range.attr('min'),
+								input_max              = $input_range.attr('max'),
+								$input_wrapper         = $input_range.parent( 'div' ),
+								$input_number_template = $( '<input />', { type : 'number', step : 1, class : 'et-pb-range-input', min : input_min, max : input_max, value : value }),
+								$input_number;
+
+							// Assign saved value
+							$input_range.val( saved_value );
+
+							// Append number input
+							$input_wrapper.append( $input_number_template );
+
+							$input_number = $input_wrapper.find( '.et-pb-range-input' );
+
+							$input_range.on( 'change input', function() {
+								var value = $(this).val();
+
+								$input_number.val( value );
+							});
+
+							$input_number.on( 'change keydown', function(){
+								var value = $(this).val();
+
+								$input_range.val( value );
+							});
+
+							$input_range.trigger( 'change' );
+							break;
+
+						case( 'textarea' ) :
+							var $textarea     = $(this).find( 'textarea' );
+
+							$textarea.val( saved_value );
+							break;
+					}
+
+				});
+			}
+
+			if ( 'view_ab_stats' === action ) {
+				if ( $( '.et-pb-ab-view-stats-content' ).length ) {
+					return;
+				}
+
+				// Start loading bar
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+				// Prevent cannot read undefined value
+				if ( _.isUndefined( ET_PageBuilder_App.ab_stats ) ) {
+					ET_PageBuilder_App.ab_stats = {};
+				}
+
+				if ( _.isUndefined( ET_PageBuilder_App.ab_stats[ et_pb_ab_js_options.refresh_interval_duration ] ) ) {
+					// Get Split statistics data
+					$.ajax({
+						type : "POST",
+						url : et_pb_options.ajaxurl,
+						data : {
+							action : 'et_pb_ab_builder_data',
+							et_pb_ab_nonce : et_pb_options.ab_testing_builder_nonce,
+							et_pb_ab_test_id : et_pb_ab_js_options.test_id,
+							et_pb_ab_duration : et_pb_ab_js_options.refresh_interval_duration
+						},
+						success : function( data ) {
+							// Stop loading bar
+							ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+							data = $.parseJSON( data );
+
+							// Save graph data for quick retrieval if there are data found
+							ET_PageBuilder_App.ab_stats[ et_pb_ab_js_options.refresh_interval_duration ] = data;
+
+							// Display all subjects graph
+							ET_PageBuilder_AB_Testing.display_stats_tabs( data );
+						}
+					});
+				} else {
+					// Display all subjects graph
+					setTimeout( function() {
+						// Stop loading bar
+						ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+						ET_PageBuilder_AB_Testing.display_stats_tabs( ET_PageBuilder_App.ab_stats[ et_pb_ab_js_options.refresh_interval_duration ] );
+					}, 500 );
+				}
+			}
+
+			if ( 'ab_testing_alert_yes_no' === action && ! _.isUndefined( template_settings.id ) ) {
+				$modal.attr({ 'data-action' : action + '_' + template_settings.id });
+			}
+
 			$( 'body' ).append( $modal );
+
+			if ( $('.et_pb_prompt_modal').css('bottom') === 'auto' ) {
+				window.et_pb_align_vertical_modal( $modal.find('.et_pb_prompt_modal'), '.et_pb_prompt_buttons' );
+			}
 
 			setTimeout( function() {
 				$modal.find('select, input, textarea, radio').filter(':eq(0)').focus();
@@ -7256,16 +9968,211 @@ window.wp = window.wp || {};
 							}
 						} );
 						break;
+
+					case 'open_settings' :
+						var $enable_ab_testing_select = $modal.find( '#et_pb_enable_ab_testing' ),
+							refresh_ab_stats_interval_value = $modal.find( '#et_pb_ab_refresh_interval' ).val(),
+							enable_ab_testing_select_value = $enable_ab_testing_select.val() === 'on' ? true : false,
+							shortcode_tracking_value = $modal.find( '#et_pb_enable_shortcode_tracking' ).val(),
+							$refresh_ab_stats_interval_meta = $( '#et_pb_ab_stats_refresh_interval' ),
+							$shortcode_tracking_value_meta = $( '#_et_pb_enable_shortcode_tracking' );
+
+							// Passes settings data to hidden inputs
+							$modal.find( '.et_pb_prompt_field_list' ).each(function(){
+								var $item = $( this ),
+									id = $item.attr( 'data-id' ),
+									autoload = $item.attr( 'data-autoload' ) === '1' ? true : false,
+									$saving_input = $( '#_' + id ),
+									saving_palette = [];
+
+								// Only pass autoload item
+								if ( ! autoload ) {
+									return;
+								}
+
+								if ( $item.hasClass( 'colorpalette' ) ) {
+									$item.find( '.input-colorpalette-colorpicker' ).each(function() {
+										saving_palette.push( $(this).val() );
+									});
+
+									$saving_input.val( saving_palette.join('|') );
+
+									// update option so updated color palette will be applied immediately
+									et_pb_options.page_color_palette = saving_palette.join('|');
+								} else {
+									$saving_input.val( $item.find( '#' + id ).val() );
+
+									if ( '_et_pb_section_background_color' === $saving_input.attr( 'id' ) ) {
+										et_pb_options.page_section_bg_color = $item.find( '#' + id ).val();
+									}
+
+									if ( '_et_pb_gutter_width' === $saving_input.attr( 'id' ) ) {
+										et_pb_options.page_gutter_width = $item.find( '#' + id ).val();
+									}
+								}
+							});
+
+							// Update Split testing status meta data
+							ET_PageBuilder_AB_Testing.toggle_status( enable_ab_testing_select_value );
+
+							// Update Refresh stats interval meta data
+							$refresh_ab_stats_interval_meta.val( refresh_ab_stats_interval_value );
+
+							$shortcode_tracking_value_meta.val( shortcode_tracking_value );
+
+							et_pb_ab_js_options.refresh_interval_duration = _.isUndefined( et_pb_ab_js_options.refresh_interval_durations[ refresh_ab_stats_interval_value ] ) ? 'day' : et_pb_ab_js_options.refresh_interval_durations[ refresh_ab_stats_interval_value ];
+
+							if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+								// Look for subject 1 of AB testing. If there isn't any, prompt subject selector mode
+								if ( ET_PageBuilder_AB_Testing.count_subjects() < 2 ) {
+
+									ET_PageBuilder_App.disable_publish = true;
+									$( '#publish' ).addClass( 'disabled' );
+
+									ET_PageBuilder_AB_Testing.check_create_db();
+
+									// Prompt select subject modal box
+									ET_PageBuilder_AB_Testing.alert_yes_no( 'select_ab_testing_subject' );
+
+									// Turn on Split testing subject selection mode
+									ET_PageBuilder_App.is_selecting_ab_testing_subject = true;
+
+									// Adding nescesarry class for Split testing subject selection mode's UI
+									$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_subject' );
+								}
+
+							} else {
+								// Turn off Split testing subject selection mode
+								ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
+
+								// Check against "on to off" or "off to off" state
+								if ( ET_PageBuilder_AB_Testing.count_subjects() > 0 ) {
+									et_pb_create_prompt_modal( 'turn_off_ab_testing' );
+								}
+							}
+						break;
+
+					case 'turn_off_ab_testing' :
+						// Remove goal
+						var ab_goals = ET_PageBuilder_Modules.where({ et_pb_ab_goal : 'on' }),
+							ab_goal_view;
+
+						_.each( ab_goals, function( ab_goal ){
+							delete ab_goal.attributes.et_pb_ab_goal;
+
+							if ( ! _.isUndefined( ab_goal.attributes.et_pb_temp_global_module ) || ! _.isUndefined( ab_goal.attributes.et_pb_temp_global_parent ) ) {
+								ab_goal_view = ET_PageBuilder_Layout.getView( ab_goal.attributes.cid );
+
+								ET_PageBuilder_Layout.removeTemporaryGlobalAttributes( ab_goal_view, true );
+							}
+						});
+
+						// Disable publish button
+						ET_PageBuilder_App.disable_publish = true;
+						$( '#publish' ).addClass( 'disabled' );
+
+						// Turn on Split Testing selecting winner mode
+						ET_PageBuilder_App.is_selecting_ab_testing_winner = true;
+
+						// Adding nescesarry class for Split testing winner selection mode's UI
+						$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_winner' );
+
+						break;
+
+					case 'set_global_subject_winner' :
+						// Remove Temporary global attributes
+						ET_PageBuilder_Layout.removeTemporaryGlobalAttributes( template_settings.view );
+
+						// Turn off Split testing sequence
+						ET_PageBuilder_AB_Testing.turn_off_ab_testing_sequence();
+
+						break;
+
+					case 'ab_testing_alert' :
+						if ( ! _.isUndefined( ET_PageBuilder_App.ab_last_visible_alert ) ) {
+							delete ET_PageBuilder_App.ab_last_visible_alert;
+						}
+						break;
+
+					case 'view_ab_stats' :
+						// Set split test to off
+						ET_PageBuilder_AB_Testing.toggle_status( false );
+
+						// Turn off Split testing subject selection mode
+						ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
+
+						// Check against "on to off" or "off to off" state
+						if ( ET_PageBuilder_AB_Testing.count_subjects() > 0 ) {
+							et_pb_create_prompt_modal( 'turn_off_ab_testing' );
+						}
+						break;
 				}
 
 				et_pb_close_modal( $( this ) );
 			} );
 
+			$( '.et_pb_modal_overlay .et_pb_prompt_proceed_alternative' ).click( function( event ) {
+				event.preventDefault();
+
+				var $prompt_modal = $(this).closest( '.et_pb_modal_overlay' );
+
+				switch( $prompt_modal.data( 'action' ).trim() ){
+					case 'set_global_subject_winner' :
+						// Revive global attributes
+						ET_PageBuilder_Layout.removeTemporaryGlobalAttributes( template_settings.view, true );
+
+						// Turn off Split testing sequence
+						ET_PageBuilder_AB_Testing.turn_off_ab_testing_sequence();
+
+						break;
+
+					case 'ab_testing_alert_yes_no_select_ab_testing_subject' :
+
+						ET_PageBuilder_AB_Testing.toggle_status( false );
+
+						ET_PageBuilder_AB_Testing.toggle_portability( true );
+
+						// Re-enable publish
+						ET_PageBuilder_App.disable_publish = false;
+						$( '#publish' ).removeClass( 'disabled' );
+
+						// Turn off Split testing subject selection mode
+						ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
+
+						// Adding nescesarry class for Split testing subject selection mode's UI
+						$( '#et_pb_layout' ).removeClass( 'et_pb_select_ab_testing_subject' );
+
+						delete ET_PageBuilder_App.ab_last_visible_alert;
+
+						break;
+				}
+
+				et_pb_close_modal( $( this ) );
+			});
+
 			$( '.et_pb_modal_overlay .et_pb_prompt_dont_proceed' ).click( function( event ) {
 				event.preventDefault();
 
+				var $prompt_modal = $(this).closest( '.et_pb_modal_overlay' );
+
+				switch( $prompt_modal.data( 'action' ).trim()  ) {
+					case 'ab_testing_alert' :
+						if ( ! _.isUndefined( ET_PageBuilder_App.ab_last_visible_alert ) ) {
+							delete ET_PageBuilder_App.ab_last_visible_alert;
+						}
+						break;
+				}
+
 				et_pb_close_modal( $( this ) );
 			} );
+		}
+
+		function et_pb_update_tracking_shortcode() {
+			var shortcode = '[et_pb_split_track id="' + et_pb_ab_js_options.test_id + '" /]';
+			setTimeout( function(){
+				$( '#et_pb_ab_current_shortcode' ).val( shortcode );
+			}, 100 );
 		}
 
 		function et_pb_handle_clone_class( $element ) {
@@ -7280,6 +10187,9 @@ window.wp = window.wp || {};
 
 		function et_pb_close_modal( $this_button ) {
 			var $modal_overlay = $this_button.closest( '.et_pb_modal_overlay' );
+
+			// Unlock body scroll
+			$('body').removeClass('et_pb_stop_scroll');
 
 			$modal_overlay.addClass( 'et_pb_modal_closing' );
 
@@ -7397,9 +10307,13 @@ window.wp = window.wp || {};
 				$( '#' + textarea_id ).val( $.trim( content ) );
 			}
 
-			// generate quick tag buttons for the editor in Text mode
-			( typeof tinyMCEPreInit.mceInit[textarea_id] !== "undefined" ) ? quicktags( { id : textarea_id } ) : quicktags( tinyMCEPreInit.qtInit[textarea_id] );
-			QTags._buttonsInit();
+			// initiate quicktags only once to avoid issue with duplication of tags
+			if ( ! et_pb_quick_tags_init_done[textarea_id] && 'content' !== textarea_id ) {
+				// generate quick tag buttons for the editor in Text mode
+				( typeof tinyMCEPreInit.mceInit[textarea_id] !== "undefined" ) ? quicktags( { id : textarea_id } ) : quicktags( tinyMCEPreInit.qtInit[textarea_id] );
+				QTags._buttonsInit();
+				et_pb_quick_tags_init_done[textarea_id] = true;
+			}
 
 			// Enabling publish button + removes disable_publish mark
 			if ( ! wp.heartbeat || ! wp.heartbeat.hasConnectionError() ) {
@@ -7416,6 +10330,9 @@ window.wp = window.wp || {};
 				if ( typeof window.tinyMCE.get( textarea_id ) !== 'undefined' ) {
 					window.tinyMCE.remove( '#' + textarea_id );
 				}
+
+				// set the quick tags init variable to false for current textarea so quicktags be initiated properly next time
+				et_pb_quick_tags_init_done[textarea_id] = false;
 			}
 		}
 
@@ -7625,7 +10542,40 @@ window.wp = window.wp || {};
 				$mobile_settings_tabs   = $container.find( '.et_pb_mobile_settings_tabs' ),
 
 				$checkboxes_set = $container.find( '.et_pb_checkboxes_wrapper' ),
-				$checkbox       = $checkboxes_set.find( 'input[type="checkbox"]' );
+				$checkbox       = $checkboxes_set.find( 'input[type="checkbox"]' ),
+
+				$section_bg_color_option = 'section' === $container.data( 'module_type' ) ? $container.find( '#et_pb_background_color' ) : '',
+
+				$gutter_width_option = $container.find( '#et_pb_gutter_width' ),
+
+				$google_maps_api_option = $container.find( '#et_pb_google_api_key' ),
+				$google_maps_api_button = $container.find( '.et_pb_update_google_key' );
+
+			if ( $google_maps_api_option.length ) {
+				$google_maps_api_button.attr( 'href', et_pb_options.options_page_url );
+
+				if ( '' === et_pb_options.google_api_key ) {
+					$google_maps_api_option.addClass( 'et_pb_hidden_field' );
+					$google_maps_api_button.text( $google_maps_api_button.data( 'empty_text' ) ).addClass( 'et_pb_no_field_visible' );
+				} else {
+					$google_maps_api_option.val( et_pb_options.google_api_key );
+				}
+			}
+
+			if ( '' !== $section_bg_color_option && '' !== et_pb_options.page_section_bg_color ) {
+				if ( '' === $section_bg_color_option.val() ) {
+					$section_bg_color_option.val( et_pb_options.page_section_bg_color );
+					$section_bg_color_option.change();
+				}
+
+				$section_bg_color_option.data( 'default', et_pb_options.page_section_bg_color );
+			}
+
+			if ( $gutter_width_option && '' !== et_pb_options.page_gutter_width ) {
+				// update default gutters
+				$gutter_width_option.siblings( '.et-pb-main-setting' ).data( 'default', et_pb_options.page_gutter_width );
+				$gutter_width_option.data( 'default', et_pb_options.page_gutter_width );
+			}
 
 			if ( $mobile_settings_tabs.length ) {
 				$mobile_settings_tabs.each( function() {
@@ -7929,7 +10879,7 @@ window.wp = window.wp || {};
 
 							//et_pb_update_affected_fields( $et_affect_fields );
 
-							if ( ! $this.find( '.et-pb-option:visible' ).length ) {
+							if ( ! $this.find( '.et-pb-option:visible' ).length && ! $next_tab.hasClass( 'et-pb-options-tab-view_stats' ) ) {
 								$this.append( '<p class="et-pb-all-options-hidden">' + et_pb_options.all_tab_options_hidden + '<p>' );
 							} else {
 								$('.et-pb-all-options-hidden').remove();
@@ -8606,6 +11556,8 @@ window.wp = window.wp || {};
 				ET_PageBuilder_App.createLayoutFromContent( et_prepare_template_content( content ), '', '', { is_reinit : 'reinit' } );
 
 				$builder_container.css( { 'height' : 'auto' } );
+
+				ET_PageBuilder_AB_Testing.update();
 			}, 600 );
 		}
 
@@ -9099,6 +12051,83 @@ window.wp = window.wp || {};
 			}
 		});
 
+
+		/**
+		 * Add app settings button and link it to actual settings button
+		 * Hide settings button on Divi Library
+		 */
+		if ( et_pb_options.is_divi_library === "0" ) {
+			var $app_settings_button = $( '#et-builder-app-settings-button-template' ).html();
+
+			$( '#et_pb_layout' ).prepend( $app_settings_button );
+
+			$( '#et_pb_layout' ).on( 'click', '.et-pb-app-view-ab-stats-button', function(e) {
+				e.preventDefault();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_subject() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_subject_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_goal() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_goal_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_winner() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_winner_first' );
+					return;
+				}
+
+				$( '#et_pb_layout_controls .et-pb-layout-buttons-view-ab-stats' ).trigger( 'click' );
+			} );
+
+			$( '#et_pb_layout' ).on( 'click', '.et-pb-app-portability-button.et-core-disabled', function(e) {
+				e.preventDefault();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_subject() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_subject_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_goal() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_goal_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_winner() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_winner_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_active() ) {
+					ET_PageBuilder_AB_Testing.alert( 'cannot_import_export_layout_has_ab_testing' );
+					return;
+				}
+			} );
+
+			$( '#et_pb_layout' ).on( 'click', '.et-pb-app-settings-button', function(e) {
+				e.preventDefault();
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_subject() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_subject_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_goal() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_goal_first' );
+					return;
+				}
+
+				if ( ET_PageBuilder_AB_Testing.is_selecting_winner() ) {
+					ET_PageBuilder_AB_Testing.alert( 'select_ab_testing_winner_first' );
+					return;
+				}
+
+				$( '#et_pb_layout_controls .et-pb-layout-buttons-settings' ).trigger( 'click' );
+			} );
+		}
+
 		// set the correct content for Yoast SEO plugin if it's activated
 		if ( et_pb_is_yoast_seo_active() ) {
 			var ET_PB_Yoast_Content = function() {
@@ -9126,6 +12155,15 @@ window.wp = window.wp || {};
 
 			new ET_PB_Yoast_Content();
 		}
+
+		$( window ).resize( function() {
+			var $et_pb_prompt_modal = $('.et_pb_prompt_modal.et_pb_auto_centerize_modal');
+
+			if ( $et_pb_prompt_modal.length ) {
+				$et_pb_prompt_modal.removeAttr( 'style' );
+				window.et_pb_align_vertical_modal( $et_pb_prompt_modal, '.et_pb_prompt_buttons' );
+			}
+		} );
 	} );
 
 } )(jQuery);
@@ -9133,6 +12171,34 @@ window.wp = window.wp || {};
 ( function($) {
 
 	window.et_builder = window.et_builder || {};
+
+	/* Override the Yoast function to fix the typing lag caused by Yoast seo plugin
+	 * By default Yoast parses shortcodes from all the content on every keypress inside tinyMCE
+	 * and it causes the lag during the typing if content of page is huge
+	 * Basically just remove the following part from original function:
+	 *		e.editor.on('keydown', function() {
+	 *			that.loadShortcodes.bind( that, that.declareReloaded.bind( that ) )();
+	 *		});
+	 */
+	if ( typeof window.YoastShortcodePlugin !== 'undefined' ) {
+		window.YoastShortcodePlugin.prototype.bindElementEvents = function() {
+			var contentElement = document.getElementById( 'content' ) || false;
+			var that = this;
+
+			if (contentElement) {
+				contentElement.addEventListener( 'keydown', this.loadShortcodes.bind( this, this.declareReloaded.bind( this ) ) );
+				contentElement.addEventListener( 'change', this.loadShortcodes.bind( this, this.declareReloaded.bind( this ) ) );
+			}
+
+			if( typeof tinyMCE !== 'undefined' && typeof tinyMCE.on === 'function' ) {
+				tinyMCE.on( 'addEditor', function( e ) {
+					e.editor.on( 'change', function() {
+						that.loadShortcodes.bind( that, that.declareReloaded.bind( that ) )();
+					});
+				});
+			}
+		}
+	}
 
 	$( document ).ready( function() {
 		var et_builder = {},
@@ -9185,6 +12251,8 @@ window.wp = window.wp || {};
 			},
 			options_tabs_output: function( options ){
 				var template = _.template( $('#et-builder-options-tabs-links-template').html() ),
+					options_filtered = {},
+					options_filtered_index = 1,
 					template_processed;
 
 				window.et_builder_template_options['tabs']['options'] = $.extend( {}, options );
@@ -9315,20 +12383,6 @@ window.wp = window.wp || {};
 				$(window).trigger( 'resize' );
 			}, 50 );
 		} );
-
-		// hide cache notice and update option so it won't be displayed again
-		$( '.et_pb_hide_cache_notice' ).click( function() {
-			$( this ).closest( '.update-nag' ).hide();
-
-			$.ajax({
-				type: "POST",
-				url: et_pb_options.ajaxurl,
-				data: {
-					action : 'et_pb_hide_cache_notice',
-					et_admin_load_nonce : et_pb_options.et_admin_load_nonce
-				}
-			});
-		});
 	});
 
 } )(jQuery);

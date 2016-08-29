@@ -22,14 +22,28 @@ function et_activate_features(){
 	require_once TEMPLATEPATH . '/epanel/shortcodes/shortcodes.php';
 
 	/* activate page templates */
-	require_once TEMPLATEPATH . '/epanel/page_templates/page_templates.php';
+	require_once TEMPLATEPATH . '/includes/page_templates/page_templates.php';
 
 	/* import epanel settings */
-	require_once TEMPLATEPATH . '/epanel/import_settings.php';
+	require_once TEMPLATEPATH . '/includes/import_settings.php';
 }
 
 add_filter( 'widget_text', 'do_shortcode' );
 add_filter( 'the_excerpt', 'do_shortcode' );
+
+if ( ! function_exists( 'et_get_theme_version' ) ) :
+function et_get_theme_version() {
+	$theme_info = wp_get_theme();
+
+	if ( is_child_theme() ) {
+		$theme_info = wp_get_theme( $theme_info->parent_theme );
+	}
+
+	$theme_version = $theme_info->display( 'Version' );
+
+	return $theme_version;
+}
+endif;
 
 if ( ! function_exists( 'et_options_stored_in_one_row' ) ) {
 
@@ -55,10 +69,18 @@ if ( ! function_exists( 'et_options_stored_in_one_row' ) ) {
  */
 if ( ! function_exists( 'et_get_option' ) ) {
 
-	function et_get_option( $option_name, $default_value = '', $used_for_object = '', $force_default_value = false ){
+	function et_get_option( $option_name, $default_value = '', $used_for_object = '', $force_default_value = false, $is_global_setting = false, $global_setting_main_name = '', $global_setting_sub_name = '' ){
 		global $et_theme_options, $shortname;
 
-		if ( et_options_stored_in_one_row() ) {
+		if ( $is_global_setting ) {
+			$option_value = '';
+
+			$et_global_setting = get_option( $global_setting_main_name );
+
+			if ( false !== $et_global_setting && isset( $et_global_setting[ $global_setting_sub_name ] ) ) {
+				$option_value = $et_global_setting[ $global_setting_sub_name ];
+			}
+		} else if ( et_options_stored_in_one_row() ) {
 			$et_theme_options_name = 'et_' . $shortname;
 
 			if ( ! isset( $et_theme_options ) || isset( $_POST['wp_customize'] ) ) {
@@ -70,7 +92,7 @@ if ( ! function_exists( 'et_get_option' ) ) {
 		}
 
 		// option value might be equal to false, so check if the option is not set in the database
-		if ( ! isset( $et_theme_options[ $option_name ] ) && ( '' != $default_value || $force_default_value ) ) {
+		if ( et_options_stored_in_one_row() && ! isset( $et_theme_options[ $option_name ] ) && ( '' != $default_value || $force_default_value ) ) {
 			$option_value = $default_value;
 		}
 
@@ -84,10 +106,21 @@ if ( ! function_exists( 'et_get_option' ) ) {
 
 if ( ! function_exists( 'et_update_option' ) ) {
 
-	function et_update_option( $option_name, $new_value ){
+	function et_update_option( $option_name, $new_value, $is_new_global_setting = false, $global_setting_main_name = '', $global_setting_sub_name = '' ){
 		global $et_theme_options, $shortname;
 
-		if ( et_options_stored_in_one_row() ) {
+		if ( $is_new_global_setting && '' !== $global_setting_main_name && '' !== $global_setting_sub_name ) {
+			$global_setting = get_option( $global_setting_main_name );
+
+			if ( ! $global_setting ) {
+				$global_setting = array();
+			}
+
+			$global_setting[ $global_setting_sub_name ] = $new_value;
+
+			$option_name = $global_setting_main_name;
+			$new_value   = $global_setting;
+		} else if ( et_options_stored_in_one_row() ) {
 			$et_theme_options_name = 'et_' . $shortname;
 
 			if ( ! isset( $et_theme_options ) ) $et_theme_options = get_option( $et_theme_options_name );
@@ -159,6 +192,13 @@ if ( ! function_exists( 'truncate_post' ) ) {
 
 			// remove caption shortcode from the post content
 			$truncate = preg_replace( '@\[caption[^\]]*?\].*?\[\/caption]@si', '', $truncate );
+
+			// remove post nav shortcode from the post content
+			$truncate = preg_replace( '@\[et_pb_post_nav[^\]]*?\].*?\[\/et_pb_post_nav]@si', '', $truncate );
+
+			// Remove audio shortcode from post content to prevent unwanted audio file on the excerpt
+			// due to unparsed audio shortcode
+			$truncate = preg_replace( '@\[audio[^\]]*?\].*?\[\/audio]@si', '', $truncate );
 
 			// apply content filters
 			$truncate = apply_filters( 'the_content', $truncate );
@@ -1235,60 +1275,6 @@ function et_custom_posts_per_page( $query = false ) {
 	}
 }
 
-add_filter( 'pre_set_site_transient_update_themes', 'et_check_themes_updates' );
-
-function et_check_themes_updates( $update_transient ){
-	global $wp_version;
-
-	if ( !isset( $update_transient->checked ) ) return $update_transient;
-	else $themes = $update_transient->checked;
-
-	$send_to_api = array(
-		'action'           => 'check_theme_updates',
-		'installed_themes' => $themes,
-	);
-
-	$options = array(
-		'timeout'    => ( ( defined( 'DOING_CRON' ) && DOING_CRON ) ? 30 : 3),
-		'body'       => $send_to_api,
-		'user-agent' => 'WordPress/' . $wp_version . '; ' . home_url(),
-	);
-
-	$last_update = new stdClass();
-
-	$theme_request = wp_remote_post( 'http://www.elegantthemes.com/api/api.php', $options );
-	if ( !is_wp_error( $theme_request ) && wp_remote_retrieve_response_code( $theme_request ) == 200 ) {
-		$theme_response = unserialize( wp_remote_retrieve_body( $theme_request ) );
-		if ( !empty( $theme_response ) ) {
-			$update_transient->response = array_merge( !empty( $update_transient->response ) ? $update_transient->response : array(), $theme_response );
-			$last_update->checked = $themes;
-			$last_update->response = $theme_response;
-		}
-	}
-
-	$last_update->last_checked = time();
-	set_site_transient( 'et_update_themes', $last_update );
-
-	return $update_transient;
-}
-
-add_filter( 'site_transient_update_themes', 'et_add_themes_to_update_notification' );
-
-function et_add_themes_to_update_notification( $update_transient ){
-	$et_update_themes = get_site_transient( 'et_update_themes' );
-
-	if ( !is_object( $et_update_themes ) || !isset( $et_update_themes->response ) ) return $update_transient;
-
-	// Fix for warning messages on Dashboard / Updates page
-	if ( ! is_object( $update_transient ) ) {
-		$update_transient = new stdClass();
-	}
-
-	$update_transient->response = array_merge( !empty( $update_transient->response ) ? $update_transient->response : array(), $et_update_themes->response );
-
-	return $update_transient;
-}
-
 add_filter( 'default_hidden_meta_boxes', 'et_show_hidden_metaboxes', 10, 2 );
 
 function et_show_hidden_metaboxes( $hidden, $screen ){
@@ -1319,7 +1305,9 @@ function et_widget_force_title( $title ){
 if( version_compare( phpversion(), '4.4', '>=' ) ) add_filter( 'get_comments_number', 'et_comment_count', 0, 2 );
 
 function et_comment_count( $count, $post_id ) {
-	if ( ! is_admin() ) {
+	$is_doing_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX ? true : false;
+
+	if ( ! is_admin() || $is_doing_ajax ) {
 		global $id;
 		$post_id = $post_id ? $post_id : $id;
 		$get_comments = get_comments( array('post_id' => $post_id, 'status' => 'approve') );
@@ -1346,24 +1334,6 @@ if ( ! function_exists( 'et_theme_epanel_reminder' ) ) {
 		}
 	}
 
-}
-
-add_filter( 'gettext', 'et_admin_update_theme_message', 20, 3 );
-
-function et_admin_update_theme_message( $default_translated_text, $original_text, $domain ) {
-	global $themename;
-	$theme_page_message = 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%1$s">View version %3$s details</a>. <em>Automatic update is unavailable for this theme.</em>';
-	$updates_page_message = 'Update package not available.';
-
-	if ( is_admin() && $original_text === $theme_page_message ) {
-		return et_get_safe_localization( __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%1$s">View version %3$s details</a>. <em>Before you can update your Elegant Themes, you must first install the <a href="https://www.elegantthemes.com/members-area/documentation.html#updater" target="_blank">Elegant Updater Plugin</a> to authenticate your subscription.</em>', $themename ) );
-	}
-
-	if ( is_admin() && $original_text === $updates_page_message ) {
-		return et_get_safe_localization( __( 'Before you can update your Elegant Themes, you must first install the <a href="https://www.elegantthemes.com/members-area/documentation.html#updater" target="_blank">Elegant Updater Plugin</a> to authenticate your subscription.', $themename ) );
-	}
-
-	return $default_translated_text;
 }
 
 add_filter( 'body_class', 'et_add_fullwidth_body_class' );
@@ -1927,38 +1897,11 @@ if ( ! function_exists( 'et_gf_enqueue_fonts' ) ) :
 
 endif;
 
-if ( ! function_exists( 'et_get_safe_localization' ) ) :
-	function et_get_safe_localization( $string ) {
-		return wp_kses( $string, et_get_allowed_localization_html_elements() );
-	}
-endif;
+if ( ! function_exists( 'et_pb_get_google_api_key' ) ) :
+function et_pb_get_google_api_key() {
+	$google_api_option = get_option( 'et_google_api_settings' );
+	$google_api_key = isset( $google_api_option['api_key'] ) ? $google_api_option['api_key'] : '';
 
-if ( ! function_exists( 'et_get_allowed_localization_html_elements' ) ) :
-	function et_get_allowed_localization_html_elements() {
-		$whitelisted_attributes = array(
-			'id'    => array(),
-			'class' => array(),
-			'style' => array(),
-		);
-
-		$elements = array(
-			'a'      => array(
-				'href'  => array(),
-				'title' => array(),
-				'target' => array(),
-			),
-			'b'      => array(),
-			'em'     => array(),
-			'p'      => array(),
-			'span'   => array(),
-			'div'    => array(),
-			'strong' => array(),
-		);
-
-		foreach ( $elements as $tag => $attributes ) {
-			$elements[ $tag ] = array_merge( $attributes, $whitelisted_attributes );
-		}
-
-		return $elements;
-	}
+	return $google_api_key;
+}
 endif;

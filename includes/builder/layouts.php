@@ -1,6 +1,6 @@
 <?php
 
-foreach( array( 'edit', 'post' ) as $hook ) {
+foreach( array( 'edit', 'post', 'post-new' ) as $hook ) {
 	add_action( "admin_head-{$hook}.php", 'et_builder_library_custom_styles' );
 }
 
@@ -198,17 +198,24 @@ add_action( 'admin_init', 'et_update_layouts_built_for_post_types' );
 function et_builder_library_custom_styles() {
 	global $typenow;
 
+	et_core_load_main_fonts();
+
+	wp_enqueue_style( 'et-builder-notification-popup-styles', ET_BUILDER_URI . '/styles/notification_popup_styles.css' );
+
 	if ( 'et_pb_layout' === $typenow ) {
 		$new_layout_modal = et_pb_generate_new_layout_modal();
 
 		wp_enqueue_style( 'library-styles', ET_BUILDER_URI . '/styles/library_pages.css' );
-		wp_enqueue_script( 'library-scripts', ET_BUILDER_URI . '/scripts/library_scripts.js', array( 'jquery' ) );
+
+		wp_enqueue_script( 'library-scripts', ET_BUILDER_URI . '/scripts/library_scripts.js', array( 'jquery', 'et_pb_admin_global_js' ) );
 		wp_localize_script( 'library-scripts', 'et_pb_new_template_options', array(
 				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
 				'et_admin_load_nonce' => wp_create_nonce( 'et_admin_load_nonce' ),
 				'modal_output'  => $new_layout_modal,
 			)
 		);
+	} else {
+		wp_enqueue_script( 'et-builder-failure-notice', ET_BUILDER_URI . '/scripts/failure_notice.js', array( 'jquery' ), ET_BUILDER_PRODUCT_VERSION );
 	}
 }
 
