@@ -35,8 +35,9 @@ class ET_Builder_Element {
 	private static $modules_order;
 	private static $parent_modules = array();
 	private static $child_modules = array();
+	private static $ab_tests_processed = array();
+	private static $ab_tests_saved_id;
 	private static $current_module_index = 0;
-
 	private static $loading_backbone_templates = false;
 
 	const DEFAULT_PRIORITY = 10;
@@ -54,7 +55,8 @@ class ET_Builder_Element {
 			$post_type  = sanitize_text_field( $_POST['et_post_type'] );
 
 			if ( 'layout' === $post_type ) {
-				$start_from = ET_Builder_Element::get_modules_count( 'page' );
+				// need - 2 to include the et_pb_section and et_pb_row modules
+				$start_from = ET_Builder_Element::get_modules_count( 'page' ) - 2;
 			}
 
 			$current_module_index = self::$current_module_index - 1;
@@ -222,7 +224,7 @@ class ET_Builder_Element {
 		$font_icon_options = array( 'font_icon', 'button_icon', 'button_one_icon', 'button_two_icon' );
 
 		foreach ( $this->shortcode_atts as $attribute_key => $attribute_value ) {
-			$shortcode_attributes[ $attribute_key ] = in_array( $attribute_key, $font_icon_options ) ? $attribute_value : str_replace( '%22', '"', $attribute_value );
+			$shortcode_attributes[ $attribute_key ] = in_array( $attribute_key, $font_icon_options ) || preg_match( "/^\%\%\d+\%\%$/i", $attribute_value ) ? $attribute_value : str_replace( '%22', '"', $attribute_value );
 		}
 
 		$this->shortcode_atts = $shortcode_attributes;
@@ -237,6 +239,87 @@ class ET_Builder_Element {
 		return $this->_shortcode_callback_num;
 	}
 
+	/**
+	 * check whether ab testing enabled for current module and calculate whether it should be displayed currently or not
+	 *
+	 * @return bool
+	 */
+	private function _is_display_module( $shortcode_atts ) {
+		$ab_subject_id = isset( $shortcode_atts['ab_subject_id'] ) && '' !== $shortcode_atts['ab_subject_id'] ? $shortcode_atts['ab_subject_id'] : false;
+
+		// return true if testing is disabled or current module has no subject id.
+		if ( ! $ab_subject_id ) {
+			return true;
+		}
+
+		return $this->_check_ab_test_subject( $ab_subject_id );
+	}
+
+	/**
+	 * check whether the current module should be displayed or not
+	 *
+	 * @return bool
+	 */
+	private function _check_ab_test_subject( $ab_subject_id = false ) {
+		if ( ! $ab_subject_id ) {
+			return true;
+		}
+
+		$ab_subject_id = intval( $ab_subject_id );
+
+		$test_id = apply_filters( 'et_is_ab_testing_active_post_id', get_the_ID() );
+
+		$test_id = (int) $test_id;
+
+		// return false if the current ab module was processed already
+		if ( isset( $this->ab_tests_processed[ $test_id ] ) && $this->ab_tests_processed[ $test_id ] ) {
+			return false;
+		}
+
+		$user_unique_id = et_pb_get_visitor_id();
+		$saved_module_id = $this->_get_saved_ab_module_id( $test_id, $user_unique_id );
+
+		$current_ab_module_id = et_pb_ab_get_current_ab_module_id( $test_id, $saved_module_id );
+
+		// return false if current module is not the module which should be displayed this time
+		if ( (int) $current_ab_module_id !== (int) $ab_subject_id ) {
+			return false;
+		}
+
+		// mark current ab module as processed
+		$this->ab_tests_processed[ $test_id ] = true;
+
+		if ( false === $saved_module_id ) {
+			// log the view_page event right away
+			et_pb_add_stats_record( array(
+					'test_id'     => $test_id,
+					'subject_id'  => $ab_subject_id,
+					'record_type' => 'view_page',
+				)
+			);
+
+			// increment the module id for the next time
+			et_pb_ab_increment_current_ab_module_id( $test_id, $user_unique_id );
+		}
+
+		return true;
+	}
+
+	private function _get_saved_ab_module_id( $test_id, $client_id ) {
+		if ( ! empty( $this->ab_tests_saved_id[ $test_id ] ) ) {
+			return $this->ab_tests_saved_id[ $test_id ];
+		}
+
+		$saved_module_id = et_pb_ab_get_saved_ab_module_id( $test_id, $client_id );
+
+		if ( false !== $saved_module_id ) {
+			// cache the retrieved value
+			$this->ab_tests_saved_id[ $test_id ] = $saved_module_id;
+		}
+
+		return $saved_module_id;
+	}
+
 	function _shortcode_callback( $atts, $content = null, $function_name ) {
 		$this->shortcode_atts = shortcode_atts( $this->get_shortcode_fields(), $atts );
 
@@ -246,9 +329,42 @@ class ET_Builder_Element {
 
 		$global_shortcode_content = false;
 
+		$ab_testing_enabled = et_is_ab_testing_active();
+
+		$hide_subject_module = false;
+
+		$post_id = apply_filters( 'et_is_ab_testing_active_post_id', get_the_ID() );
+
 		// If the section/row/module is disabled, hide it
 		if ( isset( $this->shortcode_atts['disabled'] ) && 'on' === $this->shortcode_atts['disabled'] ) {
 			return;
+		}
+
+		// need to perform additional check and some modifications in case AB testing enabled
+		if ( $ab_testing_enabled ) {
+			// check if ab testing enabled for this module and if it shouldn't be displayed currently
+			if ( ! $this->_is_display_module( $this->shortcode_atts ) && ! et_pb_detect_cache_plugins() ) {
+				return;
+			}
+
+			// add class to the AB testing subject if needed
+			if ( isset( $this->shortcode_atts['ab_subject_id'] ) && '' !== $this->shortcode_atts['ab_subject_id'] ) {
+				$subject_class = sprintf( ' et_pb_ab_subject et_pb_ab_subject_id-%1$s_%2$s',
+					esc_attr( $post_id ),
+					esc_attr( $this->shortcode_atts['ab_subject_id'] )
+				);
+				$this->shortcode_atts['module_class'] = isset( $this->shortcode_atts['module_class'] ) && '' !== $this->shortcode_atts['module_class'] ? $this->shortcode_atts['module_class'] . $subject_class : $subject_class;
+
+				if ( et_pb_detect_cache_plugins() ) {
+					$hide_subject_module = true;
+				}
+			}
+
+			// add class to the AB testing goal if needed
+			if ( isset( $this->shortcode_atts['ab_goal'] ) && 'on' === $this->shortcode_atts['ab_goal'] ) {
+				$goal_class = sprintf( ' et_pb_ab_goal et_pb_ab_goal_id-%1$s', esc_attr( $post_id ) );
+				$this->shortcode_atts['module_class'] = isset( $this->shortcode_atts['module_class'] ) && '' !== $this->shortcode_atts['module_class'] ? $this->shortcode_atts['module_class'] . $goal_class : $goal_class;
+			}
 		}
 
 		//override module attributes for global module
@@ -304,6 +420,28 @@ class ET_Builder_Element {
 				$i++;
 				$current_media_query = 1 === $i ? '768_980' : 'min_width_981';
 			}
+		}
+
+		if ( $hide_subject_module ) {
+			$previous_subjects_cache = get_post_meta( $post_id, 'et_pb_subjects_cache', true );
+
+			if ( empty( $previous_subjects_cache ) ) {
+				$previous_subjects_cache = array();
+			}
+
+			if ( empty( $this->template_name ) ) {
+				$previous_subjects_cache[ $this->shortcode_atts['ab_subject_id'] ] = $output;
+			} else {
+				$previous_subjects_cache[ $this->shortcode_atts['ab_subject_id'] ] = $this->shortcode_output();
+			}
+
+			// update the subjects cache in post meta to use it later
+			update_post_meta( $post_id, 'et_pb_subjects_cache', $previous_subjects_cache );
+
+			// generate the placeholder to output on front-end instead of actual content
+			$subject_placeholder = sprintf( '<div class="et_pb_subject_placeholder et_pb_subject_placeholder_id_%1$s" style="display: none;"></div>', esc_attr( $this->shortcode_atts['ab_subject_id'] ) );
+
+			return $subject_placeholder;
 		}
 
 		if ( empty( $this->template_name ) ) {
@@ -2182,6 +2320,8 @@ class ET_Builder_Element {
 		$fields['disabled_on'] = '';
 		$fields['global_module'] = '';
 		$fields['saved_tabs'] = '';
+		$fields['ab_subject_id'] = '';
+		$fields['ab_goal'] = '';
 
 		return $fields;
 	}
@@ -2462,7 +2602,10 @@ class ET_Builder_Element {
 					$css_property = str_replace( '_', '-', $main_option_name );
 					$important = in_array( $css_property, $important_options ) || $use_global_important ? ' !important' : '';
 
-					if ( isset( $option_settings['css'][ $main_option_name ] ) || isset( $option_settings['css']['main'] ) ) {
+					// Allow specific selector tablet and mobile, simply add _tablet or _phone suffix
+					if ( isset( $option_settings['css'][ $mobile_option ] ) && "" !== $option_settings['css'][ $mobile_option ] ) {
+						$selector = $option_settings['css'][ $mobile_option ];
+					} elseif ( isset( $option_settings['css'][ $main_option_name ] ) || isset( $option_settings['css']['main'] ) ) {
 						$selector = isset( $option_settings['css'][ $main_option_name ] ) ? $option_settings['css'][ $main_option_name ] : $option_settings['css']['main'];
 					} else {
 						$selector = $this->main_css_element;
@@ -2818,7 +2961,7 @@ class ET_Builder_Element {
 					$no_icon_styles = 'padding: 0.3em 1em !important;';
 
 					self::set_style( $function_name, array(
-						'selector'    => $css_element_processed . ',' . $css_element_processed . ':hover',
+						'selector'    => $css_element . ',' . $css_element . ':hover',
 						'declaration' => rtrim( $no_icon_styles ),
 					) );
 				} else {
@@ -3187,7 +3330,7 @@ class ET_Builder_Element {
 
 	static function get_parent_modules( $post_type = '' ) {
 		if ( ! empty( $post_type ) ) {
-			$parent_modules = ! empty( self::$parent_modules[ $post_type ] ) ? self::$parent_modules[ $post_type ] : '';
+			$parent_modules = ! empty( self::$parent_modules[ $post_type ] ) ? self::$parent_modules[ $post_type ] : array();
 		} else {
 			$parent_modules = self::$parent_modules;
 		}
@@ -3197,7 +3340,7 @@ class ET_Builder_Element {
 
 	static function get_child_modules( $post_type = '' ) {
 		if ( ! empty( $post_type ) ) {
-			$child_modules = ! empty( self::$child_modules[ $post_type ] ) ? self::$child_modules[ $post_type ] : '';
+			$child_modules = ! empty( self::$child_modules[ $post_type ] ) ? self::$child_modules[ $post_type ] : array();
 		} else {
 			$child_modules = self::$child_modules;
 		}
@@ -3240,8 +3383,17 @@ class ET_Builder_Element {
 
 		$styles_by_media_queries = self::$styles;
 		$styles_count            = (int) count( $styles_by_media_queries );
+		$media_queries_order     = array_merge( array( 'general' ), array_values( self::$media_queries ) );
 
-		foreach ( $styles_by_media_queries as $media_query => $styles ) {
+		// make sure styles in the array ordered by media query correctly from bigger to smaller screensize
+		$styles_by_media_queries_sorted = array_merge( array_flip( $media_queries_order ), $styles_by_media_queries );
+
+		foreach ( $styles_by_media_queries_sorted as $media_query => $styles ) {
+			// skip wrong values which were added during the array sorting
+			if ( ! is_array( $styles ) ) {
+				continue;
+			}
+
 			$media_query_output    = '';
 			$wrap_into_media_query = 'general' !== $media_query;
 
@@ -3286,6 +3438,7 @@ class ET_Builder_Element {
 
 		$selector    = str_replace( '%%order_class%%', ".{$order_class_name}", $style['selector'] );
 		$selector    = str_replace( '%order_class%', ".{$order_class_name}", $selector );
+		$selector    = apply_filters( 'et_pb_set_style_selector', $selector, $function_name );
 
 		$declaration = $style['declaration'];
 		// New lines are saved as || in CSS Custom settings, remove them
@@ -3456,7 +3609,7 @@ class ET_Builder_Structure_Element extends ET_Builder_Element {
 					current_value_padding_phone = typeof et_pb_padding_%1$s_phone !== \'undefined\' ? et_pb_padding_%1$s_phone : \'\',
 					last_edited_padding_field = typeof et_pb_padding_%1$s_last_edited !== \'undefined\' ?  et_pb_padding_%1$s_last_edited : \'\',
 					has_tablet_padding = typeof et_pb_padding_%1$s_tablet !== \'undefined\' ? \'yes\' : \'no\',
-					has_phone_padding = typeof et_pb_padding_%1$s_tablet !== \'undefined\' ? \'yes\' : \'no\',
+					has_phone_padding = typeof et_pb_padding_%1$s_phone !== \'undefined\' ? \'yes\' : \'no\',
 					current_value_bg_img = typeof et_pb_bg_img_%1$s !== \'undefined\' ? et_pb_bg_img_%1$s : \'\';
 					current_value_parallax = typeof et_pb_parallax_%1$s !== \'undefined\' && \'on\' === et_pb_parallax_%1$s ? \' selected="selected"\' : \'\';
 					current_value_parallax_method = typeof et_pb_parallax_method_%1$s !== \'undefined\' && \'on\' === et_pb_parallax_method_%1$s ? \' selected="selected"\' : \'\';

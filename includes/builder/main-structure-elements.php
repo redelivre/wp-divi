@@ -91,7 +91,7 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 			'custom_width_percent'   => array( '80%', 'only_default_setting' ),
 			'make_equal'             => array( 'off' ),
 			'use_custom_gutter'      => array( 'off' ),
-			'gutter_width'           => array( '3', 'only_default_setting' ),
+			'gutter_width'           => array( '' ),
 			'fullwidth'              => array( 'off' ),
 			'specialty'              => array( 'off' ),
 			'custom_padding_tablet'  => array( '' ),
@@ -125,7 +125,8 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 			),
 			'background_color' => array(
 				'label'           => esc_html__( 'Background Color', 'et_builder' ),
-				'type'            => 'color',
+				'type'            => 'color-alpha',
+				'default'         => '#ffffff',
 				'depends_show_if' => 'off',
 				'description'     => esc_html__( 'Define a custom background color for your module, or leave blank to use the default color.', 'et_builder' ),
 				'additional_code' => '<span class="et-pb-reset-setting reset-default-color" style="display: none;"></span>',
@@ -596,7 +597,7 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 			global $et_pb_column_backgrounds, $et_pb_column_paddings, $et_pb_columns_counter, $et_pb_column_css, $et_pb_column_paddings_mobile;
 			$module_class .= 'on' === $make_equal ? ' et_pb_equal_columns' : '';
 
-			if ( 'on' === $use_custom_gutter ) {
+			if ( 'on' === $use_custom_gutter && '' !== $gutter_width ) {
 				$gutter_width = '0' === $gutter_width ? '1' : $gutter_width; // set the gutter to 1 if 0 entered by user
 				$gutter_class .= ' et_pb_gutters' . $gutter_width;
 			}
@@ -675,7 +676,7 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 					%1$s
 				</div>',
 				do_shortcode( sprintf( '
-					<video loop="loop" autoplay="autoplay"%3$s%4$s>
+					<video loop="loop" %3$s%4$s>
 						%1$s
 						%2$s
 					</video>',
@@ -700,9 +701,9 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 
 		if ( '' !== $background_color && 'off' === $transparent_background ) {
 			ET_Builder_Element::set_style( $function_name, array(
-				'selector'    => '%%order_class%%',
+				'selector'    => '%%order_class%%.et_pb_section',
 				'declaration' => sprintf(
-					'background-color:%s;',
+					'background-color:%s !important;',
 					esc_attr( $background_color )
 				),
 			) );
@@ -931,7 +932,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 			'custom_width_px'       => array( '1080px', 'only_default_setting' ),
 			'custom_width_percent'  => array( '80%', 'only_default_setting' ),
 			'use_custom_gutter'     => array( 'off' ),
-			'gutter_width'          => array( '3', 'only_default_setting' ),
+			'gutter_width'          => array( '' ),
 			'padding_mobile'        => array( 'off' ),
 			'column_padding_mobile' => array( 'on' ),
 			'background_color'      => array( '', 'only_default_setting' ),
@@ -1588,7 +1589,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 
 		$module_class .= 'on' === $make_equal ? ' et_pb_equal_columns' : '';
 
-		if ( 'on' === $use_custom_gutter ) {
+		if ( 'on' === $use_custom_gutter && '' !== $gutter_width ) {
 			$gutter_width = '0' === $gutter_width ? '1' : $gutter_width; // set the gutter width to 1 if 0 entered by user
 			$module_class .= ' et_pb_gutters' . $gutter_width;
 		}
@@ -1649,7 +1650,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 			}
 
 			if ( ! empty( $padding_mobile_values_processed ) ) {
-				et_pb_generate_responsive_css( $padding_mobile_values_processed, '%%order_class%%', '', $function_name );
+				et_pb_generate_responsive_css( $padding_mobile_values_processed, '%%order_class%%', '', $function_name, ' !important; ' );
 			}
 		}
 
@@ -1673,7 +1674,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 					%1$s
 				</div>',
 				do_shortcode( sprintf( '
-					<video loop="loop" autoplay="autoplay"%3$s%4$s>
+					<video loop="loop"%3$s%4$s>
 						%1$s
 						%2$s
 					</video>',
@@ -1821,7 +1822,7 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 			'padding_mobile'        => array( 'off' ),
 			'column_padding_mobile' => array( 'off' ),
 			'use_custom_gutter'     => array( 'off' ),
-			'gutter_width'          => array( '3', 'only_default_setting' ),
+			'gutter_width'          => array( '' ),
 			'make_equal'            => array( 'off' ),
 			'background_color_1'    => array( '' ),
 			'background_color_2'    => array( '' ),
@@ -2302,7 +2303,7 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 
 		$module_class .= 'on' === $make_equal ? ' et_pb_equal_columns' : '';
 
-		if ( 'on' === $use_custom_gutter ) {
+		if ( 'on' === $use_custom_gutter && '' !== $gutter_width ) {
 			$gutter_width = '0' === $gutter_width ? '1' : $gutter_width; // set the gutter to 1 if 0 entered by user
 			$module_class .= ' et_pb_gutters' . $gutter_width;
 		}

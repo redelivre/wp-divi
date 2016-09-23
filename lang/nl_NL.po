@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Divi 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2016-01-25 14:31:21+00:00\n"
-"PO-Revision-Date: 2016-01-25 17:41+0300\n"
+"POT-Creation-Date: 2016-03-30 15:17:43+00:00\n"
+"PO-Revision-Date: 2016-03-30 01:03+0300\n"
 "Last-Translator: \n"
 "Language-Team: Elegant Themes\n"
 "Language: nl\n"
@@ -21,6 +21,7 @@ msgstr ""
 "X-Poedit-SearchPath-1: ..\n"
 "X-Poedit-SearchPathExcluded-0: ../includes/builder\n"
 "X-Poedit-SearchPathExcluded-1: ../node_modules\n"
+"X-Poedit-SearchPathExcluded-2: ../core\n"
 
 #: comments.php:4
 msgid "This post is password protected. Enter the password to view comments."
@@ -36,7 +37,7 @@ msgstr "0 Reacties"
 msgid "1 Comment"
 msgstr "1 Reactie"
 
-#: comments.php:13 epanel/core_functions.php:469
+#: comments.php:13 epanel/core_functions.php:514
 msgid "Comments"
 msgstr "Reacties"
 
@@ -64,151 +65,143 @@ msgstr "Reactie verzenden"
 msgid "Leave a Reply to %s"
 msgstr "Laat een antwoord achter voor %s"
 
-#: epanel/core_functions.php:25
+#: epanel/core_functions.php:31
 msgid "Help"
 msgstr "Help"
 
-#: epanel/core_functions.php:92
+#: epanel/core_functions.php:108
 msgid "Options"
 msgstr "Opties"
 
-#: epanel/core_functions.php:92 functions.php:8222
+#: epanel/core_functions.php:108 functions.php:8237
 msgid "Theme Options"
 msgstr "Thema Opties"
 
-#: epanel/core_functions.php:110
+#: epanel/core_functions.php:127
 msgid "settings saved."
 msgstr "Instellingen opgeslagen."
 
-#: epanel/core_functions.php:113
+#: epanel/core_functions.php:130
 msgid "settings reset."
 msgstr "Instellingen opnieuw ingesteld."
 
-#: epanel/core_functions.php:122 epanel/core_functions.php:417
+#: epanel/core_functions.php:139 epanel/core_functions.php:462
 msgid "Save Changes"
 msgstr "Wijzigingen opslaan"
 
-#: epanel/core_functions.php:131
+#: epanel/core_functions.php:148 epanel/core_functions.php:733
 msgid "%s Theme Options"
 msgstr "Opties voor thema %s"
 
-#: epanel/core_functions.php:138
+#: epanel/core_functions.php:155
 msgid "Reset to Defaults"
 msgstr "Fabrieksinstellingen"
 
-#: epanel/core_functions.php:142 options_divi.php:38
+#: epanel/core_functions.php:160 options_divi.php:38
 msgid "General"
 msgstr "Algemeen"
 
-#: epanel/core_functions.php:145
+#: epanel/core_functions.php:163
 msgid "Navigation"
 msgstr "Navigatie"
 
-#: epanel/core_functions.php:148 functions.php:663
+#: epanel/core_functions.php:166 functions.php:671
 msgid "Layout"
 msgstr "Layout"
 
-#: epanel/core_functions.php:151
+#: epanel/core_functions.php:169
 msgid "Ads"
 msgstr "Advertenties"
 
-#: epanel/core_functions.php:154
+#: epanel/core_functions.php:172
 msgid "Colorization"
 msgstr "Kleur"
 
-#: epanel/core_functions.php:157
+#: epanel/core_functions.php:175
 msgid "SEO"
 msgstr "SEO"
 
-#: epanel/core_functions.php:160
+#: epanel/core_functions.php:178
 msgid "Integration"
 msgstr "Integratie"
 
-#: epanel/core_functions.php:239 epanel/core_functions.php:426
+#: epanel/core_functions.php:264 epanel/core_functions.php:471
 msgid "Reset"
 msgstr "Opnieuw Instellen"
 
-#: epanel/core_functions.php:240
+#: epanel/core_functions.php:265
 msgid "Upload"
 msgstr "Uploaded"
 
-#: epanel/core_functions.php:267
+#: epanel/core_functions.php:292
 msgid "You don't have pages"
 msgstr "U heeft geen pagina's"
 
-#: epanel/core_functions.php:427
-msgid ""
-"This will return all of the settings throughout the options page to their "
-"default values. <strong>Are you sure you want to do this?</strong>"
-msgstr ""
-"Dit zet alle instellingen in de opties pagina weer terug  naar hun standaard "
-"waarde. <strong>Weet u zeker dat u dit wilt doen?</strong>"
-
-#: epanel/core_functions.php:431 includes/functions/choices.php:92
+#: epanel/core_functions.php:476 includes/functions/choices.php:92
 msgid "Yes"
 msgstr "Ja"
 
-#: epanel/core_functions.php:434 includes/functions/choices.php:93
+#: epanel/core_functions.php:479 includes/functions/choices.php:93
 msgid "No"
 msgstr "Nee"
 
-#: epanel/core_functions.php:448
+#: epanel/core_functions.php:493
 msgid "Enable"
 msgstr "Inschakelen"
 
-#: epanel/core_functions.php:450
+#: epanel/core_functions.php:495
 msgid "Disable"
 msgstr "Uitschakelen"
 
-#: epanel/core_functions.php:457
+#: epanel/core_functions.php:502
 msgid "Author"
 msgstr "Auteur"
 
-#: epanel/core_functions.php:461
+#: epanel/core_functions.php:506
 msgid "Date"
 msgstr "Datum"
 
-#: epanel/core_functions.php:465 options_divi.php:300
+#: epanel/core_functions.php:510 options_divi.php:316
 msgid "Categories"
 msgstr "Categorieen"
 
-#: epanel/core_functions.php:646
+#: epanel/core_functions.php:691
 msgid "Choose an Image"
 msgstr "Kies een afbeelding"
 
-#: epanel/custom_functions.php:195
+#: epanel/custom_functions.php:199
 msgid "&hellip;"
 msgstr "&hellip;"
 
-#: epanel/custom_functions.php:499 header.php:188 header.php:231
+#: epanel/custom_functions.php:503 header.php:188 header.php:231
 msgid "Home"
 msgstr "Start"
 
-#: epanel/custom_functions.php:796
+#: epanel/custom_functions.php:800
 msgid "Archives"
 msgstr "Archieven"
 
-#: epanel/custom_functions.php:798
+#: epanel/custom_functions.php:802
 msgid "Search results for \"%s\""
 msgstr "Zoek resultaten op \"%s\""
 
-#: epanel/custom_functions.php:800
+#: epanel/custom_functions.php:804
 msgid "404 Not Found"
 msgstr "404 Niet Gevonden"
 
-#: epanel/custom_functions.php:870
+#: epanel/custom_functions.php:874
 msgid "Currently viewing archives from %1$s"
 msgstr "Momenteel archieven aan het bekijken van %1$s"
 
-#: epanel/custom_functions.php:883
+#: epanel/custom_functions.php:887
 msgid "Search Results for: %s"
 msgstr "Zoekresultaten voor: %s"
 
-#: epanel/custom_functions.php:1124
+#: epanel/custom_functions.php:1128
 msgid "Image doesn't exist"
 msgstr "Afbeelding bestaat niet"
 
-#: epanel/custom_functions.php:1341
+#: epanel/custom_functions.php:1347
 msgid ""
 "<div class=\"updated\"><p>This is a fresh installation of %1$s theme. Don't "
 "forget to go to <a href=\"%2$s\">ePanel</a> to set it up. This message will "
@@ -220,7 +213,7 @@ msgstr ""
 "stellen. Dit bericht verdwijnt zodra u op Opslaan klikt in <a href=\"%2$s"
 "\">de opties pagina</a>.</p></div>"
 
-#: epanel/custom_functions.php:1355
+#: epanel/custom_functions.php:1361
 msgid ""
 "There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox"
 "\" title=\"%1$s\">View version %3$s details</a>. <em>Before you can update "
@@ -235,7 +228,7 @@ msgstr ""
 "\">Elegant Updater Plugin</a> installeren om uw abonnement te bevestigen.</"
 "em>"
 
-#: epanel/custom_functions.php:1359
+#: epanel/custom_functions.php:1365
 msgid ""
 "Before you can update your Elegant Themes, you must first install the <a "
 "href=\"https://www.elegantthemes.com/members-area/documentation.html#updater"
@@ -271,7 +264,7 @@ msgstr "Gebruikersnaam:"
 msgid "Password: "
 msgstr "Wachtwoord:"
 
-#: epanel/shortcodes/shortcodes.php:294 functions.php:3778
+#: epanel/shortcodes/shortcodes.php:294 functions.php:3786
 msgid "Login"
 msgstr "Log in"
 
@@ -456,11 +449,11 @@ msgstr "Gebruik formaat wijzigen"
 msgid "+ Add One More Tab"
 msgstr "+ Voeg Nog Een Tabblad Toe"
 
-#: epanel/shortcodes/shortcodes.php:1335 functions.php:3444
+#: epanel/shortcodes/shortcodes.php:1335 functions.php:3452
 msgid "Image Height"
 msgstr "Hoogte van de afbeelding"
 
-#: epanel/shortcodes/shortcodes.php:1336 functions.php:3424
+#: epanel/shortcodes/shortcodes.php:1336 functions.php:3432
 msgid "Image Width"
 msgstr "Breedte van de afbeelding"
 
@@ -468,19 +461,19 @@ msgstr "Breedte van de afbeelding"
 msgid "Designed by %1$s | Powered by %2$s"
 msgstr "Ontworpen door %1$s | Ondersteund door %2$s"
 
-#: functions.php:32
+#: functions.php:40
 msgid "Primary Menu"
 msgstr "Hoofdmenu"
 
-#: functions.php:33
+#: functions.php:41
 msgid "Secondary Menu"
 msgstr "Secondair Menu"
 
-#: functions.php:34 functions.php:678
+#: functions.php:42 functions.php:686
 msgid "Footer Menu"
 msgstr "Footer Menu"
 
-#: functions.php:81
+#: functions.php:89
 msgid ""
 "Welcome to Divi! Before diving in to your new theme, please visit the <a "
 "style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank"
@@ -491,618 +484,618 @@ msgstr ""
 "\">Divi Documentation</a> pagina voor toegang tot een hoop gedetailleerde "
 "oefeningen."
 
-#: functions.php:206
+#: functions.php:214
 msgid "Select Page"
 msgstr "Selecteer een pagina"
 
-#: functions.php:247
+#: functions.php:255
 msgid "Divi Page Settings"
 msgstr "Pagina-instellingen Divi"
 
-#: functions.php:249
+#: functions.php:257
 msgid "Divi Post Settings"
 msgstr "Berichtinstellingen Divi"
 
-#: functions.php:250
+#: functions.php:258
 msgid "Divi Product Settings"
 msgstr "Productinstellingen Divi"
 
-#: functions.php:251
+#: functions.php:259
 msgid "Divi Project Settings"
 msgstr "Projectinstellingen Divi"
 
-#: functions.php:258
+#: functions.php:266
 msgid "Skills"
 msgstr "Vaardigheden"
 
-#: functions.php:261
+#: functions.php:269
 msgid "Posted on"
 msgstr "Gepubliceerd op"
 
-#: functions.php:285 options_divi.php:95
+#: functions.php:293 options_divi.php:103
 msgid "Right Sidebar"
 msgstr "Rechter zijbalk"
 
-#: functions.php:286 options_divi.php:96
+#: functions.php:294 options_divi.php:104
 msgid "Left Sidebar"
 msgstr "Linker zijbalk"
 
-#: functions.php:287 options_divi.php:97
+#: functions.php:295 options_divi.php:105
 msgid "Full Width"
 msgstr "Volle Breedte"
 
-#: functions.php:291
+#: functions.php:299
 msgid "Light"
 msgstr "Licht"
 
-#: functions.php:292
+#: functions.php:300
 msgid "Dark"
 msgstr "Donker"
 
-#: functions.php:305
+#: functions.php:313
 msgid "Page Layout"
 msgstr "Pagina Layout"
 
-#: functions.php:319
+#: functions.php:327
 msgid "Dot Navigation"
 msgstr "Puntnavigatie"
 
-#: functions.php:322 functions.php:331
+#: functions.php:330 functions.php:339
 msgid "Off"
 msgstr "Uit"
 
-#: functions.php:323 functions.php:332
+#: functions.php:331 functions.php:340
 msgid "On"
 msgstr "Aan"
 
-#: functions.php:327
+#: functions.php:335
 msgid "Hide Nav Before Scroll"
 msgstr "Navigatie verbergen voor het schuiven"
 
-#: functions.php:330 functions.php:5617 includes/functions/choices.php:24
+#: functions.php:338 functions.php:5625 includes/functions/choices.php:24
 #: includes/functions/choices.php:40
 msgid "Default"
 msgstr "Standaard"
 
-#: functions.php:338
+#: functions.php:346
 msgid "Post Title"
 msgstr "Titel bericht"
 
-#: functions.php:341 functions.php:376
+#: functions.php:349 functions.php:384
 msgid "Show"
 msgstr "Laten zien"
 
-#: functions.php:342 functions.php:375
+#: functions.php:350 functions.php:383
 msgid "Hide"
 msgstr "Verbergen"
 
-#: functions.php:347
+#: functions.php:355
 msgid "Use Background Color"
 msgstr "Gebruik Achtergrondkleur"
 
-#: functions.php:352 functions.php:5653
+#: functions.php:360 functions.php:5661
 msgid "Hex Value"
 msgstr "Hex Waarde"
 
-#: functions.php:356 functions.php:1976 functions.php:2003 functions.php:2130
-#: functions.php:2652 functions.php:2752 functions.php:2957
+#: functions.php:364 functions.php:1984 functions.php:2011 functions.php:2138
+#: functions.php:2660 functions.php:2760 functions.php:2965
 msgid "Text Color"
 msgstr "Tekstkleur"
 
-#: functions.php:372
+#: functions.php:380
 msgid "Project Navigation"
 msgstr "Projectnavigatie"
 
-#: functions.php:518 functions.php:530 functions.php:8300
+#: functions.php:526 functions.php:538 functions.php:8316
 msgid "you don't have sufficient permissions to access this page"
 msgstr "je hoeft niet voldoende rechten om deze pagina"
 
-#: functions.php:578 options_divi.php:305 options_divi.php:445
+#: functions.php:586 options_divi.php:321 options_divi.php:461
 msgid "General Settings"
 msgstr "Algemene Instellingen"
 
-#: functions.php:583
+#: functions.php:591
 msgid "Site Identity"
 msgstr "Site Identiteit"
 
-#: functions.php:588
+#: functions.php:596
 msgid "Layout Settings"
 msgstr "Layout Instellingen"
 
-#: functions.php:593
+#: functions.php:601
 msgid "Typography"
 msgstr "Typografie"
 
-#: functions.php:598
+#: functions.php:606
 msgid "Mobile Styles"
 msgstr "Mobiele stijlen"
 
-#: functions.php:603
+#: functions.php:611
 msgid "Tablet"
 msgstr "Tablet"
 
-#: functions.php:608
+#: functions.php:616
 msgid "Phone"
 msgstr "Telefoon"
 
-#: functions.php:613
+#: functions.php:621
 msgid "Mobile Menu"
 msgstr "Mobiele menu"
 
-#: functions.php:618
+#: functions.php:626
 msgid "Background"
 msgstr "Achtergrond"
 
-#: functions.php:623
+#: functions.php:631
 msgid "Header & Navigation"
 msgstr "Koptekst en navigatie"
 
-#: functions.php:628
+#: functions.php:636
 msgid "Header Format"
 msgstr "Formaat koptekst"
 
-#: functions.php:633
+#: functions.php:641
 msgid "Primary Menu Bar"
 msgstr "Primaire menubalk"
 
-#: functions.php:638
+#: functions.php:646
 msgid "Secondary Menu Bar"
 msgstr "Secundaire menubalk"
 
-#: functions.php:643
+#: functions.php:651
 msgid "Slide In & Fullscreen Header Settings"
 msgstr "Instellingen voor inschuivende en schermvullende kopteksten"
 
-#: functions.php:648
+#: functions.php:656
 msgid "Fixed Navigation Settings"
 msgstr "Vaste navigatie-instellingen"
 
-#: functions.php:653
+#: functions.php:661
 msgid "Header Elements"
 msgstr "Koptekstelementen"
 
-#: functions.php:658
+#: functions.php:666
 msgid "Footer"
 msgstr "Voettekst"
 
-#: functions.php:668
+#: functions.php:676
 msgid "Widgets"
 msgstr "Widgets"
 
-#: functions.php:673
+#: functions.php:681
 msgid "Footer Elements"
 msgstr "Voettekstelementen"
 
-#: functions.php:683
+#: functions.php:691
 msgid "Bottom Bar"
 msgstr "Onderkantbalk"
 
-#: functions.php:688 functions.php:1409
+#: functions.php:696 functions.php:1417
 msgid "Color Schemes"
 msgstr "Kleurschema's"
 
-#: functions.php:690
+#: functions.php:698
 msgid ""
 "Note: Color settings set above should be applied to the Default color scheme."
 msgstr ""
 "Let op: De hierboven aangegeven kleurinstellingen moeten toegepast worden op "
 "het Standaard kleurschema."
 
-#: functions.php:694
+#: functions.php:702
 msgid "Buttons"
 msgstr "Knoppen"
 
-#: functions.php:699
+#: functions.php:707
 msgid "Buttons Style"
 msgstr "Knoppenstijl"
 
-#: functions.php:704
+#: functions.php:712
 msgid "Buttons Hover Style"
 msgstr "Stijl van de knoppen van de muisaanwijzer"
 
-#: functions.php:709 functions.php:4957
+#: functions.php:717 functions.php:4965
 msgid "Blog"
 msgstr "Blog"
 
-#: functions.php:714
+#: functions.php:722
 msgid "Post"
 msgstr "Bericht"
 
-#: functions.php:731
+#: functions.php:739
 msgid "Meta Text Size"
 msgstr "Groote meta-tekst"
 
-#: functions.php:750
+#: functions.php:758
 msgid "Meta Line Height"
 msgstr "Lijnhoogte van meta"
 
-#: functions.php:769
+#: functions.php:777
 msgid "Meta Letter Spacing"
 msgstr "Letterspatiëring van meta"
 
-#: functions.php:788 functions.php:5026 functions.php:5105
+#: functions.php:796 functions.php:5034 functions.php:5113
 msgid "Meta Font Style"
 msgstr "Lettertypestijl van meta"
 
-#: functions.php:803 functions.php:1209 functions.php:1281 functions.php:1300
-#: functions.php:2398
+#: functions.php:811 functions.php:1217 functions.php:1289 functions.php:1308
+#: functions.php:2406
 msgid "Header Text Size"
 msgstr "Tekstgrootte koptekst"
 
-#: functions.php:822 functions.php:1247
+#: functions.php:830 functions.php:1255
 msgid "Header Line Height"
 msgstr "Lijnhoogte koptekst"
 
-#: functions.php:841 functions.php:1228
+#: functions.php:849 functions.php:1236
 msgid "Header Letter Spacing"
 msgstr "Letterspatiëring koptekst"
 
-#: functions.php:860 functions.php:1266 functions.php:2417 functions.php:3313
-#: functions.php:3491 functions.php:3606 functions.php:3669 functions.php:3748
-#: functions.php:3812 functions.php:4603 functions.php:5299 functions.php:5405
+#: functions.php:868 functions.php:1274 functions.php:2425 functions.php:3321
+#: functions.php:3499 functions.php:3614 functions.php:3677 functions.php:3756
+#: functions.php:3820 functions.php:4611 functions.php:5307 functions.php:5413
 msgid "Header Font Style"
 msgstr "Lettertypestijl koptekst"
 
-#: functions.php:874
+#: functions.php:882
 msgid "Enable Boxed Layout"
 msgstr "Inschakelen van ingekiste opmaak"
 
-#: functions.php:888
+#: functions.php:896
 msgid "Website Content Width"
 msgstr "Inhoudsbreedte van website"
 
-#: functions.php:907
+#: functions.php:915
 msgid "Website Gutter Width"
 msgstr "Kolomspatiëring van website"
 
-#: functions.php:925
+#: functions.php:933
 msgid "Use Custom Sidebar Width"
 msgstr "Gebruik Custom Sidebar Breedte"
 
-#: functions.php:939
+#: functions.php:947
 msgid "Sidebar Width"
 msgstr "Hoogte zijbalk"
 
-#: functions.php:958 functions.php:977 functions.php:996
+#: functions.php:966 functions.php:985 functions.php:1004
 msgid "Section Height"
 msgstr "Sectiehoogte"
 
-#: functions.php:1015 functions.php:1034 functions.php:1053
+#: functions.php:1023 functions.php:1042 functions.php:1061
 msgid "Row Height"
 msgstr "Rijhoogte"
 
-#: functions.php:1072
+#: functions.php:1080
 msgid "Stretch Background Image"
 msgstr "Stretch Achtergrondbeeld"
 
-#: functions.php:1079 functions.php:1673 functions.php:2031 functions.php:2102
-#: functions.php:2116 functions.php:2638 functions.php:2766 functions.php:2971
+#: functions.php:1087 functions.php:1681 functions.php:2039 functions.php:2110
+#: functions.php:2124 functions.php:2646 functions.php:2774 functions.php:2979
 msgid "Background Color"
 msgstr "Achtergrondkleur"
 
-#: functions.php:1086
+#: functions.php:1094
 msgid "Background Image"
 msgstr "Achtergrondafbeelding"
 
-#: functions.php:1092
+#: functions.php:1100
 msgid "Background Repeat"
 msgstr "Herhaling achtergrond"
 
-#: functions.php:1096
+#: functions.php:1104
 msgid "No Repeat"
 msgstr "Zonder herhaling"
 
-#: functions.php:1097
+#: functions.php:1105
 msgid "Tile"
 msgstr "Tegel"
 
-#: functions.php:1098
+#: functions.php:1106
 msgid "Tile Horizontally"
 msgstr "Horizontaal tegelen"
 
-#: functions.php:1099
+#: functions.php:1107
 msgid "Tile Vertically"
 msgstr "Verticaal tegelen"
 
-#: functions.php:1104 functions.php:1115
+#: functions.php:1112 functions.php:1123
 msgid "Background Position"
 msgstr "Achtergrondpositie"
 
-#: functions.php:1108 includes/functions/choices.php:106
+#: functions.php:1116 includes/functions/choices.php:106
 msgid "Left"
 msgstr "Links"
 
-#: functions.php:1109
+#: functions.php:1117
 msgid "Center"
 msgstr "Midden"
 
-#: functions.php:1110 includes/functions/choices.php:105
+#: functions.php:1118 includes/functions/choices.php:105
 msgid "Right"
 msgstr "Rechts"
 
-#: functions.php:1119
+#: functions.php:1127
 msgid "Scroll"
 msgstr "Schuiven"
 
-#: functions.php:1120
+#: functions.php:1128
 msgid "Fixed"
 msgstr "Vastgelegd"
 
-#: functions.php:1133 functions.php:1171 functions.php:1190
+#: functions.php:1141 functions.php:1179 functions.php:1198
 msgid "Body Text Size"
 msgstr "Grootte corpstekst"
 
-#: functions.php:1152
+#: functions.php:1160
 msgid "Body Line Height"
 msgstr "Lijnhoogte corps"
 
-#: functions.php:1320
+#: functions.php:1328
 msgid "Header Font"
 msgstr "Header Lettertype"
 
-#: functions.php:1336
+#: functions.php:1344
 msgid "Body Font"
 msgstr "Body Lettertype"
 
-#: functions.php:1353
+#: functions.php:1361
 msgid "Body Link Color"
 msgstr "Kleur corpslink"
 
-#: functions.php:1367
+#: functions.php:1375
 msgid "Body Text Color"
 msgstr "Tekstkleur corps"
 
-#: functions.php:1381
+#: functions.php:1389
 msgid "Header Text Color"
 msgstr "Kleur koptekst"
 
-#: functions.php:1395
+#: functions.php:1403
 msgid "Theme Accent Color"
 msgstr "Kleur thema-accent"
 
-#: functions.php:1425
+#: functions.php:1433
 msgid "Header Style"
 msgstr "Header Stijl"
 
-#: functions.php:1439
+#: functions.php:1447
 msgid "Enable Vertical Navigation"
 msgstr "Inschakelen verticale navigatie"
 
-#: functions.php:1453
+#: functions.php:1461
 msgid "Vertical Menu Orientation"
 msgstr "Menurichting verticaal"
 
-#: functions.php:1469
+#: functions.php:1477
 msgid "Hide Navigation Until Scroll"
 msgstr "Navigatie verbergen tot schuiven"
 
-#: functions.php:1484 functions.php:2354
+#: functions.php:1492 functions.php:2362
 msgid "Show Social Icons"
 msgstr "Sociale iconen tonen"
 
-#: functions.php:1498
+#: functions.php:1506
 msgid "Show Search Icon"
 msgstr "Toon Zoek Icoon"
 
-#: functions.php:1512
+#: functions.php:1520
 msgid "Show Top Bar"
 msgstr "Toon bovenste balk"
 
-#: functions.php:1526
+#: functions.php:1534
 msgid "Menu Width"
 msgstr "Breedte menu"
 
-#: functions.php:1545 functions.php:1583
+#: functions.php:1553 functions.php:1591
 msgid "Menu Text Size"
 msgstr "Tekstgrootte menu"
 
-#: functions.php:1564 functions.php:1602
+#: functions.php:1572 functions.php:1610
 msgid "Top Bar Text Size"
 msgstr "Tekstgrootte bovenste balk"
 
-#: functions.php:1621 functions.php:1840 functions.php:1924 functions.php:2584
-#: functions.php:2832 functions.php:3018
+#: functions.php:1629 functions.php:1848 functions.php:1932 functions.php:2592
+#: functions.php:2840 functions.php:3026
 msgid "Letter Spacing"
 msgstr "Letterspatiëring"
 
-#: functions.php:1641 functions.php:1860 functions.php:1944
+#: functions.php:1649 functions.php:1868 functions.php:1952
 msgid "Font"
 msgstr "Lettertype"
 
-#: functions.php:1658 functions.php:1877 functions.php:1961 functions.php:2603
-#: functions.php:2666
+#: functions.php:1666 functions.php:1885 functions.php:1969 functions.php:2611
+#: functions.php:2674
 msgid "Font Style"
 msgstr "Stijl lettertype"
 
-#: functions.php:1687
+#: functions.php:1695
 msgid "Menu Link Color"
 msgstr "Kleur menukoppeling"
 
-#: functions.php:1701 functions.php:2017
+#: functions.php:1709 functions.php:2025
 msgid "Active Link Color"
 msgstr "Actieve link-kleur"
 
-#: functions.php:1715
+#: functions.php:1723
 msgid "Top Bar Text Color"
 msgstr "Kleur tekst bovenste balk"
 
-#: functions.php:1729
+#: functions.php:1737
 msgid "Search Bar Text Color"
 msgstr "Kleur tekst zoekbalk"
 
-#: functions.php:1743
+#: functions.php:1751
 msgid "Search Bar Background Color"
 msgstr "Achtergrondkleur zoekbalk"
 
-#: functions.php:1756 functions.php:1899
+#: functions.php:1764 functions.php:1907
 msgid "Make Full Width"
 msgstr "Volle breedte maken"
 
-#: functions.php:1769 functions.php:1989 functions.php:2205
+#: functions.php:1777 functions.php:1997 functions.php:2213
 msgid "Hide Logo Image"
 msgstr "Logo-afbeelding verbergen"
 
-#: functions.php:1783
+#: functions.php:1791
 msgid "Menu Height"
 msgstr "menu Hoogte"
 
-#: functions.php:1802
+#: functions.php:1810
 msgid "Logo Max Height"
 msgstr "Logo Max Hoogte"
 
-#: functions.php:1821 functions.php:1905 functions.php:2238 functions.php:2733
+#: functions.php:1829 functions.php:1913 functions.php:2246 functions.php:2741
 msgid "Text Size"
 msgstr "Tekstgrootte"
 
-#: functions.php:2045 functions.php:2144
+#: functions.php:2053 functions.php:2152
 msgid "Dropdown Menu Background Color"
 msgstr "Achtergrondkleur van het te selecteren menu"
 
-#: functions.php:2059
+#: functions.php:2067
 msgid "Dropdown Menu Line Color"
 msgstr "Lijnkleur van het te selecteren menu"
 
-#: functions.php:2073 functions.php:2158
+#: functions.php:2081 functions.php:2166
 msgid "Dropdown Menu Text Color"
 msgstr "Tekstkleur van het te selecteren menu"
 
-#: functions.php:2087 functions.php:2172
+#: functions.php:2095 functions.php:2180
 msgid "Dropdown Menu Animation"
 msgstr "Animatie van het te selecteren menu"
 
-#: functions.php:2219
+#: functions.php:2227
 msgid "Fixed Menu Height"
 msgstr "Vast menu Hoogte"
 
-#: functions.php:2257
+#: functions.php:2265
 msgid "Primary Menu Background Color"
 msgstr "Achtergrondkleur primair menu"
 
-#: functions.php:2271
+#: functions.php:2279
 msgid "Secondary Menu Background Color"
 msgstr "Achtergrondkleur secundair menu"
 
-#: functions.php:2285
+#: functions.php:2293
 msgid "Primary Menu Link Color"
 msgstr "Primaire Menu Link Color"
 
-#: functions.php:2299
+#: functions.php:2307
 msgid "Secondary Menu Link Color"
 msgstr "Secundaire Menu Link Color"
 
-#: functions.php:2313
+#: functions.php:2321
 msgid "Active Primary Menu Link Color"
 msgstr "Actieve Primaire Menu Link Color"
 
-#: functions.php:2327
+#: functions.php:2335
 msgid "Phone Number"
 msgstr "Telefoonnummer"
 
-#: functions.php:2340
+#: functions.php:2348
 msgid "Email"
 msgstr "E-mail"
 
-#: functions.php:2368
+#: functions.php:2376
 msgid "Column Layout"
 msgstr "Kolomopmaak"
 
-#: functions.php:2384
+#: functions.php:2392
 msgid "Footer Background Color"
 msgstr "Footer Achtergrondkleur"
 
-#: functions.php:2432
+#: functions.php:2440
 msgid "Body/Link Text Size"
 msgstr "Grootte corps-/link-tekst"
 
-#: functions.php:2451
+#: functions.php:2459
 msgid "Body/Link Line Height"
 msgstr "Lijnhoogte corps/link"
 
-#: functions.php:2470
+#: functions.php:2478
 msgid "Body Font Style"
 msgstr "Lettertypestijl corps"
 
-#: functions.php:2485
+#: functions.php:2493
 msgid "Widget Text Color"
 msgstr "Kleur widget-tekst"
 
-#: functions.php:2499
+#: functions.php:2507
 msgid "Widget Link Color"
 msgstr "Kleur widget-link"
 
-#: functions.php:2513
+#: functions.php:2521
 msgid "Widget Header Color"
 msgstr "Kleur widget-koptekst"
 
-#: functions.php:2527
+#: functions.php:2535
 msgid "Widget Bullet Color"
 msgstr "Kleur widget-punt"
 
-#: functions.php:2542
+#: functions.php:2550
 msgid "Footer Menu Background Color"
 msgstr "Achtergrondkleur voettekst-menu"
 
-#: functions.php:2556
+#: functions.php:2564
 msgid "Footer Menu Text Color"
 msgstr "Tekstkleur voettekst-menu"
 
-#: functions.php:2570
+#: functions.php:2578
 msgid "Footer Menu Active Link Color"
 msgstr "Actieve link-kleur voettekstmenu"
 
-#: functions.php:2618 functions.php:2681
+#: functions.php:2626 functions.php:2689
 msgid "Font Size"
 msgstr "Grootte lettertype"
 
-#: functions.php:2700
+#: functions.php:2708
 msgid "Social Icon Size"
 msgstr "Grootte sociaal icoon"
 
-#: functions.php:2719
+#: functions.php:2727
 msgid "Social Icon Color"
 msgstr "Kleur sociaal icoon"
 
-#: functions.php:2780
+#: functions.php:2788
 msgid "Border Width"
 msgstr "Boordbreedte"
 
-#: functions.php:2799 functions.php:2985
+#: functions.php:2807 functions.php:2993
 msgid "Border Color"
 msgstr "Boordkleur"
 
-#: functions.php:2813 functions.php:2999
+#: functions.php:2821 functions.php:3007
 msgid "Border Radius"
 msgstr "Boordstraal"
 
-#: functions.php:2851 functions.php:5342
+#: functions.php:2859 functions.php:5350
 msgid "Button Font Style"
 msgstr "Lettertypestijl knop"
 
-#: functions.php:2867
+#: functions.php:2875
 msgid "Buttons Font"
 msgstr "Lettertype knoppen"
 
-#: functions.php:2884
+#: functions.php:2892
 msgid "Add Button Icon"
 msgstr "Knopicoon toevoegen"
 
-#: functions.php:2899
+#: functions.php:2907
 msgid "Select Icon"
 msgstr "Icoon selecteren"
 
-#: functions.php:2913
+#: functions.php:2921
 msgid "Icon Color"
 msgstr "Kleur van het pictogram"
 
-#: functions.php:2927
+#: functions.php:2935
 msgid "Icon Placement"
 msgstr "Plaatsing van het icoon"
 
-#: functions.php:2942
+#: functions.php:2950
 msgid "Only Show Icon on Hover"
 msgstr "Alleen icoon tonen op muisaanwijzer"
 
-#: functions.php:3036 includes/widgets/widget-about.php:50
+#: functions.php:3044 includes/widgets/widget-about.php:50
 #: includes/widgets/widget-ads.php:180 includes/widgets/widget-ads.php:188
 #: includes/widgets/widget-ads.php:196 includes/widgets/widget-ads.php:204
 #: includes/widgets/widget-ads.php:212 includes/widgets/widget-ads.php:220
@@ -1110,393 +1103,397 @@ msgstr "Alleen icoon tonen op muisaanwijzer"
 msgid "Image"
 msgstr "Afbeelding"
 
-#: functions.php:3037
+#: functions.php:3045
 msgid "Image Module Settings"
 msgstr "Instellingen afbeeldingsmodule"
 
-#: functions.php:3048
+#: functions.php:3056
 msgid "Animation"
 msgstr "Animatie"
 
-#: functions.php:3049
+#: functions.php:3057
 msgid "This controls default direction of the lazy-loading animation."
 msgstr "Dit controleert de standaardrichting van de animatie die lui laadt."
 
-#: functions.php:3059
+#: functions.php:3067
 msgid "Gallery"
 msgstr "Galerij"
 
-#: functions.php:3072 functions.php:3855 functions.php:3964
+#: functions.php:3080 functions.php:3863 functions.php:3972
 msgid "Zoom Icon Color"
 msgstr "Icoonkleur zoemen"
 
-#: functions.php:3087 functions.php:3870 functions.php:3979
+#: functions.php:3095 functions.php:3878 functions.php:3987
 msgid "Hover Overlay Color"
 msgstr "Bedekkingskleur aanwijzen"
 
-#: functions.php:3102 functions.php:3208 functions.php:3885 functions.php:3994
-#: functions.php:4263 functions.php:4342 functions.php:4384 functions.php:4484
+#: functions.php:3110 functions.php:3216 functions.php:3893 functions.php:4002
+#: functions.php:4271 functions.php:4350 functions.php:4392 functions.php:4492
 msgid "Title Font Size"
 msgstr "Grootte lettertype van titel"
 
-#: functions.php:3122 functions.php:3228 functions.php:3905 functions.php:4014
-#: functions.php:4283 functions.php:4362 functions.php:4990 functions.php:5069
+#: functions.php:3130 functions.php:3236 functions.php:3913 functions.php:4022
+#: functions.php:4291 functions.php:4370 functions.php:4998 functions.php:5077
 msgid "Title Font Style"
 msgstr "Lettertypestijl titel"
 
-#: functions.php:3138 functions.php:3921 functions.php:4030
+#: functions.php:3146 functions.php:3929 functions.php:4038
 msgid "Caption Font Size"
 msgstr "Bijschrift grootte van lettertype"
 
-#: functions.php:3158 functions.php:3941 functions.php:4050
+#: functions.php:3166 functions.php:3949 functions.php:4058
 msgid "Caption Font Style"
 msgstr "Lettertypestijl onderschrift"
 
-#: functions.php:3168
+#: functions.php:3176
 msgid "Blurb"
 msgstr "Blurb"
 
-#: functions.php:3181 functions.php:3293 functions.php:3471 functions.php:3586
-#: functions.php:3649 functions.php:3728 functions.php:3792 functions.php:4583
-#: functions.php:5279 functions.php:5385
+#: functions.php:3189 functions.php:3301 functions.php:3479 functions.php:3594
+#: functions.php:3657 functions.php:3736 functions.php:3800 functions.php:4591
+#: functions.php:5287 functions.php:5393
 msgid "Header Font Size"
 msgstr "Lettertypegrootte koptekst"
 
-#: functions.php:3195
+#: functions.php:3203
 msgid "Tabs"
 msgstr "Tabbladen"
 
-#: functions.php:3245 functions.php:3622 functions.php:3764 functions.php:3828
+#: functions.php:3253 functions.php:3630 functions.php:3772 functions.php:3836
 msgid "Padding"
 msgstr "Buffer"
 
-#: functions.php:3259
+#: functions.php:3267
 msgid "Slider"
 msgstr "Slider"
 
-#: functions.php:3273 functions.php:5365
+#: functions.php:3281 functions.php:5373
 msgid "Top & Bottom Padding"
 msgstr "Buffer bovenkant en onderkant"
 
-#: functions.php:3329 functions.php:5421
+#: functions.php:3337 functions.php:5429
 msgid "Content Font Size"
 msgstr "Grootte lettertype van inhoud"
 
-#: functions.php:3349 functions.php:5441
+#: functions.php:3357 functions.php:5449
 msgid "Content Font Style"
 msgstr "Lettertypestijl inhoud"
 
-#: functions.php:3359
+#: functions.php:3367
 msgid "Testimonial"
 msgstr "Aanbevelingen"
 
-#: functions.php:3372 functions.php:4891
+#: functions.php:3380 functions.php:4899
 msgid "Name Font Style"
 msgstr "Lettertypestijl naam"
 
-#: functions.php:3388
+#: functions.php:3396
 msgid "Details Font Style"
 msgstr "Lettertypestijl gegevens"
 
-#: functions.php:3404
+#: functions.php:3412
 msgid "Portrait Border Radius"
 msgstr "Boordstraal portret"
 
-#: functions.php:3458
+#: functions.php:3466
 msgid "Pricing Table"
 msgstr "Prijstabel"
 
-#: functions.php:3507 functions.php:3685 functions.php:4907
+#: functions.php:3515 functions.php:3693 functions.php:4915
 msgid "Subheader Font Size"
 msgstr "Grootte lettertype van subtitel"
 
-#: functions.php:3527 functions.php:3705 functions.php:4927
+#: functions.php:3535 functions.php:3713 functions.php:4935
 msgid "Subheader Font Style"
 msgstr "Lettertypestijl subtitel"
 
-#: functions.php:3543 functions.php:5200
+#: functions.php:3551 functions.php:5208
 msgid "Price Font Size"
 msgstr "Lettertypegrootte prijs"
 
-#: functions.php:3563
+#: functions.php:3571
 msgid "Pricing Font Style"
 msgstr "Lettertypestijl prijsstelling"
 
-#: functions.php:3573
+#: functions.php:3581
 msgid "Call To Action"
 msgstr "Oproep tot actie"
 
-#: functions.php:3636
+#: functions.php:3644
 msgid "Audio"
 msgstr "Audio"
 
-#: functions.php:3715
+#: functions.php:3723
 msgid "Email Optin"
 msgstr "email Optin"
 
-#: functions.php:3842
+#: functions.php:3850
 msgid "Portfolio"
 msgstr "Portfolio"
 
-#: functions.php:3951
+#: functions.php:3959
 msgid "Filterable Portfolio"
 msgstr "Filterbaar portfolio"
 
-#: functions.php:4066
+#: functions.php:4074
 msgid "Filters Font Size"
 msgstr "Lettertypegrootte filters"
 
-#: functions.php:4086
+#: functions.php:4094
 msgid "Filters Font Style"
 msgstr "Lettertypestijl filters"
 
-#: functions.php:4096
+#: functions.php:4104
 msgid "Bar Counter"
 msgstr "Balkteller"
 
-#: functions.php:4109
+#: functions.php:4117
 msgid "Label Font Size"
 msgstr "Lettertypegrootte etiket"
 
-#: functions.php:4129
+#: functions.php:4137
 msgid "Label Font Style"
 msgstr "Lettertypestijl etiket"
 
-#: functions.php:4145
+#: functions.php:4153
 msgid "Percent Font Size"
 msgstr "Lettertypegrootte procent"
 
-#: functions.php:4165
+#: functions.php:4173
 msgid "Percent Font Style"
 msgstr "Lettertypestijl procent"
 
-#: functions.php:4181
+#: functions.php:4189
 msgid "Bar Padding"
 msgstr "Buffer balk"
 
-#: functions.php:4201
+#: functions.php:4209
 msgid "Bar Border Radius"
 msgstr "Straal balkboord"
 
-#: functions.php:4215
+#: functions.php:4223
 msgid "Circle Counter"
 msgstr "Cirkelteller"
 
-#: functions.php:4227 functions.php:4306
+#: functions.php:4235 functions.php:4314
 msgid "Number Font Size"
 msgstr "Lettertypegrootte nummer"
 
-#: functions.php:4247 functions.php:4326
+#: functions.php:4255 functions.php:4334
 msgid "Number Font Style"
 msgstr "Lettertypestijl nummer"
 
-#: functions.php:4293
+#: functions.php:4301
 msgid "Number Counter"
 msgstr "Nummerteller"
 
-#: functions.php:4372
+#: functions.php:4380
 msgid "Accordion"
 msgstr "Accordeon"
 
-#: functions.php:4404 functions.php:4504
+#: functions.php:4412 functions.php:4512
 msgid "Opened Title Font Style"
 msgstr "Lettertypestijl geopende titel"
 
-#: functions.php:4420 functions.php:4520
+#: functions.php:4428 functions.php:4528
 msgid "Closed Title Font Style"
 msgstr "Lettertypestijl gesloten titel"
 
-#: functions.php:4436 functions.php:4536
+#: functions.php:4444 functions.php:4544
 msgid "Toggle Icon Size"
 msgstr "Icoongrootte schakelaar"
 
-#: functions.php:4457 functions.php:4556
+#: functions.php:4465 functions.php:4564
 msgid "Toggle Padding"
 msgstr "Buffer schakelaar"
 
-#: functions.php:4471
+#: functions.php:4479
 msgid "Toggle"
 msgstr "Schakelen"
 
-#: functions.php:4570
+#: functions.php:4578
 msgid "Contact Form"
 msgstr "Contactformulier"
 
-#: functions.php:4619
+#: functions.php:4627
 msgid "Input Font Size"
 msgstr "Lettertypegrootte input"
 
-#: functions.php:4639
+#: functions.php:4647
 msgid "Input Font Style"
 msgstr "Lettertypestijl input"
 
-#: functions.php:4655
+#: functions.php:4663
 msgid "Input Field Padding"
 msgstr "Buffer inputveld"
 
-#: functions.php:4675
+#: functions.php:4683
 msgid "Captcha Font Size"
 msgstr "Lettertypegrootte captcha"
 
-#: functions.php:4695
+#: functions.php:4703
 msgid "Captcha Font Style"
 msgstr "Lettertypestijl captcha"
 
-#: functions.php:4705 includes/functions/sidebars.php:4
+#: functions.php:4713 includes/functions/sidebars.php:4
 msgid "Sidebar"
 msgstr "Zijbalk"
 
-#: functions.php:4718
+#: functions.php:4726
 msgid "Widget Header Font Size"
 msgstr "Lettertypegrootte widget-koptekst"
 
-#: functions.php:4738
+#: functions.php:4746
 msgid "Widget Header Font Style"
 msgstr "Lettertypestijl widget-koptekst"
 
-#: functions.php:4754
+#: functions.php:4762
 msgid "Remove Vertical Divider"
 msgstr "Verticale verdeler verwijderen"
 
-#: functions.php:4763
+#: functions.php:4771
 msgid "Divider"
 msgstr "Verdeler"
 
-#: functions.php:4775
+#: functions.php:4783
 msgid "Show Divider"
 msgstr "Laat verdeler zien"
 
-#: functions.php:4790
+#: functions.php:4798
 msgid "Divider Style"
 msgstr "Stijl scheidingslijn"
 
-#: functions.php:4807
+#: functions.php:4815
 msgid "Divider Weight"
 msgstr "Zwaarte scheidingslijn"
 
-#: functions.php:4827
+#: functions.php:4835
 msgid "Divider Height"
 msgstr "Hoogte verdeler"
 
-#: functions.php:4847
+#: functions.php:4855
 msgid "Divider Position"
 msgstr "Positie scheidingslijn"
 
-#: functions.php:4858
+#: functions.php:4866
 msgid "Person"
 msgstr "Persoon"
 
-#: functions.php:4871
+#: functions.php:4879
 msgid "Name Font Size"
 msgstr "Lettertypegrootte naam"
 
-#: functions.php:4943
+#: functions.php:4951
 msgid "Social Network Icon Size"
 msgstr "Icoongrootte sociaal netwerk"
 
-#: functions.php:4970 functions.php:5049
+#: functions.php:4978 functions.php:5057
 msgid "Post Title Font Size"
 msgstr "Lettertypegrootte berichtstitel"
 
-#: functions.php:5006 functions.php:5085
+#: functions.php:5014 functions.php:5093
 msgid "Meta Font Size"
 msgstr "Lettertypegrootte meta"
 
-#: functions.php:5036
+#: functions.php:5044
 msgid "Blog Grid"
 msgstr "blog Grid"
 
-#: functions.php:5115
+#: functions.php:5123
 msgid "Shop"
 msgstr "Shop"
 
-#: functions.php:5128
+#: functions.php:5136
 msgid "Product Name Font Size"
 msgstr "Lettertypegrootte productnaam"
 
-#: functions.php:5148
+#: functions.php:5156
 msgid "Product Name Font Style"
 msgstr "Lettertypestijl productnaam"
 
-#: functions.php:5164
+#: functions.php:5172
 msgid "Sale Badge Font Size"
 msgstr "Lettertypegrootte verkoopsinsigne"
 
-#: functions.php:5184
+#: functions.php:5192
 msgid "Sale Badge Font Style"
 msgstr "Lettertypestijl verkoopsinsigne"
 
-#: functions.php:5220
+#: functions.php:5228
 msgid "Price Font Style"
 msgstr "Lettertypestijl prijs"
 
-#: functions.php:5236
+#: functions.php:5244
 msgid "Sale Price Font Size"
 msgstr "Lettertypegrootte verkoopprijs"
 
-#: functions.php:5256
+#: functions.php:5264
 msgid "Sale Price Font Style"
 msgstr "Lettertypestijl verkoopprijs"
 
-#: functions.php:5266
+#: functions.php:5274
 msgid "Countdown"
 msgstr "Aftelling"
 
-#: functions.php:5309
+#: functions.php:5317
 msgid "Social Follow"
 msgstr "Sociaal volgen"
 
-#: functions.php:5322
+#: functions.php:5330
 msgid "Follow Font & Icon Size"
 msgstr "Lettertype en icoongrootte van volgen"
 
-#: functions.php:5352
+#: functions.php:5360
 msgid "Fullwidth Slider"
 msgstr "Fullwidth Slider"
 
-#: functions.php:7745
+#: functions.php:7753
 msgid "0 comments"
 msgstr "0 Reacties"
 
-#: functions.php:7745
+#: functions.php:7753
 msgid "1 comment"
 msgstr "1 reactie"
 
-#: functions.php:7745
+#: functions.php:7753
 msgid "comments"
 msgstr "reacties"
 
-#: functions.php:7828
+#: functions.php:7836
 msgid "Password Protected"
 msgstr "Wachtwoordbeveiliging"
 
-#: functions.php:7829
+#: functions.php:7837
 msgid "To view this protected post, enter the password below"
 msgstr "Voer het wachtwoord hieronder in om deze beveiligde post te bekijken."
 
-#: functions.php:7832
+#: functions.php:7840
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: functions.php:7833
+#: functions.php:7841
 msgid "Submit"
 msgstr "Indienen"
 
-#: functions.php:8226 functions.php:8261
+#: functions.php:8241 functions.php:8277
 msgid "Theme Customizer"
 msgstr "Systeemaanpasser van thema"
 
-#: functions.php:8230 functions.php:8274
+#: functions.php:8245 functions.php:8290
 msgid "Module Customizer"
 msgstr "Systeemaanpasser van module"
 
-#: functions.php:8232
+#: functions.php:8247
 msgid "Role Editor"
 msgstr "rol Editor"
 
-#: functions.php:8235
+#: functions.php:8250
 msgid "Divi Library"
 msgstr "Divi bibliotheek"
+
+#: functions.php:8428
+msgid "Divi Customizer Settings"
+msgstr "Divi Customizer Instellingen"
 
 #: header.php:143 header.php:271
 msgid "Search &hellip;"
@@ -1857,11 +1854,20 @@ msgstr ""
 "Schakel dit in als u de standaard galerij van WordPress wilt vervangen door "
 "de galerij in Divi-stijl."
 
-#: options_divi.php:77
+#: options_divi.php:75
+msgid "Color Pickers Default Palette"
+msgstr "Standaard palet van kleurenkiezer"
+
+#: options_divi.php:80
+msgid "Define the default color palette for color pickers in the Divi Builder."
+msgstr ""
+"Definieer het standaard kleurenpalet voor kleurkiezers in de Divi Builder."
+
+#: options_divi.php:85
 msgid "Grab the first post image"
 msgstr "Pak de eerste post afbeelding"
 
-#: options_divi.php:81
+#: options_divi.php:89
 msgid ""
 "By default thumbnail images are created using custom fields. However, if you "
 "would rather use the images that are already in your post for your thumbnail "
@@ -1876,11 +1882,11 @@ msgstr ""
 "miniatuur afbeeldingen automatisch gegenereerd met gebruik van de eerste "
 "afbeelding in uw post. De afbeelding moet op uw eigen server gehost zijn."
 
-#: options_divi.php:84
+#: options_divi.php:92
 msgid "Blog Style Mode"
 msgstr "Blog Stijl Modus"
 
-#: options_divi.php:88
+#: options_divi.php:96
 msgid ""
 "By default the theme truncates your posts on index/homepages automatically "
 "to create post previews. If you would rather show your posts in full on "
@@ -1890,20 +1896,20 @@ msgstr ""
 "voorbeelden te maken. Wilt u liever uw posts volledig tonen, als een "
 "tradioneel blog, dan kunt u deze functie activeren."
 
-#: options_divi.php:91
+#: options_divi.php:99
 msgid "Shop Page & Category Page Layout for WooCommerce"
 msgstr "Winkel Pagina & Categorie Pagina voor Layout voor WooCommerce"
 
-#: options_divi.php:100
+#: options_divi.php:108
 msgid "Here you can choose Shop Page & Category Page Layout for WooCommerce."
 msgstr ""
 "Hier kunt u Winkel Pagina en Categorie Pagina Layout kiezen voor WooCommerce."
 
-#: options_divi.php:104
+#: options_divi.php:112
 msgid "MailChimp API Key"
 msgstr "MailChimp API Code"
 
-#: options_divi.php:109
+#: options_divi.php:117
 msgid ""
 "Enter your MailChimp API key. You can create an api key <a target=\"_blank\" "
 "href=\"%1$s\">here</a>"
@@ -1911,19 +1917,19 @@ msgstr ""
 "Voer uw MailChimp API code in. U kunt <a target=\"_blank\" href=\"%1$s"
 "\">hier</a> een API code aanmaken"
 
-#: options_divi.php:112
+#: options_divi.php:120
 msgid "Aweber Authorization"
 msgstr "Aweber Autorisatie"
 
-#: options_divi.php:114
+#: options_divi.php:122
 msgid "Authorize your Aweber account here."
 msgstr "Autoriseer uw Aweber account hier."
 
-#: options_divi.php:118
+#: options_divi.php:126
 msgid "Regenerate MailChimp Lists"
 msgstr "Regenereer MailChimp Lijsten"
 
-#: options_divi.php:122
+#: options_divi.php:130
 msgid ""
 "By default, MailChimp lists are cached for one day. If you added new list, "
 "but it doesn't appear within the Email Optin module settings, activate this "
@@ -1934,11 +1940,11 @@ msgstr ""
 "instellingen verschijnen, activeert u deze optie. Vergeet niet om het uit te "
 "schakelen zodra de lijst is geregenereerd."
 
-#: options_divi.php:124
+#: options_divi.php:132
 msgid "Regenerate Aweber Lists"
 msgstr "Regenereer Aweber Lijsten"
 
-#: options_divi.php:128
+#: options_divi.php:136
 msgid ""
 "By default, Aweber lists are cached for one day. If you added new list, but "
 "it doesn't appear within the Email Optin module settings, activate this "
@@ -1949,76 +1955,76 @@ msgstr ""
 "verschijnen, activeert u deze optie. Vergeet niet om het uit te schakelen "
 "zodra de lijst is geregenereerd."
 
-#: options_divi.php:130
+#: options_divi.php:138
 msgid "Show Facebook Icon"
 msgstr "Toon Facebook Icoon"
 
-#: options_divi.php:134
+#: options_divi.php:142
 msgid "Here you can choose to display the Facebook Icon on your homepage. "
 msgstr ""
 "Hier kunt u ervoor kiezen de Facebook Icoon op uw startpagina te tonen."
 
-#: options_divi.php:136
+#: options_divi.php:144
 msgid "Show Twitter Icon"
 msgstr "Toon Twitter Icoon"
 
-#: options_divi.php:140
+#: options_divi.php:148
 msgid "Here you can choose to display the Twitter Icon. "
 msgstr "Hier kunt u ervoor kiezen de Twitter Icoon op uw startpagina te tonen."
 
-#: options_divi.php:142
+#: options_divi.php:150
 msgid "Show Google+ Icon"
 msgstr "Toon Google+ Icoon"
 
-#: options_divi.php:146
+#: options_divi.php:154
 msgid "Here you can choose to display the Google+ Icon on your homepage. "
 msgstr "Hier kunt u ervoor kiezen de Google+ Icoon op uw startpagina te tonen."
 
-#: options_divi.php:148
+#: options_divi.php:156
 msgid "Show RSS Icon"
 msgstr "Toon RSS Icoon"
 
-#: options_divi.php:152
+#: options_divi.php:160
 msgid "Here you can choose to display the RSS Icon. "
 msgstr "Hier kunt u ervoor kiezen de RSS Icoon te tonen."
 
-#: options_divi.php:154
+#: options_divi.php:162
 msgid "Facebook Profile Url"
 msgstr "Facebook Profiel URL"
 
-#: options_divi.php:159
+#: options_divi.php:167
 msgid "Enter the URL of your Facebook Profile. "
 msgstr "Voer de URL van uw Facebook Profiel in."
 
-#: options_divi.php:161
+#: options_divi.php:169
 msgid "Twitter Profile Url"
 msgstr "Twitter Profiel URL"
 
-#: options_divi.php:166
+#: options_divi.php:174
 msgid "Enter the URL of your Twitter Profile."
 msgstr "Voer de URL van uw Twitter Profiel in."
 
-#: options_divi.php:168
+#: options_divi.php:176
 msgid "Google+ Profile Url"
 msgstr "Google+ Profiel URL"
 
-#: options_divi.php:173
+#: options_divi.php:181
 msgid "Enter the URL of your Google+ Profile. "
 msgstr "Voer de URL van uw Google+ Profiel in."
 
-#: options_divi.php:175
+#: options_divi.php:183
 msgid "RSS Icon Url"
 msgstr "RSS Icoon URL"
 
-#: options_divi.php:180
+#: options_divi.php:188
 msgid "Enter the URL of your RSS feed. "
 msgstr "Voer de URL van uw RSS feed in."
 
-#: options_divi.php:182
+#: options_divi.php:190
 msgid "Number of Products displayed on WooCommerce archive pages"
 msgstr "Aantal producten weergegeven op archiefpagina's van WooCommerce"
 
-#: options_divi.php:186
+#: options_divi.php:194
 msgid ""
 "Here you can designate how many WooCommerce products are displayed on the "
 "archive page. This option works independently from the Settings > Reading "
@@ -2028,11 +2034,11 @@ msgstr ""
 "op de archiefpagina. Deze optie werkt onafhankelijk van de Instellingen > "
 "Leesopties in wp-admin."
 
-#: options_divi.php:190
+#: options_divi.php:198
 msgid "Number of Posts displayed on Category page"
 msgstr "Aantal getoonde Posts op Categorie pagina"
 
-#: options_divi.php:194
+#: options_divi.php:202
 msgid ""
 "Here you can designate how many recent articles are displayed on the "
 "Category page. This option works independently from the Settings > Reading "
@@ -2042,11 +2048,11 @@ msgstr ""
 "Categorie pagina. Deze optie werkt onafhankelijk van de Instellingen > Lees "
 "opties in wp-admin."
 
-#: options_divi.php:198
+#: options_divi.php:206
 msgid "Number of Posts displayed on Archive pages"
 msgstr "Aantal getoonde Posts op Archief pagina's"
 
-#: options_divi.php:202
+#: options_divi.php:210
 msgid ""
 "Here you can designate how many recent articles are displayed on the Archive "
 "pages. This option works independently from the Settings > Reading options "
@@ -2056,11 +2062,11 @@ msgstr ""
 "Archief pagina's. Deze optie werkt onafhankelijk van de Instellingen > Lees "
 "opties in wp-admin."
 
-#: options_divi.php:206
+#: options_divi.php:214
 msgid "Number of Posts displayed on Search pages"
 msgstr "Aantal getoonde Posts op Zoek pagina's"
 
-#: options_divi.php:210
+#: options_divi.php:218
 msgid ""
 "Here you can designate how many recent articles are displayed on the Search "
 "results pages. This option works independently from the Settings > Reading "
@@ -2070,11 +2076,11 @@ msgstr ""
 "resultaat pagina's. Deze optie werkt onafhankelijk van de Instellingen > "
 "Lees opties in wp-admin."
 
-#: options_divi.php:214
+#: options_divi.php:222
 msgid "Number of Posts displayed on Tag pages"
 msgstr "Aantal getoonde Posts op Tag pagina's"
 
-#: options_divi.php:218
+#: options_divi.php:226
 msgid ""
 "Here you can designate how many recent articles are displayed on the Tag "
 "pages. This option works independently from the Settings > Reading options "
@@ -2084,11 +2090,11 @@ msgstr ""
 "pagina's. Deze optie werkt onafhankelijk van de Instellingen > Lees opties "
 "in wp-admin."
 
-#: options_divi.php:222
+#: options_divi.php:230
 msgid "Date format"
 msgstr "Datum formaat"
 
-#: options_divi.php:226
+#: options_divi.php:234
 msgid ""
 "This option allows you to change how your dates are displayed. For more "
 "information please refer to the WordPress codex here:<a href='http://codex."
@@ -2099,54 +2105,54 @@ msgstr ""
 "informatie raadpleeg WordPress codex hier:<a href='http://codex.wordpress."
 "org/Formatting_Date_and_Time' target='_blank'>Datum en Tijd formatteren</a>"
 
-#: options_divi.php:230
+#: options_divi.php:238
 msgid "Use excerpts when defined"
 msgstr "Gebruik fragmenten als gedefenieerd"
 
-#: options_divi.php:234
+#: options_divi.php:242
 msgid "This will enable the use of excerpts in posts or pages."
 msgstr "Dit schakelt het gebruik in van fragmenten in posts of pagina's."
 
-#: options_divi.php:237
+#: options_divi.php:245
 msgid "Responsive shortcodes"
 msgstr "Responsive shortcodes"
 
-#: options_divi.php:241
+#: options_divi.php:249
 msgid "Enable this option to make shortcodes respond to various screen sizes"
 msgstr ""
 "Schakel deze optie in om shortcodes te laten reageren op verschillende "
 "schermafmetingen"
 
-#: options_divi.php:244
+#: options_divi.php:252
 msgid "Google Fonts subsets"
 msgstr "Google Fonts subinstellingen"
 
-#: options_divi.php:248
+#: options_divi.php:256
 msgid "This will enable Google Fonts for Non-English languages."
 msgstr "Dit schakelt Google Fonts in voor niet-Engelse talen."
 
-#: options_divi.php:251
+#: options_divi.php:259
 msgid "Back To Top Button"
 msgstr "Terug naar Boven Toets"
 
-#: options_divi.php:255
+#: options_divi.php:263
 msgid "Enable this option to display Back To Top Button while scrolling"
 msgstr ""
 "Schakel deze optie in om Terug naar Boven Toets te tonen tijdens het scrollen"
 
-#: options_divi.php:258
+#: options_divi.php:266
 msgid "Smooth Scrolling"
 msgstr "Gelijkmatig Scrollen"
 
-#: options_divi.php:262
+#: options_divi.php:270
 msgid "Enable this option to get the smooth scrolling effect with mouse wheel"
 msgstr "Schakel deze optie in om gelijkmatig te scrollen met het muiswiel"
 
-#: options_divi.php:265
+#: options_divi.php:273
 msgid "Disable Translations"
 msgstr "Vertalingen uitschakelen"
 
-#: options_divi.php:269
+#: options_divi.php:277
 msgid ""
 "Disable translations if you don't want to display translated theme strings "
 "on your site."
@@ -2154,25 +2160,33 @@ msgstr ""
 "Schakel vertalingen uit als u geen vertaalde themateksten op uw site wilt "
 "weergeven."
 
-#: options_divi.php:272
+#: options_divi.php:280
 msgid "Custom CSS"
 msgstr "Aangepaste CSS"
 
-#: options_divi.php:276
+#: options_divi.php:284
 msgid "Here you can add custom css to override or extend default styles."
 msgstr ""
 "Hier kunt u aangepaste CSS toevoegen om standaard stijlen te overschrijven "
 "of uit te breiden."
 
-#: options_divi.php:295
+#: options_divi.php:289
+msgid "Memory Limit Increase"
+msgstr "Geheugenlimiettoename"
+
+#: options_divi.php:291
+msgid "Here you can disable automatic memory limit increase."
+msgstr "Hier kunt u de automatische geheugenlimietverhoging uitschakelen."
+
+#: options_divi.php:311
 msgid "Pages"
 msgstr "Pagina's"
 
-#: options_divi.php:313
+#: options_divi.php:329
 msgid "Exclude pages from the navigation bar"
 msgstr "Sluit pagina's van de navigatiebar uit"
 
-#: options_divi.php:317
+#: options_divi.php:333
 msgid ""
 "Here you can choose to remove certain pages from the navigation menu. All "
 "pages marked with an X will not appear in your navigation bar. "
@@ -2180,11 +2194,11 @@ msgstr ""
 "Hier kunt u bepaalde pagina's verwijderen uit het navigatiemenu. Alle met "
 "een X gemarkeerde pagina's zullen niet in uw navigatiebar verschijnen."
 
-#: options_divi.php:321 options_divi.php:371
+#: options_divi.php:337 options_divi.php:387
 msgid "Show dropdown menus"
 msgstr "Toon dropdown menu's"
 
-#: options_divi.php:325
+#: options_divi.php:341
 msgid ""
 "If you would like to remove the dropdown menus from the pages navigation bar "
 "disable this feature."
@@ -2192,11 +2206,11 @@ msgstr ""
 "Als u de dropdown menu's wilt verwijderen uit de navigatiebar van de "
 "pagina's, schakel deze functie dan uit."
 
-#: options_divi.php:328
+#: options_divi.php:344
 msgid "Display Home link"
 msgstr "Toon Start link"
 
-#: options_divi.php:332
+#: options_divi.php:348
 msgid ""
 "By default the theme creates a Home link that, when clicked, leads back to "
 "your blog's homepage. If, however, you are using a static homepage and have "
@@ -2209,19 +2223,19 @@ msgstr ""
 "resulteert dit in een dubbele link. In dat geval dient u deze functie uit te "
 "schakelen om de link te verwijderen."
 
-#: options_divi.php:335
+#: options_divi.php:351
 msgid "Sort Pages Links"
 msgstr "Sorteer Pagina Links"
 
-#: options_divi.php:339
+#: options_divi.php:355
 msgid "Here you can choose to sort your pages links."
 msgstr "Hier kunt u kiezen om uw pagina's links te sorteren."
 
-#: options_divi.php:342
+#: options_divi.php:358
 msgid "Order Pages Links by Ascending/Descending"
 msgstr "Stel de Pagina-links in om naar boven/beneden te gaan."
 
-#: options_divi.php:346
+#: options_divi.php:362
 msgid ""
 "Here you can choose to reverse the order that your pages links are "
 "displayed. You can choose between ascending and descending."
@@ -2229,11 +2243,11 @@ msgstr ""
 "Hier kunt u de volgorde waarop uw pagina links getoond worden wijzigen. U "
 "kunt kiezen tussen naar boven oplopend of naar beneden aflopend."
 
-#: options_divi.php:349 options_divi.php:385
+#: options_divi.php:365 options_divi.php:401
 msgid "Number of dropdown tiers shown"
 msgstr "Aantal getoonde dropdown menu lagen"
 
-#: options_divi.php:353 options_divi.php:389
+#: options_divi.php:369 options_divi.php:405
 msgid ""
 "This options allows you to control how many teirs your pages dropdown menu "
 "has. Increasing the number allows for additional menu items to be shown."
@@ -2241,11 +2255,11 @@ msgstr ""
 "Met deze optie controleert u hoeveel lagen uw dropdown keuzemenu heeft. Het "
 "aantal verhogen geeft de mogelijkheid om aanvullende menu items te tonen."
 
-#: options_divi.php:363
+#: options_divi.php:379
 msgid "Exclude categories from the navigation bar"
 msgstr "Sluit categorieeen van de navigatiebar uit"
 
-#: options_divi.php:367
+#: options_divi.php:383
 msgid ""
 "Here you can choose to remove certain categories from the navigation menu. "
 "All categories marked with an X will not appear in your navigation bar. "
@@ -2253,7 +2267,7 @@ msgstr ""
 "Hier kunt u bepaalde categorieen van het navigatiemenu verwijderen. Alle met "
 "een X gemarkeerde categorieen zullen niet in uw navigatiebar verschijnen."
 
-#: options_divi.php:375
+#: options_divi.php:391
 msgid ""
 "If you would like to remove the dropdown menus from the categories "
 "navigation bar disable this feature."
@@ -2261,11 +2275,11 @@ msgstr ""
 "Als u de keuzemenu's wilt verwijderen uit de categorieen navigatiebar "
 "schakel deze functie uit."
 
-#: options_divi.php:378
+#: options_divi.php:394
 msgid "Hide empty categories"
 msgstr "Verberg lege categorieen"
 
-#: options_divi.php:382
+#: options_divi.php:398
 msgid ""
 "If you would like categories to be displayed in your navigationbar that "
 "don't have any posts in them then disable this option. By default empty "
@@ -2275,11 +2289,11 @@ msgstr ""
 "navigatiebar schakel deze optie dan uit. Lege categorieen zijn standaard "
 "verborgen."
 
-#: options_divi.php:393
+#: options_divi.php:409
 msgid "Sort Categories Links by Name/ID/Slug/Count/Term Group"
 msgstr "Sorteer Categorie Links op Name/ID/Slug/Count/Term Groep"
 
-#: options_divi.php:397
+#: options_divi.php:413
 msgid ""
 "By default pages are sorted by name. However if you would rather have them "
 "sorted by ID you can adjust this setting."
@@ -2287,11 +2301,11 @@ msgstr ""
 "Standaard worden pagina's op naam gesorteerd. Als u ze echter liever op ID "
 "gesorteerd wilt hebben, kunt u deze instelling aanpassen."
 
-#: options_divi.php:400
+#: options_divi.php:416
 msgid "Order Category Links by Ascending/Descending"
 msgstr "Categorie Links naar Boven of naar Beneden laten gaan"
 
-#: options_divi.php:404
+#: options_divi.php:420
 msgid ""
 "Here you can choose to reverse the order that your categories links are "
 "displayed. You can choose between ascending and descending."
@@ -2299,11 +2313,11 @@ msgstr ""
 "Hierkunt u de volgorde waarop uw categorie links getoond worden wijzigen. U "
 "kunt kiezen tussen naar boven of naar beneden aflopend."
 
-#: options_divi.php:413
+#: options_divi.php:429
 msgid "Disable top tier dropdown menu links"
 msgstr "Top tier keuze menu links uitschakelen"
 
-#: options_divi.php:417
+#: options_divi.php:433
 msgid ""
 "In some cases users will want to create parent categories or links as "
 "placeholders to hold a list of child links or categories. In this case it is "
@@ -2320,19 +2334,19 @@ msgstr ""
 "van alle pagina's/categorieen, zo dat ze nergens naar doorsturen als ze "
 "aangeklikt worden."
 
-#: options_divi.php:435
+#: options_divi.php:451
 msgid "Single Post Layout"
 msgstr "Enkele Post Layout"
 
-#: options_divi.php:440
+#: options_divi.php:456
 msgid "Single Page Layout"
 msgstr "Enkele Pagina Layout"
 
-#: options_divi.php:453
+#: options_divi.php:469
 msgid "Choose which items to display in the postinfo section"
 msgstr "Kies welke items getoond moeten worden in de post info sectie"
 
-#: options_divi.php:457
+#: options_divi.php:473
 msgid ""
 "Here you can choose which items appear in the postinfo section on single "
 "post pages. This is the area, usually below the post title, which displays "
@@ -2344,11 +2358,11 @@ msgstr ""
 "basisinformatie weergeeft over uw post. De gemarkeerde items hieronder "
 "zullen verschijnen."
 
-#: options_divi.php:461
+#: options_divi.php:477
 msgid "Show comments on posts"
 msgstr "Toon reacties op posts"
 
-#: options_divi.php:465
+#: options_divi.php:481
 msgid ""
 "You can disable this option if you want to remove the comments and comment "
 "form from single post pages. "
@@ -2356,11 +2370,11 @@ msgstr ""
 "U kunt deze optie uitschakelen als u de reacties en het reactieformulier van "
 "posts wilt verwijderen."
 
-#: options_divi.php:468
+#: options_divi.php:484
 msgid "Place Thumbs on Posts"
 msgstr "Plaats Miniatuur Afbeeldingen op Posts"
 
-#: options_divi.php:472
+#: options_divi.php:488
 msgid ""
 "By default thumbnails are placed at the beginning of your post on single "
 "post pages. If you would like to remove this initial thumbnail image to "
@@ -2370,11 +2384,11 @@ msgstr ""
 "pagina. Als u deze eerste miniatuur wilt verwijderen om dubbeling te "
 "voorkomen, schakel deze optie dan eenvoudigweg uit."
 
-#: options_divi.php:481
+#: options_divi.php:497
 msgid "Place Thumbs on Pages"
 msgstr "Plaats miniatuur afbeeldingen op Pagina's"
 
-#: options_divi.php:485
+#: options_divi.php:501
 msgid ""
 "By default thumbnails are not placed on pages (they are only used on posts). "
 "However, if you want to use thumbnails on pages you can! Just enable this "
@@ -2384,11 +2398,11 @@ msgstr ""
 "op posts gebruikt). Als u echter miniaturen op pagina’s wilt gebruiken, kan "
 "dat! Zet gewoon deze optie aan."
 
-#: options_divi.php:488
+#: options_divi.php:504
 msgid "Show comments on pages"
 msgstr "Toon reacties op pagina's"
 
-#: options_divi.php:492
+#: options_divi.php:508
 msgid ""
 "By default comments are not placed on pages, however, if you would like to "
 "allow people to comment on your pages simply enable this option. "
@@ -2396,11 +2410,11 @@ msgstr ""
 "Reacties worden standaard niet op pagina's geplaatst. Als u echter bezoekers "
 "in staat wilt stellen te reageren op uw pagina's, schakel dan deze optie in."
 
-#: options_divi.php:501
+#: options_divi.php:517
 msgid "Post info section"
 msgstr "Post info sectie"
 
-#: options_divi.php:505
+#: options_divi.php:521
 msgid ""
 "Here you can choose which items appear in the postinfo section on pages. "
 "This is the area, usually below the post title, which displays basic "
@@ -2411,31 +2425,31 @@ msgstr ""
 "informatie over uw post getoond wordt. De hieronder gemarkeerde artikelen "
 "zullen verschijnen."
 
-#: options_divi.php:508
+#: options_divi.php:524
 msgid "Show Thumbs on Index pages"
 msgstr "Toon Miniatuur Afbeeldingen op Index pagina's"
 
-#: options_divi.php:512
+#: options_divi.php:528
 msgid "Enable this option to show thumbnails on Index Pages."
 msgstr "Schakel deze optie in om miniaturen op Index Pagina's te tonen."
 
-#: options_divi.php:529
+#: options_divi.php:545
 msgid "Homepage SEO"
 msgstr "Startpagina SEO"
 
-#: options_divi.php:534
+#: options_divi.php:550
 msgid "Single Post Page SEO"
 msgstr "Enkele Post Pagina SEO"
 
-#: options_divi.php:539
+#: options_divi.php:555
 msgid "Index Page SEO"
 msgstr "Index Pagina SEO"
 
-#: options_divi.php:547
+#: options_divi.php:563
 msgid " Enable custom title "
 msgstr "Schakel aangepaste titel in"
 
-#: options_divi.php:551
+#: options_divi.php:567
 msgid ""
 "By default the theme uses a combination of your blog name and your blog "
 "description, as defined when you created your blog, to create your homepage "
@@ -2447,11 +2461,11 @@ msgstr ""
 "pagina aanmaakte. Als u echter een aangepaste titel wilt maken,schakel deze "
 "optie dan in en vul het veld in voor de aangepaste titel. "
 
-#: options_divi.php:554
+#: options_divi.php:570
 msgid " Enable meta description"
 msgstr "Schakel meta tag beschrijving in"
 
-#: options_divi.php:558
+#: options_divi.php:574
 msgid ""
 "By default the theme uses your blog description, as defined when you created "
 "your blog, to fill in the meta description field. If you would like to use a "
@@ -2463,11 +2477,11 @@ msgstr ""
 "Wilt u een andere beschrijving gebruiken, schakel dan deze optie dan in en "
 "vul het veld hieronder in met uw beschrijving."
 
-#: options_divi.php:561
+#: options_divi.php:577
 msgid " Enable meta keywords"
 msgstr "Schakel meta trefwoorden in"
 
-#: options_divi.php:565
+#: options_divi.php:581
 msgid ""
 "By default the theme does not add keywords to your header. Most search "
 "engines don't use keywords to rank your site anymore, but some people define "
@@ -2480,11 +2494,11 @@ msgstr ""
 "wilt toevoegen aan uw header, schakel deze optie dan in en vul het "
 "aangepaste trefwoorden veld hieronder in."
 
-#: options_divi.php:568 options_divi.php:695
+#: options_divi.php:584 options_divi.php:711
 msgid " Enable canonical URL's"
 msgstr "Schakel canonicale URL's in"
 
-#: options_divi.php:572 options_divi.php:646 options_divi.php:699
+#: options_divi.php:588 options_divi.php:662 options_divi.php:715
 msgid ""
 "Canonicalization helps to prevent the indexing of duplicate content by "
 "search engines, and as a result, may help avoid duplicate content penalties "
@@ -2510,11 +2524,11 @@ msgstr ""
 "URLsop uw koppelingen en de domeinnaam die is gedefinieerd in het "
 "instellingen tabblad van wp-admin."
 
-#: options_divi.php:575
+#: options_divi.php:591
 msgid "Homepage custom title (if enabled)"
 msgstr "Home-pagina aangepaste titel (indien ingeschakeld)"
 
-#: options_divi.php:579
+#: options_divi.php:595
 msgid ""
 "If you have enabled custom titles you can add your custom title here. "
 "Whatever you type here will be placed between the < title >< /title > tags "
@@ -2524,11 +2538,11 @@ msgstr ""
 "toevoegen. Wat u hier intikt wordt geplaatst tussen de < title >< /title > "
 "tags in header.php"
 
-#: options_divi.php:583
+#: options_divi.php:599
 msgid "Homepage meta description (if enabled)"
 msgstr "Home-pagina meta beschrijving (indien ingeschakeld)"
 
-#: options_divi.php:587
+#: options_divi.php:603
 msgid ""
 "If you have enabled meta descriptions you can add your custom description "
 "here."
@@ -2536,11 +2550,11 @@ msgstr ""
 "Indien u meta beschrijvingen heeft ingeschakeld kunt u hier uw eigen "
 "aangepaste beschrijving toevoegen."
 
-#: options_divi.php:591
+#: options_divi.php:607
 msgid "Homepage meta keywords (if enabled)"
 msgstr "Home-pagina meta trefwoorden (indien ingeschakeld)"
 
-#: options_divi.php:595
+#: options_divi.php:611
 msgid ""
 "If you have enabled meta keywords you can add your custom keywords here. "
 "Keywords should be separated by comas. For example: wordpress,themes,"
@@ -2550,13 +2564,13 @@ msgstr ""
 "toevoegen. Trefwoorden moeten door komma's gescheiden worden. Bijvoorbeeld: "
 "wordpress,thema's,sjablonen,elegant"
 
-#: options_divi.php:599 options_divi.php:673
+#: options_divi.php:615 options_divi.php:689
 msgid "If custom titles are disabled, choose autogeneration method"
 msgstr ""
 "Als aangepaste titels uitgeschakeld staat, kies dan automatische generatie "
 "methode"
 
-#: options_divi.php:604
+#: options_divi.php:620
 msgid ""
 "If you are not using cutsom post titles you can still have control over how "
 "your titles are generated. Here you can choose which order you would like "
@@ -2568,13 +2582,13 @@ msgstr ""
 "volgorde u uw post titel en blognaam wilt weergeven, of u kunt de blognaam "
 "geheel verwijderen van de titel."
 
-#: options_divi.php:607 options_divi.php:681 options_divi.php:717
+#: options_divi.php:623 options_divi.php:697 options_divi.php:733
 msgid "Define a character to separate BlogName and Post title"
 msgstr ""
 "Geef een teken aan om de naam van de website/blog en de Post titel te "
 "scheiden "
 
-#: options_divi.php:611 options_divi.php:685
+#: options_divi.php:627 options_divi.php:701
 msgid ""
 "Here you can change which character separates your blog title and post name "
 "when using autogenerated post titles. Common values are | or -"
@@ -2583,11 +2597,11 @@ msgstr ""
 "gebruik van automatisch gegenereerde post titels. Algemene Waarden zijn | of "
 "-"
 
-#: options_divi.php:621
+#: options_divi.php:637
 msgid "Enable custom titles"
 msgstr "Schakel aangepaste titels in"
 
-#: options_divi.php:625
+#: options_divi.php:641
 msgid ""
 "By default the theme creates post titles based on the title of your post and "
 "your blog name. If you would like to make your meta title different than "
@@ -2602,11 +2616,11 @@ msgstr ""
 "ingeschakeld zijn. U dient een aangepaste veldnaam te kiezen voor uw titel "
 "zoals onderstaand. "
 
-#: options_divi.php:628
+#: options_divi.php:644
 msgid "Enable custom description"
 msgstr "Schakel aangepaste beschrijving in"
 
-#: options_divi.php:632
+#: options_divi.php:648
 msgid ""
 "If you would like to add a meta description to your post you can do so using "
 "custom fields. This option must be enabled for descriptions to be displayed "
@@ -2619,11 +2633,11 @@ msgstr ""
 "aangepaste velden op basis van de aangepaste veldnaam die u hieronder "
 "aangeeft."
 
-#: options_divi.php:635
+#: options_divi.php:651
 msgid "Enable custom keywords"
 msgstr "Schakel aangepaste trefwoorden in"
 
-#: options_divi.php:639
+#: options_divi.php:655
 msgid ""
 "If you would like to add meta keywords to your post you can do so using "
 "custom fields. This option must be enabled for keywords to be displayed on "
@@ -2636,15 +2650,15 @@ msgstr ""
 "vanaangepaste velden op basis van de aangepaste veldnaam die u hieronder "
 "aangeeft."
 
-#: options_divi.php:642
+#: options_divi.php:658
 msgid "Enable canonical URL's"
 msgstr "Schakel canonicale URL's in"
 
-#: options_divi.php:649
+#: options_divi.php:665
 msgid "Custom field Name to be used for title"
 msgstr "Aangepaste veldnaam te gebruiken voor titel"
 
-#: options_divi.php:653
+#: options_divi.php:669
 msgid ""
 "When you define your title using custom fields you should use this value for "
 "the custom field Name. The Value of your custom field should be the custom "
@@ -2654,11 +2668,11 @@ msgstr ""
 "waarde gebruiken voor de aangepaste veldnaam. De waarde van uw  aangepaste "
 "veld dient de aangepaste titel te zijn die u zou willen gebruiken."
 
-#: options_divi.php:657
+#: options_divi.php:673
 msgid "Custom field Name to be used for description"
 msgstr "Aangepaste veldnaam te gebruiken voor de omschrijving"
 
-#: options_divi.php:661
+#: options_divi.php:677
 msgid ""
 "When you define your meta description using custom fields you should use "
 "this value for the custom field Name. The Value of your custom field should "
@@ -2669,11 +2683,11 @@ msgstr ""
 "aangepaste veld dient de aangepaste beschrijving te zijn die u zou willen "
 "gebruiken."
 
-#: options_divi.php:665
+#: options_divi.php:681
 msgid "Custom field Name to be used for keywords"
 msgstr "Aangepaste veldnaam te gebruiken voor trefwoorden"
 
-#: options_divi.php:669
+#: options_divi.php:685
 msgid ""
 "When you define your keywords using custom fields you should use this value "
 "for the custom field Name. The Value of your custom field should be the meta "
@@ -2684,7 +2698,7 @@ msgstr ""
 "aangepast veld dienen de meta trefwoorden te zijn die u zou willen "
 "gebruiken, gescheiden door komma's."
 
-#: options_divi.php:678
+#: options_divi.php:694
 msgid ""
 "If you are not using cutsom post titles you can still have control over hw "
 "your titles are generated. Here you can choose which order you would like "
@@ -2696,11 +2710,11 @@ msgstr ""
 "volgorde u uw  post titel en blognaam wilt tonen, of u kunt de blognaam "
 "geheel uit de titel verwijderen."
 
-#: options_divi.php:702
+#: options_divi.php:718
 msgid "Enable meta descriptions"
 msgstr "Schakel meta beschrijvingen in"
 
-#: options_divi.php:706
+#: options_divi.php:722
 msgid ""
 "Check this box if you want to display meta descriptions on category/archive "
 "pages. The description is based off the category description you choose when "
@@ -2711,11 +2725,11 @@ msgstr ""
 "beschrijving die u kiest bij het aanmaken/bewerken van uw categorie in wp-"
 "admin."
 
-#: options_divi.php:709
+#: options_divi.php:725
 msgid "Choose title autogeneration method"
 msgstr "Kies de titel generatie methode"
 
-#: options_divi.php:714
+#: options_divi.php:730
 msgid ""
 "Here you can choose how your titles on index pages are generated. You can "
 "change which order your blog name and index title are displayed, or you can "
@@ -2725,7 +2739,7 @@ msgstr ""
 "kunt wijzigen in welke volgorde uw blognaam en index titel getoond worden, "
 "of u kunt de blognaam geheel uit de titel verwijderen."
 
-#: options_divi.php:721
+#: options_divi.php:737
 msgid ""
 "Here you can change which character separates your blog title and index page "
 "name when using autogenerated post titles. Common values are | or -"
@@ -2734,15 +2748,15 @@ msgstr ""
 "als u automatisch gegenereerde post titels gebruikt. Algemene waardes zijn | "
 "of -"
 
-#: options_divi.php:740
+#: options_divi.php:756
 msgid "Code Integration"
 msgstr "Code Integratie"
 
-#: options_divi.php:748
+#: options_divi.php:764
 msgid "Enable header code"
 msgstr "Schakel header code in"
 
-#: options_divi.php:752
+#: options_divi.php:768
 msgid ""
 "Disabling this option will remove the header code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2751,11 +2765,11 @@ msgstr ""
 "verwijderen. Hierdoor kunt u de code verwijderen en voor later gebruik "
 "bewaren."
 
-#: options_divi.php:755
+#: options_divi.php:771
 msgid "Enable body code"
 msgstr "Schakel de body code in"
 
-#: options_divi.php:759
+#: options_divi.php:775
 msgid ""
 "Disabling this option will remove the body code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2764,11 +2778,11 @@ msgstr ""
 "verwijderen. Hiermee kunt u de code verwijderen en voor later gebruik "
 "bewaren."
 
-#: options_divi.php:762
+#: options_divi.php:778
 msgid "Enable single top code"
 msgstr "Schakel de enkele top code in"
 
-#: options_divi.php:766
+#: options_divi.php:782
 msgid ""
 "Disabling this option will remove the single top code below from your blog. "
 "This allows you to remove the code while saving it for later use."
@@ -2777,11 +2791,11 @@ msgstr ""
 "verwijderen. Hiermee kunt u de code verwijderen en voor later gebruik "
 "bewaren."
 
-#: options_divi.php:769
+#: options_divi.php:785
 msgid "Enable single bottom code"
 msgstr "Schakel de enkele bodem code in"
 
-#: options_divi.php:773
+#: options_divi.php:789
 msgid ""
 "Disabling this option will remove the single bottom code below from your "
 "blog. This allows you to remove the code while saving it for later use."
@@ -2790,11 +2804,11 @@ msgstr ""
 "verwijderen. Hierdoor kunt u de code verwijderen en voor later gebruik "
 "bewaren."
 
-#: options_divi.php:776
+#: options_divi.php:792
 msgid "Add code to the < head > of your blog"
 msgstr "Voeg code toe aan de < head > van uw blog"
 
-#: options_divi.php:780
+#: options_divi.php:796
 msgid ""
 "Any code you place here will appear in the head section of every page of "
 "your blog. This is useful when you need to add javascript or css to all "
@@ -2804,14 +2818,14 @@ msgstr ""
 "van uw blog. Dit is handig als u Javascript of CSS aan alle pagina's moet "
 "toevoegen."
 
-#: options_divi.php:783
+#: options_divi.php:799
 msgid ""
 "Add code to the < body > (good for tracking codes such as google analytics)"
 msgstr ""
 "Voeg code toe aan de < body > (goed voor het traceren van codes als Google "
 "Analytics)"
 
-#: options_divi.php:787
+#: options_divi.php:803
 msgid ""
 "Any code you place here will appear in body section of all pages of your "
 "blog. This is usefull if you need to input a tracking pixel for a state "
@@ -2821,11 +2835,11 @@ msgstr ""
 "van uw blog. Dit is handig als u een tracerende pixel moet invoeren voor een "
 "state counter als Google Analytics."
 
-#: options_divi.php:790
+#: options_divi.php:806
 msgid "Add code to the top of your posts"
 msgstr "Voeg code bovenaan uw posts toe"
 
-#: options_divi.php:794 options_divi.php:801
+#: options_divi.php:810 options_divi.php:817
 msgid ""
 "Any code you place here will be placed at the top of all single posts. This "
 "is useful if you are looking to integrating things such as social "
@@ -2835,19 +2849,19 @@ msgstr ""
 "posts. Dit is handig als u dingen wilt integreren, zoals social bookmark "
 "links."
 
-#: options_divi.php:797
+#: options_divi.php:813
 msgid "Add code to the bottom of your posts, before the comments"
 msgstr "Voeg code onderaan uw posts toe, geplaatst voor de reacties"
 
-#: options_divi.php:819
+#: options_divi.php:835
 msgid "Manage Un-widgetized Advertisements"
 msgstr "Beheer Reclames"
 
-#: options_divi.php:827
+#: options_divi.php:843
 msgid "Enable Single Post 468x60 banner"
 msgstr "Schakel Enkele Post 468x60 banner in"
 
-#: options_divi.php:831
+#: options_divi.php:847
 msgid ""
 "Enabling this option will display a 468x60 banner ad on the bottom of your "
 "post pages below the single post content. If enabled you must fill in the "
@@ -2857,27 +2871,27 @@ msgstr ""
 "onderaan uw post-pagina's onder de enkele post content. Indien ingeschakeld, "
 "moet u de onderstaande banner afbeelding en bestemmings-URL invullen."
 
-#: options_divi.php:834
+#: options_divi.php:850
 msgid "Input 468x60 advertisement banner image"
 msgstr "Voer 468x60 advertentie banner afbeelding in"
 
-#: options_divi.php:838
+#: options_divi.php:854
 msgid "Here you can provide 468x60 banner image url"
 msgstr "Hier kunt u een 468x60 banner afbeelding-URL invullen"
 
-#: options_divi.php:842
+#: options_divi.php:858
 msgid "Input 468x60 advertisement destination url"
 msgstr "Voer 468x60 advertentie bestemming-URL in"
 
-#: options_divi.php:846
+#: options_divi.php:862
 msgid "Here you can provide 468x60 banner destination url"
 msgstr "Hier kunt u 468x60 banner bestemming-URL indienen"
 
-#: options_divi.php:850
+#: options_divi.php:866
 msgid "Input 468x60 adsense code"
 msgstr "Voer 468x60 Google Adsense code in"
 
-#: options_divi.php:854
+#: options_divi.php:870
 msgid "Place your adsense code here."
 msgstr "Plaats uw Google Adsense code hier."
 
@@ -2888,57 +2902,25 @@ msgstr "Pagina's:"
 #. Translators: If there are characters in your language that are not supported
 #. by Open Sans, translate this to 'off'. Do not translate into your own
 #. language.
-#: functions.php:105
+#: functions.php:113
 msgctxt "Open Sans font: on or off"
 msgid "on"
-msgstr ""
+msgstr " "
 
-#: functions.php:8036
+#: functions.php:8044
+#, fuzzy
 msgctxt "WooCommerce items number"
 msgid "1 Item"
 msgid_plural "%1$s Items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " "
+msgstr[1] " "
 
 #: single-project.php:68
 msgctxt "Previous post link"
 msgid "&larr;"
-msgstr ""
+msgstr " "
 
 #: single-project.php:69
 msgctxt "Next post link"
 msgid "&rarr;"
-msgstr ""
-
-#~ msgid "%1$s %2$s"
-#~ msgstr "%1$s %2$s"
-
-#~ msgid "Items"
-#~ msgstr "Items"
-
-#~ msgid "Saving..."
-#~ msgstr "Opslaan..."
-
-#~ msgid "Options Saved."
-#~ msgstr "Opties Opgeslagen."
-
-#~ msgid "Ad Management"
-#~ msgstr "Advertentie Management"
-
-#~ msgid "Support Docs"
-#~ msgstr "Ondersteuning Docs"
-
-#~ msgid "Documentation"
-#~ msgstr "Documentatie"
-
-#~ msgid "on %1$s at %2$s"
-#~ msgstr "op %1$s om %2$s"
-
-#~ msgid "(Edit)"
-#~ msgstr "(Bewerk)"
-
-#~ msgid "Reply"
-#~ msgstr "Beantwoord"
-
-#~ msgid "Your comment is awaiting moderation."
-#~ msgstr "Uw reactie is in afwachting van moderatie."
+msgstr " "

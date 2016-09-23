@@ -7,6 +7,7 @@ $et_theme_image_sizes = array(
 	'400x250'  => 'et-pb-post-main-image',
 	'1080x675' => 'et-pb-post-main-image-fullwidth',
 	'400x284'   => 'et-pb-portfolio-image',
+	'510x382'   => 'et-pb-portfolio-module-image',
 	'1080x9999' => 'et-pb-portfolio-image-single',
 );
 

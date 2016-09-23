@@ -124,6 +124,8 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 					}
 				?>
 
+					<?php if (et_get_option('divi_integration_single_bottom') <> '' && et_get_option('divi_integrate_singlebottom_enable') == 'on') echo(et_get_option('divi_integration_single_bottom')); ?>
+
 					<?php
 						if ( ( comments_open() || get_comments_number() ) && 'on' == et_get_option( 'divi_show_postcomments', 'on' ) && ! $et_pb_has_comments_module ) {
 							comments_template( '', true );
@@ -132,7 +134,6 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 					</div> <!-- .et_post_meta_wrapper -->
 				</article> <!-- .et_pb_post -->
 
-				<?php if (et_get_option('divi_integration_single_bottom') <> '' && et_get_option('divi_integrate_singlebottom_enable') == 'on') echo(et_get_option('divi_integration_single_bottom')); ?>
 			<?php endwhile; ?>
 			</div> <!-- #left-area -->
 

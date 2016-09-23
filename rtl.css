@@ -12,7 +12,13 @@ ul.et_pb_side_nav li.side_nav_item, .et-social-icons { float: left; }
 
 #top-menu li { text-align: right; }
 
+.rtl #top-menu .menu-item-has-children > a:first-child { padding-left: 40px; padding-right: 20px; }
+
 #top-menu li.mega-menu ul li { float: right !important; }
+
+#top-menu li.mega-menu > ul > li:nth-of-type(4n) { clear: left; }
+
+#top-menu li.mega-menu > ul > li:nth-of-type(4n+1) { clear: right; }
 
 #sidebar .et_pb_widget, .bottom-nav, .et_pb_post, #left-area { text-align: right; }
 

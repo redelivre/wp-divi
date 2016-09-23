@@ -79,7 +79,7 @@
 			$cloned_nav.find('li:first').addClass('et_first_mobile_item');
 
 			$cloned_nav.find( 'a' ).on( 'click', function(){
-				$this_menu.trigger( 'click' );
+				$( '#et_mobile_nav_menu .mobile_menu_bar' ).trigger( 'click' );
 			} );
 
 			if ( 'no_click_event' !== menu_click_event ) {

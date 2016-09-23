@@ -52,7 +52,7 @@
 
 		});
 
-		$( '.et-pb-layout-buttons:not(.et-pb-layout-buttons-reset)' ).click( function() {
+		$( '.et-pb-layout-buttons:not(.et-pb-layout-buttons-reset):not(.et-pb-portability-button)' ).click( function() {
 			var $clicked_tab = $( this ),
 				open_tab = $clicked_tab.data( 'open_tab' );
 
@@ -69,6 +69,11 @@
 		});
 
 		$( '#et_pb_save_roles' ).click( function() {
+			et_pb_save_roles( false, true );
+			return false;
+		} );
+
+		function et_pb_save_roles( callback, message ) {
 			var $all_options = $( '.et_pb_roles_container_all' ).find( 'form' ),
 				all_options_array = {},
 				options_combined = '';
@@ -93,23 +98,30 @@
 					et_pb_save_roles_nonce : et_pb_roles_options.et_roles_nonce
 				},
 				beforeSend: function ( xhr ){
-					$( '#et_pb_loading_animation' ).removeClass( 'et_pb_hide_loading' );
-					$( '#et_pb_success_animation' ).removeClass( 'et_pb_active_success' );
-					$( '#et_pb_loading_animation' ).show();
+					if ( message ) {
+						$( '#et_pb_loading_animation' ).removeClass( 'et_pb_hide_loading' );
+						$( '#et_pb_success_animation' ).removeClass( 'et_pb_active_success' );
+						$( '#et_pb_loading_animation' ).show();
+					}
 				},
 				success: function( data ){
-					$( '#et_pb_loading_animation' ).addClass( 'et_pb_hide_loading' );
-					$( '#et_pb_success_animation' ).addClass( 'et_pb_active_success' ).show();
+					if ( message ) {
+						$( '#et_pb_loading_animation' ).addClass( 'et_pb_hide_loading' );
+						$( '#et_pb_success_animation' ).addClass( 'et_pb_active_success' ).show();
 
-					setTimeout( function(){
-						$( '#et_pb_success_animation' ).fadeToggle();
-						$( '#et_pb_loading_animation' ).fadeToggle();
-					}, 1000 );
+						setTimeout( function(){
+							$( '#et_pb_success_animation' ).fadeToggle();
+							$( '#et_pb_loading_animation' ).fadeToggle();
+						}, 1000 );
+					}
+
+					if ( $.isFunction( callback ) ) {
+						callback();
+					}
 				}
 			});
+		}
 
-			return false;
-		} );
 
 		$( '.et_pb_toggle_all' ).click( function() {
 			var $options_section = $( this ).closest( '.et_pb_roles_section_container' ),
@@ -150,6 +162,7 @@
 				</div>";
 
 			$( 'body' ).append( $confirm_modal );
+			window.et_pb_align_vertical_modal( $( '.et_pb_prompt_modal' ) );
 
 			return false;
 		});
@@ -183,6 +196,11 @@
 			setTimeout( function() {
 				$modal_overlay.remove();
 			}, 600 );
+		}
+
+		// Portability integration.
+		etCore.portability.save = function( callback ) {
+			et_pb_save_roles( callback, false );
 		}
 	});
 })(jQuery)
