@@ -27,8 +27,8 @@ function et_core_load_component( $components ) {
 	// Load in front end and backend.
 	$common = array();
 
-	// Only load admin components if is_admin() is true.
-	$admin = is_admin() ? array(
+	// Only load admin components if is_admin() is true or is FB opened.
+	$admin = is_admin() || et_fb_enabled() ? array(
 		'portability' => ET_CORE_PATH . 'admin/includes/portability.php',
 		'cache'       => array(
 			ET_CORE_PATH . 'admin/includes/cache.php',

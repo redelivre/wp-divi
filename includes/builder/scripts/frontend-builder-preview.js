@@ -53,4 +53,39 @@
 
 	// listen to data passed from builder
 	window.addEventListener( 'message', ET_PageBuilder_Preview, false );
+
+	/**
+	 * Notify parent of parsed shortcode
+	 */
+	var previewLoaded = $('#content > .content .et-pb-preview-loading').length !== 1;
+
+	if (previewLoaded && typeof parent !== 'undefined') {
+		/**
+		 * There's no way to determine when the shortcode's JS has done parsing, so
+		 * assume a safe fixed timeout before contacting parent's window
+		 */
+		setTimeout(function(){
+			var output = {
+				html: $('#content > .content').html(),
+				stylesheets: [],
+			};
+
+			jQuery.each(window.location.search.substr(1).split('&'), function(index, param) {
+				var paramArray = param.split('=');
+
+				if (typeof paramArray[0] !== 'undefined' && typeof paramArray[1] !== 'undefined' && paramArray[0] === 'iframe_id') {
+					output.iframe_id = paramArray[1];
+				}
+			});
+
+			/**
+			 * Pass parsed shortcode's style hrefs to parent
+			 */
+			$('link[rel="stylesheet"]').each(function(index, style){
+				output.stylesheets.push($(style).attr('href'));
+			})
+
+			parent.postMessage(output, window.location.origin);
+		}, 2000);
+	}
 })(jQuery)

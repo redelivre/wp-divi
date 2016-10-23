@@ -23,6 +23,7 @@ class ET_Builder_Element {
 	public $main_tabs = array();
 	public $used_tabs = array();
 	public $custom_css_tab;
+	public $fb_support = false;
 
 	// number of times shortcode_callback function has been executed
 	private $_shortcode_callback_num;
@@ -38,6 +39,9 @@ class ET_Builder_Element {
 	private static $ab_tests_processed = array();
 	private static $ab_tests_saved_id;
 	private static $current_module_index = 0;
+	private static $structure_modules = array();
+	private static $structure_module_slugs = array();
+
 	private static $loading_backbone_templates = false;
 
 	const DEFAULT_PRIORITY = 10;
@@ -186,11 +190,23 @@ class ET_Builder_Element {
 		/**
 		 * Only use whitelisted fields names on frontend.
 		 * All fields settings are only needed in Page Builder.
+		 *
+		 * Logic summary:
+		 * If is_admin(): do not load only whitelisted
+		 * If !is_admin(): load only whitelisted if !et_fb_is_enabled()
 		 */
-		$fields = ! is_admin() ? $this->whitelisted_fields : $this->get_fields();
+
+		$only_whitelisted_fields = is_admin() ? false : ( et_fb_is_enabled() ? false : true );
+
+		$fields = $only_whitelisted_fields ? $this->whitelisted_fields : $this->get_fields();
 
 		# update settings with defaults
 		foreach ( $fields as $key => $settings ) {
+			if ( ! empty( $this->defaults ) && isset( $this->defaults[ $key ] ) ) {
+				$fields[ $key ]['default'] = $this->defaults[ $key ];
+				continue;
+			}
+
 			if ( ! isset( $fields_defaults[ $key ] ) ) {
 				continue;
 			}
@@ -320,7 +336,9 @@ class ET_Builder_Element {
 		return $saved_module_id;
 	}
 
-	function _shortcode_callback( $atts, $content = null, $function_name ) {
+	function _shortcode_callback( $atts, $content = null, $function_name, $parent_address = '', $global_parent = '', $global_parent_type = '' ) {
+		global $et_fb_processing_shortcode_object;
+
 		$this->shortcode_atts = shortcode_atts( $this->get_shortcode_fields(), $atts );
 
 		$this->_decode_double_quotes();
@@ -336,14 +354,14 @@ class ET_Builder_Element {
 		$post_id = apply_filters( 'et_is_ab_testing_active_post_id', get_the_ID() );
 
 		// If the section/row/module is disabled, hide it
-		if ( isset( $this->shortcode_atts['disabled'] ) && 'on' === $this->shortcode_atts['disabled'] ) {
+		if ( isset( $this->shortcode_atts['disabled'] ) && 'on' === $this->shortcode_atts['disabled'] && ! et_fb_enabled() ) {
 			return;
 		}
 
 		// need to perform additional check and some modifications in case AB testing enabled
 		if ( $ab_testing_enabled ) {
 			// check if ab testing enabled for this module and if it shouldn't be displayed currently
-			if ( ! $this->_is_display_module( $this->shortcode_atts ) && ! et_pb_detect_cache_plugins() ) {
+			if ( ! $et_fb_processing_shortcode_object && ! $this->_is_display_module( $this->shortcode_atts ) && ! et_pb_detect_cache_plugins() ) {
 				return;
 			}
 
@@ -392,14 +410,26 @@ class ET_Builder_Element {
 
 		$content = false !== $global_shortcode_content ? $global_shortcode_content : $content;
 
-		$this->shortcode_content = ! ( isset( $this->is_structure_element ) && $this->is_structure_element ) ? do_shortcode( et_pb_fix_shortcodes( $content, $this->decode_entities ) ) : '';
+		if ( $et_fb_processing_shortcode_object ) {
+			$this->shortcode_content = et_pb_fix_shortcodes( $content, $this->decode_entities );
+		} else {
+			$this->shortcode_content = ! ( isset( $this->is_structure_element ) && $this->is_structure_element ) ? do_shortcode( et_pb_fix_shortcodes( $content, $this->decode_entities ) ) : '';
+		}
 
 		$this->shortcode_atts();
 
 		$this->process_additional_options( $function_name );
 		$this->process_custom_css_options( $function_name );
 
-		$output = $this->shortcode_callback( $atts, $content, $function_name );
+		// load inline fonts if needed
+		if ( isset( $this->shortcode_atts['inline_fonts'] ) ) {
+			$this->process_inline_fonts_option( $this->shortcode_atts['inline_fonts'] );
+		}
+
+		// Prepare shortcode for the frontend building if enabled.
+		$shortcode_callback = $et_fb_processing_shortcode_object ? '_shortcode_passthru_callback' : 'shortcode_callback';
+
+		$output = $this->{$shortcode_callback}( $atts, $content, $function_name, $parent_address, $global_parent, $global_parent_type );
 
 		$this->_shortcode_callback_num++;
 
@@ -505,6 +535,176 @@ class ET_Builder_Element {
 
 	// intended to be overridden as needed
 	function shortcode_callback( $atts, $content = null, $function_name ){}
+
+	function _shortcode_passthru_callback( $atts, $content = null, $function_name, $parent_address = '', $global_parent = '', $global_parent_type = '' ) {
+		global $post;
+
+		$attrs = array();
+		$fields = $this->process_fields( $this->fields_unprocessed );
+		$global_shortcode_content = false;
+		$function_name_processed = et_fb_prepare_tag( $function_name );
+
+		//override module attributes for global module
+		if ( ! empty( $atts['global_module'] ) ) {
+			$global_content = et_pb_load_global_module( $atts['global_module'] );
+
+			if ( '' !== $global_content ) {
+				if ( ! isset( $atts['saved_tabs'] ) || false !== strpos( $atts['saved_tabs'], 'general' ) || 'all' === $atts['saved_tabs'] ) {
+					$global_shortcode_content = et_pb_extract_shortcode_content( $global_content, $function_name_processed );
+				}
+
+				// remove the shortcode content to avoid conflicts of parent attributes with similar attrs from child modules
+				if ( false !== $global_shortcode_content ) {
+					$global_content_processed = str_replace( $global_shortcode_content, '', $global_content );
+				} else {
+					$global_content_processed = $global_content;
+				}
+
+				$global_atts = shortcode_parse_atts( $global_content_processed );
+
+				foreach( $this->shortcode_atts as $single_attr => $value ) {
+					if ( isset( $global_atts[$single_attr] ) ) {
+						$this->shortcode_atts[$single_attr] = $global_atts[$single_attr];
+					}
+				}
+			} else {
+				// remove global_module attr if it doesn't exist in DB
+				$this->shortcode_atts['global_module'] = '';
+				$global_parent = '';
+			}
+		}
+
+		// TODO, cleanup this loop.
+		foreach( $this->shortcode_atts as $shortcode_attr_key => $shortcode_attr_value ) {
+			if ( isset( $fields[ $shortcode_attr_key ]['type'] ) && 'computed' === $fields[ $shortcode_attr_key ]['type'] ) {
+
+				$field = $fields[ $shortcode_attr_key ];
+				$depends_on = array();
+
+				foreach ( $field['computed_depends_on'] as $depends_on_field ) {
+					$depends_on[ $depends_on_field ] = $this->shortcode_atts[ $depends_on_field ];
+				}
+
+				if ( ! is_callable( $field['computed_callback'] ) ) {
+					die( $shortcode_attr_key . ' Callback:' . $field['computed_callback'] . ' is not callable.... '); // TODO, fix this make it more graceful...
+				}
+
+				$value = call_user_func( $field['computed_callback'], $depends_on );
+			} else {
+				$value = $shortcode_attr_value;
+			}
+
+			$attrs[$shortcode_attr_key] = is_string($value) ? html_entity_decode($value) : $value;
+		}
+
+		// Format FB component path
+		// TODO, move this to class method and property, and allow both to be overridden
+		$component_path = str_replace( 'et_pb_' , '', $function_name_processed );
+		$component_path = str_replace( '_', '-', $component_path );
+		$component_path = $component_path;
+
+		// Prepare modules.
+		$modules = 'child' === $this->type ? self::$child_modules : self::$parent_modules;
+
+		if ( isset( $post->post_type, $modules[$post->post_type][$function_name_processed] ) ) {
+			$modules = $modules[$post->post_type][$function_name_processed];
+		} else {
+			$modules = array();
+		}
+
+		// Build custom CSS.
+		$custom_css = array();
+
+		if ( isset( $modules->custom_css_options ) ) {
+			foreach ( $modules->custom_css_options as $custom_css_key => $custom_css_option ) {
+				$custom_css_option['key'] = "custom_css_{$custom_css_key}";
+				$custom_css[] = $custom_css_option;
+			}
+		}
+
+		// Build advanced options and defaults.
+		$advanced_options = array();
+		$advanced_defaults = array();
+
+		if ( ! empty( $modules->advanced_options ) ) {
+			$advanced_options = $modules->advanced_options;
+		}
+
+		if ( isset( $modules->fields_unprocessed ) ) {
+			foreach ( $modules->fields_unprocessed as $fields_unprocessed_key => $field_unprocessed ) {
+				if ( isset( $field_unprocessed['default'], $field_unprocessed['tab_slug'] ) && 'advanced' === $field_unprocessed['tab_slug'] ) {
+					$advanced_defaults[$fields_unprocessed_key] = $field_unprocessed['default'];
+				}
+			}
+		}
+
+		$_i = isset( $atts['_i'] ) ? $atts['_i'] : 0;
+		$address = isset( $atts['_address'] ) ? $atts['_address'] : '0';
+
+		// set the global parent if exists
+		if ( ( ! isset( $attrs['global_module'] ) || '' === $attrs['global_module'] ) && '' !== $global_parent ) {
+			$attrs['global_parent'] = $global_parent;
+		}
+
+		if ( isset( $this->is_structure_element ) && $this->is_structure_element ) {
+			$this->fb_support = true;
+		}
+
+		if ( ! $this->fb_support ) {
+			global $et_fb_processing_shortcode_object;
+			$et_fb_processing_shortcode_object = false;
+			$raw_child_content = $content;
+			$content = $this->_shortcode_callback( $atts, $content, $function_name_processed );
+			$executed_shortcode = do_shortcode( $content );
+			$processed_content = false !== $global_shortcode_content ? $global_shortcode_content : $this->shortcode_content;
+			$attrs['content_new'] = array_key_exists( 'content_new', $this->whitelisted_fields ) ? $processed_content : et_fb_process_shortcode( $processed_content, $address, $global_parent, $global_parent_type );
+			$et_fb_processing_shortcode_object = true;
+		} else {
+			$processed_content = false !== $global_shortcode_content ? $global_shortcode_content : $this->shortcode_content;
+			$content = array_key_exists( 'content_new', $this->whitelisted_fields ) || 'et_pb_code' === $function_name_processed || 'et_pb_fullwidth_code' === $function_name_processed ? $processed_content : et_fb_process_shortcode( $processed_content, $address, $global_parent, $global_parent_type );
+		}
+
+		if ( is_array( $content ) ) {
+			$prepared_content = $content;
+		} else {
+			if ( $this->fb_support && count( preg_split('/\r\n*\n/', trim( $content ), -1, PREG_SPLIT_NO_EMPTY ) ) > 1 ) {
+				$prepared_content = wpautop( $content );
+			} else {
+				$prepared_content = html_entity_decode($content);
+			}
+		}
+
+		// Build object.
+		$object = array(
+			'_i'                => $_i,
+			'_order'            => $_i,
+			// TODO make address be _address, its conflicting with 'address' prop in map module... (not sure how though, they are in diffent places...)
+			'address'           => $address,
+			'child_slug'        => $this->child_slug,
+			'fb_support'        => $this->fb_support,
+			'parent_address'    => $parent_address,
+			'shortcode_index'   => $this->_shortcode_callback_num,
+			'type'              => $function_name,
+			'component_path'    => $component_path,
+			'attrs'             => $attrs,
+			'advanced_options'  => $advanced_options,
+			'advanced_defaults' => $advanced_defaults,
+			'defaults'          => isset( $this->defaults ) ? $this->defaults : '',
+			'fields_defaults'   => isset( $this->fields_defaults ) ? $this->fields_defaults : '',
+			'custom_css'        => $custom_css,
+			'content'           => $prepared_content,
+			'is_module_child'   => 'child' === $this->type,
+			'prepared_styles'   => ! $this->fb_support ? ET_Builder_Element::get_style() : '',
+		);
+
+		if ( ! $this->fb_support ) {
+			if ( !empty( $this->child_slug ) ) {
+				$object['raw_child_content'] = $raw_child_content;
+			}
+		}
+
+		return $object;
+	}
 
 	// intended to be overridden as needed
 	function additional_shortcode_callback( $atts, $content = null, $function_name ){}
@@ -660,11 +860,20 @@ class ET_Builder_Element {
 				) );
 
 				$additional_options["{$option_name}_font_size_tablet"] = array(
-					'type' => 'skip',
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
 				);
 				$additional_options["{$option_name}_font_size_phone"] = array(
-					'type' => 'skip',
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
 				);
+
+				if ( et_fb_is_enabled() ) {
+					$additional_options["{$option_name}_font_size_last_edited"] = array(
+						'type'     => 'skip',
+						'tab_slug' => 'advanced',
+					);
+				}
 			}
 
 			$additional_options["{$option_name}_text_color"] = array(
@@ -701,11 +910,20 @@ class ET_Builder_Element {
 				) );
 
 				$additional_options["{$option_name}_letter_spacing_tablet"] = array(
-					'type' => 'skip',
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
 				);
 				$additional_options["{$option_name}_letter_spacing_phone"] = array(
-					'type' => 'skip',
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
 				);
+
+				if ( et_fb_is_enabled() ) {
+					$additional_options["{$option_name}_letter_spacing_last_edited"] = array(
+						'type'     => 'skip',
+						'tab_slug' => 'advanced',
+					);
+				}
 			}
 
 			if ( ! isset( $option_settings['hide_line_height'] ) || ! $option_settings['hide_line_height'] ) {
@@ -724,19 +942,28 @@ class ET_Builder_Element {
 
 				if ( isset( $option_settings['line_height'] ) ) {
 					$additional_options["{$option_name}_line_height"] = wp_parse_args(
-					 	$option_settings['line_height'],
-					 	$default_option_line_height
+						$option_settings['line_height'],
+						$default_option_line_height
 					);
 				} else {
 					$additional_options["{$option_name}_line_height"] = $default_option_line_height;
 				}
 
 				$additional_options["{$option_name}_line_height_tablet"] = array(
-					'type' => 'skip',
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
 				);
 				$additional_options["{$option_name}_line_height_phone"] = array(
-					'type' => 'skip',
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
 				);
+
+				if ( et_fb_is_enabled() ) {
+					$additional_options["{$option_name}_line_height_last_edited"] = array(
+						'type'     => 'skip',
+						'tab_slug' => 'advanced',
+					);
+				}
 			}
 
 			if ( isset( $option_settings['use_all_caps'] ) && $option_settings['use_all_caps'] ) {
@@ -814,9 +1041,9 @@ class ET_Builder_Element {
 				'on'  => esc_html__( 'Yes', 'et_builder' ),
 			),
 			'affects' => array(
-				'#et_pb_border_color',
-				'#et_pb_border_width',
-				'#et_pb_border_style',
+				'border_color',
+				'border_width',
+				'border_style',
 			),
 			'shortcode_default' => 'off',
 			'tab_slug'	       	=> 'advanced',
@@ -877,15 +1104,44 @@ class ET_Builder_Element {
 				'tab_slug'        => 'advanced',
 			);
 			$additional_options['custom_margin_tablet'] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options['custom_margin_phone'] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 
 			// make it possible to override/add options
 			if ( ! empty( $this->advanced_options['custom_margin_padding']['custom_margin'] ) ) {
 				$additional_options['custom_margin'] = array_merge( $additional_options['custom_margin'], $this->advanced_options['custom_margin_padding']['custom_margin'] );
+			}
+
+			if ( et_fb_is_enabled() ) {
+				$additional_options["custom_margin_last_edited"] = array(
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
+				);
+
+				$additional_options["padding_1_last_edited"] = array(
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
+				);
+
+				$additional_options["padding_2_last_edited"] = array(
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
+				);
+
+				$additional_options["padding_3_last_edited"] = array(
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
+				);
+
+				$additional_options["padding_4_last_edited"] = array(
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
+				);
 			}
 		}
 
@@ -898,15 +1154,24 @@ class ET_Builder_Element {
 				'tab_slug'        => 'advanced',
 			);
 			$additional_options['custom_padding_tablet'] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options['custom_padding_phone'] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 
 			// make it possible to override/add options
 			if ( ! empty( $this->advanced_options['custom_margin_padding']['custom_padding'] ) ) {
 				$additional_options['custom_padding'] = array_merge( $additional_options['custom_padding'], $this->advanced_options['custom_margin_padding']['custom_padding'] );
+			}
+
+			if ( et_fb_is_enabled() ) {
+				$additional_options["custom_padding_last_edited"] = array(
+					'type'     => 'skip',
+					'tab_slug' => 'advanced',
+				);
 			}
 		}
 
@@ -930,21 +1195,21 @@ class ET_Builder_Element {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 				),
 				'affects' => array(
-					"#et_pb_{$option_name}_text_color",
-					"#et_pb_{$option_name}_text_size",
-					"#et_pb_{$option_name}_border_width",
-					"#et_pb_{$option_name}_border_radius",
-					"#et_pb_{$option_name}_letter_spacing",
-					"#et_pb_{$option_name}_spacing",
-					"#et_pb_{$option_name}_bg_color",
-					"#et_pb_{$option_name}_border_color",
-					"#et_pb_{$option_name}_use_icon",
-					"#et_pb_{$option_name}_font",
-					"#et_pb_{$option_name}_text_color_hover",
-					"#et_pb_{$option_name}_bg_color_hover",
-					"#et_pb_{$option_name}_border_color_hover",
-					"#et_pb_{$option_name}_border_radius_hover",
-					"#et_pb_{$option_name}_letter_spacing_hover",
+					"{$option_name}_text_color",
+					"{$option_name}_text_size",
+					"{$option_name}_border_width",
+					"{$option_name}_border_radius",
+					"{$option_name}_letter_spacing",
+					"{$option_name}_spacing",
+					"{$option_name}_bg_color",
+					"{$option_name}_border_color",
+					"{$option_name}_use_icon",
+					"{$option_name}_font",
+					"{$option_name}_text_color_hover",
+					"{$option_name}_bg_color_hover",
+					"{$option_name}_border_color_hover",
+					"{$option_name}_border_radius_hover",
+					"{$option_name}_letter_spacing_hover",
 				),
 				'shortcode_default' => 'off',
 				'tab_slug'	       	=> 'advanced',
@@ -1041,16 +1306,17 @@ class ET_Builder_Element {
 				'label'           => sprintf( esc_html__( 'Add %1$s Icon', 'et_builder' ), $option_settings['label'] ),
 				'type'            => 'select',
 				'option_category' => 'button',
+				'default'         => 'default',
 				'options'         => array(
 					'default' => esc_html__( 'Default', 'et_builder' ),
 					'on'      => esc_html__( 'Yes', 'et_builder' ),
 					'off'     => esc_html__( 'No', 'et_builder' ),
 				),
 				'affects' => array(
-					"#et_pb_{$option_name}_icon_color",
-					"#et_pb_{$option_name}_icon_placement",
-					"#et_pb_{$option_name}_on_hover",
-					"#et_pb_{$option_name}_icon",
+					"{$option_name}_icon_color",
+					"{$option_name}_icon_placement",
+					"{$option_name}_on_hover",
+					"{$option_name}_icon",
 				),
 				'shortcode_default' => 'on',
 				'tab_slug'	       	=> 'advanced',
@@ -1097,6 +1363,7 @@ class ET_Builder_Element {
 				'label'           => sprintf( esc_html__( 'Only Show Icon On Hover for %1$s', 'et_builder' ), $option_settings['label'] ),
 				'type'            => 'yes_no_button',
 				'option_category' => 'button',
+				'default'         => 'on',
 				'options'         => array(
 					'on'      => esc_html__( 'Yes', 'et_builder' ),
 					'off'     => esc_html__( 'No', 'et_builder' ),
@@ -1160,22 +1427,28 @@ class ET_Builder_Element {
 			);
 
 			$additional_options["{$option_name}_text_size_tablet"] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options["{$option_name}_text_size_phone"] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options["{$option_name}_letter_spacing_tablet"] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options["{$option_name}_letter_spacing_phone"] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options["{$option_name}_letter_spacing_hover_tablet"] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 			$additional_options["{$option_name}_letter_spacing_hover_phone"] = array(
-				'type' => 'skip',
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
 			);
 		}
 
@@ -1830,6 +2103,7 @@ class ET_Builder_Element {
 				);
 				break;
 			case 'text':
+			case 'number':
 			case 'date_picker':
 			case 'range':
 			default:
@@ -1841,8 +2115,10 @@ class ET_Builder_Element {
 
 				$field['class'] .= 'range' === $field['type'] ? ' et-pb-range-input' : ' et-pb-main-setting';
 
+				$type = in_array( $field['type'], array( 'text', 'number' ) ) ? $field['type'] : 'text';
+
 				$field_el = sprintf(
-					'<input id="%1$s" type="text" class="%2$s%5$s%9$s"%6$s%3$s%8$s%10$s %4$s/>%7$s',
+					'<input id="%1$s" type="%11$s" class="%2$s%5$s%9$s"%6$s%3$s%8$s%10$s %4$s/>%7$s',
 					esc_attr( $field['id'] ),
 					esc_attr( $field['class'] ),
 					$value,
@@ -1855,7 +2131,8 @@ class ET_Builder_Element {
 						: ''
 					),
 					$need_mobile_options ? ' et_pb_setting_mobile et_pb_setting_mobile_active et_pb_setting_mobile_desktop' : '',
-					$need_mobile_options ? ' data-device="desktop"' : ''
+					$need_mobile_options ? ' data-device="desktop"' : '',
+					$type
 				);
 
 				// generate additional fields for mobile settings switcher if needed
@@ -1874,7 +2151,7 @@ class ET_Builder_Element {
 							esc_attr( $field_name . '_' . $device_type )
 						);
 
-						$additional_fields .= sprintf( '<input id="%2$s" type="text" class="%3$s%5$s et_pb_setting_mobile et_pb_setting_mobile_%9$s"%6$s%8$s%1$s data-device="%9$s" %4$s%10$s/>%7$s',
+						$additional_fields .= sprintf( '<input id="%2$s" type="%11$s" class="%3$s%5$s et_pb_setting_mobile et_pb_setting_mobile_%9$s"%6$s%8$s%1$s data-device="%9$s" %4$s%10$s/>%7$s',
 							$value_mobile,
 							esc_attr( $field['id'] ) . '_' . $device_type,
 							esc_attr( $field['class'] ),
@@ -1887,7 +2164,8 @@ class ET_Builder_Element {
 								: ''
 							),
 							esc_attr( $device_type ),
-							$has_saved_value // #10
+							$has_saved_value, // #10,
+							$type
 						);
 					}
 
@@ -2103,7 +2381,7 @@ class ET_Builder_Element {
 		$all_fields = $this->sort_fields( $this->_get_fields() );
 
 		foreach( $all_fields as $field_name => $field ) {
-			if ( ! empty( $field['type'] ) && 'skip' == $field['type'] ) {
+			if ( ! empty( $field['type'] ) && ( 'skip' === $field['type'] || 'computed' === $field['type'] ) ) {
 				continue;
 			}
 
@@ -2320,8 +2598,12 @@ class ET_Builder_Element {
 		$fields['disabled_on'] = '';
 		$fields['global_module'] = '';
 		$fields['saved_tabs'] = '';
+		$fields['ab_subject'] = '';
 		$fields['ab_subject_id'] = '';
 		$fields['ab_goal'] = '';
+		$fields['locked'] = '';
+		$fields['template_type'] = '';
+		$fields['inline_fonts'] = '';
 
 		return $fields;
 	}
@@ -2414,6 +2696,18 @@ class ET_Builder_Element {
 		$this->process_advanced_custom_margin_options( $function_name );
 
 		$this->process_advanced_button_options( $function_name );
+	}
+
+	function process_inline_fonts_option( $fonts_list ) {
+		if ( '' === $fonts_list ) {
+			return;
+		}
+
+		$fonts_list_array = explode( ',', $fonts_list );
+
+		foreach( $fonts_list_array as $font_name ) {
+			et_builder_enqueue_font( $font_name );
+		}
 	}
 
 	function process_advanced_fonts_options( $function_name ) {
@@ -3175,16 +3469,26 @@ class ET_Builder_Element {
 		return '{' . implode( ',', $shortcodes ) . '}';
 	}
 
-	static function get_modules_array( $post_type = '' ) {
+	static function get_modules_array( $post_type = '', $include_child = false, $fb_ignore_unsupported = false ) {
 		$modules = array();
 
 		if ( ! empty( $post_type ) ) {
 			$parent_modules = self::get_parent_modules( $post_type );
+
+			if ( $include_child ) {
+				$parent_modules = array_merge( $parent_modules, self::get_child_modules( $post_type ));
+			}
+
 			if ( ! empty( $parent_modules ) ) {
 				$sorted_modules = $parent_modules;
 			}
 		} else {
 			$parent_modules = self::get_parent_modules();
+
+			if ( $include_child ) {
+				$parent_modules = array_merge( $parent_modules, self::get_child_modules());
+			}
+
 			if ( ! empty( $parent_modules ) ) {
 
 				$all_modules = array();
@@ -3205,6 +3509,10 @@ class ET_Builder_Element {
 			uasort( $sorted_modules, array( 'self', 'compare_by_name' ) );
 
 			foreach( $sorted_modules as $module ) {
+				if ( $fb_ignore_unsupported && ( ! isset( $module->fb_support ) || ! $module->fb_support ) ) {
+					continue;
+				}
+
 				/**
 				 * Replace single and double quotes with %% and || respectively
 				 * to avoid js conflicts
@@ -3215,6 +3523,8 @@ class ET_Builder_Element {
 				$_module = array(
 					'title' => esc_attr( $module_name ),
 					'label' => esc_attr( $module->slug ),
+					'is_parent' => $module->type === 'child' ? 'off' : 'on',
+					'fb_support' => isset( $module->fb_support ) && $module->fb_support ? 'on' : 'off',
 				);
 
 				if ( isset( $module->fullwidth ) && $module->fullwidth ) {
@@ -3226,6 +3536,21 @@ class ET_Builder_Element {
 		}
 
 		return $modules;
+	}
+
+	static function get_fb_unsupported_modules() {
+		$parent_modules = self::get_parent_modules();
+		$unsupported_modules_array = array();
+
+		foreach( $parent_modules as $post_type => $post_type_modules ) {
+			foreach ( $post_type_modules as $module_slug => $module ) {
+				if ( ! isset( $module->fb_support ) || ! $module->fb_support ) {
+					$unsupported_modules_array[] = $module_slug;
+				}
+			}
+		}
+
+		return array_unique( $unsupported_modules_array );
 	}
 
 	static function get_parent_shortcodes( $post_type ) {
@@ -3252,6 +3577,20 @@ class ET_Builder_Element {
 		}
 
 		return implode( '|', $shortcodes );
+	}
+
+	static function get_child_slugs( $post_type ) {
+		$child_slugs = array();
+		$child_modules = self::get_parent_modules( $post_type );
+		if ( ! empty( $child_modules ) ) {
+			foreach( $child_modules as $module ) {
+				if ( ! empty( $module->child_slug ) ) {
+					$child_slugs[ $module->slug ] = $module->child_slug;
+				}
+			}
+		}
+
+		return $child_slugs;
 	}
 
 	static function get_raw_content_shortcodes( $post_type ) {
@@ -3328,6 +3667,37 @@ class ET_Builder_Element {
 		return $output;
 	}
 
+	static function get_structure_module_slugs() {
+
+		if ( ! empty( self::$structure_module_slugs ) ) {
+			return self::$structure_module_slugs;
+		}
+
+		$structure_modules = self::get_structure_modules();
+		self::$structure_module_slugs = array();
+		foreach( $structure_modules as $structural_module ) {
+			self::$structure_module_slugs[] = $structural_module->slug;
+		}
+
+		return self::$structure_module_slugs;
+	}
+
+	static function get_structure_modules() {
+		if ( ! empty( self::$structure_modules ) ) {
+			return self::$structure_modules;
+		}
+
+		$parent_modules = self::get_parent_modules( 'et_pb_layout' );
+		self::$structure_modules = array();
+		foreach ( $parent_modules as $parent_module ) {
+			if ( isset( $parent_module->is_structure_element ) && $parent_module->is_structure_element ) {
+				self::$structure_modules[] = $parent_module;
+			}
+		}
+
+		return self::$structure_modules;
+	}
+
 	static function get_parent_modules( $post_type = '' ) {
 		if ( ! empty( $post_type ) ) {
 			$parent_modules = ! empty( self::$parent_modules[ $post_type ] ) ? self::$parent_modules[ $post_type ] : array();
@@ -3348,7 +3718,236 @@ class ET_Builder_Element {
 		return apply_filters( 'et_builder_get_child_modules', $child_modules, $post_type );
 	}
 
-	static function set_media_queries() {
+	static function get_general_fields( $post_type = '', $mode = 'all' ) {
+		$parent_modules = self::get_parent_modules( $post_type );
+		$child_modules  = self::get_child_modules( $post_type );
+
+		switch ( $mode ) {
+			case 'parent':
+				$_modules = $parent_modules;
+				break;
+
+			case 'child':
+				$_modules = $child_modules;
+				break;
+
+			default:
+				$_modules = array_merge( $parent_modules, $child_modules );
+				break;
+		}
+
+		$module_fields = array();
+
+		foreach( $_modules as $_module_slug => $_module ) {
+
+			// skip modules without fb support
+			if ( ! $_module->fb_support ) {
+				continue;
+			}
+
+			$dependables = array();
+
+			foreach ( $_module->fields_unprocessed as $field_key => $field ) {
+				if ( isset( $field['affects'] ) ) {
+					$dependables[ $field_key ] = $field['affects'];
+				}
+
+				if ( isset( $field['tab_slug'] ) ) {
+					continue;
+				}
+
+				$field['name'] = $field_key;
+				$module_fields[ $_module_slug ][ $field_key ] = $field;
+			}
+
+			if ( ! empty( $dependables ) ) {
+				foreach ( $dependables as $dependable_field => $affects ) {
+					foreach ( $affects as $affect ) {
+						$module_fields[ $_module_slug ][ $affect ]['depends_to'][] = $dependable_field;
+					}
+				}
+			}
+		}
+
+		return $module_fields;
+	}
+
+	static function get_advanced_fields( $post_type = '', $mode = 'all' ) {
+		$parent_modules = self::get_parent_modules( $post_type );
+		$child_modules  = self::get_child_modules( $post_type );
+
+		switch ( $mode ) {
+			case 'parent':
+				$_modules = $parent_modules;
+				break;
+
+			case 'child':
+				$_modules = $child_modules;
+				break;
+
+			default:
+				$_modules = array_merge( $parent_modules, $child_modules );
+				break;
+		}
+
+		$module_fields = array();
+
+		foreach( $_modules as $_module_slug => $_module ) {
+
+			$dependables = array();
+
+			foreach ( $_module->fields_unprocessed as $field_key => $field ) {
+				if ( isset( $field['affects'] ) ) {
+					$dependables[ $field_key ] = $field['affects'];
+				}
+
+				if ( ! isset( $field['tab_slug'] ) || 'advanced' !== $field['tab_slug'] ) {
+					continue;
+				}
+
+				if ( isset( $field['default'] ) ) {
+					$module_fields[ $_module_slug ]['advanced_defaults'][ $field_key ] = $field['default'];
+				}
+
+				$field['name'] = $field_key;
+				$module_fields[ $_module_slug ][ $field_key ] = $field;
+			}
+
+			if ( ! empty( $dependables ) ) {
+				foreach ( $dependables as $dependable_field => $affects ) {
+					foreach ( $affects as $affect ) {
+						if ( isset( $module_fields[ $_module_slug ][ $affect ] ) ) {
+							$module_fields[ $_module_slug ][ $affect ]['depends_to'][] = $dependable_field;
+						}
+					}
+				}
+			}
+
+			if ( ! empty( $_module->advanced_options ) ) {
+				$module_fields[ $_module_slug ]['advanced_common'] = $_module->advanced_options;
+			}
+
+		}
+
+		return $module_fields;
+	}
+
+	static function get_custom_css_fields( $post_type = '', $mode = 'all' ) {
+		$parent_modules = self::get_parent_modules( $post_type );
+		$child_modules  = self::get_child_modules( $post_type );
+
+		switch ( $mode ) {
+			case 'parent':
+				$_modules = $parent_modules;
+				break;
+
+			case 'child':
+				$_modules = $child_modules;
+				break;
+
+			default:
+				$_modules = array_merge( $parent_modules, $child_modules );
+				break;
+		}
+
+		$module_fields = array();
+
+		$custom_css_unwanted_types = array( 'custom_css', 'column_settings_css', 'column_settings_css_fields' );
+		foreach( $_modules as $_module_slug => $_module ) {
+			$module_fields[ $_module_slug ] = $_module->custom_css_options;
+
+			// Automatically added module ID and module class fields to setting modal's CSS tab
+			if ( ! empty( $_module->fields_unprocessed ) ) {
+				foreach ( $_module->fields_unprocessed as $field_unprocessed_key => $field_unprocessed ) {
+					if ( isset( $field_unprocessed['tab_slug'] ) && 'custom_css' === $field_unprocessed['tab_slug'] &&
+						 isset( $field_unprocessed['type'] ) && ! in_array( $field_unprocessed['type'], $custom_css_unwanted_types ) ) {
+						$module_fields[ $_module_slug ][ $field_unprocessed_key ] = $field_unprocessed;
+					}
+				}
+			}
+		}
+
+		return $module_fields;
+	}
+
+	static function get_module_fields( $post_type, $module ) {
+		$_modules = array_merge( self::get_parent_modules( $post_type ), self::get_child_modules( $post_type ) );
+
+		if ( ! empty( $_modules[ $module ] ) ) {
+			return $_modules[ $module ]->get_fields();
+		}
+		return false;
+	}
+
+	static function get_parent_module_fields( $post_type, $module ) {
+		if ( ! empty( self::$parent_modules[ $post_type ][ $module ] ) ) {
+			return self::$parent_modules[ $post_type ][ $module ]->get_fields();
+		}
+		return false;
+	}
+
+	static function get_child_module_fields( $post_type, $module ) {
+		if ( ! empty( self::$child_modules[ $post_type ][ $module ] ) ) {
+			return self::$child_modules[ $post_type ][ $module ]->get_fields();
+		}
+		return false;
+	}
+
+	static function get_parent_module_field( $post_type, $module, $field ) {
+		$fields = self::get_parent_module_fields( $post_type, $module );
+		if ( ! empty( $fields[ $field ] ) ) {
+			return $fields[ $field ];
+		}
+		return false;
+	}
+
+	static function get_all_modules_default_fields( $post_type ) {
+		$_modules = array_merge( self::get_parent_modules( $post_type ), self::get_child_modules( $post_type ) );
+		$all_fields = array();
+
+		foreach( $_modules as $_module_slug => $_module ) {
+			$module_fields = 'child' === $_module->type ? self::get_child_module_fields( $post_type, $_module_slug ) : self::get_parent_module_fields( $post_type, $_module_slug );
+			$all_fields[ $_module_slug ]['attrs'] = array_flip( array_keys( $module_fields ) );
+
+			foreach( $module_fields as $field_name => $value ) {
+				if ( isset( $_module->fields_defaults ) && isset( $_module->fields_defaults[ $field_name ] ) ) {
+					$all_fields[ $_module_slug ]['attrs'][ $field_name ] = $_module->fields_defaults[ $field_name ][0];
+				} else {
+					$all_fields[ $_module_slug ]['attrs'][ $field_name ] = '';
+				}
+			}
+
+			if ( isset( $_module->fields_defaults ) ) {
+				$all_fields[ $_module_slug ]['fields_defaults'] = $_module->fields_defaults;
+			}
+
+			if ( isset( $_module->defaults ) ) {
+				$all_fields[ $_module_slug ]['defaults'] = $_module->defaults;
+			}
+
+		}
+
+		return $all_fields;
+	}
+
+	static function get_font_icon_fields( $post_type = '' ) {
+		$parent_modules = self::get_parent_modules( $post_type );
+		$child_modules  = self::get_child_modules( $post_type );
+		$_modules       = array_merge( $parent_modules, $child_modules );
+		$module_fields  = array();
+
+		foreach ( $_modules as $module_name => $module ) {
+			foreach ($module->fields_unprocessed as $module_field_name => $module_field) {
+				if ( isset( $module_field['renderer'] ) && 'et_pb_get_font_icon_list' === $module_field['renderer'] ) {
+					$module_fields[ $module_name ][ $module_field_name ] = true;
+				}
+			}
+		}
+
+		return $module_fields;
+	}
+
+	static function get_media_quries( $for_js=false ) {
 		$media_queries = array(
 			'min_width_1405' => '@media only screen and ( min-width: 1405px )',
 			'1100_1405'      => '@media only screen and ( min-width: 1100px ) and ( max-width: 1405px)',
@@ -3363,7 +3962,23 @@ class ET_Builder_Element {
 
 		$media_queries['mobile'] = $media_queries['max_width_767'];
 
-		self::$media_queries = apply_filters( 'et_builder_media_queries', $media_queries );
+		$media_queries = apply_filters( 'et_builder_media_queries', $media_queries );
+
+		if ( 'for_js' === $for_js ) {
+			$processed_queries = array();
+
+			foreach ( $media_queries as $key => $value ) {
+				$processed_queries[] = array( $key, $value );
+			}
+		} else {
+			$processed_queries = $media_queries;
+		}
+
+		return $processed_queries;
+	}
+
+	static function set_media_queries() {
+		self::$media_queries = self::get_media_quries();
 	}
 
 	static function get_media_query( $name ) {
@@ -3429,6 +4044,11 @@ class ET_Builder_Element {
 	}
 
 	static function set_style( $function_name, $style ) {
+		// do not process all the styles if FB enabled. Only those for modules without fb support
+		if ( et_fb_is_enabled() && ! in_array( $function_name, self::get_fb_unsupported_modules() ) ) {
+			return;
+		}
+
 		$order_class_name = self::get_module_order_class( $function_name );
 
 		// Prepend .et_divi_builder class before all CSS rules in the Divi Builder plugin

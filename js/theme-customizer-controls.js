@@ -494,6 +494,21 @@
 	api.controlConstructor['et_coloralpha'] = api.ET_ColorAlphaControl;
 
 	$( window ).load( function() {
+		var $et_custom_footer_credits_disable_control = $('#customize-control-et_divi-disable_custom_footer_credits input'),
+			$et_custom_footer_credits_control         = $('#customize-control-et_divi-custom_footer_credits');
+
+		if ( $et_custom_footer_credits_disable_control.is(':checked') ) {
+			$et_custom_footer_credits_control.hide();
+		}
+
+		$et_custom_footer_credits_disable_control.change( function() {
+			if ( $(this).is(':checked') ) {
+				$et_custom_footer_credits_control.hide();
+			} else {
+				$et_custom_footer_credits_control.show();
+			}
+		} );
+
 		if ( $( '#accordion-section-et_divi_buttons' ).length ) {
 			var $icon_options_trigger = $( '#customize-control-et_divi-all_buttons_icon select' ),
 				icon_options_trigger_val = $icon_options_trigger.val();

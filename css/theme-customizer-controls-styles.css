@@ -70,6 +70,7 @@ input[type=checkbox]:checked:before { color: #2E86B9; float: none; }
 .wp-full-overlay-sidebar-content::-webkit-scrollbar-thumb, .et-pb-main-settings::-webkit-scrollbar-thumb, ul.et_font_icon::-webkit-scrollbar-thumb, .accordion-section-content::-webkit-scrollbar-thumb { -webkit-border-radius: 0 !important; border-radius: 0 !important; background: #d8d8d8 !important; }
 .wp-full-overlay-sidebar-content::-webkit-thumb:window-inactive, .et-pb-main-settings::-webkit-scrollbar-thumb:window-inactive, ul.et_font_icon::-webkit-scrollbar-thumb:window-inactive, .accordion-section-content::-webkit-scrollbar-thumb:window-inactive { background: #fff !important; }
 
+#customize-control-et_divi-disable_custom_footer_credits { margin-top: 15px; }
 #customize-control-et_divi-boxed_layout { margin-top: 20px; }
 li#customize-control-et_divi-header_style { margin-bottom: 20px; }
 .control-panel-back:before, .customize-controls-close:before { top: 3px; left: 12px; }

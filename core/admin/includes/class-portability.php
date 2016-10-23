@@ -32,9 +32,13 @@ final class ET_Core_Portability {
 		}
 
 		if ( $this->instance->view ) {
-			add_action( 'admin_footer', array( $this, 'modal' ) );
-			add_action( 'customize_controls_print_footer_scripts', array( $this, 'modal' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'assets' ), 5 );
+			if ( ! empty( $_GET['et_fb'] ) ) {
+				$this->assets();
+			} else {
+				add_action( 'admin_footer', array( $this, 'modal' ) );
+				add_action( 'customize_controls_print_footer_scripts', array( $this, 'modal' ) );
+				add_action( 'admin_enqueue_scripts', array( $this, 'assets' ), 5 );
+			}
 		}
 	}
 

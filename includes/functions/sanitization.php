@@ -248,6 +248,7 @@ function et_allowed_html_tags_short_block() {
 			'class' => array(),
 			'id'    => array(),
 			'title'    => array(),
+			'target'   => array(),
 		),
 		'br' => array(),
 		'em' => array(),

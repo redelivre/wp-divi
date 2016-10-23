@@ -1,7 +1,7 @@
 /*
 Theme Name: Divi
 Theme URI: http://www.elegantthemes.com/gallery/divi/
-Version: 2.7.10
+Version: 3.0.7
 Description: Smart. Flexible. Beautiful. Divi is the most powerful theme in our collection.
 Author: Elegant Themes
 Author URI: http://www.elegantthemes.com
@@ -4481,10 +4481,15 @@ ul.et_pb_side_nav .side_nav_item a.active {
 	}
 
 	.et_vertical_nav .et_pb_pricing_1 .et_pb_pricing_table:last-child,
+	.et_vertical_nav .et_pb_pricing_1 .et_pb_pricing_table.et-last-child,
 	.et_vertical_nav .et_pb_column_1_2 .et_pb_pricing_table:last-child,
+	.et_vertical_nav .et_pb_column_1_2 .et_pb_pricing_table.et-last-child,
 	.et_vertical_nav .et_pb_column_3_8 .et_pb_pricing_table:last-child,
+	.et_vertical_nav .et_pb_column_3_8 .et_pb_pricing_table.et-last-child,
 	.et_vertical_nav .et_pb_column_1_3 .et_pb_pricing_table:last-child,
-	.et_vertical_nav .et_pb_column_1_4 .et_pb_pricing_table:last-child {
+	.et_vertical_nav .et_pb_column_1_3 .et_pb_pricing_table.et-last-child,
+	.et_vertical_nav .et_pb_column_1_4 .et_pb_pricing_table:last-child,
+	.et_vertical_nav .et_pb_column_1_4 .et_pb_pricing_table.et-last-child {
 		margin-bottom: 0;
 	}
 
@@ -4633,9 +4638,9 @@ ul.et_pb_side_nav .side_nav_item a.active {
 
 /* Header Height Fix */
 	.et-animated-content#page-container {
-		-webkit-transition: margin-top, 0.4s ease-in-out;
-		-moz-transition: margin-top, 0.4s ease-in-out;
-		transition: margin-top, 0.4s ease-in-out;
+		-webkit-transition: margin-top 0.4s ease-in-out;
+		-moz-transition: margin-top 0.4s ease-in-out;
+		transition: margin-top 0.4s ease-in-out;
 	}
 
 	.et_hide_nav #page-container,
@@ -6069,6 +6074,28 @@ ul.et_pb_side_nav .side_nav_item a.active {
 	box-sizing: border-box;
 }
 
+#wp-admin-bar-et-use-visual-builder a:before {
+	width: 28px;
+	margin-top: -3px;
+	color: #974df3 !important;
+	font-family: "ETmodules" !important;
+	font-size: 30px !important;
+	content: "\e625";
+}
+
+#wp-admin-bar-et-use-visual-builder:hover a:before {
+	color: #fff !important;
+}
+
+#wp-admin-bar-et-use-visual-builder a:hover,
+#wp-admin-bar-et-use-visual-builder:hover a {
+	color: #fff !important;
+	background-color: #7e3bd0 !important;
+	-webkit-transition: background-color 0.5s ease;
+	-moz-transition: background-color 0.5s ease;
+	transition: background-color 0.5s ease;
+}
+
 /* Headers */
 .et_pb_column_1_3 h1,
 .et_pb_column_1_4 h1 {
@@ -6168,6 +6195,7 @@ ul.et_pb_side_nav .side_nav_item a.active {
 /* Columns */
 .et_pb_column {
 	float: left;
+	position: relative;
 	background-position: center;
 	background-size: cover;
 }
@@ -6491,9 +6519,13 @@ p.et_pb_gallery_caption {
 }
 
 .et_pb_pricing_1 .et_pb_pricing_table:last-child,
+.et_pb_pricing_1 .et_pb_pricing_table.et-last-child,
 .et_pb_column_3_8 .et_pb_pricing_table:last-child,
+.et_pb_column_3_8 .et_pb_pricing_table.et-last-child,
 .et_pb_column_1_3 .et_pb_pricing_table:last-child,
-.et_pb_column_1_4 .et_pb_pricing_table:last-child {
+.et_pb_column_1_3 .et_pb_pricing_table.et-last-child,
+.et_pb_column_1_4 .et_pb_pricing_table:last-child,
+.et_pb_column_1_4 .et_pb_pricing_table.et-last-child {
 	margin-bottom: 0;
 }
 
@@ -7069,6 +7101,8 @@ p.et_pb_gallery_caption {
 	color: #fff;
 }
 
+.et_pb_slider_carousel.et_pb_controls_dark .et-pb-arrow-prev,
+.et_pb_slider_carousel.et_pb_controls_dark .et-pb-arrow-next,
 .et_pb_slider_carousel.et_pb_controls_dark + .et_pb_carousel .et-pb-arrow-prev,
 .et_pb_slider_carousel.et_pb_controls_dark + .et_pb_carousel .et-pb-arrow-next,
 .et_pb_slider_carousel.et_pb_controls_dark + .et_pb_carousel .et_pb_video_play {
@@ -9646,7 +9680,7 @@ li.et_pb_social_icon a span {
 	background-color: #fff;
 }
 
-.et_section_transparent {
+.et_pb_section.et_section_transparent {
 	background-color: transparent;
 }
 
@@ -9721,7 +9755,9 @@ body.iphone .et_pb_section_video_bg video::-webkit-media-controls-start-playback
 }
 
 .et_pb_row .et_pb_column:last-child,
-.et_pb_row_inner .et_pb_column:last-child {
+.et_pb_row .et_pb_column.et-last-child,
+.et_pb_row_inner .et_pb_column:last-child,
+.et_pb_row_inner .et_pb_column.et-last-child {
 	margin-right: 0 !important;
 }
 
@@ -9812,6 +9848,11 @@ body.ie .et_pb_divider {
 	-moz-justify-content: center;
 	-ms-justify-content: center;
 	justify-content: center;
+}
+
+/* fix vertical alignment in IE */
+.et_pb_fullscreen .et_pb_fullwidth_header_container.center {
+	height: 1px;
 }
 
 .et_pb_fullscreen .et_pb_fullwidth_header_container.center.bottom-bottom {
@@ -13639,17 +13680,22 @@ span.comment_date {
 		padding: 2.855% 0;
 	}
 
-	.et_pb_column_single .et_pb_module:first-child {
+	.et_pb_column_single .et_pb_module:first-child,
+	.et_pb_column_single .et_pb_module.et-first-child {
 		margin-top: 0;
 	}
 
-	.et_pb_column_single .et_pb_module:last-child {
+	.et_pb_column_single .et_pb_module:last-child,
+	.et_pb_column_single .et_pb_module.et-last-child {
 		margin-bottom: 0;
 	}
 
 	.et_pb_section .et_pb_row .et_pb_column .et_pb_module:last-child,
+	.et_pb_section .et_pb_row .et_pb_column .et_pb_module.et-last-child,
 	.et_pb_section.et_section_specialty .et_pb_row .et_pb_column .et_pb_column .et_pb_module:last-child,
-	.et_pb_section.et_section_specialty .et_pb_row .et_pb_column .et_pb_row_inner .et_pb_column .et_pb_module:last-child {
+	.et_pb_section.et_section_specialty .et_pb_row .et_pb_column .et_pb_column .et_pb_module.et-last-child,
+	.et_pb_section.et_section_specialty .et_pb_row .et_pb_column .et_pb_row_inner .et_pb_column .et_pb_module:last-child,
+	.et_pb_section.et_section_specialty .et_pb_row .et_pb_column .et_pb_row_inner .et_pb_column .et_pb_module.et-last-child {
 		margin-bottom: 0;
 	}
 
@@ -13662,7 +13708,9 @@ span.comment_date {
 	}
 
 	.et_pb_row .et_pb_column:last-child,
-	.et_pb_row_inner .et_pb_column:last-child {
+	.et_pb_row .et_pb_column.et-last-child,
+	.et_pb_row_inner .et_pb_column:last-child,
+	.et_pb_row_inner .et_pb_column.et-last-child {
 		margin-right: 0 !important;
 	}
 
@@ -13964,7 +14012,9 @@ span.comment_date {
 /* Sticky Image */
 	.et_pb_section_sticky,
 	.et_pb_section_sticky .et_pb_row:last-child,
+	.et_pb_section_sticky .et_pb_row.et-last-child,
 	.et_pb_section_sticky .et_pb_specialty_column .et_pb_row_inner:last-child,
+	.et_pb_section_sticky .et_pb_specialty_column .et_pb_row_inner.et-last-child,
 	.et_pb_section_sticky .et_pb_column_single {
 		padding-bottom: 0 !important;
 	}
@@ -14193,7 +14243,8 @@ span.comment_date {
 		margin-bottom: 0;
 	}
 
-	.et_pb_row:last-child .et_pb_column:last-child {
+	.et_pb_row:last-child .et_pb_column:last-child,
+	.et_pb_row.et-last-child .et_pb_column.et-last-child {
 		margin-bottom: 0;
 	}
 
@@ -14215,7 +14266,9 @@ span.comment_date {
 	}
 
 	.et_pb_row .et_pb_column .et_pb_module:last-child,
-	.et_section_specialty .et_pb_row .et_pb_column .et_pb_module:last-child {
+	.et_pb_row .et_pb_column .et_pb_module.et-last-child,
+	.et_section_specialty .et_pb_row .et_pb_column .et_pb_module:last-child,
+	.et_section_specialty .et_pb_row .et_pb_column .et_pb_module.et-last-child {
 		margin-bottom: 0;
 	}
 
@@ -14226,12 +14279,15 @@ span.comment_date {
 /* Sticky Image */
 	.et_pb_section_sticky_mobile,
 	.et_pb_section_sticky_mobile .et_pb_row:last-child,
+	.et_pb_section_sticky_mobile .et_pb_row.et-last-child,
 	.et_pb_section_sticky_mobile .et_pb_specialty_column .et_pb_row_inner:last-child,
+	.et_pb_section_sticky_mobile .et_pb_specialty_column .et_pb_row_inner.et-last-child,
 	.et_pb_section_sticky_mobile .et_pb_column_single {
 		padding-bottom: 0 !important;
 	}
 
-	.et_pb_section_sticky .et_pb_row:last-child .et_pb_column.et_pb_row_sticky:last-child {
+	.et_pb_section_sticky .et_pb_row:last-child .et_pb_column.et_pb_row_sticky:last-child,
+	.et_pb_section_sticky .et_pb_row.et-last-child .et_pb_column.et_pb_row_sticky.et-last-child {
 		margin-bottom: 0;
 	}
 
@@ -15129,7 +15185,8 @@ span.comment_date {
 		margin: 0 0 30px !important;
 	}
 
-	.et_pb_column .et_pb_pricing_table:last-child {
+	.et_pb_column .et_pb_pricing_table:last-child,
+	.et_pb_column .et_pb_pricing_table.et-last-child {
 		margin-bottom: 0;
 	}
 
@@ -15356,7 +15413,8 @@ span.comment_date {
 		margin-bottom: 0;
 	}
 
-	.et_pb_row .et_pb_column.et_pb_column_1_4:last-child {
+	.et_pb_row .et_pb_column.et_pb_column_1_4:last-child,
+	.et_pb_row .et_pb_column.et_pb_column_1_4.et-last-child {
 		margin-bottom: 0;
 	}
 

@@ -6,12 +6,21 @@ if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! is_customize_preview() ) {
 	$builder_load_actions = array(
 		'et_pb_get_backbone_template',
 		'et_pb_get_backbone_templates',
+		'et_pb_process_computed_property',
+		'et_fb_ajax_render_shortcode',
+		'et_fb_ajax_save',
+		'et_fb_get_saved_layouts',
+		'et_fb_save_layout',
+		'et_fb_update_layout',
 		'et_pb_execute_content_shortcodes',
 		'et_pb_ab_builder_data',
 		'et_pb_create_ab_tables',
 		'et_pb_update_stats_table',
 		'et_pb_ab_clear_cache',
 		'et_pb_ab_clear_stats',
+		'et_fb_prepare_shortcode',
+		'et_fb_process_imported_content',
+		'et_fb_get_saved_templates',
 	);
 
 	$force_builder_load = isset( $_POST['et_load_builder_modules'] ) && '1' === $_POST['et_load_builder_modules'];
@@ -58,7 +67,7 @@ function et_builder_load_modules_styles() {
 	wp_enqueue_style( 'magnific-popup', ET_BUILDER_URI . '/styles/magnific_popup.css', array(), ET_BUILDER_VERSION );
 
 	wp_enqueue_script( 'et-jquery-touch-mobile', ET_BUILDER_URI . '/scripts/jquery.mobile.custom.min.js', array( 'jquery' ), ET_BUILDER_VERSION, true );
-	wp_enqueue_script( 'et-builder-modules-script', ET_BUILDER_URI . '/scripts/frontend-builder-scripts.js', array( 'jquery', 'et-jquery-touch-mobile' ), ET_BUILDER_VERSION, true );
+	wp_enqueue_script( 'et-builder-modules-script', ET_BUILDER_URI . '/scripts/frontend-builder-scripts.js', apply_filters( 'et_pb_frontend_builder_scripts_dependencies', array( 'jquery', 'et-jquery-touch-mobile' ) ), ET_BUILDER_VERSION, true );
 	wp_localize_script( 'et-builder-modules-script', 'et_pb_custom', array(
 		'ajaxurl'                => admin_url( 'admin-ajax.php' ),
 		'images_uri'             => get_template_directory_uri() . '/images',
@@ -183,6 +192,8 @@ function et_builder_load_framework() {
 	}
 
 	// load builder files on front-end and on specific admin pages only.
+	$action_hook = is_admin() ? 'wp_loaded' : 'wp';
+
 	if ( et_builder_should_load_framework() ) {
 
 		require ET_BUILDER_DIR . 'layouts.php';
@@ -192,10 +203,35 @@ function et_builder_load_framework() {
 
 		do_action( 'et_builder_framework_loaded' );
 
-		$action_hook = is_admin() ? 'wp_loaded' : 'wp';
 		add_action( $action_hook, 'et_builder_init_global_settings' );
 		add_action( $action_hook, 'et_builder_add_main_elements' );
 	}
+
+	add_action( $action_hook, 'et_builder_load_frontend_builder' );
+}
+endif;
+
+function et_builder_load_frontend_builder() {
+	// set the $et_current_memory_limit if FB is loading
+	global $et_current_memory_limit;
+	$et_current_memory_limit = intval( @ini_get( 'memory_limit' ) );
+
+	// try to increase the memory limit to 128mb silently if it less than 128
+	if ( ! empty( $et_current_memory_limit ) && intval( $et_current_memory_limit ) < 128 ) {
+		if ( true !== strpos( ini_get( 'disable_functions' ), 'ini_set' ) ) {
+			@ini_set( 'memory_limit', '128M' );
+		}
+	}
+
+	require_once ET_BUILDER_DIR . 'frontend-builder/init.php';
+}
+
+if ( ! function_exists( 'et_pb_get_google_api_key' ) ) :
+function et_pb_get_google_api_key() {
+	$google_api_option = get_option( 'et_google_api_settings' );
+	$google_api_key = isset( $google_api_option['api_key'] ) ? $google_api_option['api_key'] : '';
+
+	return $google_api_key;
 }
 endif;
 

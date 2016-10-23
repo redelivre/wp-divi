@@ -65,12 +65,15 @@
 			} )
 		},
 
-		validateImportFile: function( file ) {
+		validateImportFile: function( file, noOutput ) {
 			if ( undefined !== file && 'undefined' != typeof file.name  && 'undefined' != typeof file.type && 'json' == file.name.split( '.' ).slice( -1 )[0] ) {
 
 				return true;
 			}
-			etCore.modalContent( '<p>' + this.text.invalideFile + '</p>', false, 3000, '#et-core-portability-import' );
+
+			if ( ! noOutput ) {
+				etCore.modalContent( '<p>' + this.text.invalideFile + '</p>', false, 3000, '#et-core-portability-import' );
+			}
 
 			this.enableActions();
 
@@ -221,6 +224,150 @@
 			} );
 		},
 
+		exportFB: function( exportUrl, postId, content, fileName, importFile, page ) {
+			var $this = this;
+
+			page = typeof page === 'undefined' ? 1 : page;
+
+			$.ajax( {
+				type: 'POST',
+				url: etCore.ajaxurl,
+				dataType: 'json',
+				data: {
+					action: 'et_core_portability_export',
+					content: content,
+					timestamp: 0,
+					nonce: $this.nonce,
+					post: postId,
+					context: 'et_builder',
+					page: page,
+				},
+				success: function( response ) {
+					var errorEvent = document.createEvent( 'Event' );
+
+					errorEvent.initEvent( 'et_fb_layout_export_error', true, true );
+
+					// The error is unknown but most of the time it would be cased by the server max size being exceeded.
+					if ( 'string' === typeof response && '0' === response ) {
+						window.et_fb_export_layout_message = $this.text.maxSizeExceeded;
+						window.dispatchEvent( errorEvent );
+
+						return;
+					}
+					// Memory size set on server is exhausted.
+					else if ( 'string' === typeof response && response.toLowerCase().indexOf( 'memory size' ) >= 0 ) {
+						window.et_fb_export_layout_message = $this.text.memoryExhausted;
+						window.dispatchEvent( errorEvent );
+						return;
+					}
+					// Paginate.
+					else if ( 'undefined' !== typeof response.page ) {
+						if ( $this.cancelled ) {
+							return;
+						}
+
+						return $this.exportFB(exportUrl, postId, content, fileName, importFile, (page + 1));
+					} else if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.message ) {
+						window.et_fb_export_layout_message = $this.text[response.data.message];
+						window.dispatchEvent( errorEvent );
+						return;
+					}
+
+					var time = ' ' + new Date().toJSON().replace( 'T', ' ' ).replace( ':', 'h' ).substring( 0, 16 ),
+						downloadURL = exportUrl,
+						query = {
+							'timestamp': response.data.timestamp,
+							'name': '' !== fileName ? fileName : encodeURIComponent( time ),
+						};
+
+					$.each( query, function( key, value ) {
+						if ( value ) {
+							downloadURL = downloadURL + '&' + key + '=' + value;
+						}
+					} );
+
+					// Remove confirmation popup before relocation.
+					$( window ).unbind( 'beforeunload' );
+
+					window.location.assign( encodeURI( downloadURL ) );
+
+					// perform import if needed
+					if ( typeof importFile !== 'undefined' ) {
+						$this.importFB( importFile, postId );
+					} else {
+						var event = document.createEvent( 'Event' );
+
+						event.initEvent( 'et_fb_layout_export_finished', true, true );
+
+						// trigger event to communicate with FB
+						window.dispatchEvent( event );
+					}
+				}
+			} );
+		},
+
+		importFB: function( file, postId ) {
+			var $this = this;
+			var errorEvent = document.createEvent( 'Event' );
+
+			errorEvent.initEvent( 'et_fb_layout_import_error', true, true );
+
+			if ( undefined === window.FormData ) {
+				window.et_fb_import_layout_message = this.text.browserSupport;
+				window.dispatchEvent( errorEvent );
+				return;
+			}
+
+			if ( ! $this.validateImportFile( file, true ) ) {
+				window.et_fb_import_layout_message = this.text.invalideFile;
+				window.dispatchEvent( errorEvent );
+				return;
+			}
+
+			var fileSize = Math.ceil( ( file.size / ( 1024 * 1024 ) ).toFixed( 2 ) ),
+				formData = new FormData(),
+				requestData = {
+					action: 'et_core_portability_import',
+					file: file,
+					content: false,
+					timestamp: 0,
+					nonce: $this.nonce,
+					post: postId,
+					context: 'et_builder'
+				};
+
+			// Max size set on server is exceeded.
+			if ( fileSize >= $this.postMaxSize || fileSize >= $this.uploadMaxSize ) {
+				window.et_fb_import_layout_message = this.text.maxSizeExceeded;
+				window.dispatchEvent( errorEvent );
+
+				return;
+			}
+
+			$.each( requestData, function( name, value ) {
+				formData.append( name, value);
+			} );
+
+			$.ajax( {
+				type: 'POST',
+				url: etCore.ajaxurl,
+				processData: false,
+				contentType: false,
+				data: formData,
+				success: function( response ) {
+					var event = document.createEvent( 'Event' );
+
+					event.initEvent( 'et_fb_layout_import_finished', true, true );
+
+					// save the data into global variable for later use in FB
+					window.et_fb_import_layout_response = response;
+
+					// trigger event to communicate with FB
+					window.dispatchEvent( event );
+				}
+			} );
+		},
+
 		ajaxAction: function( data, callback, fileSupport ) {
 			var $this = this;
 
@@ -244,7 +391,7 @@
 				success: function( response ) {
 					// The error is unknown but most of the time it would be cased by the server max size being exceeded.
 					if ( 'string' === typeof response && '0' === response ) {
-						etCore.modalContent( '<p>' + $this.text.maxSizeExceeded + '</p>', false, true, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id'  ) );
+						etCore.modalContent( '<p>' + $this.text.maxSizeExceeded + '</p>', false, true, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id' ) );
 
 						$this.enableActions();
 
@@ -252,7 +399,7 @@
 					}
 					// Memory size set on server is exhausted.
 					else if ( 'string' === typeof response && response.toLowerCase().indexOf( 'memory size' ) >= 0 ) {
-						etCore.modalContent( '<p>' + $this.text.memoryExhausted + '</p>', false, true, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id'  ) );
+						etCore.modalContent( '<p>' + $this.text.memoryExhausted + '</p>', false, true, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id' ) );
 
 						$this.enableActions();
 
@@ -282,7 +429,7 @@
 
 						return;
 					} else if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.message ) {
-						etCore.modalContent( '<p>' + $this.text[response.data.message] + '</p>', false, 3000, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id'  ) );
+						etCore.modalContent( '<p>' + $this.text[response.data.message] + '</p>', false, 3000, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id' ) );
 
 						$this.enableActions();
 
@@ -315,7 +462,7 @@
 
 				// Max size set on server is exceeded.
 				if ( fileSize >= $this.postMaxSize || fileSize >= $this.uploadMaxSize ) {
-					etCore.modalContent( '<p>' + $this.text.maxSizeExceeded + '</p>', false, true, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id'  ) );
+					etCore.modalContent( '<p>' + $this.text.maxSizeExceeded + '</p>', false, true, '#' + $this.instance( '.ui-tabs-panel:visible' ).attr( 'id' ) );
 
 					$this.enableActions();
 

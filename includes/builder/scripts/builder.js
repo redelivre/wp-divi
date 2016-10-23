@@ -2,7 +2,7 @@ var ET_PageBuilder = ET_PageBuilder || {};
 
 window.wp = window.wp || {};
 
-window.et_builder_version = '2.7.10';
+window.et_builder_version = '3.0.7';
 
 ( function($) {
 	var et_error_modal_shown = window.et_error_modal_shown,
@@ -9362,6 +9362,7 @@ window.et_builder_version = '2.7.10';
 
 			var $this_el = $(this),
 				is_builder_used = $this_el.hasClass( 'et_pb_builder_is_used' ),
+				$et_pb_fb_cta = $( '#et_pb_fb_cta' ),
 				content;
 
 			if ( is_builder_used ) {
@@ -9386,12 +9387,51 @@ window.et_builder_version = '2.7.10';
 				ET_PageBuilder_Events.trigger( 'et-activate-builder' );
 
 				et_pb_hide_layout_settings();
+
+				$et_pb_fb_cta.show();
 			}
+		} );
+
+		$( '#et_pb_fb_cta' ).click( function( e ) {
+			e.preventDefault();
+
+			// Fade wrap.
+			$( 'html' ).fadeOut();
+
+			// Set redirect.
+			$( 'form#post' ).append( '<input type="hidden" name="et-fb-builder-redirect" value="' + $( this ).attr('href') + '" />' );
+
+			// Set builder.
+			if ( ! $toggle_builder_button.hasClass( 'et_pb_builder_is_used' ) ) {
+				$et_pb_old_content.val( et_pb_get_content( 'content' ) );
+
+				ET_PageBuilder_App.reInitialize();
+
+				$use_builder_custom_field.val( 'on' );
+			}
+
+			// Prevent reload box and queue save to allow builder to create empty section if necessary.
+			$( window )
+				.off( 'beforeunload' )
+				.delay( 500 )
+				.queue( function() {
+					var trigger = $( '#save-action #save-post' );
+
+					// Publish if save draft isn't present.
+					if ( trigger.length === 0 ){
+						trigger = $( '#publishing-action #publish' )
+					}
+
+					trigger.trigger( 'click' );
+				} );
 		} );
 
 		function et_pb_deactivate_builder() {
 			var $body = $( 'body' ),
 				page_position = 0;
+				$et_pb_fb_cta = $( '#et_pb_fb_cta' );
+
+			$et_pb_fb_cta.hide();
 
 			et_pb_set_content( 'content', $et_pb_old_content.val() );
 
@@ -9487,7 +9527,7 @@ window.et_builder_version = '2.7.10';
 						saved_value           = $saving_input.val();
 
 					switch ( type ) {
-						case ( 'yes_or_no' ) :
+						case ( 'yes_no_button' ) :
 							var $yn_wrapper = $field_list.find( '.et_pb_yes_no_button_wrapper' ),
 								$yn_button  = $field_list.find( '.et_pb_yes_no_button' ),
 								$yn_select  = $field_list.find( 'select' ),
@@ -9559,7 +9599,7 @@ window.et_builder_version = '2.7.10';
 							$yn_select.trigger( 'change' );
 							break;
 
-						case ( 'colorpicker' ) :
+						case ( 'color-alpha' ) :
 							var $input_colorpicker = $field_list.find( '.input-colorpicker' );
 
 								$input_colorpicker.val( saved_value ).wpColorPicker({
@@ -11177,7 +11217,13 @@ window.et_builder_version = '2.7.10';
 					var $this_field         = $(this), // this field value affects another field visibility
 						new_field_value     = $this_field.val(),
 						new_field_value_number = parseInt( new_field_value ),
-						$affected_fields     = $( $this_field.data( 'affects' ) ),
+						data_affects_obj    = _.map( $this_field.data( 'affects' ).split(', '), function( affect ) {
+							var is_selector = $( affect ).length;
+
+							return is_selector ? affect : '#et_pb_' + affect;
+						} ),
+						data_affects         = data_affects_obj.join(', '),
+						$affected_fields     = $( data_affects ),
 						this_field_tab_index = $this_field.closest( '.et-pb-options-tab' ).index();
 
 					$affected_fields.each( function() {
@@ -12207,7 +12253,14 @@ window.et_builder_version = '2.7.10';
 				padding: {},
 				yes_no_button: {},
 				font_buttons: {}
-			};
+			},
+
+			$et_toggle_builder_button = $('#et_pb_toggle_builder'),
+			$et_pb_fb_cta = $( '#et_pb_fb_cta' );
+
+			if ( $et_toggle_builder_button.hasClass( 'et_pb_builder_is_used' ) ) {
+				$et_pb_fb_cta.show();
+			}
 
 		window.et_builder_template_options = et_builder_template_options;
 

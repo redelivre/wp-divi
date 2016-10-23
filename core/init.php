@@ -41,7 +41,7 @@ function et_core_setup( $url ) {
 	require_once( ET_CORE_PATH . 'functions.php' );
 	require_once( ET_CORE_PATH . 'updates_init.php' );
 
-	if ( is_admin() ) {
+	if ( is_admin() || ! empty( $_GET['et_fb'] ) ) {
 		require_once( ET_CORE_PATH . 'admin/includes/assets.php' );
 
 		add_action( 'admin_enqueue_scripts', 'et_core_load_main_styles' );

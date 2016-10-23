@@ -1905,3 +1905,32 @@ function et_pb_get_google_api_key() {
 	return $google_api_key;
 }
 endif;
+
+if ( ! function_exists( 'et_uc_theme_name' ) ) :
+
+/**
+ * Fixes the bug with lowercase theme name, preventing a theme to update correctly,
+ * when an update is being performed via Themes page
+ */
+function et_uc_theme_name( $key, $raw_key ) {
+	if ( ! ( is_admin() && isset( $_REQUEST['action'] ) && 'update-theme' === $_REQUEST['action'] ) ) {
+		return $key;
+	}
+
+	$theme_info = wp_get_theme();
+
+	if ( is_child_theme() ) {
+		$theme_info = wp_get_theme( $theme_info->parent_theme );
+	}
+
+	$theme_name = $theme_info->display( 'Name' );
+
+	if ( $raw_key !== $theme_name ) {
+		return $key;
+	}
+
+	return $theme_name;
+}
+add_filter( 'sanitize_key', 'et_uc_theme_name', 10, 2 );
+
+endif;

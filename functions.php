@@ -2771,6 +2771,34 @@ function et_divi_customizer_theme_settings( $wp_customize ) {
 		'settings'	=> 'et_divi[bottom_bar_social_icon_color]',
 	) ) );
 
+	$wp_customize->add_setting( 'et_divi[disable_custom_footer_credits]', array(
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'transport'         => 'postMessage',
+		'sanitize_callback' => 'wp_validate_boolean',
+	) );
+
+	$wp_customize->add_control( 'et_divi[disable_custom_footer_credits]', array(
+		'label'   => esc_html__( 'Disable Footer Credits', 'Divi' ),
+		'section' => 'et_divi_bottom_bar',
+		'type'    => 'checkbox',
+	) );
+
+	$wp_customize->add_setting( 'et_divi[custom_footer_credits]', array(
+		'default'           => '',
+		'type'              => 'option',
+		'capability'        => 'edit_theme_options',
+		'transport'         => 'postMessage',
+		'sanitize_callback' => 'et_sanitize_html_input_text',
+	) );
+
+	$wp_customize->add_control( 'et_divi[custom_footer_credits]', array(
+		'label'    => esc_html__( 'Edit Footer Credits', 'Divi' ),
+		'section'  => 'et_divi_bottom_bar',
+		'settings' => 'et_divi[custom_footer_credits]',
+		'type'     => 'textarea',
+	) );
+
 	$wp_customize->add_setting( 'et_divi[all_buttons_font_size]', array(
 		'default'       => ET_Global_Settings::get_value( 'all_buttons_font_size', 'default' ),
 		'type'          => 'option',
@@ -5520,6 +5548,9 @@ add_action( 'et_customizer_footer_preview', 'et_load_social_icons' );
 function et_divi_customize_preview_js() {
 	$theme_version = et_get_theme_version();
 	wp_enqueue_script( 'divi-customizer', get_template_directory_uri() . '/js/theme-customizer.js', array( 'customize-preview' ), $theme_version, true );
+	wp_localize_script( 'divi-customizer', 'et_main_customizer_data', array(
+		'original_footer_credits' => et_get_original_footer_credits(),
+	) );
 }
 add_action( 'customize_preview_init', 'et_divi_customize_preview_js' );
 
@@ -8451,6 +8482,38 @@ function et_divi_gallery_layout_enable( $option ) {
 }
 add_filter( 'et_gallery_layout_enable', 'et_divi_gallery_layout_enable' );
 
+function et_pb_get_all_categories() {
+	// nonce check will be there..
+
+	$all_cats = get_terms( 'project_category' );
+	$all_cats_processed = array();
+
+	foreach( $all_cats as $cat => $cat_data ) {
+		$all_cats_processed[] = array(
+			'id' => $cat_data->term_id,
+			'name' => $cat_data->name,
+		);
+	}
+	die( json_encode( $all_cats_processed ) );
+}
+add_action( 'wp_ajax_et_pb_get_all_categories', 'et_pb_get_all_categories' );
+
+function et_pb_get_widget_areas_list() {
+	// nonce check will be there..
+	global $wp_registered_sidebars;
+	$widget_areas_processed = array();
+
+	foreach( $wp_registered_sidebars as $id => $options ) {
+		$widget_areas_processed[] = array(
+			'id' => $id,
+			'name' => $options['name'],
+		);
+	}
+
+	die( json_encode( $widget_areas_processed ) );
+}
+add_action( 'wp_ajax_et_pb_get_widget_areas_list', 'et_pb_get_widget_areas_list' );
+
 /**
  * Register theme and modules Customizer portability.
  *
@@ -8505,3 +8568,42 @@ function et_divi_customizer_link() {
 	}
 }
 add_action( 'customize_controls_print_footer_scripts', 'et_divi_customizer_link' );
+
+/**
+ * Added body class to make it possible to identify the Divi theme on frontend
+ * @return array
+ */
+function et_divi_theme_body_class( $classes ) {
+	$classes[] = 'et_divi_theme';
+
+	return $classes;
+}
+add_filter( 'body_class', 'et_divi_theme_body_class' );
+
+if ( ! function_exists( 'et_get_original_footer_credits' ) ) :
+function et_get_original_footer_credits() {
+	return sprintf( __( 'Designed by %1$s | Powered by %2$s', 'Divi' ), '<a href="http://www.elegantthemes.com" title="Premium WordPress Themes">Elegant Themes</a>', '<a href="http://www.wordpress.org">WordPress</a>' );
+}
+endif;
+
+if ( ! function_exists( 'et_get_footer_credits' ) ) :
+function et_get_footer_credits() {
+	$original_footer_credits = et_get_original_footer_credits();
+
+	$disable_custom_credits = et_get_option( 'disable_custom_footer_credits', false );
+
+	if ( $disable_custom_credits ) {
+		return '';
+	}
+
+	$credits_format = '<p id="footer-info">%1$s</p>';
+
+	$footer_credits = et_get_option( 'custom_footer_credits', '' );
+
+	if ( '' === trim( $footer_credits ) ) {
+		return et_get_safe_localization( sprintf( $credits_format, $original_footer_credits ) );
+	}
+
+	return et_get_safe_localization( sprintf( $credits_format, $footer_credits ) );
+}
+endif;
