@@ -285,9 +285,61 @@ function et_pb_get_current_user_role() {
 	$current_user = wp_get_current_user();
 	$user_roles = $current_user->roles;
 
-	$role = ! empty( $user_roles ) ? $user_roles[0] : '';
+	// retrieve the role from array if exists or determine it using custom mechanism
+	// $user_roles array may start not from 0 index. Use reset() to retrieve the first value from array regardless its index
+	$role = ! empty( $user_roles ) ? reset( $user_roles ) : et_pb_determine_current_user_role();
 
 	return $role;
+}
+
+/**
+ * Generate the list of all roles ( with editing permissions ) registered in current WP
+ * @return string
+ */
+function et_pb_get_all_roles_list() {
+	// get all roles registered in current WP
+	if ( ! function_exists( 'get_editable_roles' ) ) {
+		require_once( ABSPATH . '/wp-admin/includes/user.php' );
+	}
+
+	$all_roles = get_editable_roles();
+	$builder_roles_array = array();
+
+	if ( ! empty( $all_roles ) ) {
+		foreach( $all_roles as $role => $role_data ) {
+			// add roles with edit_posts capability into $builder_roles_array
+			if ( ! empty( $role_data['capabilities']['edit_posts'] ) && 1 === (int) $role_data['capabilities']['edit_posts'] ) {
+				$builder_roles_array[ $role ] = $role_data['name'];
+			}
+		}
+	}
+
+	// fill the builder roles array with default roles if it's empty
+	if ( empty( $builder_roles_array ) ) {
+		$builder_roles_array = array(
+			'administrator' => esc_html__( 'Administrator', 'et_builder' ),
+			'editor'        => esc_html__( 'Editor', 'et_builder' ),
+			'author'        => esc_html__( 'Author', 'et_builder' ),
+			'contributor'   => esc_html__( 'Contributor', 'et_builder' ),
+		);
+	}
+
+	return $builder_roles_array;
+}
+
+/**
+ * Determine the current user role by checking every single registered role via current_user_can()
+ * @return string
+ */
+function et_pb_determine_current_user_role() {
+	$all_roles = et_pb_get_all_roles_list();
+
+	// go through all the registered roles and return the one current user have
+	foreach( $all_roles as $role => $role_data ) {
+		if ( current_user_can( $role ) ) {
+			return $role;
+		}
+	}
 }
 
 function et_pb_show_all_layouts_built_for_post_type( $post_type ) {
@@ -1423,28 +1475,62 @@ function et_builder_get_failure_notification_modal() {
 	}
 
 	$output = sprintf(
-		'<div class="et_pb_modal_overlay et_modal_on_top et_pb_failure_notification_modal et_pb_new_template_modal">
-			<div class="et_pb_prompt_modal">
-				<h2>%1$s</h2>
+		'<div class="et-core-modal-overlay et-builder-timeout et-core-active">
+			<div class="et-core-modal">
+				<div class="et-core-modal-header">
+					<h3 class="et-core-modal-title">%1$s</h3>
+					<a href="#" class="et-core-modal-close" data-et-core-modal="close"></a>
+				</div>
 
-				<div class="et_pb_prompt_modal_inside">
-					<p><strong>Oops, it looks like the Divi Builder failed to load. Performing the following actions may help solve the problem.</strong></p>
+				<div class="et-core-modal-content">
+					<p><strong>%4$s</strong></p>
 
 					%2$s
 				</div>
 
-				<a href="#"" class="et_pb_prompt_dont_proceed et-pb-modal-close"></a>
-
 				<div class="et_pb_prompt_buttons">
 					<br>
 					<span class="spinner"></span>
-					<a href="#" class="et_pb_reload_builder button-primary et_pb_prompt_proceed">%3$s</a>
+					<a href="#" class="et-core-modal-action">%3$s</a>
 				</div>
 			</div>
 		</div>',
 		esc_html__( 'Divi Builder Timeout', 'et_builder' ),
 		$messages,
-		esc_html__( 'Reload The Builder', 'et_builder' )
+		esc_html__( 'Reload The Builder', 'et_builder' ),
+		esc_html__( 'Oops, it looks like the Divi Builder failed to load. Performing the following actions may help solve the problem.', 'et_builder' )
+	);
+
+	return $output;
+}
+endif;
+
+if ( ! function_exists( 'et_builder_get_exit_notification_modal' ) ) :
+function et_builder_get_exit_notification_modal() {
+	$output = sprintf(
+		'<div class="et-core-modal-overlay et-core-modal-two-buttons et-builder-exit-modal et-core-active">
+			<div class="et-core-modal">
+				<div class="et-core-modal-header">
+					<h3 class="et-core-modal-title">%1$s</h3>
+					<a href="#" class="et-core-modal-close" data-et-core-modal="close"></a>
+				</div>
+
+				<div class="et-core-modal-content">
+					<p>%2$s</p>
+				</div>
+
+				<div class="et_pb_prompt_buttons">
+					<br>
+					<span class="spinner"></span>
+					<a href="#" class="et-core-modal-action et-core-modal-action-secondary">%3$s</a>
+					<a href="#" class="et-core-modal-action">%4$s</a>
+				</div>
+			</div>
+		</div>',
+		esc_html__( 'You Have Unsaved Changes', 'et_builder' ),
+		et_get_safe_localization( __( 'Your page contains changes that have not been saved. If you close the builder without saving, these changes will be lost. If you would like to leave the builder and save all changes, please select <strong>Save & Exit</strong>. If you would like to discard all recent changes, choose <strong>Discard & Exit</strong>.', 'et_builder' ) ),
+		esc_html__( 'Discard & Exit', 'et_builder' ),
+		esc_html__( 'Save & Exit', 'et_builder' )
 	);
 
 	return $output;
@@ -1580,6 +1666,11 @@ function et_increase_memory_limit() {
 
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
+	}
+
+	// proceed only if current memory limit < 128
+	if ( intval( @ini_get( 'memory_limit' ) ) >= 128 ) {
+		return false;
 	}
 
 	if ( true === strpos( ini_get( 'disable_functions' ), 'ini_set' ) ) {
@@ -2069,6 +2160,24 @@ function et_fb_is_enabled( $post_id = false ) {
 	}
 
 	return true;
+}
+endif;
+
+if ( ! function_exists( 'et_fb_is_retrieving_builder_data' ) ) :
+function et_fb_is_retrieving_builder_data() {
+	if ( ! isset( $_POST['et_fb_helper_nonce'] ) || ! wp_verify_nonce( $_POST['et_fb_helper_nonce'], 'et_fb_backend_helper_nonce' ) ) {
+		return false;
+	}
+
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return false;
+	}
+
+	if ( isset( $_POST['action'] ) && 'et_fb_retrieve_builder_data' === $_POST['action'] ) {
+		return true;
+	}
+
+	return false;
 }
 endif;
 
@@ -2902,3 +3011,31 @@ function et_fb_prepare_ssl_link( $link ) {
 
  	return $link;
 }
+
+/**
+ * Filterable options for backend and visual builder. Designed to be filtered
+ * by theme/plugin since builder is shared accross Divi, Extra, and Divi Builder
+ * @return array builder options values
+ */
+if ( ! function_exists( 'et_builder_options' ) ) :
+function et_builder_options() {
+	return apply_filters( 'et_builder_options', array(
+		'all_buttons_icon' => 'yes', // Default appearance of button icon
+	) );
+}
+endif;
+
+/**
+ * Get specific builder option (fetched from et_builder_options())
+ * @param string option name
+ * @return mixed builder option value
+ */
+if ( ! function_exists( 'et_builder_option' ) ) :
+function et_builder_option( $name ) {
+	$options = et_builder_options();
+
+	$option = isset( $options[ $name ] ) ? $options[ $name ] : false;
+
+	return apply_filters( "et_builder_option_{$name}", $option );
+}
+endif;

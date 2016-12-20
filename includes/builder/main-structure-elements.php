@@ -4,6 +4,7 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 	function init() {
 		$this->name = esc_html__( 'Section', 'et_builder' );
 		$this->slug = 'et_pb_section';
+		$this->fb_support = true;
 
 		$this->whitelisted_fields = array(
 			'background_image',
@@ -553,6 +554,13 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 			),
 		);
 
+		if ( et_fb_is_enabled() || et_fb_is_retrieving_builder_data() ) {
+			$fields["custom_padding_last_edited"] = array(
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
+			);
+		}
+
 		return $fields;
 	}
 
@@ -611,6 +619,12 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 		$bg_img_1                = $this->shortcode_atts['bg_img_1'];
 		$bg_img_2                = $this->shortcode_atts['bg_img_2'];
 		$bg_img_3                = $this->shortcode_atts['bg_img_3'];
+		$parallax_1              = $this->shortcode_atts['parallax_1'];
+		$parallax_2              = $this->shortcode_atts['parallax_2'];
+		$parallax_3              = $this->shortcode_atts['parallax_3'];
+		$parallax_method_1       = $this->shortcode_atts['parallax_method_1'];
+		$parallax_method_2       = $this->shortcode_atts['parallax_method_2'];
+		$parallax_method_3       = $this->shortcode_atts['parallax_method_3'];
 		$padding_top_1           = $this->shortcode_atts['padding_top_1'];
 		$padding_right_1         = $this->shortcode_atts['padding_right_1'];
 		$padding_bottom_1        = $this->shortcode_atts['padding_bottom_1'];
@@ -671,7 +685,12 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 		);
 
 		if ( 'on' === $specialty ) {
-			global $et_pb_column_backgrounds, $et_pb_column_paddings, $et_pb_columns_counter, $et_pb_column_css, $et_pb_column_paddings_mobile;
+			global $et_pb_all_column_settings, $et_pb_rendering_column_content, $et_pb_rendering_column_content_row;
+
+			$et_pb_all_column_settings_backup = $et_pb_all_column_settings;
+
+			$et_pb_all_column_settings = ! isset( $et_pb_all_column_settings ) ?  array() : $et_pb_all_column_settings;
+
 			$module_class .= 'on' === $make_equal ? ' et_pb_equal_columns' : '';
 
 			if ( 'on' === $use_custom_gutter && '' !== $gutter_width ) {
@@ -722,6 +741,12 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 				),
 			);
 
+			$et_pb_column_parallax = array(
+				array( $parallax_1, $parallax_method_1 ),
+				array( $parallax_2, $parallax_method_2 ),
+				array( $parallax_3, $parallax_method_3 ),
+			);
+
 			if ( 'on' === $make_fullwidth && 'off' === $use_custom_width ) {
 				$module_class .= ' et_pb_specialty_fullwidth';
 			}
@@ -743,6 +768,24 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 				'custom_css_main'   => array( $custom_css_main_1, $custom_css_main_2, $custom_css_main_3 ),
 				'custom_css_after'  => array( $custom_css_after_1, $custom_css_after_2, $custom_css_after_3 ),
 			);
+
+			$internal_columns_settings_array = array(
+				'keep_column_padding_mobile' => 'on',
+				'et_pb_column_backgrounds' => $et_pb_column_backgrounds,
+				'et_pb_column_parallax' => $et_pb_column_parallax,
+				'et_pb_columns_counter' => $et_pb_columns_counter,
+				'et_pb_column_paddings' => $et_pb_column_paddings,
+				'et_pb_column_paddings_mobile' => $et_pb_column_paddings_mobile,
+				'et_pb_column_css' => $et_pb_column_css,
+			);
+
+			$current_row_position = $et_pb_rendering_column_content ? 'internal_row' : 'regular_row';
+
+			$et_pb_all_column_settings[ $current_row_position ] = $internal_columns_settings_array;
+
+			if ( $et_pb_rendering_column_content ) {
+				$et_pb_rendering_column_content_row = true;
+			}
 		}
 
 		$background_video = '';
@@ -860,7 +903,7 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 		}
 
 		$output = sprintf(
-			'<div%7$s class="et_pb_section%3$s%4$s%5$s%6$s%8$s%12$s%13$s">
+			'<div%7$s class="et_pb_section%3$s%4$s%5$s%6$s%8$s%12$s%13$s"%14$s>
 				%11$s
 				%9$s
 					%2$s
@@ -889,8 +932,18 @@ class ET_Builder_Section extends ET_Builder_Structure_Element {
 				: ''
 			),
 			( 'on' === $specialty ? ' et_section_specialty' : ' et_section_regular' ),
-			( 'on' === $transparent_background ? ' et_section_transparent' : '' )
+			( 'on' === $transparent_background ? ' et_section_transparent' : '' ),
+			$this->get_module_data_attributes()
 		);
+
+		if ( 'on' === $specialty ) {
+			// reset the global column settings to make sure they are not affected by internal content
+			$et_pb_all_column_settings = $et_pb_all_column_settings_backup;
+
+			if ( $et_pb_rendering_column_content_row ) {
+				$et_pb_rendering_column_content_row = false;
+			}
+		}
 
 		return $output;
 
@@ -903,6 +956,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 	function init() {
 		$this->name = esc_html__( 'Row', 'et_builder' );
 		$this->slug = 'et_pb_row';
+		$this->fb_support = true;
 
 		$this->advanced_options = array(
 			'custom_margin_padding' => array(
@@ -912,6 +966,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 				),
 				'css' => array(
 					'main' => '%%order_class%%.et_pb_row',
+					'important' => 'all',
 				),
 			),
 		);
@@ -1084,6 +1139,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 				'option_category' => 'layout',
 				'depends_show_if' => 'on',
 				'validate_unit'   => true,
+				'fixed_unit'      => 'px',
 				'range_settings'  => array(
 					'min'  => 500,
 					'max'  => 2600,
@@ -1097,6 +1153,7 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 				'option_category' => 'layout',
 				'depends_show_if' => 'off',
 				'validate_unit'   => true,
+				'fixed_unit'      => '%',
 				'range_settings'  => array(
 					'min'  => 0,
 					'max'  => 100,
@@ -1511,6 +1568,13 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 			),
 		);
 
+		if ( et_fb_is_enabled() || et_fb_is_retrieving_builder_data() ) {
+			$fields["custom_padding_last_edited"] = array(
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
+			);
+		}
+
 		return $fields;
 	}
 
@@ -1630,7 +1694,11 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 		$custom_css_after_3      = $this->shortcode_atts['custom_css_after_3'];
 		$custom_css_after_4      = $this->shortcode_atts['custom_css_after_4'];
 
-		global $et_pb_column_backgrounds, $et_pb_column_paddings, $et_pb_columns_counter, $keep_column_padding_mobile, $et_pb_column_parallax, $et_pb_column_css, $et_pb_column_paddings_mobile;
+		global $et_pb_all_column_settings, $et_pb_rendering_column_content, $et_pb_rendering_column_content_row;
+
+		$et_pb_all_column_settings = ! isset( $et_pb_all_column_settings ) ?  array() : $et_pb_all_column_settings;
+
+		$et_pb_all_column_settings_backup = $et_pb_all_column_settings;
 
 		$keep_column_padding_mobile = $column_padding_mobile;
 
@@ -1715,9 +1783,27 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 			'custom_css_after'  => array( $custom_css_after_1, $custom_css_after_2, $custom_css_after_3, $custom_css_after_4 ),
 		);
 
+		$internal_columns_settings_array = array(
+			'keep_column_padding_mobile' => $keep_column_padding_mobile,
+			'et_pb_column_backgrounds' => $et_pb_column_backgrounds,
+			'et_pb_columns_counter' => $et_pb_columns_counter,
+			'et_pb_column_paddings' => $et_pb_column_paddings,
+			'et_pb_column_paddings_mobile' => $et_pb_column_paddings_mobile,
+			'et_pb_column_parallax' => $et_pb_column_parallax,
+			'et_pb_column_css' => $et_pb_column_css,
+		);
+
+		$current_row_position = $et_pb_rendering_column_content ? 'internal_row' : 'regular_row';
+
+		$et_pb_all_column_settings[ $current_row_position ] = $internal_columns_settings_array;
+
 		$background_video = '';
 
 		$module_class .= ' et_pb_row';
+
+		if ( $et_pb_rendering_column_content ) {
+			$et_pb_rendering_column_content_row = true;
+		}
 
 		$module_class = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 
@@ -1848,6 +1934,13 @@ class ET_Builder_Row extends ET_Builder_Structure_Element {
 		$inner_content = do_shortcode( et_pb_fix_shortcodes( $content ) );
 		$module_class .= '' == trim( $inner_content ) ? ' et_pb_row_empty' : '';
 
+		if ( $et_pb_rendering_column_content_row ) {
+			$et_pb_rendering_column_content_row = false;
+		}
+
+		// reset the global column settings to make sure they are not affected by internal content
+		$et_pb_all_column_settings = $et_pb_all_column_settings_backup;
+
 		$output = sprintf(
 			'<div%4$s class="%2$s%6$s%7$s">
 				%8$s
@@ -1880,6 +1973,7 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 	function init() {
 		$this->name = esc_html__( 'Row', 'et_builder' );
 		$this->slug = 'et_pb_row_inner';
+		$this->fb_support = true;
 
 		$this->advanced_options = array(
 			'custom_margin_padding' => array(
@@ -1951,6 +2045,7 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 			'custom_css_after_1',
 			'custom_css_after_2',
 			'custom_css_after_3',
+			'admin_label'
 		);
 
 		$this->fields_defaults = array(
@@ -2216,6 +2311,11 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 				'option_category' => 'configuration',
 				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
 			),
+			'admin_label' => array(
+				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
+				'type'        => 'text',
+				'description' => esc_html__( 'This will change the label of the row in the builder for easy identification when collapsed.', 'et_builder' ),
+			),
 			'module_id' => array(
 				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
 				'type'            => 'text',
@@ -2236,6 +2336,13 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 				'tab_slug'        => 'custom_css',
 			),
 		);
+
+		if ( et_fb_is_enabled() || et_fb_is_retrieving_builder_data() ) {
+			$fields["custom_padding_last_edited"] = array(
+				'type'     => 'skip',
+				'tab_slug' => 'advanced',
+			);
+		}
 
 		return $fields;
 	}
@@ -2298,7 +2405,11 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 		$custom_css_after_2      = $this->shortcode_atts['custom_css_after_2'];
 		$custom_css_after_3      = $this->shortcode_atts['custom_css_after_3'];
 
-		global $et_pb_column_inner_backgrounds, $et_pb_column_inner_paddings, $et_pb_columns_inner_counter, $keep_column_padding_mobile, $et_pb_column_parallax, $et_pb_column_inner_css, $et_pb_column_inner_paddings_mobile;
+		global $et_pb_all_column_settings_inner, $et_pb_rendering_column_content, $et_pb_rendering_column_content_row;
+
+		$et_pb_all_column_settings_inner = ! isset( $et_pb_all_column_settings_inner ) ?  array() : $et_pb_all_column_settings_inner;
+
+		$et_pb_all_column_settings_backup = $et_pb_all_column_settings_inner;
 
 		$keep_column_padding_mobile = $column_padding_mobile;
 
@@ -2418,7 +2529,7 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 			}
 
 			if ( ! empty( $padding_mobile_values_processed ) ) {
-				et_pb_generate_responsive_css( $padding_mobile_values_processed, '.et_pb_column %%order_class%%', '', $function_name );
+				et_pb_generate_responsive_css( $padding_mobile_values_processed, '.et_pb_column %%order_class%%', '', $function_name, ' !important; ' );
 			}
 		}
 
@@ -2429,6 +2540,20 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 			'custom_css_main'   => array( $custom_css_main_1, $custom_css_main_2, $custom_css_main_3 ),
 			'custom_css_after'  => array( $custom_css_after_1, $custom_css_after_2, $custom_css_after_3 ),
 		);
+
+		$internal_columns_settings_array = array(
+			'keep_column_padding_mobile' => $keep_column_padding_mobile,
+			'et_pb_column_inner_backgrounds' => $et_pb_column_inner_backgrounds,
+			'et_pb_columns_inner_counter' => $et_pb_columns_inner_counter,
+			'et_pb_column_inner_paddings' => $et_pb_column_inner_paddings,
+			'et_pb_column_inner_paddings_mobile' => $et_pb_column_inner_paddings_mobile,
+			'et_pb_column_parallax' => $et_pb_column_parallax,
+			'et_pb_column_inner_css' => $et_pb_column_inner_css,
+		);
+
+		$current_row_position = $et_pb_rendering_column_content ? 'internal_row' : 'regular_row';
+
+		$et_pb_all_column_settings_inner[ $current_row_position ] = $internal_columns_settings_array;
 
 		$module_class .= ' et_pb_row_inner';
 
@@ -2443,6 +2568,9 @@ class ET_Builder_Row_Inner extends ET_Builder_Structure_Element {
 			$gutter_width = '0' === $gutter_width ? '1' : $gutter_width; // set the gutter to 1 if 0 entered by user
 			$module_class .= ' et_pb_gutters' . $gutter_width;
 		}
+
+		// reset the global column settings to make sure they are not affected by internal content
+		$et_pb_all_column_settings_inner = $et_pb_all_column_settings_backup;
 
 		$output = sprintf(
 			'<div%4$s class="%2$s">
@@ -2464,6 +2592,7 @@ class ET_Builder_Column extends ET_Builder_Structure_Element {
 		$this->name                       = esc_html__( 'Column', 'et_builder' );
 		$this->slug                       = 'et_pb_column';
 		$this->additional_shortcode_slugs = array( 'et_pb_column_inner' );
+		$this->fb_support = true;
 
 		$this->whitelisted_fields = array(
 			'type',
@@ -2499,30 +2628,40 @@ class ET_Builder_Column extends ET_Builder_Structure_Element {
 		$specialty_columns           = $this->shortcode_atts['specialty_columns'];
 		$saved_specialty_column_type = $this->shortcode_atts['saved_specialty_column_type'];
 
-		global $et_specialty_column_type, $et_pb_column_backgrounds, $et_pb_column_paddings, $et_pb_column_inner_backgrounds, $et_pb_column_inner_paddings, $et_pb_columns_counter, $et_pb_columns_inner_counter, $keep_column_padding_mobile, $et_pb_column_parallax, $et_pb_column_css, $et_pb_column_inner_css, $et_pb_column_paddings_mobile;
+		global $et_pb_all_column_settings, $et_pb_all_column_settings_inner, $et_specialty_column_type, $et_pb_rendering_column_content, $et_pb_rendering_column_content_row;
+
+		$is_specialty_column = 'et_pb_column_inner' !== $function_name && '' !== $specialty_columns;
+
+		$current_row_position = $et_pb_rendering_column_content_row ? 'internal_row' : 'regular_row';
 
 		if ( 'et_pb_column_inner' !== $function_name ) {
 			$et_specialty_column_type = $type;
-			$array_index = $et_pb_columns_counter;
-			$backgrounds_array = $et_pb_column_backgrounds;
-			$paddings_array = $et_pb_column_paddings;
-			$paddings_mobile_array = $et_pb_column_paddings_mobile;
-			$column_css_array = $et_pb_column_css;
-			$et_pb_columns_counter++;
+			$array_index = isset( $et_pb_all_column_settings[ $current_row_position ] ) ? $et_pb_all_column_settings[ $current_row_position ]['et_pb_columns_counter'] : 0;
+			$backgrounds_array = isset( $et_pb_all_column_settings[ $current_row_position ] ) ? $et_pb_all_column_settings[ $current_row_position ]['et_pb_column_backgrounds'] : array();
+			$paddings_array = isset( $et_pb_all_column_settings[ $current_row_position ] ) ? $et_pb_all_column_settings[ $current_row_position ]['et_pb_column_paddings'] : array();
+			$paddings_mobile_array = isset( $et_pb_all_column_settings[ $current_row_position ] ) ? $et_pb_all_column_settings[ $current_row_position ]['et_pb_column_paddings_mobile'] : array();
+			$column_css_array = isset( $et_pb_all_column_settings[ $current_row_position ] ) ? $et_pb_all_column_settings[ $current_row_position ]['et_pb_column_css'] : array();
+			$keep_column_padding_mobile = isset( $et_pb_all_column_settings[ $current_row_position ] ) ? $et_pb_all_column_settings[ $current_row_position ]['keep_column_padding_mobile'] : 'on';
+			$column_parallax = isset( $et_pb_all_column_settings[ $current_row_position ] ) && isset( $et_pb_all_column_settings[ $current_row_position ]['et_pb_column_parallax'] ) ? $et_pb_all_column_settings[ $current_row_position ]['et_pb_column_parallax'] : '';
+			if ( isset( $et_pb_all_column_settings[ $current_row_position ] ) ) {
+				$et_pb_all_column_settings[ $current_row_position ]['et_pb_columns_counter']++;
+			}
 		} else {
-			$array_index = $et_pb_columns_inner_counter;
-			$backgrounds_array = $et_pb_column_inner_backgrounds;
-			$paddings_array = $et_pb_column_inner_paddings;
-			$column_css_array = $et_pb_column_inner_css;
-			$et_pb_columns_inner_counter++;
-			$paddings_mobile_array = isset( $et_pb_column_inner_paddings_mobile );
+			$array_index = $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_columns_inner_counter'];
+			$backgrounds_array = $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_column_inner_backgrounds'];
+			$paddings_array = $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_column_inner_paddings'];
+			$column_css_array = $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_column_inner_css'];
+			$et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_columns_inner_counter']++;
+			$paddings_mobile_array = $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_column_inner_paddings_mobile'];
+			$keep_column_padding_mobile = $et_pb_all_column_settings_inner[ $current_row_position ]['keep_column_padding_mobile'];
+			$column_parallax = isset( $et_pb_all_column_settings_inner[ $current_row_position ] ) && isset( $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_column_parallax'] ) ? $et_pb_all_column_settings_inner[ $current_row_position ]['et_pb_column_parallax'] : '';
 		}
 
 		$background_color = isset( $backgrounds_array[$array_index][0] ) ? $backgrounds_array[$array_index][0] : '';
 		$background_img = isset( $backgrounds_array[$array_index][1] ) ? $backgrounds_array[$array_index][1] : '';
 		$padding_values = isset( $paddings_array[$array_index] ) ? $paddings_array[$array_index] : array();
 		$padding_mobile_values = isset( $paddings_mobile_array[$array_index] ) ? $paddings_mobile_array[$array_index] : array();
-		$parallax_method = isset( $et_pb_column_parallax[$array_index][0] ) && 'on' === $et_pb_column_parallax[$array_index][0] ? $et_pb_column_parallax[$array_index][1] : '';
+		$parallax_method = isset( $column_parallax[$array_index][0] ) && 'on' === $column_parallax[$array_index][0] ? $column_parallax[$array_index][1] : '';
 		$custom_css_class = isset( $column_css_array['css_class'][$array_index] ) ? ' ' . $column_css_array['css_class'][$array_index] : '';
 		$custom_css_id = isset( $column_css_array['css_id'][$array_index] ) ? $column_css_array['css_id'][$array_index] : '';
 		$custom_css_before = isset( $column_css_array['custom_css_before'][$array_index] ) ? $column_css_array['custom_css_before'][$array_index] : '';
@@ -2652,7 +2791,7 @@ class ET_Builder_Column extends ET_Builder_Structure_Element {
 		$inner_content = do_shortcode( et_pb_fix_shortcodes( $content ) );
 		$class .= '' == trim( $inner_content ) ? ' et_pb_column_empty' : '';
 
-		$class .= 'et_pb_column_inner' !== $function_name && '' !== $specialty_columns ? ' et_pb_specialty_column' : '';
+		$class .= $is_specialty_column ? ' et_pb_specialty_column' : '';
 
 		$output = sprintf(
 			'<div class="et_pb_column %1$s%3$s"%5$s>

@@ -19,6 +19,8 @@ if ( ! current_user_can( 'edit_posts' ) ) {
 	wp_die( esc_html__( 'Authentication failed. You have no permission to preview this item.', 'et_builder' ) );
 }
 
+$container_style = isset($_POST['is_fb_preview']) ? 'max-width: none; padding: 0;' : '';
+
 ?><!DOCTYPE html>
 <!--[if IE 6]>
 <html id="ie6" <?php language_attributes(); ?>>
@@ -53,7 +55,7 @@ if ( ! current_user_can( 'edit_posts' ) ) {
 	<body <?php body_class(); ?>>
 		<div id="page-container">
 			<div id="main-content">
-				<div class="container">
+				<div class="container" style="<?php echo esc_attr($container_style); ?>">
 					<div id="<?php echo esc_attr( apply_filters( 'et_pb_preview_wrap_id', 'content' ) ); ?>">
 					<div class="<?php echo esc_attr( apply_filters( 'et_pb_preview_wrap_class', 'entry-content post-content entry content' ) ); ?>">
 

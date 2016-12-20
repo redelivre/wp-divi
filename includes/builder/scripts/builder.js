@@ -2,12 +2,18 @@ var ET_PageBuilder = ET_PageBuilder || {};
 
 window.wp = window.wp || {};
 
-window.et_builder_version = '3.0.7';
+window.et_builder_version = '3.0.24';
 
 ( function($) {
 	var et_error_modal_shown = window.et_error_modal_shown,
 		et_is_loading_missing_modules = false,
-		et_pb_bulder_loading_attempts = 0;
+		et_pb_bulder_loading_attempts = 0,
+		et_pb_hovered_item_buffer = {},
+		et_pb_key_pressed = {
+			's' : false,
+			'r' : false,
+			'c' : false
+		};
 
 	function et_builder_load_backbone_templates( reload_template ) {
 
@@ -257,7 +263,6 @@ window.et_builder_version = '3.0.7';
 
 	}
 	et_builder_load_backbone_templates();
-
 
 	$( document ).ready( function() {
 
@@ -656,6 +661,128 @@ window.et_builder_version = '3.0.7';
 				return model.has( 'et_pb_temp_global_parent_cid' ) && model.get( 'et_pb_temp_global_parent_cid' ) !== '' ? true : false;
 			},
 
+			changeColumnStructure: function( that, options, skip_reinit, skip_history ) {
+				var layout = options.layout.split(','),
+					specialty_columns = options.specialty_columns,
+					layout_specialty = options.layout_specialty,
+					layout_elements_num = _.size( layout ),
+					this_view = that.options.view;
+
+				if ( options.is_structure_change ) {
+					var row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) ),
+						columns_structure_old = [],
+						index_count = 0,
+						global_module_cid = typeof that.model.get( 'global_parent_cid' ) !== 'undefined' ? that.model.get( 'global_parent_cid' ) : '';
+
+					_.each( row_columns, function( row_column ) {
+						columns_structure_old[index_count] = row_column.model.get( 'cid' );
+						index_count = index_count + 1;
+					} );
+				}
+
+				_.each( layout, function( element, index ) {
+					var update_content = layout_elements_num == ( index + 1 )
+						? 'true'
+						: 'false',
+						column_attributes = {
+							type : 'column',
+							cid : ET_PageBuilder_Layout.generateNewId(),
+							parent : that.model.get( 'cid' ),
+							layout : element,
+							view : this_view
+						}
+
+					if ( typeof that.model.get( 'et_pb_global_parent' ) !== 'undefined' && '' !== that.model.get( 'et_pb_global_parent' ) ) {
+						column_attributes.et_pb_global_parent = that.model.get( 'et_pb_global_parent' );
+						column_attributes.global_parent_cid = that.model.get( 'global_parent_cid' );
+					}
+
+					if ( typeof layout_specialty[index] !== 'undefined' && layout_specialty[index] === '1' ) {
+						column_attributes.layout_specialty = layout_specialty[index];
+						column_attributes.specialty_columns = parseInt( specialty_columns );
+					}
+
+					if ( typeof that.model.get( 'specialty_row' ) !== 'undefined' ) {
+						that.model.set( 'module_type', 'row_inner', { silent : true } );
+						that.model.set( 'type', 'row_inner', { silent : true } );
+					}
+
+					that.collection.add( [ column_attributes ], { update_shortcodes : update_content } );
+				} );
+
+				if ( options.is_structure_change ) {
+					var columns_structure_new = [];
+
+					row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) );
+					index_count = 0;
+
+					_.each( row_columns, function( row_column ) {
+						columns_structure_new[index_count] = row_column.model.get( 'cid' );
+						index_count = index_count + 1;
+					} );
+
+					// delete old columns IDs
+					columns_structure_new.splice( 0, columns_structure_old.length );
+
+					for ( index = 0; index < columns_structure_old.length; index++ ) {
+						var is_extra_column = ( columns_structure_old.length > columns_structure_new.length ) && ( index > ( columns_structure_new.length - 1 ) ) ? true : false,
+							old_column_cid = columns_structure_old[index],
+							new_column_cid = is_extra_column ? columns_structure_new[columns_structure_new.length-1] : columns_structure_new[index],
+							column_html = ET_PageBuilder_Layout.getView( old_column_cid ).$el.html(),
+							modules = ET_PageBuilder_Layout.getChildViews( old_column_cid ),
+							$updated_column,
+							column_html_old = '';
+
+						ET_PageBuilder_Layout.getView( old_column_cid ).model.destroy();
+
+						ET_PageBuilder_Layout.getView( old_column_cid ).remove();
+
+						ET_PageBuilder_Layout.removeView( old_column_cid );
+
+						$updated_column = $('.et-pb-column[data-cid="' + new_column_cid + '"]');
+
+						if ( ! is_extra_column ) {
+							$updated_column.html( column_html );
+						} else {
+							$updated_column.find( '.et-pb-insert-module' ).remove();
+
+							column_html_old = $updated_column.html();
+
+							$updated_column.html( column_html_old + column_html );
+						}
+
+						_.each( modules, function( module ) {
+							module.model.set( 'parent', new_column_cid, { silent : true } );
+						} );
+					}
+
+					// Enable history saving and set meta for history
+					ET_PageBuilder_App.allowHistorySaving( 'edited', 'column' );
+
+					if ( ! skip_reinit ) {
+						et_reinitialize_builder_layout();
+					}
+				}
+
+				if ( typeof that.model.get( 'template_type' ) !== 'undefined' && 'section' === that.model.get( 'template_type' ) && 'on' === that.model.get( 'et_pb_specialty' ) ) {
+					et_reinitialize_builder_layout();
+				}
+
+				if ( typeof that.model.get( 'et_pb_template_type' ) !== 'undefined' && 'row' === that.model.get( 'et_pb_template_type' ) ) {
+					et_add_template_meta( '_et_pb_row_layout', options.layout );
+				}
+
+				if ( typeof global_module_cid !== 'undefined' && '' !== global_module_cid ) {
+					et_pb_update_global_template( global_module_cid );
+				}
+
+				if ( ! skip_history ) {
+					// Enable history saving and set meta for history
+					ET_PageBuilder_App.allowHistorySaving( 'added', 'column' );
+				}
+
+				ET_PageBuilder_Events.trigger( 'et-add:columns' );
+			},
 		} );
 
 		// Collections
@@ -737,7 +864,8 @@ window.et_builder_version = '3.0.7';
 					update_global      = false,
 					global_holder_id   = 'row' === this.model.get( 'layout_type' ) ? current_row : parent_id,
 					global_holder_view = ET_PageBuilder_Layout.getView( global_holder_id ),
-					history_noun       = this.options.model.get( 'layout_type' ) === 'row_inner' ? 'saved_row' : 'saved_' + this.options.model.get( 'layout_type' );
+					history_noun       = this.options.model.get( 'layout_type' ) === 'row_inner' ? 'saved_row' : 'saved_' + this.options.model.get( 'layout_type' ),
+					$modal_container   = clicked_button.closest( '.et_pb_modal_settings_container' );
 
 					if ( 'on' === specialty_row ) {
 						global_holder_id = global_holder_view.model.get( 'parent' );
@@ -759,6 +887,10 @@ window.et_builder_version = '3.0.7';
 						global_module_cid = typeof global_holder_view.model.get( 'global_parent_cid' ) !== 'undefined' ? global_holder_view.model.get( 'global_parent_cid' ) : global_holder_id;
 
 					et_pb_update_global_template( global_module_cid );
+				}
+
+				if ( $modal_container.length ) {
+					$modal_container.find( '.et-pb-modal-close' ).click();
 				}
 			}
 		} );
@@ -1220,7 +1352,7 @@ window.et_builder_version = '3.0.7';
 				this_el.$el.find( sortable_el ).sortable( {
 					connectWith: connectWith,
 					delay: 100,
-					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
+					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et-pb-insert-row, .et_pb_locked, .et-pb-disable-sort',
 					update : function( event, ui ) {
 						// Split Testing adjustment
 						if ( ET_PageBuilder_AB_Testing.is_active() ) {
@@ -1346,6 +1478,7 @@ window.et_builder_version = '3.0.7';
 
 						ET_PageBuilder_Layout.setNewParentID( ui.item.find( '.et-pb-row-content' ).data( 'cid' ), this_el.model.attributes.cid );
 
+
 						// Enable history saving and set meta for history
 						ET_PageBuilder_App.allowHistorySaving( 'moved', 'row' );
 
@@ -1373,6 +1506,24 @@ window.et_builder_version = '3.0.7';
 					},
 					start : function( event, ui ) {
 						et_pb_close_all_right_click_options();
+
+						// copy row if Alt key pressed
+						if ( event.altKey ) {
+							var movedRow = ET_PageBuilder_Layout.getView( $( ui.item ).children('.et-pb-row-content').data( 'cid' ) );
+							var view_settings = {
+								model      : movedRow.model,
+								view       : movedRow.$el,
+								view_event : event
+							};
+							var clone_row = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+							clone_row.copy( event, true );
+
+							clone_row.pasteAfter( event, undefined, undefined, undefined, true, true );
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'cloned', 'row' );
+						}
 					}
 				} );
 			},
@@ -1832,6 +1983,11 @@ window.et_builder_version = '3.0.7';
 			},
 
 			toggleInsertColumnButton : function() {
+				// Manually added row inner (ie empty specialty section's specialty column) has no model
+				if (typeof this.model === 'undefined') {
+					return;
+				}
+
 				var model_id = this.model.get( 'cid' ),
 					columnsInRow;
 
@@ -2034,7 +2190,7 @@ window.et_builder_version = '3.0.7';
 					view_settings;
 
 				// Do nothing if Module or "Insert Module" clicked
-				if ( $event_target.closest( '.et-pb-insert-module' ).length || $event_target.hasClass( 'et_pb_module_block' ) || $event_target.closest( '.et_pb_module_block' ).length ) {
+				if ( $event_target.closest( '.et-pb-insert-module' ).length || $event_target.closest('.et-pb-insert-row').length || $event_target.hasClass( 'et_pb_module_block' ) || $event_target.closest( '.et_pb_module_block' ).length ) {
 					return;
 				}
 
@@ -2195,8 +2351,9 @@ window.et_builder_version = '3.0.7';
 					view = new ET_PageBuilder.ColumnSettingsView( view_settings );
 				} else if ( this.attributes['data-open_view'] === 'saved_templates' ) {
 					view = new ET_PageBuilder.TemplatesModal( { attributes: { 'data-parent_cid' : this.attributes['data-parent_cid'] } } );
+				} else if ( this.attributes['data-open_view'] === 'help' ) {
+					view = new ET_PageBuilder.HelpView();
 				}
-
 				// do not proceed and return false if no template for this module exist yet
 				if ( typeof view.attributes !== 'undefined' && 'no_template' === view.attributes['data-no_template'] ) {
 					return false;
@@ -2558,7 +2715,7 @@ window.et_builder_version = '3.0.7';
 						custom_css_option_value = $this_el.val();
 
 						// replace new lines with || in Custom CSS settings
-						setting_value = '' !== custom_css_option_value ? custom_css_option_value.replace( /\n/g, '\|\|' ) : '';
+						setting_value = '' !== custom_css_option_value ? custom_css_option_value.replace( /(?:\r\n|\r|\n)/g, '\|\|' ) : '';
 					} else if ( $this_el.hasClass( 'et-pb-range-input' ) || $this_el.hasClass( 'et-pb-validate-unit' ) ) {
 						// Process range sliders. Sanitize for valid unit first
 						var et_validate_default_unit = $this_el.hasClass( 'et-pb-range-input' ) ? 'no_default_unit' : '';
@@ -2640,9 +2797,11 @@ window.et_builder_version = '3.0.7';
 
 		ET_PageBuilder.ColumnView = window.wp.Backbone.View.extend( {
 			template : _.template( $('#et-builder-column-template').html() ),
+			templateAddRow : _.template( $('#et-builder-specialty-column-template').html() ),
 
 			events : {
 				'click .et-pb-insert-module' : 'addModule',
+				'click .et-pb-insert-row' : 'addModule',
 				'contextmenu > .et-pb-insert-module' : 'showRightClickOptions',
 				'click' : 'hideRightClickOptions'
 			},
@@ -2657,6 +2816,11 @@ window.et_builder_version = '3.0.7';
 					connect_with = ( ! is_fullwidth_section ? ".et-pb-column:not(.et-pb-column-specialty, .et_pb_parent_locked)" : ".et_pb_fullwidth_sortable_area" );
 
 				this.$el.html( this.template( this.model.toJSON() ) );
+
+				// Specialty section's column button displays add row instead of add module
+				if (typeof this.model.attributes.specialty_columns !== 'undefined' ) {
+					this.$el.html( this.templateAddRow( this.model.toJSON() ) );
+				}
 
 				if ( is_fullwidth_section )
 					this.$el.addClass( 'et_pb_fullwidth_sortable_area' );
@@ -2684,7 +2848,7 @@ window.et_builder_version = '3.0.7';
 				}
 
 				this.$el.sortable( {
-					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
+					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-insert-module, .et-pb-insert-column, .et-pb-insert-row, .et_pb_locked, .et-pb-disable-sort',
 					connectWith: connect_with,
 					delay: 100,
 					items : ( this.model.get( 'layout_specialty' ) !== '1' ? '.et_pb_module_block' : '.et_pb_row' ),
@@ -2757,6 +2921,11 @@ window.et_builder_version = '3.0.7';
 						if ( cancel_action ) {
 							$(ui.sender).sortable('cancel');
 							et_reinitialize_builder_layout();
+						}
+
+						// Remove insert row button if a row is pasted into specialty's column
+						if ($this.is('.et-pb-column-specialty') && $this.find('.et_pb_row').length <= 1 && $this.find('.et-pb-insert-row').length) {
+							$this.find('.et-pb-insert-row').remove();
 						}
 					},
 					update : function( event, ui ) {
@@ -2869,6 +3038,26 @@ window.et_builder_version = '3.0.7';
 					},
 					start : function( event, ui ) {
 						et_pb_close_all_right_click_options();
+
+						// copy module if Alt key pressed
+						if ( event.altKey ) {
+							var is_row_inner = $( ui.item ).hasClass( 'et_pb_row' );
+							var cid = is_row_inner ? $( ui.item ).children( '.et-pb-row-content' ).attr( 'data-cid' ) : $( ui.item ).attr( 'data-cid' );
+							var movedModule = ET_PageBuilder_Layout.getView( cid );
+							var view_settings = {
+								model      : movedModule.model,
+								view       : movedModule.$el,
+								view_event : event
+							};
+							var clone_module = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+							clone_module.copy( event, true );
+
+							clone_module.pasteAfter( event, undefined, undefined, undefined, true, true );
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'cloned', 'module', movedModule.model.get( 'admin_label' ) );
+						}
 					}
 				} );
 
@@ -2905,18 +3094,22 @@ window.et_builder_version = '3.0.7';
 
 				et_pb_close_all_right_click_options();
 
-				var view;
+				if ($(event.target).is('.et-pb-insert-row')) {
+					this.addRow();
+				} else {
+					var view;
 
-				view = new ET_PageBuilder.ModalView( {
-					model : this.model,
-					collection : this.collection,
-					attributes : {
-						'data-open_view' : 'all_modules'
-					},
-					view : this
-				} );
+					view = new ET_PageBuilder.ModalView( {
+						model : this.model,
+						collection : this.collection,
+						attributes : {
+							'data-open_view' : 'all_modules'
+						},
+						view : this
+					} );
 
-				$('body').append( view.render().el );
+					$('body').append( view.render().el );
+				}
 			},
 
 			// Add New Row functionality for the specialty section column
@@ -3048,123 +3241,18 @@ window.et_builder_version = '3.0.7';
 
 				var that = this,
 					$layout_el = $(event.target).is( 'li' ) ? $(event.target) : $(event.target).closest( 'li' ),
-					layout = $layout_el.data('layout').split(','),
+					layout = $layout_el.data('layout'),
 					layout_specialty = 'section' === that.model.get( 'type' ) && 'on' === that.model.get( 'et_pb_specialty' )
 						? $layout_el.data('specialty').split(',')
 						: '',
-					layout_elements_num = _.size( layout ),
-					this_view = this.options.view;
+					column_settings = {
+						'layout' : layout,
+						'layout_specialty' : layout_specialty,
+						'is_structure_change' : typeof that.model.get( 'change_structure' ) !== 'undefined' && 'true' === that.model.get( 'change_structure' ),
+						'specialty_columns' : $layout_el.data('specialty_columns')
+					};
 
-				if ( typeof that.model.get( 'change_structure' ) !== 'undefined' && 'true' === that.model.get( 'change_structure' ) ) {
-					var row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) ),
-						columns_structure_old = [],
-						index_count = 0,
-						global_module_cid = typeof that.model.get( 'global_parent_cid' ) !== 'undefined' ? that.model.get( 'global_parent_cid' ) : '';
-
-					_.each( row_columns, function( row_column ) {
-						columns_structure_old[index_count] = row_column.model.get( 'cid' );
-						index_count = index_count + 1;
-					} );
-				}
-
-				_.each( layout, function( element, index ) {
-					var update_content = layout_elements_num == ( index + 1 )
-						? 'true'
-						: 'false',
-						column_attributes = {
-							type : 'column',
-							cid : ET_PageBuilder_Layout.generateNewId(),
-							parent : that.model.get( 'cid' ),
-							layout : element,
-							view : this_view
-						}
-
-					if ( typeof that.model.get( 'et_pb_global_parent' ) !== 'undefined' && '' !== that.model.get( 'et_pb_global_parent' ) ) {
-						column_attributes.et_pb_global_parent = that.model.get( 'et_pb_global_parent' );
-						column_attributes.global_parent_cid = that.model.get( 'global_parent_cid' );
-					}
-
-					if ( '' !== layout_specialty ) {
-						column_attributes.layout_specialty = layout_specialty[index];
-						column_attributes.specialty_columns = parseInt( $layout_el.data('specialty_columns') );
-					}
-
-					if ( typeof that.model.get( 'specialty_row' ) !== 'undefined' ) {
-						that.model.set( 'module_type', 'row_inner', { silent : true } );
-						that.model.set( 'type', 'row_inner', { silent : true } );
-					}
-
-					that.collection.add( [ column_attributes ], { update_shortcodes : update_content } );
-				} );
-
-				if ( typeof that.model.get( 'change_structure' ) !== 'undefined' && 'true' === that.model.get( 'change_structure' ) ) {
-					var columns_structure_new = [];
-
-					row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) );
-					index_count = 0;
-
-					_.each( row_columns, function( row_column ) {
-						columns_structure_new[index_count] = row_column.model.get( 'cid' );
-						index_count = index_count + 1;
-					} );
-
-					// delete old columns IDs
-					columns_structure_new.splice( 0, columns_structure_old.length );
-
-					for	( index = 0; index < columns_structure_old.length; index++ ) {
-						var is_extra_column = ( columns_structure_old.length > columns_structure_new.length ) && ( index > ( columns_structure_new.length - 1 ) ) ? true : false,
-							old_column_cid = columns_structure_old[index],
-							new_column_cid = is_extra_column ? columns_structure_new[columns_structure_new.length-1] : columns_structure_new[index],
-							column_html = ET_PageBuilder_Layout.getView( old_column_cid ).$el.html(),
-							modules = ET_PageBuilder_Layout.getChildViews( old_column_cid ),
-							$updated_column,
-							column_html_old = '';
-
-						ET_PageBuilder_Layout.getView( old_column_cid ).model.destroy();
-
-						ET_PageBuilder_Layout.getView( old_column_cid ).remove();
-
-						ET_PageBuilder_Layout.removeView( old_column_cid );
-
-						$updated_column = $('.et-pb-column[data-cid="' + new_column_cid + '"]');
-
-						if ( ! is_extra_column ) {
-							$updated_column.html( column_html );
-						} else {
-							$updated_column.find( '.et-pb-insert-module' ).remove();
-
-							column_html_old = $updated_column.html();
-
-							$updated_column.html( column_html_old + column_html );
-						}
-
-						_.each( modules, function( module ) {
-							module.model.set( 'parent', new_column_cid, { silent : true } );
-						} );
-					}
-
-					// Enable history saving and set meta for history
-					ET_PageBuilder_App.allowHistorySaving( 'edited', 'column' );
-
-					et_reinitialize_builder_layout();
-				}
-
-				if ( typeof that.model.get( 'template_type' ) !== 'undefined' && 'section' === that.model.get( 'template_type' ) && 'on' === that.model.get( 'et_pb_specialty' ) ) {
-					et_reinitialize_builder_layout();
-				}
-
-				if ( typeof that.model.get( 'et_pb_template_type' ) !== 'undefined' && 'row' === that.model.get( 'et_pb_template_type' ) ) {
-					et_add_template_meta( '_et_pb_row_layout', $layout_el.data( 'layout' ) );
-				}
-
-				if ( typeof global_module_cid !== 'undefined' && '' !== global_module_cid ) {
-					et_pb_update_global_template( global_module_cid );
-				}
-
-				// Enable history saving and set meta for history
-				ET_PageBuilder_App.allowHistorySaving( 'added', 'column' );
-
-				ET_PageBuilder_Events.trigger( 'et-add:columns' );
+				ET_PageBuilder_Layout.changeColumnStructure( that, column_settings );
 			},
 
 			removeView : function() {
@@ -3472,6 +3560,8 @@ window.et_builder_version = '3.0.7';
 
 				$et_form_validation = $this_el.find('form.validate');
 
+				$warning = $this_el.find('.et-pb-option--warning');
+
 				// validation
 				if ( $et_form_validation.length ) {
 					et_builder_debug_message('validation enabled');
@@ -3624,7 +3714,12 @@ window.et_builder_version = '3.0.7';
 									icon_index_number = parseInt( current_symbol_val.replace( /%/g, '' ) );
 									$current_symbol   = $this_icon_list.find( 'li' ).eq( icon_index_number );
 								} else {
-									$current_symbol = $this_icon_list.find( 'li[data-icon="' + current_symbol_val + '"]' );
+									// set the 1st icon as active if wrong value saved for current_symbol_val
+									if ( '"' === current_symbol_val ) {
+										$current_symbol = $this_icon_list.find( 'li' ).eq( 0 );
+									} else {
+										$current_symbol = $this_icon_list.find( 'li[data-icon="' + current_symbol_val + '"]' );
+									}
 								}
 
 								$current_symbol.addClass( active_symbol_class );
@@ -3712,6 +3807,19 @@ window.et_builder_version = '3.0.7';
 					}
 				}
 
+				if ( $warning.length ) {
+					$warning.each(function() {
+						var $warning_option = $(this);
+						var $warning_field = $warning_option.find('.et-pb-option-warning');
+						var display_if = $warning_field.attr('data-display_if');
+						var name = $warning_field.attr('data-name');
+
+						if ( et_pb_options[name] === display_if ) {
+							$warning_option.addClass('et-pb-option--warning-active');
+						}
+					});
+				}
+
 				this.renderMap();
 
 				et_pb_init_main_settings( this.$el, this_module_cid );
@@ -3736,7 +3844,7 @@ window.et_builder_version = '3.0.7';
 					lat = ! _.isUndefined( latlng[0] ) ? parseFloat( latlng[0] ) : false,
 					lng = ! _.isUndefined( latlng[1] ) ? parseFloat( latlng[1] ) : false;
 
-				if ( lat && ! _.isNaN( lat ) && lng && ! _.isNaN( lng ) ) {
+				if ( typeof google !== 'undefined' && lat && ! _.isNaN( lat ) && lng && ! _.isNaN( lng ) ) {
 					return new google.maps.LatLng( lat, lng );
 				}
 
@@ -3747,7 +3855,7 @@ window.et_builder_version = '3.0.7';
 				this_el = this,
 				$map = this.$el.find('.et-pb-map');
 
-				if ( $map.length ) {
+				if ( typeof google !== 'undefined' && $map.length ) {
 					view_cid = this.view_cid;
 
 					var $address = this.$el.find('.et_pb_address'),
@@ -4257,7 +4365,7 @@ window.et_builder_version = '3.0.7';
 
 				$map = this.$el.find('.et-pb-map');
 
-				if ( $map.length ) {
+				if ( typeof google !== 'undefined' && $map.length ) {
 					var map,
 						marker,
 						$address = this.$el.find('.et_pb_pin_address'),
@@ -4502,6 +4610,12 @@ window.et_builder_version = '3.0.7';
 					if ( '' !== this_model_defaults && typeof this_model_defaults[id] !== 'undefined' && this_model_defaults[id] === setting_value ) {
 						this_view.model.unset( id );
 						return true;
+					}
+
+					if ( $this_el.closest( '.et-pb-custom-css-option' ).length ) {
+						// Custom CSS settings content should be modified before it is added to the shortcode attribute
+						// replace new lines with || in Custom CSS settings
+						setting_value = '' !== setting_value ? setting_value.replace( /(?:\r\n|\r|\n)/g, '\|\|' ) : '';
 					}
 
 					attributes[ id ] = setting_value;
@@ -4929,6 +5043,105 @@ window.et_builder_version = '3.0.7';
 				ET_PageBuilder_AB_Testing.set( this, event );
 			}
 		} );
+
+		ET_PageBuilder.HelpView = window.wp.Backbone.View.extend({
+			tagName: 'div',
+
+			id: 'et-builder-help',
+
+			className: 'et_pb_modal_settings',
+
+			template : _.template( $( '#et-builder-help-template' ).html() ),
+
+			isOSX: navigator.userAgent.indexOf('Mac OS X') != -1,
+
+			renderKbd: function(kbd) {
+				var key = kbd;
+
+				if (key === 'super') {
+					if (this.isOSX) {
+						key = 'cmd';
+					} else {
+						key = 'ctrl';
+					}
+				}
+
+				return $('<kbd />', {
+					class: 'key-' + key,
+				}).html(key);
+			},
+
+			render: function() {
+				var thisClass = this;
+
+				var $thisModal = this.$el;
+
+				et_pb_close_all_right_click_options();
+
+				$thisModal.html( this.template() );
+
+				var $shortcutTab = $thisModal.find('.et-pb-shortcuts-tab');
+
+				_.each(et_pb_help_options.shortcuts, function(shortcutSets){
+					_.each(shortcutSets, function(shortcutSet) {
+						if (_.isUndefined(shortcutSet.title)) {
+							// Define item
+							var $shortcutItem = $('<p />', {
+								class: 'et-pb-shortcut-item'
+							});
+
+							// Build shortcut keys
+							var $shortcutKeys = $('<span />', {
+								class: 'et-pb-shortcut-keys'
+							});
+
+							_.each(shortcutSet.kbd, function(shortcutKey, shortcutKeyIndex) {
+								// Append + divider
+								if (shortcutKeyIndex > 0) {
+									$shortcutKeys.append(' + ');
+								}
+
+								if (_.isArray(shortcutKey)) {
+									_.each(shortcutKey, function(shortcutOption, shortcutOptionIndex) {
+										if (shortcutOptionIndex > 0) {
+											$shortcutKeys.append(' / ');
+										}
+
+										$shortcutKeys.append(
+											$('<kbd />').html(shortcutOption)
+										);
+									});
+								} else {
+									$shortcutKeys.append(
+										// $('<kbd />').html(shortcutKey)
+										thisClass.renderKbd(shortcutKey)
+									);
+								}
+							});
+
+							// Append shortcut keys
+							$shortcutItem.append($shortcutKeys);
+
+							// Append description
+							$shortcutItem.append(
+								$('<span />', {
+									class: 'et-pb-shortcut-desc'
+								}).html(shortcutSet.desc)
+							);
+
+							// Append  Item
+							$shortcutTab.append($shortcutItem);
+						} else {
+							$shortcutTab.append(
+								$('<h2 />', {class: 'et-pb-shortcut-subtitle'}).html(shortcutSet.title)
+							);
+						}
+					});
+				});
+
+				return this;
+			}
+		});
 
 		ET_PageBuilder.RightClickOptionsView = window.wp.Backbone.View.extend( {
 
@@ -5420,8 +5633,11 @@ window.et_builder_version = '3.0.7';
 				ET_PageBuilder_App.saveAsShortcode();
 			},
 
-			copy : function( event ) {
-				event.preventDefault();
+			copy : function( event, keepEvent ) {
+
+				if ( ! keepEvent ) {
+					event.preventDefault();
+				}
 
 				var module_attributes = _.clone( this.model.attributes ),
 					type              = module_attributes.type,
@@ -5460,8 +5676,10 @@ window.et_builder_version = '3.0.7';
 				this.closeAllRightClickOptions();
 			},
 
-			pasteAfter : function( event, parent, clipboard_type, has_cloned_cid ) {
-				event.preventDefault();
+			pasteAfter : function( event, parent, clipboard_type, has_cloned_cid, keepEvent, noHistory ) {
+				if ( ! keepEvent ) {
+					event.preventDefault();
+				}
 
 				var parent            = _.isUndefined( parent ) ? this.model.get( 'parent' ) : parent,
 					clipboard_type    = _.isUndefined( clipboard_type ) ? this.getClipboardType() : clipboard_type,
@@ -5501,12 +5719,14 @@ window.et_builder_version = '3.0.7';
 
 				// Enable history saving and set meta for history
 				// pasteAfter can be used for clone, so only use copied if history verb being used is default
-				if ( ET_PageBuilder_Visualize_Histories.verb === 'did' ) {
+				if ( ET_PageBuilder_Visualize_Histories.verb === 'did' && ! noHistory ) {
 					ET_PageBuilder_App.allowHistorySaving( 'copied', this.history_noun );
 				}
 
-				// Rebuild shortcodes
-				ET_PageBuilder_App.saveAsShortcode();
+				if ( ! keepEvent ) {
+					// Rebuild shortcodes
+					ET_PageBuilder_App.saveAsShortcode();
+				}
 			},
 
 			pasteApp : function( event ) {
@@ -5640,9 +5860,9 @@ window.et_builder_version = '3.0.7';
 			updateGlobalModule : function () {
 				var global_module_cid;
 
-				if ( ! ET_PageBuilder_Layout.is_global( this.model ) ) {
+				if ( ET_PageBuilder_Layout.is_global( this.model ) ) {
 					global_module_cid = this.options.model.get( 'cid' );
-				} else if ( ! ET_PageBuilder_Layout.is_global_children( this.model ) ) {
+				} else if ( ET_PageBuilder_Layout.is_global_children( this.model ) ) {
 					global_module_cid = this.options.model.get( 'global_parent_cid' );
 				}
 
@@ -6712,6 +6932,8 @@ window.et_builder_version = '3.0.7';
 					if ( ! found_inner_shortcodes ) {
 						if ( $.inArray( shortcode_name, et_pb_raw_shortcodes ) > -1 ) {
 							module_settings['et_pb_raw_content'] = _.unescape( shortcode_content );
+							// replace line-break placeholders with real line-breaks
+							module_settings['et_pb_raw_content'] = module_settings['et_pb_raw_content'].replace( /<!-- \[et_pb_line_break_holder\] -->/g, '\n' );
 						} else {
 							module_settings['et_pb_content_new'] = shortcode_content;
 						}
@@ -6827,7 +7049,7 @@ window.et_builder_version = '3.0.7';
 							if ( ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '.et-pb-section-content' ).length ) {
 								ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '.et-pb-section-content' ).append( view.render().el );
 							} else {
-								ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '> .et-pb-insert-module' ).hide().end().append( view.render().el );
+								ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '> .et-pb-insert-module, > .et-pb-insert-row' ).hide().end().append( view.render().el );
 							}
 						}
 
@@ -7178,6 +7400,10 @@ window.et_builder_version = '3.0.7';
 					module_type = defined_module_type;
 				}
 
+				if ( typeof module === 'undefined' ) {
+					return;
+				}
+
 				module_settings = module.attributes;
 
 				for ( var key in module_settings ) {
@@ -7194,6 +7420,8 @@ window.et_builder_version = '3.0.7';
 								content = setting_value;
 
 								if ( setting_name === 'et_pb_raw_content' ) {
+									// replace the line-breaks with placeholders, so they won't be removed/replaced by WP
+									content = content.replace( /\r?\n|\r/g, '<!-- [et_pb_line_break_holder] -->' );
 									content = _.escape( content );
 								}
 
@@ -7283,6 +7511,26 @@ window.et_builder_version = '3.0.7';
 					},
 					start : function( event, ui ) {
 						et_pb_close_all_right_click_options();
+
+						// copy section if Alt key pressed
+						if ( event.altKey ) {
+							var movedSection = ET_PageBuilder_Layout.getView( $( ui.item ).children('.et-pb-section-content').data( 'cid' ) );
+
+							var view_settings = {
+								model      : movedSection.model,
+								view       : movedSection.$el,
+								view_event : event
+							};
+
+							var clone_section = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+							clone_section.copy( event, true );
+
+							clone_section.pasteAfter( event, undefined, undefined, undefined, true, true );
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'cloned', 'section' );
+						}
 					}
 				} );
 			},
@@ -7512,6 +7760,10 @@ window.et_builder_version = '3.0.7';
 
 				current_model = ET_PageBuilder_Modules.findWhere( { cid : cid } );
 
+				if ( typeof current_model === 'undefined' ) {
+					return;
+				}
+
 				module_type = typeof current_model.attributes.module_type !== 'undefined' ? current_model.attributes.module_type : current_model.attributes.type;
 
 				// determine the column type. Check the parent, if parent == row_inner, then column type = column_inner
@@ -7608,6 +7860,10 @@ window.et_builder_version = '3.0.7';
 
 			et_pb_close_all_right_click_options();
 		});
+
+		function et_pb_is_builder_used() {
+			return $('#et_pb_use_builder').val() === 'on';
+		}
 
 		function et_pb_activate_upload( $upload_button ) {
 			$upload_button.click( function( event ) {
@@ -11128,6 +11384,7 @@ window.et_builder_version = '3.0.7';
 						$range_input.data( 'default', new_phone_default );
 					}
 
+					et_pb_check_range_boundaries( $this_el, range_input_value );
 				} );
 			}
 
@@ -11139,6 +11396,8 @@ window.et_builder_version = '3.0.7';
 					slider_value;
 
 				slider_value = parseFloat( this_value ) || 0;
+
+				et_pb_check_range_boundaries( $range_slider, slider_value );
 
 				$range_slider.val( slider_value ).trigger( 'et_pb_setting:change' );
 
@@ -11330,6 +11589,24 @@ window.et_builder_version = '3.0.7';
 						}, 200 );
 					}
 				});
+			}
+		}
+
+		// check the range slider boundaries against the provided value and extend min or max boundary if needed
+		function et_pb_check_range_boundaries( $range_slider, slider_value ) {
+			var slider_max = parseFloat( $range_slider.attr( 'max' ) ),
+				slider_min = parseFloat( $range_slider.attr( 'min' ) );
+
+			slider_value = '' !== slider_value ? parseFloat( slider_value ) : 0;
+
+			// extend max boundary of the slider if needed
+			if ( slider_value > slider_max ) {
+				$range_slider.attr( 'max', slider_value );
+			}
+
+			// extend min boundary of the slider if needed
+			if ( slider_value < slider_min ) {
+				$range_slider.attr( 'min', slider_value );
 			}
 		}
 
@@ -11607,6 +11884,7 @@ window.et_builder_version = '3.0.7';
 			}, 600 );
 		}
 
+
 		function et_prepare_template_content( content ) {
 			if ( -1 !== content.indexOf( '[et_pb_' ) ) {
 				if  ( -1 === content.indexOf( 'et_pb_row' ) && -1 === content.indexOf( 'et_pb_section' ) ) {
@@ -11865,7 +12143,7 @@ window.et_builder_version = '3.0.7';
 									}
 								}
 
-								if ( '' !== saved_tabs && ( 'general' === saved_tabs || 'all' === saved_tabs ) ) {
+								if ( '' !== saved_tabs && ( -1 !== saved_tabs.indexOf( 'general' ) || 'all' === saved_tabs ) ) {
 									view_settings.model.set( 'et_pb_content_new', shortcode_content, { silent : true } );
 								}
 						} );
@@ -11951,10 +12229,15 @@ window.et_builder_version = '3.0.7';
 				layout_type_updated          = 'row_inner' === layout_type ? 'row' : layout_type,
 				template_shortcode           = ET_PageBuilder_App.generateCompleteShortcode( global_module_cid, layout_type_updated, 'ignore_global' );
 
-				if ( 'row_inner' === layout_type ) {
-					template_shortcode = template_shortcode.replace( /et_pb_row_inner/g, 'et_pb_row' );
-					template_shortcode = template_shortcode.replace( /et_pb_column_inner/g, 'et_pb_column' );
-				}
+			// do not proceed if global post ID is not defined or empty.
+			if ( typeof post_id === 'undefined' || '' === post_id ) {
+				return;
+			}
+
+			if ( 'row_inner' === layout_type ) {
+				template_shortcode = template_shortcode.replace( /et_pb_row_inner/g, 'et_pb_row' );
+				template_shortcode = template_shortcode.replace( /et_pb_column_inner/g, 'et_pb_column' );
+			}
 
 			$.ajax( {
 				type: "POST",
@@ -12027,11 +12310,26 @@ window.et_builder_version = '3.0.7';
 		 * Check whether the Yoast SEO plugin is active
 		 */
 		function et_pb_is_yoast_seo_active() {
-			if ( typeof YoastSEO !== 'undefined' && typeof YoastSEO === 'object' ) {
-				return true;
+			return ( 'object' === typeof YoastSEO && YoastSEO.hasOwnProperty( 'app' ) )
+		}
+
+		/**
+		 * Prepare an object from hovered module for Shortcuts
+		 */
+		function et_pb_get_hovered_module_view( hoveredObject ) {
+			if ( _.isEmpty( hoveredObject ) ) {
+				return false;
 			}
 
-			return false;
+			var view_settings = {
+				model      : hoveredObject.model,
+				view       : hoveredObject.$el,
+				view_event : event
+			};
+
+			var prepared_item = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+			return prepared_item;
 		}
 
 		/**
@@ -12070,10 +12368,59 @@ window.et_builder_version = '3.0.7';
 			}
 		};
 
+		var et_pb_reinit_layout_throttled = _.debounce( et_reinitialize_builder_layout, 2000 );
+
 		/**
 		* Builder hotkeys
 		*/
 		$(window).keydown( function( event ){
+			if ( ! et_pb_is_builder_used() ) {
+				return;
+			}
+
+			function et_pb_close_opened_modal() {
+				var $close_button = $( '.et-pb-modal-close' );
+				var $core_close_button = $('.et-core-modal-close');
+
+				if ( $close_button.length ) {
+					// it's possible that there are 2 Modals appear on top of each other, close the one which is on top
+					if ( typeof $close_button[1] !== 'undefined' ) {
+						$close_button[1].click();
+					} else {
+						$close_button.click();
+					}
+				}
+
+				if ($core_close_button.length) {
+					$core_close_button.click();
+				}
+
+				$( 'body' ).removeClass( 'et-core-nbfc' );
+			}
+
+			// Hotkeys that should work regardless current focus state
+			if ((event.keyCode === 83 && event.metaKey && event.shiftKey && !event.altKey) || (event.keyCode === 83 && event.ctrlKey && event.shiftKey && !event.altKey)) {
+				// Save as draft
+				event.preventDefault();
+
+				et_pb_close_opened_modal();
+
+				// Triggers save by draft by triggering DOM to initiate necessary animation
+				$('#save-post').trigger('click');
+
+				return;
+			} else if ( (event.keyCode === 83 && event.metaKey && !event.altKey) || (event.keyCode === 83 && event.ctrlKey && !event.altKey) ) {
+				// Save / Publish
+				event.preventDefault();
+
+				et_pb_close_opened_modal();
+
+				// Triggers publish by triggering DOM to initiate necessary animation
+				jQuery('#publish').trigger('click');
+
+				return;
+			}
+
 
 			// do not override default hotkeys inside input fields
 			if ( typeof event.target !== 'undefined' && $( event.target ).is( 'input, textarea' ) ) {
@@ -12094,8 +12441,485 @@ window.et_builder_version = '3.0.7';
 				ET_PageBuilder_App.undo( event );
 
 				return false;
+			} else if ( event.keyCode === 79 ) {
+				// Open Page Settings Modal: `o`
+				event.preventDefault();
+
+				et_pb_close_opened_modal();
+
+				if (!$('.et_pb_builder_settings').length) {
+					$('#et_pb_layout .et-pb-app-settings-button').trigger('click');
+				}
+			} else if (event.keyCode === 80 ) {
+
+				event.preventDefault();
+
+				// Open preview on super + `p`
+				if ( event.metaKey || event.ctrlKey ) {
+					if ( $( '.et-pb-modal-preview-template' ).length ) {
+						$( '.et-pb-modal-preview-template' ).trigger( 'click' );
+					}
+
+					return false;
+				}
+
+				// Open Portability Tooltip: `p`
+				et_pb_close_opened_modal();
+
+				if (!$('div[data-et-core-portability]').hasClass('et-core-active')) {
+					$('#et_pb_layout .et-pb-app-portability-button').trigger('click');
+				}
+			} else if (event.keyCode === 72) {
+				// Open History Modal: `h`
+				event.preventDefault();
+
+				et_pb_close_opened_modal();
+				$('#et_pb_layout .et-pb-layout-buttons-history').trigger('click');
+			} else if (event.keyCode === 9  && event.shiftKey) {
+				// Switch modal tabs on `Tab` key
+				if ( $( '.et-pb-options-tabs-links' ).length || $( '.et-pb-preview-screensize-switcher' ).length ) {
+					var isPreviewActive = $( '.et-pb-modal-preview-template' ).length && $( '.et-pb-modal-preview-template' ).hasClass( 'active' ) ? true : false;
+					var $tabsContainer = ! isPreviewActive ? $( '.et-pb-options-tabs-links' ) : $( '.et-pb-preview-screensize-switcher' );
+					var $tabLinks = $tabsContainer.find( 'li' );
+					var tabsCount = $tabLinks.length;
+					var nextTab = $tabLinks[0];
+					var counter = 0;
+
+					$tabLinks.each( function( index ) {
+						var activeClassHolder = isPreviewActive ? $( this ).find( 'a' ) : $( this );
+						var activeClass = isPreviewActive ? 'active' : 'et-pb-options-tabs-links-active';
+						// if we're not on the last tab
+						if ( activeClassHolder.hasClass( activeClass ) && index !== tabsCount - 1 ) {
+							nextTab = $tabLinks[ index + 1 ];
+						}
+					});
+
+					if ( $( nextTab ).length ) {
+						$( nextTab ).find( 'a' ).trigger( 'click' );
+					}
+				}
+			} else if (event.keyCode === 67 && ( event.metaKey || event.ctrlKey )) {
+				// Copy hovered module on super + `c`
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not copy empty columns
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					prepared_item.copy( event );
+				}
+			} else if (event.keyCode === 86 && ( event.metaKey || event.ctrlKey )) {
+				// Paste after hovered module on super + `v`
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					var $hoveredElement = et_pb_hovered_item_buffer.$el;
+
+					if ( $hoveredElement.hasClass( 'et-pb-column' ) || ( $hoveredElement.hasClass( 'et_pb_section_fullwidth' ) && ! ET_PB_Clipboard.get( 'et_pb_clipboard_section' ) && ! $hoveredElement.find( '.et_pb_module_block' ).length ) ) {
+						prepared_item.pasteColumn( event );
+					} else {
+						prepared_item.pasteAfter( event );
+					}
+
+				}
+			} else if (event.keyCode === 88 && ( event.metaKey || event.ctrlKey )) {
+				// Cut hovered module on super + `x`
+
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not copy empty columns
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					prepared_item.copy( event );
+
+					var $remove_button = et_pb_hovered_item_buffer.$el.hasClass( 'et_pb_module_block' ) ? et_pb_hovered_item_buffer.$el.find( '.et-pb-remove' ) : et_pb_hovered_item_buffer.$el.find( '> .et-pb-controls .et-pb-remove' );
+
+					// remove element after it was copied
+					if ( $remove_button.length ) {
+						$remove_button.trigger( 'click' );
+						et_pb_hovered_item_buffer = {};
+						et_reinitialize_builder_layout();
+					}
+				}
+			} else if (event.keyCode === 68 ) {
+				//Disable module `d`
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not proceed if empty column hovered
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					var history_verb = 'disabled';
+
+					if ( typeof prepared_item.model.attributes.et_pb_disabled === 'undefined' || 'on' !== prepared_item.model.attributes.et_pb_disabled ) {
+						prepared_item.model.attributes.et_pb_disabled = 'on';
+						et_pb_hovered_item_buffer.$el.addClass( 'et_pb_disabled' );
+					} else {
+						prepared_item.model.attributes.et_pb_disabled = 'off';
+						et_pb_hovered_item_buffer.$el.removeClass( 'et_pb_disabled' );
+						history_verb = 'enabled'
+					}
+
+					// Update global module
+					prepared_item.updateGlobalModule();
+
+					// Enable history saving and set meta for history
+					ET_PageBuilder_App.allowHistorySaving( history_verb, prepared_item.history_noun );
+
+					ET_PageBuilder_App.saveAsShortcode();
+				}
+			} else if (event.keyCode === 76 ) {
+				//Lock module `l`
+
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not proceed if empty column hovered
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					if ( typeof prepared_item.model.attributes.et_pb_locked === 'undefined' || 'on' !== prepared_item.model.attributes.et_pb_locked ) {
+						prepared_item.lock( event );
+					} else {
+						prepared_item.unlockItem( event );
+					}
+
+					et_reinitialize_builder_layout();
+				}
+			} else if (event.keyCode === 83) {
+				event.preventDefault();
+
+				if ( ! _.isEmpty( et_pb_hovered_item_buffer ) && ! $( '.et_pb_modal_overlay' ).length ) {
+					// save the `s` key pressed flag
+					et_pb_key_pressed.s = true;
+				}
+			} else if ( ( event.keyCode === 49 || event.keyCode === 50 || event.keyCode === 51 ) && et_pb_key_pressed.s ) {
+				if ( $( '.et_pb_modal_overlay' ).length ) {
+					return;
+				}
+
+				var $hoveredElement = et_pb_hovered_item_buffer.$el;
+				var $hoveredSection = $hoveredElement.closest( '.et_pb_section' );
+
+				if ( $hoveredSection.length ) {
+					switch( event.keyCode ) {
+						case 49:
+							// add regular section
+							$hoveredSection.find( '.et-pb-section-add-main' ).trigger( 'click' );
+						  break;
+						case 50:
+							//add specialty section
+							$hoveredSection.find( '.et-pb-section-add-specialty' ).trigger( 'click' );
+						  break;
+						case 51:
+							//add fullwidth section
+							$hoveredSection.find( '.et-pb-section-add-fullwidth' ).trigger( 'click' );
+						  break;
+					}
+				}
+			} else if (event.keyCode === 82) {
+				if ( ! _.isEmpty( et_pb_hovered_item_buffer ) && ! $( '.et_pb_modal_overlay' ).length ) {
+					// save the `r` key pressed flag
+					et_pb_key_pressed.r = true;
+				}
+			} else if (event.keyCode === 67 && ! event.metaKey && ! event.ctrlKey ) {
+				if ( ! _.isEmpty( et_pb_hovered_item_buffer ) && ! $( '.et_pb_modal_overlay' ).length ) {
+					// save the `c` key pressed flag
+					et_pb_key_pressed.c = true;
+				}
+			}  else if ( ( event.keyCode === 49 || event.keyCode === 50 || event.keyCode === 51 || event.keyCode === 52 || event.keyCode === 53 || event.keyCode === 54 || event.keyCode === 55 || event.keyCode === 56 || event.keyCode === 57 || event.keyCode === 48 || event.keyCode === 189 ) && ( et_pb_key_pressed.r || et_pb_key_pressed.c ) ) {
+				// Add Row / Change Row Structure shortcuts
+
+				var $hoveredElement = et_pb_hovered_item_buffer.$el;
+				var $hoveredRow = $hoveredElement.closest( '.et_pb_row' );
+
+				if ( $hoveredRow.length ) {
+					var selectedLayout = '4_4';
+
+					switch( event.keyCode ) {
+						case 49:
+							selectedLayout = '4_4';
+						  break;
+						case 50:
+							selectedLayout = '1_2,1_2';
+						  break;
+						case 51:
+							selectedLayout = '1_3,1_3,1_3';
+						  break;
+						case 52:
+							selectedLayout = '1_4,1_4,1_4,1_4';
+						  break;
+						case 53:
+							selectedLayout = '2_3,1_3';
+						  break;
+						case 54:
+							selectedLayout = '1_3,2_3';
+						  break;
+						case 55:
+							selectedLayout = '1_4,3_4';
+						  break;
+						case 56:
+							selectedLayout = '3_4,1_4';
+						  break;
+						case 57:
+							selectedLayout = '1_2,1_4,1_4';
+						  break;
+						case 48:
+							selectedLayout = '1_4,1_4,1_2';
+						  break;
+						case 189:
+							selectedLayout = '1_4,1_2,1_4';
+						  break;
+					}
+
+					var row_view = ET_PageBuilder_Layout.getView( $hoveredRow.find( '.et-pb-row-content' ).data( 'cid' ) );
+
+					if ( typeof row_view !== 'undefined' ) {
+						var is_structure_change = false;
+						var skip_column_history = false;
+
+						var row_parent = ET_PageBuilder_Layout.getView( row_view.model.attributes.parent );
+
+						if ( typeof row_parent !== 'undefined' && 'column' === row_parent.model.attributes.type ) {
+							var allowed_columns = 3 === row_parent.model.attributes.specialty_columns ? [ 49, 50, 51 ] : [ 49, 50 ];
+
+							// do not insert unsupported column type into the specialty section
+							if ( -1 === $.inArray( event.keyCode, allowed_columns ) ) {
+								return;
+							}
+						}
+
+						var processed_row_view = {};
+
+						if ( et_pb_key_pressed.r ) {
+
+							if ( 'on' === row_view.model.get( 'et_pb_parent_locked' ) ) {
+								return;
+							}
+
+							// Split Testing-related action
+							if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+								// Check for user permission and module status
+								if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( row_view.model.get( 'cid' ), 'add_row' ) ) {
+									ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+									return;
+								}
+							}
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'added', 'row' );
+
+							skip_column_history = true;
+
+							// creating new Row
+							var module_id = ET_PageBuilder_Layout.generateNewId(),
+								global_parent = typeof row_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== row_view.model.get( 'et_pb_global_module' ) ? row_view.model.get( 'et_pb_global_module' ) : '',
+								global_parent_cid = '' !== global_parent ? row_view.model.get( 'cid' ) : '';
+
+							row_parent.collection.add( [ {
+								type : 'row',
+								module_type : 'row',
+								cid : module_id,
+								parent : row_parent.model.get( 'cid' ),
+								view : row_view,
+								appendAfter : row_view.$el,
+								et_pb_global_parent : global_parent,
+								global_parent_cid : global_parent_cid,
+								admin_label : et_pb_options.noun['row']
+							} ] );
+							processed_row_view = ET_PageBuilder_Layout.getView( module_id );
+						} else {
+							// structure edit is not allowed for global Rows
+							if ( ( typeof row_view.model.attributes.et_pb_global_module !== 'undefined' && '' !== row_view.model.attributes.et_pb_global_module ) || ( 'row' === et_pb_options.layout_type && 'global' === et_pb_options.is_global_template ) ) {
+								return;
+							}
+
+							// changing structure of exisitng Row
+							processed_row_view = row_view;
+							is_structure_change = true;
+						}
+
+						var column_options = {
+							'layout' : selectedLayout,
+							'is_structure_change' : is_structure_change,
+							'layout_specialty' : '',
+						};
+
+						// reset the columns layout
+						ET_PageBuilder_Layout.changeColumnStructure( processed_row_view, column_options, true, skip_column_history );
+					}
+				}
+			} else if ( ( event.keyCode === 49 || event.keyCode === 50 || event.keyCode === 51 || event.keyCode === 52 || event.keyCode === 53 || event.keyCode === 54 || event.keyCode === 55 || event.keyCode === 56 || event.keyCode === 57 || event.keyCode === 48 || event.keyCode === 189 ) ) {
+				if ( ! $( 'ul.et-pb-column-layouts' ).length ) {
+					return;
+				}
+				var layoutsList = $( 'ul.et-pb-column-layouts li' );
+				var selectedLayout = 0;
+
+				switch( event.keyCode ) {
+					case 49:
+						selectedLayout = 0;
+						break;
+					case 50:
+						selectedLayout = 1;
+						break;
+					case 51:
+						selectedLayout = 2;
+						break;
+					case 52:
+						selectedLayout = 3;
+						break;
+					case 53:
+						selectedLayout = 4;
+						break;
+					case 54:
+						selectedLayout = 5;
+						break;
+					case 55:
+						selectedLayout = 6;
+						break;
+					case 56:
+						selectedLayout = 7;
+						break;
+					case 57:
+						selectedLayout = 8;
+						break;
+					case 48:
+						selectedLayout = 9;
+						break;
+					case 189:
+						selectedLayout = 10;
+						break;
+				}
+
+				if ( layoutsList.length && layoutsList[ selectedLayout ] ) {
+					$( layoutsList[ selectedLayout ] ).trigger( 'click' );
+				}
+			} else if (event.key === '?' || event.keyCode === 191) {
+				var isHelpModal = $('.et_pb_modal_settings_container').attr('data-open_view') === 'help';
+				// Help : `?`
+				if ( $('.et-pb-modal-close').length ) {
+					$('.et-pb-modal-close').click();
+				}
+
+				if (isHelpModal) {
+					return;
+				}
+
+				et_pb_close_opened_modal();
+
+				view = new ET_PageBuilder.ModalView( {
+					attributes : {
+						'data-open_view' : 'help'
+					},
+					view : this
+				} );
+
+				$('body').append( view.render().el );
 			}
 		});
+
+		$(window).keyup( function( event ) {
+			if (event.keyCode === 83) {
+				// reset the `s` key pressed flag
+				et_pb_key_pressed.s = false;
+			} else if ( event.keyCode === 82 ) {
+				// reset the `r` key pressed flag
+				et_pb_key_pressed.r = false;
+			} else if ( event.keyCode === 67 && et_pb_key_pressed.c ) {
+				// reset the `c` key pressed flag
+				et_pb_key_pressed.c = false;
+				et_pb_reinit_layout_throttled();
+			}
+		});
+
+		$( 'body' ).on( 'mouseover', '.et-pb-right-click-trigger-overlay, .et-pb-controls, .et_pb_module_block, .et-pb-insert-module, .et-pb-row-add', function( event ) {
+			var $hoveredItem = $( event.target );
+			var $hoveredElement = $hoveredItem.closest( '.et_pb_module_block' );
+
+			if ( ! $hoveredElement.length ) {
+				// if empty Column or Row hovered
+				if ( $hoveredItem.closest( '.et-pb-insert-module' ).length || $hoveredItem.closest( '.et-pb-row-add' ).length ) {
+
+					$hoveredElement = $hoveredItem.closest( 'div' );
+
+					if ( $hoveredItem.closest( '.et-pb-row-add' ).length ) {
+						$hoveredElement = $hoveredElement.find( '.et-pb-row-content' );
+					}
+				} else {
+					var $hoveredRightClickArea = $hoveredItem.closest( '.et-pb-right-click-trigger-overlay' ).length ? $hoveredItem.closest( '.et-pb-right-click-trigger-overlay' ) : $hoveredItem.closest( '.et-pb-controls' );
+
+					// do not proceed if no Divi Module hovered and reset hovered element
+					if ( ! $hoveredRightClickArea.length ) {
+						et_pb_hovered_item_buffer = {};
+						return;
+					}
+
+					var $hoveredRow = $hoveredRightClickArea.closest( '.et_pb_row' );
+
+					if ( $hoveredRow.length ) {
+						$hoveredElement = $hoveredRow.find( '.et-pb-row-content' );
+					} else {
+						var $hoveredSection = $hoveredRightClickArea.closest( '.et_pb_section' );
+						$hoveredElement = $hoveredSection.find( '.et-pb-section-content' );
+					}
+				}
+			}
+
+			if ( $hoveredElement.length ) {
+				var hoveredElementObject = ET_PageBuilder_Layout.getView( $hoveredElement.data( 'cid' ) );
+				et_pb_hovered_item_buffer = hoveredElementObject;
+			}
+		} );
+
+		// open module settings on double click
+		$( 'body' ).on( 'dblclick', '.et-pb-right-click-trigger-overlay, .et-pb-controls, .et_pb_module_block', function( event) {
+			var $clickedItem = $( event.target );
+
+			// do not proceed if clicked on buttons
+			if ( $clickedItem.closest( 'a' ).length ) {
+				return;
+			}
+
+			var $clickedModule = $clickedItem.closest( '.et_pb_module_block' );
+
+			if ( $clickedModule.length ) {
+				// Open module settings
+				$clickedModule.find( '.et-pb-settings' ).trigger( 'click' );
+				return;
+			}
+
+			if ( $clickedItem.closest( '.et-pb-controls' ).length ) {
+				// Open settings of Row or Section if clicked inside the controls panel
+				$clickedItem.closest( '.et-pb-controls' ).find( '.et-pb-settings' ).trigger( 'click' );
+			}
+
+			var $clickedRightClickArea = $clickedItem.closest( '.et-pb-right-click-trigger-overlay' );
+
+			if ( ! $clickedRightClickArea.length ) {
+				return;
+			}
+
+			var $clickedRow = $clickedRightClickArea.closest( '.et_pb_row' );
+
+			if ( $clickedRow.length ) {
+				// Open Row Settings
+				$clickedRow.find( '> .et-pb-controls .et-pb-settings' ).trigger( 'click' );
+			} else {
+				var $clickedSection = $clickedRightClickArea.closest( '.et_pb_section' );
+				// Open Section Settings
+				$clickedSection.find( '> .et-pb-controls .et-pb-settings' ).trigger( 'click' );
+			}
+		} );
 
 
 		/**

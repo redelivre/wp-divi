@@ -111,6 +111,9 @@ function et_add_epanel() {
 			||
 			( 'reset' === $_POST['action'] && isset( $_POST['_wpnonce_reset'] ) && wp_verify_nonce( $_POST['_wpnonce_reset'], 'et-nojs-reset_epanel' ) )
 		) {
+			if ( ! isset( $GLOBALS['et_core_updates'] ) ) {
+				et_register_updates_component();
+			}
 			epanel_save_data( 'js_disabled' ); //saves data when javascript is disabled
 		}
 	}
@@ -273,9 +276,15 @@ if ( ! function_exists( 'et_build_epanel' ) ) {
 													<?php } elseif ( 'textarea' == $value['type'] ) { ?>
 
 														<?php
-															$et_textarea_value = '';
-															$et_textarea_value = ( '' != et_get_option( $value['id'], '', '', false, $is_new_global_setting, $global_setting_main_name, $global_setting_sub_name ) ) ? et_get_option( $value['id'], '', '', false, $is_new_global_setting, $global_setting_main_name, $global_setting_sub_name ) : $value['std'];
-															$et_textarea_value = stripslashes( $et_textarea_value );
+															// get the custom css value from WP custom CSS option if supported
+															if ( ( $shortname . '_custom_css' ) === $value['id'] && function_exists( 'wp_get_custom_css') ) {
+																$et_textarea_value = wp_get_custom_css();
+																$et_textarea_value = stripslashes( $et_textarea_value );
+															} else {
+																$et_textarea_value = '';
+																$et_textarea_value = ( '' != et_get_option( $value['id'], '', '', false, $is_new_global_setting, $global_setting_main_name, $global_setting_sub_name ) ) ? et_get_option( $value['id'], '', '', false, $is_new_global_setting, $global_setting_main_name, $global_setting_sub_name ) : $value['std'];
+																$et_textarea_value = stripslashes( $et_textarea_value );
+															}
 														?>
 
 														<textarea name="<?php echo esc_attr( $value['id'] ); ?>" id="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_textarea( $et_textarea_value ); ?></textarea>
@@ -427,7 +436,11 @@ if ( ! function_exists( 'et_build_epanel' ) ) {
 											<div class="box-content">
 												<?php
 													$checked = '';
-												if ( '' != et_get_option( $value['id'] ) ) {
+												if ( $is_new_global_setting && isset( $value['main_setting_name'] ) && isset( $value['sub_setting_name'] ) ) {
+													$saved_checkbox = et_get_option( $value['id'], '', '', false, $is_new_global_setting, $global_setting_main_name, $global_setting_sub_name );
+													$checked = ( 'on' === $saved_checkbox || (!$saved_checkbox && 'on' === $value['std']) ) ?
+														'checked="checked"' : '';
+												} else if ( '' != et_get_option( $value['id'] ) ) {
 													if ( 'on' == et_get_option( $value['id'] ) ) {
 														$checked = 'checked="checked"';
 													} else {
@@ -645,8 +658,16 @@ if ( ! function_exists( 'epanel_save_data' ) ) {
 									// html is not allowed
 									if ( 'nohtml' == $value['validation_type'] ) {
 										if ( $value['id'] === ( $shortname . '_custom_css' ) ) {
-											// don't strip slashes from custom css, it should be possible to use \ for icon fonts
-											$et_option_new_value = wp_strip_all_tags( $_POST[ $value['id'] ] );
+											// save custom css into wp custom css option if supported
+											// fallback to legacy system otherwise
+											if ( function_exists( 'wp_update_custom_css_post' ) ) {
+												// Data sent via AJAX is automatically escaped by browser, thus it needs
+												// to be unslashed befor being saved into custom CSS post
+												wp_update_custom_css_post( wp_unslash( wp_strip_all_tags( $_POST[ $value['id'] ] ) ) );
+											} else {
+												// don't strip slashes from custom css, it should be possible to use \ for icon fonts
+												$et_option_new_value = wp_strip_all_tags( $_POST[ $value['id'] ] );
+											}
 										} else {
 											$et_option_new_value = wp_strip_all_tags( stripslashes( $_POST[ $value['id'] ] ) );
 										}

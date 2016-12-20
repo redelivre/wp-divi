@@ -101,7 +101,7 @@
 				$this_option.siblings().removeClass( 'et_select_image_active' );
 
 				$main_text.removeClass(function(index, css){
-					return (css.match(/\bet_si_\S+/g) || []).join(' ')
+					return (css.match(/\bet_si_\S+/g) || []).join(' ');
 				});
 
 				$main_text.addClass( $this_option.attr( 'class' ) ).attr( 'data-si-class', $this_option.attr( 'class' ) );
@@ -143,10 +143,10 @@
 			esc_classname: function( option_value ) {
 				return 'et_si_' + option_value.replace(/[ +\/\[\]]/g,'_').toLowerCase();
 			}
-		}
+		};
 
 		$.fn.et_select_image = function(options){
-			new ET_Select_Image(this, options)
+			new ET_Select_Image(this, options);
 			return this;
 		};
 
@@ -201,13 +201,13 @@
 		var et_range_input_number_timeout;
 
 		function et_autocorrect_range_input_number( input_number, timeout ) {
-			$range_input = input_number,
-			$range       = $range_input.parent().find('input[type="range"]'),
-			value        = parseFloat( $range_input.val() ),
-			reset        = parseFloat( $range.attr('data-reset_value') ),
-			step         = parseFloat( $range_input.attr('step') ),
-			min          = parseFloat( $range_input.attr('min') ),
-			max          = parseFloat( $range_input.attr('max') );
+			var $range_input = input_number,
+				$range       = $range_input.parent().find('input[type="range"]'),
+				value        = parseFloat( $range_input.val() ),
+				reset        = parseFloat( $range.attr('data-reset_value') ),
+				step         = parseFloat( $range_input.attr('step') ),
+				min          = parseFloat( $range_input.attr('min') ),
+				max          = parseFloat( $range_input.attr('max') );
 
 			clearTimeout( et_range_input_number_timeout );
 
@@ -253,7 +253,7 @@
 				query         = $.inArray( value, values ),
 				result        = '';
 
-			if ( $this_el.prop('checked' ) == true ) {
+			if ( $this_el.prop('checked' ) === true ) {
 
 				if ( current_value.length ) {
 
@@ -296,7 +296,7 @@
 			style_checkbox.change();
 		});
 
-		var $vertical_nav_option                  = $( '#customize-control-et_divi-vertical_nav' )
+		var $vertical_nav_option                  = $( '#customize-control-et_divi-vertical_nav' ),
 			$vertical_nav_input                   = $vertical_nav_option.find( 'input[type=checkbox]' ),
 			$nav_fullwidth_control                = $( '#customize-control-et_divi-nav_fullwidth' ),
 			$hide_navigation_until_scroll_control = $('#customize-control-et_divi-hide_nav'),
@@ -417,7 +417,7 @@
 		});
 
 		function toggle_sidebar_width_control() {
-			$checkbox              = $('#customize-control-et_divi-use_sidebar_width input[type="checkbox"]'),
+			var $checkbox          = $('#customize-control-et_divi-use_sidebar_width input[type="checkbox"]'),
 			$sidebar_width_control = $( '#customize-control-et_divi-sidebar_width' );
 
 			if ( $checkbox.is( ':checked' ) ) {
@@ -444,7 +444,11 @@
 
 			picker.val( control.setting() ).wpColorPicker({
 				change: function() {
-					control.setting.set( picker.wpColorPicker('color') );
+					var et_color_picker_value = picker.wpColorPicker('color');
+
+					if ( '' !== et_color_picker_value ) {
+						control.setting.set( et_color_picker_value );
+					}
 				},
 				clear: function() {
 					control.setting.set( false );
@@ -491,7 +495,7 @@
 		}
 	});
 
-	api.controlConstructor['et_coloralpha'] = api.ET_ColorAlphaControl;
+	api.controlConstructor.et_coloralpha = api.ET_ColorAlphaControl;
 
 	$( window ).load( function() {
 		var $et_custom_footer_credits_disable_control = $('#customize-control-et_divi-disable_custom_footer_credits input'),
@@ -543,4 +547,4 @@
 
 	} );
 
-})(jQuery)
+})(jQuery);

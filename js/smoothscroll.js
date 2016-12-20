@@ -532,4 +532,17 @@ if (wheelEvent && isChrome) {
 	addEvent("load", init);
 }
 
+/***********************************************
+ * Interface for Divi Visual Builder
+ ***********************************************/
+window.ET_SmoothScroll = {
+    toggleKeydown: function(enable) {
+        if (enable) {
+            addEvent("keydown", keydown);
+        } else {
+            removeEvent("keydown", keydown);
+        }
+    },
+};
+
 })();

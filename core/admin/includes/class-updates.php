@@ -177,6 +177,10 @@ final class ET_Core_Updates {
 
 		$request = wp_remote_post( 'https://www.elegantthemes.com/api/api_downloads.php', $options );
 
+		if ( is_wp_error( $request ) ) {
+			$request = wp_remote_post( 'https://cdn.elegantthemes.com/api/api_downloads.php', $options );
+		}
+
 		if ( ! is_wp_error( $request ) && wp_remote_retrieve_response_code( $request ) == 200 ){
 			$response = wp_remote_retrieve_body( $request );
 
@@ -220,6 +224,11 @@ final class ET_Core_Updates {
 		$last_update = new stdClass();
 
 		$plugins_request = wp_remote_post( 'https://www.elegantthemes.com/api/api.php', $options );
+
+		if ( is_wp_error( $plugins_request ) ) {
+			$options['body']['failed_request'] = 'true';
+			$plugins_request = wp_remote_post( 'https://cdn.elegantthemes.com/api/api.php', $options );
+		}
 
 		if ( ! is_wp_error( $plugins_request ) && wp_remote_retrieve_response_code( $plugins_request ) == 200 ){
 			$plugins_response = unserialize( wp_remote_retrieve_body( $plugins_request ) );
@@ -315,6 +324,11 @@ final class ET_Core_Updates {
 
 		$theme_request = wp_remote_post( 'https://www.elegantthemes.com/api/api.php', $options );
 
+		if ( is_wp_error( $theme_request ) ) {
+			$options['body']['failed_request'] = 'true';
+			$theme_request = wp_remote_post( 'https://cdn.elegantthemes.com/api/api.php', $options );
+		}
+
 		if ( ! is_wp_error( $theme_request ) && wp_remote_retrieve_response_code( $theme_request ) == 200 ){
 			$theme_response = unserialize( wp_remote_retrieve_body( $theme_request ) );
 
@@ -396,9 +410,10 @@ final class ET_Core_Updates {
 		$theme_plugin_updates_unavailable = array_merge( $messages['theme_updates_unavailable'], $messages['plugin_updates_unavailable'] );
 
 		if ( is_admin() ) {
-			if ( in_array( $original_text, $messages['update_package_unavailable'] ) ) {
+			// Use in_array() with $strict=true to avoid adding our messages to wrong places. It may happen if $original_text = 0 for example.
+			if ( in_array( $original_text, $messages['update_package_unavailable'], true ) ) {
 				$message = et_get_safe_localization( __( '<em>Before you can receive product updates, you must first authenticate your Elegant Themes subscription. To do this, you need to enter both your Elegant Themes Username and your Elegant Themes API Key into the Updates Tab in your theme and plugin settings. To locate your API Key, <a href="https://www.elegantthemes.com/members-area/api-key.php" target="_blank">log in</a> to your Elegant Themes account and navigate to the <strong>Account > API Key</strong> page. <a href="http://www.elegantthemes.com/gallery/divi/documentation/update/" target="_blank">Learn more here</a></em>. If you still get this message, please make sure that your Username and API Key have been entered correctly', 'et-core' ) );
-			} else if ( in_array( $original_text, $theme_plugin_updates_unavailable ) ) {
+			} else if ( in_array( $original_text, $theme_plugin_updates_unavailable, true ) ) {
 				$message = et_get_safe_localization( __( 'Automatic updates currently unavailable. For all Elegant Themes products, please <a href="http://www.elegantthemes.com/gallery/divi/documentation/update/" target="_blank">authenticate your subscription</a> via the Updates tab in your theme & plugin settings to enable product updates. Make sure that your Username and API Key have been entered correctly.', 'et-core' ) );
 			}
 

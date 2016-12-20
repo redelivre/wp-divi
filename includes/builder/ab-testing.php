@@ -976,6 +976,10 @@ function et_pb_ab_remove_stats( $test_id ) {
 	foreach ( array( 'stats', 'clients' ) as $table_suffix ) {
 		$table_name = $wpdb->prefix . 'et_divi_ab_testing_' . $table_suffix;
 
+		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+			continue;
+		}
+
 		// construct sql query to remove value from DB table
 		$sql = "DELETE FROM $table_name WHERE test_id = %d";
 

@@ -91,11 +91,17 @@ if ( ! ET_FB_ENABLED ) {
 	return;
 }
 
-define( 'ET_FB_URI', ET_BUILDER_URI . '/frontend-builder/app' );
+define( 'ET_FB_URI', ET_BUILDER_URI . '/frontend-builder' );
 define( 'ET_FB_ASSETS_URI', ET_FB_URI . '/assets' );
 
 require_once ET_BUILDER_DIR . 'frontend-builder/view.php';
 require_once ET_BUILDER_DIR . 'frontend-builder/assets.php';
 require_once ET_BUILDER_DIR . 'frontend-builder/helpers.php';
+require_once ET_BUILDER_DIR . 'frontend-builder/rtl.php';
+
+if ( 'on' === et_get_option( 'divi_disable_translations', 'off' ) ) {
+	add_filter( 'locale_stylesheet_uri', 'et_fb_remove_rtl_stylesheet' );
+	add_filter( 'language_attributes',   'et_fb_remove_html_rtl_dir' );
+}
 
 et_fb_fix_plugin_conflicts();

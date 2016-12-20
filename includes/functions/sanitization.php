@@ -247,6 +247,7 @@ function et_allowed_html_tags_short_block() {
 			'href'  => array(),
 			'class' => array(),
 			'id'    => array(),
+			'rel'   => array(),
 			'title'    => array(),
 			'target'   => array(),
 		),

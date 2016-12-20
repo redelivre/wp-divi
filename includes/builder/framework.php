@@ -21,6 +21,7 @@ if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! is_customize_preview() ) {
 		'et_fb_prepare_shortcode',
 		'et_fb_process_imported_content',
 		'et_fb_get_saved_templates',
+		'et_fb_retrieve_builder_data'
 	);
 
 	$force_builder_load = isset( $_POST['et_load_builder_modules'] ) && '1' === $_POST['et_load_builder_modules'];
@@ -232,6 +233,18 @@ function et_pb_get_google_api_key() {
 	$google_api_key = isset( $google_api_option['api_key'] ) ? $google_api_option['api_key'] : '';
 
 	return $google_api_key;
+}
+endif;
+
+if ( ! function_exists( 'et_pb_enqueue_google_maps_script' ) ) :
+function et_pb_enqueue_google_maps_script() {
+	$google_api_option = get_option( 'et_google_api_settings' );
+	$google_maps_script_enqueue = !$google_api_option || !isset( $google_api_option['enqueue_google_maps_script'] ) || (isset( $google_api_option['enqueue_google_maps_script'] ) && 'on' === $google_api_option['enqueue_google_maps_script']) ? true : false;
+
+	return apply_filters(
+		'et_pb_enqueue_google_maps_script',
+		$google_maps_script_enqueue
+	);
 }
 endif;
 

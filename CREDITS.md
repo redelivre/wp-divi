@@ -71,7 +71,7 @@ The MIT License (MIT)
 
 Underscore.js 1.8.3
 http://underscorejs.org
-(c) 2009-2015 Jeremy Ashkenas, 
+(c) 2009-2015 Jeremy Ashkenas,
 DocumentCloud and Investigative Reporters & Editors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1382,6 +1382,44 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
+```
+
+User Specific Localization of Visual Builder
+--------------------------------------------
+
+et-pagebuilder/et-pagebuilder.php
+
+```text
+Adapted from WordPress
+
+@copyright 2016 by the WordPress contributors.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+This program incorporates work covered by the following copyright and
+permission notices:
+
+b2 is (c) 2001, 2002 Michel Valdrighi - m@tidakada.com - http://tidakada.com
+
+b2 is released under the GPL
+
+WordPress - Web publishing software
+
+Copyright 2003-2010 by the contributors
+
+WordPress is released under the GPL
 ```
 
 ET Theme Options

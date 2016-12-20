@@ -168,6 +168,12 @@ body button.et-core-button {
 	font-family: 'Open Sans', sans-serif !important;
 }
 
+.rtl .et-core-button,
+body.rtl button.et-core-button {
+	margin-right: 7px;
+	margin-left: 0;
+}
+
 .et-core-button:focus,
 .et-core-button:hover,
 .et-core-button:active {
@@ -201,7 +207,7 @@ body button.et-core-button {
 	background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 20%,rgba(255,255,255,0.7) 100%);
 	background: radial-gradient(ellipse at center, rgba(255,255,255,1) 20%,rgba(255,255,255,0.7) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=1 );
-	z-index: 9999;
+	z-index: 100000;
 	-moz-transition: opacity .5s .2s;
 	-webkit-transition: opacity .5s .2s;
 	transition: opacity .5s .2s;
@@ -222,7 +228,8 @@ body button.et-core-button {
 	z-index: 10000;
 	overflow: auto;
 	position: fixed;
-	top: 30%;
+	top: 20%;
+	bottom: 20%;
 	left: 50%;
 	width: 400px;
 	background: rgb(255, 255, 255);
@@ -257,32 +264,49 @@ body button.et-core-button {
 .et-core-modal-header {
 	background-color: rgb(108, 46, 185);
 	margin: 0;
-	padding: 20px 40px;
+	padding: 21px 40px 20px;
 	box-sizing: border-box;
 	display: block;
 }
 
-.et-core-modal-title {
+.et-core-modal .et-core-modal-title {
 	font-weight: 300;
 	font-size: 22px;
 	line-height: 27px;
 	color: rgb(255, 255, 255);
 	margin: 0px;
+	padding: 0;
 	text-transform: none;
+	text-decoration: none;
+	font-style: normal;
+	font-family: 'Open Sans', Helvetica, Roboto, Arial, sans-serif;
+	letter-spacing: 0;
+	font-weight: 600;
+}
+
+.et_pb_pagebuilder_layout .et-core-modal .et-core-modal-title {
+	font-weight: 500;
 }
 
 .et-core-modal-close {
 	text-decoration: none;
 	font-size: 23px;
 	color: #fff;
+	cursor: pointer;
+	line-height: 18px;
 	position: absolute;
 	top: 0;
 	right: 0;
 	z-index: 10;
-	padding: 22px;
+	padding: 22px 22px 23px;
 	background-color: #622aa9;
 	-webkit-transition: background .5s;
 	transition: background .5s;
+}
+
+.rtl .et-core-modal-close {
+	right: auto;
+	left: 0;
 }
 
 .et-core-modal-close:hover,
@@ -308,13 +332,109 @@ body button.et-core-button {
 .et-core-modal-temp-content,
 .et-core-modal-content {
 	padding: 40px;
-	overflow: auto;
+	overflow: scroll;
+	position: absolute;
+	top: 67px;
+    bottom: 50px;
 	width: 100%;
 	box-sizing: border-box;
 	color: #32373c;
 	font-size: 14px;
 	line-height: 1.5em;
 	font-size: 14px;
+}
+
+.et-core-modal-tabs-enabled .et-core-modal-content {
+	top: 128px;
+}
+
+.et-core-modal-disabled-scrollbar .et-core-modal {
+	top: 50%;
+	bottom: auto;
+}
+
+.et-core-modal-disabled-scrollbar .et-core-modal-content,
+.et-core-modal-disabled-scrollbar .et-core-modal-temp-content {
+	top: 0 !important;
+	position: relative;
+	overflow: hidden;
+	padding-bottom: 107px;
+}
+
+.et-core-modal-content::-webkit-scrollbar {
+	width: 5px !important;
+}
+.et-core-modal-content::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 0 rgba(0,0,0,0.3) !important;
+	width: 20px !important;
+}
+.et-core-modal-content::-webkit-scrollbar-thumb {
+	-webkit-border-radius: 0 !important;
+	border-radius: 0 !important;
+	background: #32373C !important;
+}
+.et-core-modal-content::-webkit-scrollbar-thumb:window-inactive {
+	background: #fff !important;
+}
+
+.et_builder_modal_action_button {
+	text-align: center;
+	display: block;
+	margin: 10px 0;
+	width: 100%;
+	box-sizing: border-box;
+	text-decoration: none;
+	background: #f05555 !important;
+	font-weight: 600;
+	text-transform: uppercase;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #fff !important;
+	padding: 10px 20px;
+}
+.et_builder_modal_action_button:hover {
+	color: rgba(255,255,255,0.9) !important;
+	cursor: pointer;
+}
+.et_builder_modal_action_button:focus {
+	box-shadow: none;
+	outline: none;
+}
+
+.et_builder_modal_action_button_success {
+	background-color: #3dc100 !important;
+}
+.et_builder_modal_action_button_success:hover {
+	cursor: default;
+	color: #fff !important;
+}
+
+.et_builder_modal_action_button_fail {
+	color: #ddd !important;
+}
+.et_builder_modal_action_button_fail:hover {
+	cursor: not-allowed;
+	color: #ccc !important;
+}
+
+.et_pb_modal_closing .et_pb_prompt_modal {
+	opacity: 0;
+	-webkit-animation: et_pb_fade_out_scale .5s 1 cubic-bezier(0.77,0,.175,1);
+}
+
+.et_pb_prompt_buttons {
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	bottom: 0;
+	margin: 0 0 -1px 0;
+}
+
+.et-core-modal-two-buttons .et-core-modal-action {
+	width: 50%;
+}
+.et-core-modal-two-buttons .et-core-modal-action:last-child {
+	right: 0;
 }
 
 .et-core-modal-temp-content h3,
@@ -332,7 +452,6 @@ body button.et-core-button {
 
 .et-core-modal-action {
 	display: block;
-	display: block;
 	color: white;
 	font-size: 18px;
 	line-height: 68px;
@@ -349,6 +468,12 @@ body button.et-core-button {
 	background: #008BDA;
 	text-decoration: none;
 	color: #fff !important;
+	position: absolute;
+	bottom: 0;
+}
+
+.et-core-modal-action-secondary {
+	background: #00c3aa;
 }
 
 .et-core-modal-action:hover,
@@ -356,6 +481,12 @@ body button.et-core-button {
 .et-core-modal-action:active {
 	background: #007cc3;
 	box-shadow: none;
+}
+
+.et-core-modal-action-secondary:hover,
+.et-core-modal-action-secondary:focus,
+.et-core-modal-action-secondary:active {
+	background: #00bba3;
 }
 
 /*-----------------------------------------------------------------------------
@@ -404,6 +535,11 @@ body button.et-core-button {
 	background: none;
 }
 
+.rtl .et-core-tabs li,
+.rtl .et-core-tabs li.ui-state-default {
+	float: right;
+}
+
 .et-core-tabs li a,
 .et-core-tabs li.ui-state-default a {
 	color: #fff;
@@ -417,7 +553,7 @@ body button.et-core-button {
 .et-core-tabs a {
 	box-sizing: border-box;
 	color: white;
-	padding: 20px 40px;
+	padding: 18px 40px 17px;
 	display: inline-block;
 	transition: all 0.3s;
 	text-decoration: none;

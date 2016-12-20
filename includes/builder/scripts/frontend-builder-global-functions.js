@@ -41,7 +41,7 @@
 	}
 
 	window.et_pb_form_placeholders_init = function( $form ) {
-		$form.find('input:text, textarea').each(function(index,domEle){
+		$form.find('input:text, input[type="email"], input[type="url"], textarea').each(function(index,domEle){
 			var $et_current_input = jQuery(domEle),
 				$et_comment_label = $et_current_input.siblings('label'),
 				et_comment_label_value = $et_current_input.siblings('label').text();

@@ -55,6 +55,65 @@ if ( ! function_exists( 'et_options_stored_in_one_row' ) ) {
 
 }
 
+/* sync custom CSS from ePanel with WP custom CSS option introduced in WP 4.7 */
+if ( ! function_exists( 'et_sync_custom_css_options' ) ) {
+	function et_sync_custom_css_options() {
+		$css_synced = get_theme_mod( 'et_pb_css_synced', 'no' );
+
+		if ( 'yes' === $css_synced || ! function_exists( 'wp_get_custom_css' ) ) {
+			return;
+		}
+
+		global $shortname;
+
+		$legacy_custom_css = wp_unslash( et_get_option( "{$shortname}_custom_css" ) );
+
+		// nothing to sync if no custom css saved in ePanel
+		if ( '' === $legacy_custom_css || ! $legacy_custom_css || empty( $legacy_custom_css ) ) {
+			set_theme_mod( 'et_pb_css_synced', 'yes' );
+			return;
+		}
+
+		// get custom css string from WP customizer
+		$wp_custom_css = wp_get_custom_css();
+
+		// ePanel is completely synced with Customizer
+		if ( $wp_custom_css === $legacy_custom_css || false !== strpos( $wp_custom_css, $legacy_custom_css ) ) {
+			set_theme_mod( 'et_pb_css_synced', 'yes' );
+			return;
+		}
+
+		// merge custom css from WP customizer with ePanel custom css
+		$updated_custom_css = $legacy_custom_css . ' ' . $wp_custom_css;
+
+		$updated_status = wp_update_custom_css_post( $updated_custom_css );
+
+		// set theme mod in case of success
+		if ( is_object( $updated_status ) && ! empty( $updated_status ) ) {
+			set_theme_mod( 'et_pb_css_synced', 'yes' );
+		}
+	}
+}
+add_action( 'init', 'et_sync_custom_css_options' );
+
+/**
+ * sync custom CSS from WP custom CSS option introduced in WP 4.7 with theme options for backward compatibility
+ * it should be removed after a few WP major updates when we fully migrate to WP custom CSS system
+ */
+if ( ! function_exists( 'et_back_sync_custom_css_options' ) ) {
+	function et_back_sync_custom_css_options( $data ) {
+		global $shortname;
+
+		if ( ! empty( $data ) && isset( $data['css'] ) ) {
+			et_update_option( "{$shortname}_custom_css", $data['css'] );
+		}
+
+		return $data;
+	}
+}
+
+add_filter( 'update_custom_css_data', 'et_back_sync_custom_css_options' );
+
 /**
  * Gets option value from the single theme option, stored as an array in the database
  * if all options stored in one row.
@@ -175,7 +234,7 @@ function et_browser_body_class($classes) {
 /*this function allows for the auto-creation of post excerpts*/
 if ( ! function_exists( 'truncate_post' ) ) {
 
-	function truncate_post( $amount, $echo = true, $post = '' ) {
+	function truncate_post( $amount, $echo = true, $post = '', $strip_shortcodes = false ) {
 		global $shortname;
 
 		if ( '' == $post ) global $post;
@@ -200,8 +259,15 @@ if ( ! function_exists( 'truncate_post' ) ) {
 			// due to unparsed audio shortcode
 			$truncate = preg_replace( '@\[audio[^\]]*?\].*?\[\/audio]@si', '', $truncate );
 
-			// apply content filters
-			$truncate = apply_filters( 'the_content', $truncate );
+			// Remove embed shortcode from post content
+			$truncate = preg_replace( '@\[embed[^\]]*?\].*?\[\/embed]@si', '', $truncate );
+
+			if ( $strip_shortcodes ) {
+				$truncate = et_strip_shortcodes( $truncate );
+			} else {
+				// apply content filters
+				$truncate = apply_filters( 'the_content', $truncate );
+			}
 
 			// decide if we need to append dots at the end of the string
 			if ( strlen( $truncate ) <= $amount ) {
@@ -287,7 +353,17 @@ if ( ! function_exists( 'et_first_image' ) ) {
 	function et_first_image() {
 		global $post;
 		$img = '';
-		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
+		$unprocessed_content = $post->post_content;
+
+		// truncate Post based shortcodes if Divi Builder enabled to avoid infinite loops
+		if ( function_exists( 'et_strip_shortcodes' ) ) {
+			$unprocessed_content = et_strip_shortcodes( $post->post_content, true );
+		}
+
+		// apply the_content filter to execute all shortcodes and get the correct image from the processed content
+		$processed_content = apply_filters( 'the_content', $unprocessed_content );
+
+		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $processed_content, $matches );
 		if ( isset( $matches[1][0] ) ) $img = $matches[1][0];
 
 		return trim( $img );
@@ -1382,6 +1458,12 @@ if ( ! function_exists( 'et_load_core_options' ) ) {
  *
  */
 function et_add_custom_css() {
+	// use default wp custom css system starting from WP 4.7
+	// fallback to our legacy custom css system otherwise
+	if ( function_exists( 'wp_get_custom_css_post' ) ) {
+		return;
+	}
+
 	global $shortname;
 
 	$custom_css = et_get_option( "{$shortname}_custom_css" );

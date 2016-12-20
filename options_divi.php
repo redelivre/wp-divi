@@ -129,6 +129,17 @@ $options = array (
 				"desc"              => et_get_safe_localization( sprintf( __( 'The Maps module uses the Google Maps API and requires a valid Google API Key to function. Before using the map module, please make sure you have added your API key here. Learn more about how to create your Google API Key <a target="_blank" href="%1$s">here</a>.', $themename ), 'http://www.elegantthemes.com/gallery/divi/documentation/map/' ) ),
 			),
 
+			array(
+				"name"              => esc_html__( "Enqueue Google Maps Script", $themename ),
+				"id"                => "et_enqueue_google_maps_script",
+				"main_setting_name" => "et_google_api_settings",
+				"sub_setting_name"  => 'enqueue_google_maps_script',
+				'is_global'         => true,
+				"type"              => "checkbox",
+				"std"               => "on",
+				"desc"              => esc_html__( "Disable this option to remove the Google Maps API script from your Divi Builder Pages. This may improve compatibility with third party plugins that also enqueue this script. Please Note: Modules that rely on the Google Maps API in order to function properly, such as the Maps and Fullwidth Maps Modules, will still be available but will not function while this option is disabled (unless you manually add Google Maps API script).", $themename ),
+			),
+
 			array( "name" => esc_html__( "Aweber Authorization", $themename ),
                    "type" => "callback_function",
 				   "desc" => esc_html__( 'Authorize your Aweber account here.', $themename ),

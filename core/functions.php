@@ -21,6 +21,7 @@ function et_get_allowed_localization_html_elements() {
 			'href'   => array(),
 			'title'  => array(),
 			'target' => array(),
+			'rel'    => array(),
 		),
 		'b'      => array(),
 		'em'     => array(),

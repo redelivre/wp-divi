@@ -225,6 +225,7 @@ class ET_Global_Settings {
 			'et_pb_circle_counter-title_color'                => '#333333',
 			'et_pb_circle_counter-number_line_height'         => '225px',
 			'et_pb_circle_counter-number_letter_spacing'      => $font_defaults['letter_spacing'],
+			'et_pb_circle_counter-circle_color_alpha'         => '0.1',
 			'et_pb_number_counter-title_font_size'            => '16',
 			'et_pb_number_counter-title_line_height'          => '1em',
 			'et_pb_number_counter-title_letter_spacing'       => $font_defaults['letter_spacing'],
@@ -311,8 +312,8 @@ class ET_Global_Settings {
 			'et_pb_countdown_timer-header_color'              => '#333333',
 			'et_pb_countdown_timer-header_line_height'        => '1em',
 			'et_pb_countdown_timer-header_letter_spacing'     => $font_defaults['letter_spacing'],
-			'et_pb_countdown_timer-numbers_font_size'         => '64px',
-			'et_pb_countdown_timer-numbers_line_height'       => '64px',
+			'et_pb_countdown_timer-numbers_font_size'         => '54px',
+			'et_pb_countdown_timer-numbers_line_height'       => '54px',
 			'et_pb_countdown_timer-numbers_letter_spacing'    => $font_defaults['letter_spacing'],
 			'et_pb_countdown_timer-label_line_height'         => '25px',
 			'et_pb_countdown_timer-label_letter_spacing'      => $font_defaults['letter_spacing'],
@@ -357,9 +358,9 @@ class ET_Global_Settings {
 		);
 
 		if ( ! et_is_builder_plugin_active() ) {
-			$defaults['et_pb_gallery-zoom_icon_color']              = et_get_option( 'accent_color', '#2EA3F2' );
-			$defaults['et_pb_portfolio-zoom_icon_color']            = et_get_option( 'accent_color', '#2EA3F2' );
-			$defaults['et_pb_filterable_portfolio-zoom_icon_color'] = et_get_option( 'accent_color', '#2EA3F2' );
+			$defaults['et_pb_gallery-zoom_icon_color']              = et_get_option( 'accent_color', '#2ea3f2' );
+			$defaults['et_pb_portfolio-zoom_icon_color']            = et_get_option( 'accent_color', '#2ea3f2' );
+			$defaults['et_pb_filterable_portfolio-zoom_icon_color'] = et_get_option( 'accent_color', '#2ea3f2' );
 		}
 
 		// reformat defaults array and add actual values to it

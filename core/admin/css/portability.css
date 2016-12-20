@@ -11,10 +11,6 @@
 /*-----------------------------------------------------------------------------
   1.0 - Modal
 ------------------------------------------------------------------------------*/
-[data-et-core-portability] .et-core-modal {
-	top: 25%;
-}
-
 [data-et-core-portability-cancel] {
 	opacity: 0;
 	display: none;
@@ -47,6 +43,10 @@
 	overflow: hidden;
 }
 
+.rtl .et-core-portability-import-placeholder {
+	float: right;
+}
+
 .et-core-portability-import-form input[type="file"] {
 	position: absolute;
 	left: 0;
@@ -55,13 +55,25 @@
 	opacity: 0;
 }
 
-.et-core-portability-import-placeholder,
+.rtl .et-core-portability-import-form input[type="file"] {
+	left: auto;
+	right: 0;
+}
+
+.et-core-portability-import-placeholder {
+	width: 166px;
+}
+
 .et-core-portability-import-form input[type="file"] {
-	width: 183px;
+	width: 178px;
 }
 
 .et-core-portability-import-form .et-core-button {
 	float: left;
+}
+
+.rtl .et-core-portability-import-form .et-core-button {
+	float: right;
 }
 
 /*-----------------------------------------------------------------------------
@@ -125,5 +137,4 @@
 .customize-controls-close[data-et-core-modal*="data-et-core-portability"]:before {
 	font-size: 13px;
 	left: 15px;
-	top: 2px;
 }

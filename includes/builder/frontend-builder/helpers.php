@@ -36,12 +36,22 @@ function et_fb_get_layout_type( $post_id ) {
 }
 
 function et_fb_comments_template() {
-	return dirname(__FILE__) . '/comments_template.php';
+	return ET_BUILDER_DIR . 'comments_template.php';
 }
 
 function et_fb_modify_comments_request( $params ) {
 	// modify the request parameters the way it doesn't change the result just to make request with unique parameters
 	$params->query_vars['type__not_in'] = 'et_pb_comments_random_type_9999';
+}
+
+function et_fb_comments_submit_button( $submit_button ) {
+		return sprintf(
+			'<button name="%1$s" type="submit" id="%2$s" class="%3$s">%4$s</button>',
+			esc_attr( 'submit' ),
+			esc_attr( 'et_pb_submit' ),
+			esc_attr( 'submit et_pb_button' ),
+			esc_html_x( 'Submit Comment', 'et_builder' )
+		);
 }
 
 // comments template cannot be generated via AJAX so prepare it beforehand
@@ -52,6 +62,9 @@ function et_fb_get_comments_markup() {
 
 	// include custom comments_template to display the comment section with Divi style
 	add_filter( 'comments_template', 'et_fb_comments_template' );
+
+	// Modify submit button to be advanced button style ready
+	add_filter( 'comment_form_submit_button', 'et_fb_comments_submit_button' );
 
 	ob_start();
 	comments_template( '', true );
@@ -65,6 +78,18 @@ function et_fb_get_comments_markup() {
 	return $comments_content;
 }
 
+// List of shortcode wrappers that requires adjustment in VB. Plugins which uses fullscreen dimension
+// tend to apply negative positioning which looks inappropriate on VB's shortcode mechanism
+function et_fb_known_shortcode_wrappers() {
+	return apply_filters( 'et_fb_known_shortcode_wrappers', array(
+		'removeLeft' => array(
+			'.fullscreen-container', // revolution slider,
+			'.esg-container-fullscreen-forcer', // essential grid
+			'.ls-wp-fullwidth-helper', // layer slider
+		),
+	) );
+}
+
 function et_fb_backend_helpers() {
 	global $post, $paged;
 
@@ -73,30 +98,9 @@ function et_fb_backend_helpers() {
 	$post_type    = isset( $post->post_type ) ? $post->post_type : false;
 	$post_id      = isset( $post->ID ) ? $post->ID : false;
 	$post_status  = isset( $post->post_status ) ? $post->post_status : false;
-	$post_content = isset( $post->post_content ) ? $post->post_content : false;
 
 	if ( 'et_pb_layout' === $post_type ) {
 		$layout_type = et_fb_get_layout_type( $post_id );
-	}
-
-	switch ( $layout_type ) {
-		case 'module':
-			$use_fullwidth_section = false !== strpos( $post_content, '[et_pb_fullwidth_' ) ? true : false;
-
-			if ( ! $use_fullwidth_section ) {
-				$post_content = sprintf( '[et_pb_row][et_pb_column type="4_4"]%1$s[/et_pb_column][/et_pb_row]', $post_content );
-			}
-
-			$post_content = sprintf(
-				'[et_pb_section%2$s]%1$s[/et_pb_section]',
-				$post_content,
-				$use_fullwidth_section ? ' fullwidth="on"' : ''
-			);
-
-			break;
-		case 'row':
-			$post_content = '[et_pb_section]' . $post_content . '[/et_pb_section]';
-			break;
 	}
 
 	$google_fonts = array_merge( array( 'Default' => array() ), et_builder_get_google_fonts() );
@@ -119,14 +123,14 @@ function et_fb_backend_helpers() {
 		'postType'                     => $post_type,
 		'layoutType'                   => $layout_type,
 		'publishCapability'            => ( is_page() && ! current_user_can( 'publish_pages' ) ) || ( ! is_page() && ! current_user_can( 'publish_posts' ) ) ? 'no_publish' : 'publish',
-		'shortcodeObject'              => et_fb_process_shortcode( $post_content ),
+		'shortcodeObject'              => array(),
 		'ajaxUrl'                      => admin_url( 'admin-ajax.php' ),
 		'tinymceSkinUrl'               => ET_FB_ASSETS_URI . '/vendors/tinymce-skin',
 		'tinymceCSSFiles'              => esc_url( includes_url( 'js/tinymce' ) . '/skins/wordpress/wp-content.css' ),
 		'images_uri'                   => ET_BUILDER_URI .'/images',
-		'generalFields'                => ET_Builder_Element::get_general_fields( $post_type ),
-		'advancedFields'               => ET_Builder_Element::get_advanced_fields( $post_type ),
-		'customCssFields'              => ET_Builder_Element::get_custom_css_fields( $post_type ),
+		'generalFields'                => array(),
+		'advancedFields'               => array(),
+		'customCssFields'              => array(),
 		'moduleParentShortcodes'       => ET_Builder_Element::get_parent_shortcodes( $post_type ),
 		'moduleChildShortcodes'        => ET_Builder_Element::get_child_shortcodes( $post_type ),
 		'moduleChildSlugs'             => ET_Builder_Element::get_child_slugs( $post_type ),
@@ -136,10 +140,12 @@ function et_fb_backend_helpers() {
 		'modulesWithChildren'          => ET_Builder_Element::get_shortcodes_with_children( $post_type ),
 		'structureModules'             => ET_Builder_Element::get_structure_modules( $post_type ),
 		'et_builder_css_media_queries' => ET_Builder_Element::get_media_quries( 'for_js' ),
+		'builderOptions'               => et_builder_options(),
 		'commentsModuleMarkup'         => et_fb_get_comments_markup(),
 		'shortcode_tags'               => et_fb_shortcode_tags(),
 		'getFontIconSymbols'           => et_pb_get_font_icon_symbols(),
 		'failureNotification'          => et_builder_get_failure_notification_modal(),
+		'exitNotification'             => et_builder_get_exit_notification_modal(),
 		'getTaxonomies'                => apply_filters( 'et_fb_taxonomies', array(
 			'category'                 => get_categories(),
 			'project_category'         => get_categories( array( 'taxonomy' => 'project_category' ) ),
@@ -184,6 +190,7 @@ function et_fb_backend_helpers() {
 		),
 		'conditionalTags'              => et_fb_conditional_tag_params(),
 		'currentPage'                  => et_fb_current_page_params(),
+		'appPreferences'               => et_fb_app_preferences(),
 		'classNames'                   => array(
 			'hide_on_mobile_class'     => 'et-hide-mobile',
 		),
@@ -288,6 +295,7 @@ function et_fb_backend_helpers() {
 
 			),
 		),
+		'knownShortcodeWrappers'           => et_fb_known_shortcode_wrappers(),
 	);
 
 	// Internationalization.
@@ -327,6 +335,7 @@ function et_fb_backend_helpers() {
 				'forgotPassword'  => esc_html__( 'Forgot your password?', 'et_builder' ),
 				'username'        => esc_html__( 'Username', 'et_builder' ),
 				'password'        => esc_html__( 'Password', 'et_builder' ),
+				'note_autofill'   => esc_attr__( 'Note: this field is used to disable browser autofill during the form editing in VB', 'et_builder' ),
 			),
 			'search' => array(
 				'submitButtonText' => esc_html__( 'Search', 'et_builder' ),
@@ -390,6 +399,8 @@ function et_fb_backend_helpers() {
 			'unlock'          => esc_html__( 'Unlock', 'et_builder' ),
 			'copy'            => esc_html__( 'Copy', 'et_builder' ),
 			'paste'           => esc_html__( 'Paste', 'et_builder' ),
+			'copyStyle'       => esc_html__( 'Copy Style', 'et_builder' ),
+			'pasteStyle'      => esc_html__( 'Paste Style', 'et_builder' ),
 			'disable'         => esc_html__( 'Disable', 'et_builder' ),
 			'enable'          => esc_html__( 'Enable', 'et_builder' ),
 			'save'            => esc_html__( 'Save to Library', 'et_builder' ),
@@ -458,6 +469,9 @@ function et_fb_backend_helpers() {
 				'design'  => esc_html__( 'Design', 'et_builder' ),
 				'css'     => esc_html__( 'CSS', 'et_builder' ),
 			),
+			'moduleSettings' => array(
+				'title' => esc_html__( '%s Settings', 'et_builder' ),
+			),
 			'pageSettings' => array(
 				'title' => esc_html__( 'Page Settings', 'et_builder' ),
 			),
@@ -470,6 +484,15 @@ function et_fb_backend_helpers() {
 				),
 			),
 			'meta' => et_pb_history_localization(),
+		),
+		'help' => array(
+			'modal' => array(
+				'title' => esc_html__( 'Divi Builder Helper', 'et_builder' ),
+				'tabs' => array(
+					'shortcut' => esc_html__( 'Shortcuts', 'et_builder' ),
+				),
+			),
+			'shortcuts' => et_builder_get_shortcuts('fb'),
 		),
 		'sortable' => array(
 			'has_no_ab_permission'                     => esc_html__( 'You do not have permission to edit the module, row or section in this split test.', 'et_builder' ),
@@ -510,11 +533,39 @@ function et_fb_backend_helpers() {
 				'contractModal' => esc_html__( 'Contract Modal', 'et_builder' ),
 				'resize'        => esc_html__( 'Resize Modal', 'et_builder' ),
 				'snapModal'     => esc_html__( 'Snap to Left', 'et_builder' ),
-				'separateModal' => esc_html__( 'Seperate Modal', 'et_builder' ),
+				'separateModal' => esc_html__( 'Separate Modal', 'et_builder' ),
 				'redo'          => esc_html__( 'Redo', 'et_builder' ),
 				'undo'          => esc_html__( 'Undo', 'et_builder' ),
 				'cancel'        => esc_html__( 'Discard All Changes', 'et_builder' ),
 				'save'          => esc_html__( 'Save Changes', 'et_builder' ),
+			),
+			'inlineEditor' => array(
+				'back'             => esc_html__( 'Go Back', 'et_builder' ),
+				'increaseFontSize' => esc_html__( 'Decrease Font Size', 'et_builder' ),
+				'decreaseFontSize' => esc_html__( 'Increase Font Size', 'et_builder' ),
+				'bold'             => esc_html__( 'Bold Text', 'et_builder' ),
+				'italic'           => esc_html__( 'Italic Text', 'et_builder' ),
+				'underline'        => esc_html__( 'Underline Text', 'et_builder' ),
+				'link'             => esc_html__( 'Insert Link', 'et_builder' ),
+				'quote'            => esc_html__( 'Insert Quote', 'et_builder' ),
+				'alignment'        => esc_html__( 'Text Alignment', 'et_builder' ),
+				'centerText'       => esc_html__( 'Center Text', 'et_builder' ),
+				'rightText'        => esc_html__( 'Right Text', 'et_builder' ),
+				'leftText'         => esc_html__( 'Left Text', 'et_builder' ),
+				'justifyText'      => esc_html__( 'Justify Text', 'et_builder' ),
+				'list'             => esc_html__( 'List Settings', 'et_builder' ),
+				'indent'           => esc_html__( 'Indent List', 'et_builder' ),
+				'undent'           => esc_html__( 'Undent List', 'et_builder' ),
+				'orderedList'      => esc_html__( 'Insert Ordered List', 'et_builder' ),
+				'unOrderedList'    => esc_html__( 'Insert Unordered List', 'et_builder' ),
+				'text'             => esc_html__( 'Text Settings', 'et_builder' ),
+				'textColor'        => esc_html__( 'Text Color', 'et_builder' ),
+				'heading' => array(
+					'one'   => esc_html__( 'Insert Heading One', 'et_builder' ),
+					'two'   => esc_html__( 'Insert Heading Two', 'et_builder' ),
+					'three' => esc_html__( 'Insert Heading Three', 'et_builder' ),
+					'four'  => esc_html__( 'Insert Heading Four', 'et_builder' ),
+				),
 			),
 			'section' => array(
 				'tab' => array(

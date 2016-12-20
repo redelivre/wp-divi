@@ -51,7 +51,7 @@
 	   </div>
 	<?php endif; ?>
 	<?php if ('open' == $post->comment_status) : ?>
-		<?php comment_form( array('label_submit' => esc_attr__( 'Submit Comment', 'et_builder' ), 'title_reply' => '<span>' . esc_attr__( 'Submit a Comment', 'et_builder' ) . '</span>', 'title_reply_to' => esc_attr__( 'Leave a Reply to %s', 'et_builder' ), 'class_submit' => 'submit et_pb_button' ) ); ?>
+		<?php comment_form( array('label_submit' => esc_attr__( 'Submit Comment', 'et_builder' ), 'title_reply' => '<span>' . esc_attr__( 'Submit a Comment', 'et_builder' ) . '</span>', 'title_reply_to' => esc_attr__( 'Leave a Reply to %s', 'et_builder' ), 'class_submit' => 'submit et_pb_button', 'comment_notes_after' => '', 'id_submit' => 'et_pb_submit' ) ); ?>
 	<?php else: ?>
 
 	<?php endif; // if you delete this the sky will fall on your head ?>

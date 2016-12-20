@@ -111,6 +111,17 @@
 			}, 700 );
 	}
 
+	// Retrieving padding/margin value based on formatted saved padding/margin strings
+	function et_get_saved_padding_margin_value( saved_value, order ) {
+		if ( typeof saved_value === 'undefined' ) {
+			return false;
+		}
+
+		var values = saved_value.split('|');
+
+		return typeof values[order] !== 'undefined' ? values[order] : false;
+	}
+
 	// Fixing main header's alpha to fixed background color transition
 	function et_fix_page_container_position(){
 		var $et_pb_slider  					= $( '.et_pb_slider' ),
@@ -386,14 +397,50 @@
 				// Remove first row's inline padding top styling to prevent looping padding-top calculation
 				$et_pb_first_row.css({ 'paddingTop' : '' });
 
-				// Pagebuilder ignores #main-content .container's fixed height and uses its row's padding
-				// Anticipate the use of custom section padding.
-				et_pb_first_row_padding_top = header_height + parseInt( $et_pb_first_row.css( 'paddingBottom' ) );
+				// Get saved custom padding from data-* attributes. Builder automatically adds
+				// saved custom paddings to data-* attributes on first section
+				var et_window_width                 = $et_window.width(),
+					saved_custom_padding            = $et_pb_first_row.attr('data-padding'),
+					saved_custom_padding_top        = et_get_saved_padding_margin_value( saved_custom_padding, 0 ),
+					saved_custom_padding_tablet     = $et_pb_first_row.attr('data-padding-tablet'),
+					saved_custom_padding_tablet_top = et_get_saved_padding_margin_value( saved_custom_padding_tablet, 0 ),
+					saved_custom_padding_phone      = $et_pb_first_row.attr('data-padding-phone'),
+					saved_custom_padding_phone_top  = et_get_saved_padding_margin_value( saved_custom_padding_phone, 0 ),
+					applied_saved_custom_padding;
 
-				// Implementing padding-top + header_height
-				$et_pb_first_row.css({
-					'paddingTop' : et_pb_first_row_padding_top
-				});
+				if ( saved_custom_padding_top || saved_custom_padding_tablet_top || saved_custom_padding_phone_top ) {
+					// Applies padding top to first section to automatically convert saved unit into px
+					if ( et_window_width > 980 && saved_custom_padding_top ) {
+						$et_pb_first_row.css({
+							paddingTop: saved_custom_padding_top
+						});
+					} else if ( et_window_width > 767 && saved_custom_padding_tablet_top ) {
+						$et_pb_first_row.css({
+							paddingTop: saved_custom_padding_tablet_top
+						});
+					} else if ( saved_custom_padding_phone_top ) {
+						$et_pb_first_row.css({
+							paddingTop: saved_custom_padding_phone_top
+						});
+					}
+
+					// Get converted custom padding top value
+					applied_saved_custom_padding = parseInt( $et_pb_first_row.css( 'paddingTop' ) );
+
+					// Implemented saved & converted padding top + header height
+					$et_pb_first_row.css({
+						paddingTop: ( header_height + applied_saved_custom_padding )
+					});
+				} else {
+					// Pagebuilder ignores #main-content .container's fixed height and uses its row's padding
+					// Anticipate the use of custom section padding.
+					et_pb_first_row_padding_top = header_height + parseInt( $et_pb_first_row.css( 'paddingBottom' ) );
+
+					// Implementing padding-top + header_height
+					$et_pb_first_row.css({
+						'paddingTop' : et_pb_first_row_padding_top
+					});
+				}
 
 			} else if ( is_no_pb_mobile ) {
 
@@ -1408,7 +1455,7 @@
 
 	wp.customize( 'et_divi[accent_color]', function( value ) {
 		value.bind( function( to ) {
-			var	$accent_style = "<style id='accent_color'>.et_pb_counter_amount, .et_pb_featured_table .et_pb_pricing_heading, .et_pb_pricing_table_button, .comment-reply-link, .form-submit input, .et_quote_content, .et_link_content, .et_audio_content, .et_pb_post_slider.et_pb_bg_layout_dark, #page-container .et_slide_in_menu_container { background-color: " + to + "; }\
+			var	$accent_style = "<style id='accent_color'>.et_pb_counter_amount, .et_pb_featured_table .et_pb_pricing_heading, .et_pb_pricing_table_button, .comment-reply-link, .form-submit .et_pb_button, .et_quote_content, .et_link_content, .et_audio_content, .et_pb_post_slider.et_pb_bg_layout_dark, #page-container .et_slide_in_menu_container { background-color: " + to + "; }\
 								#et_search_icon:hover, .mobile_menu_bar:before, .footer-widget h4, .et-social-icon a:hover, .et_pb_sum, .et_pb_pricing li a, .et_overlay:before, .et_pb_member_social_links a:hover, .et_pb_widget li a:hover, .et_pb_bg_layout_light .et_pb_promo_button, .et_pb_bg_layout_light .et_pb_more_button, .et_pb_filterable_portfolio .et_pb_portfolio_filters li a.active, .et_pb_filterable_portfolio .et_pb_portofolio_pagination ul li a.active, .et_pb_gallery .et_pb_gallery_pagination ul li a.active, .wp-pagenavi span.current, .wp-pagenavi a:hover, .et_pb_contact_submit, .et_password_protected_form .et_submit_button, .et_pb_bg_layout_light .et_pb_newsletter_button, .nav-single a, .posted_in a { color:" + to + "; }\
 								.et-search-form, .nav li ul, .et_mobile_menu, .footer-widget li:before, .et_pb_pricing li:before { border-color " + to + "; }\
 								</style>",
@@ -4080,7 +4127,7 @@
 
 	wp.customize( 'et_divi[all_buttons_text_color_hover]', function( value ) {
 		value.bind( function( to ) {
-			var	$button_style = '<style id="buttons_text_color_hover">body #page-container .et_pb_button:hover, .woocommerce a.button.alt:hover, .woocommerce-page a.button.alt:hover, .woocommerce button.button.alt:hover, .woocommerce-page button.button.alt:hover, .woocommerce input.button.alt:hover, .woocommerce-page input.button.alt:hover, .woocommerce #respond input#submit.alt:hover, .woocommerce-page #respond input#submit.alt:hover, .woocommerce #content input.button.alt:hover, .woocommerce-page #content input.button.alt:hover, .woocommerce a.button:hover, .woocommerce-page a.button:hover, .woocommerce button.button, .woocommerce-page button.button:hover, .woocommerce input.button:hover, .woocommerce-page input.button:hover, .woocommerce #respond input#submit:hover, .woocommerce-page #respond input#submit:hover, .woocommerce #content input.button:hover, .woocommerce-page #content input.button:hover { color: ' + to + ' !important; } </style>',
+			var	$button_style = '<style id="buttons_text_color_hover">body #page-container .et_pb_button:hover, .woocommerce a.button.alt:hover, .woocommerce-page a.button.alt:hover, .woocommerce button.button.alt:hover, .woocommerce-page button.button.alt:hover, .woocommerce input.button.alt:hover, .woocommerce-page input.button.alt:hover, .woocommerce #respond input#submit.alt:hover, .woocommerce-page #respond input#submit.alt:hover, .woocommerce #content input.button.alt:hover, .woocommerce-page #content input.button.alt:hover, .woocommerce a.button:hover, .woocommerce-page a.button:hover, .woocommerce button.button:hover, .woocommerce-page button.button:hover, .woocommerce input.button:hover, .woocommerce-page input.button:hover, .woocommerce #respond input#submit:hover, .woocommerce-page #respond input#submit:hover, .woocommerce #content input.button:hover, .woocommerce-page #content input.button:hover { color: ' + to + ' !important; } </style>',
 				style_id = 'style#buttons_text_color_hover';
 
 			et_customizer_update_styles( style_id, $button_style );

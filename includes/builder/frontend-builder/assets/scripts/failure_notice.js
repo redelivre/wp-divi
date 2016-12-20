@@ -21,14 +21,14 @@ jQuery( 'body' ).on( 'click', '.et_builder_increase_memory', function() {
 	return false;
 } );
 
-jQuery( 'body' ).on( 'click', '.et_pb_reload_builder', function() {
+jQuery( 'body' ).on( 'click', '.et-builder-timeout .et-core-modal-action', function() {
 	location.reload();
 
 	return false;
 } );
 
 // disable Visual Builder on Close button
-jQuery( 'body' ).on( 'click', '.et_pb_prompt_dont_proceed', function() {
+jQuery( 'body' ).on( 'click', '.et-builder-timeout .et-core-modal-close, .et-builder-timeout', function() {
 
 	var page_href = jQuery( '#wp-admin-bar-et-disable-visual-builder a' ).attr('href');
 	location.assign( page_href );
