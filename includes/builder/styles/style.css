@@ -35,7 +35,7 @@
 .svg #et_pb_layout .et-pb-app-view-ab-settings-button .icon:before,
 .svg #et_pb_layout .et-pb-app-view-ab-stats-button .icon:before { position: absolute; top: 0; right: 0; bottom: 0; left: 0; content: ''; }
 
-#et_pb_layout .handlediv { width: 66px; height: 68px; }
+#et_pb_layout .handlediv { width: 66px; height: 68px; margin: 0 !important; }
 #et_pb_layout .handlediv .toggle-indicator:before, #et_pb_layout .handlediv:before { color: #fff; padding: 18px 0px; width: 50px; margin-top: 0; }
 #et_pb_layout .handlediv .toggle-indicator:before { content: '3'; font-family: 'ETmodules'; font-size: 32px; font-weight: 600; padding-right: 10px; }
 .closed#et_pb_layout .handlediv .toggle-indicator:before { content: '2'; }
@@ -45,7 +45,7 @@
 
 .rtl #et_pb_layout .hndle:before { left: auto; right: 30px; content: '>'; }
 
-#et_pb_layout_controls { overflow: hidden; text-align: right; top: 0; right: 0; margin: 0; background-color: #7e3bd0; position:relative; z-index:101; }
+#et_pb_layout_controls { overflow: hidden; text-align: right; top: 0; right: 0; margin: 0; background-color: #7e3bd0; position:relative; z-index:101; width: 100%; }
 #et_pb_layout_controls .et-pb-layout-buttons { box-sizing: border-box; color: #fff; margin: 0; float: left; border-radius: 0; text-align: center; background-color: #7e3bd0; padding: 20px; font-weight: 400; }
 #et_pb_layout_controls .et-pb-layout-buttons.disabled { opacity: .3; }
 #et_pb_layout_controls .et-pb-layout-buttons.et-pb-layout-buttons-history,
@@ -98,7 +98,7 @@
 .et_pb_section { background: #DEE3E7; margin: 30px 30px 50px 30px; }
 .et_pb_section:first-child { margin-top: 30px;}
 
-.et_pb_section, .et_pb_row, .et_pb_module_block { -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; position: relative; cursor: move; transition: opacity .5s, box-shadow .5s; opacity: 1; box-shadow: 0; }
+.et_pb_section, .et_pb_row, .et_pb_module_block { -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; position: relative; cursor: move; transition: opacity .5s, box-shadow .5s; -moz-transition: none; opacity: 1; box-shadow: 0; }
 .et-pb-disable-sort .et_pb_row, .et-pb-disable-sort .et_pb_module_block, div#et_pb_main_container.et-pb-disable-sort .et_pb_section { cursor: default !important; }
 
 .et-pb-section-content { padding: 15px 15px 40px 65px; }
@@ -428,6 +428,7 @@ input#et_pb_new_template_name { max-width: 100%; }
 .et-pb-option-container .wp-color-result { padding: 0 0 0 40px; box-shadow: inset 0 0 1px rgba(0,0,0,.5) !important; -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,.5) !important; border: none; height: 40px; border-radius: 4px; margin: 0; overflow: hidden; }
 .et-pb-option-container .wp-color-result:after { background-color: rgba(0,0,0,.2); color: #fff; height: 40px; line-height: 40px; border: none; box-shadow: none; font-size: 14px; border-radius: 0 4px 4px 0; padding: 0 15px; }
 .et-pb-option-container .wp-picker-container .iris-picker { margin: 15px 0 0 0; }
+.et-pb-option-container .wp-picker-container .iris-square, .et-pb-option-container .wp-picker-container .iris-palette-container { margin-left: -1px; }
 .et-pb-options-tab-advanced .et-pb-option-container input.wp-picker-default { display: none; }
 #et_pb_select_category { margin-bottom: 40px; }
 
@@ -1831,6 +1832,11 @@ span.et_pb_disable_on_options { position: absolute; right: -100%; }
 	float: none;
 }
 
+.et_pb_modal_overlay.et_pb_builder_settings .et_pb_prompt_field_list.yes_no_button {
+	padding-bottom: 40px;
+	padding-top: 10px;
+}
+
 .et_pb_modal_overlay.et_pb_builder_settings .et_pb_prompt_field_list:first-of-type {
 	padding-top: 40px;
 }
@@ -1849,6 +1855,18 @@ span.et_pb_disable_on_options { position: absolute; right: -100%; }
 	animation: et_pb_slide_left .3s ease-in-out;
 }
 
+.et_pb_modal_overlay.et_pb_builder_settings .et_pb_prompt_field_list.yes_no_button label {
+	clear: none;
+	display: initial;
+	float: left;
+	margin: 0;
+	line-height: 39px;
+}
+
+.et_pb_modal_overlay.et_pb_builder_settings .et_pb_prompt_field_list.yes_no_button label .et_pb_prompt_field {
+	overflow: auto;
+}
+
 .et_pb_modal_overlay.et_pb_builder_settings .et_pb_prompt_buttons {
 	margin-left: 0;
 }
@@ -1858,7 +1876,7 @@ span.et_pb_disable_on_options { position: absolute; right: -100%; }
 }
 
 .et_pb_modal_overlay.et_pb_builder_settings .wp-picker-input-wrap .wp-color-picker {
-	width: 223px !important;
+	width: 138px !important;
 	height: 40px;
 }
 
@@ -1887,8 +1905,60 @@ span.et_pb_disable_on_options { position: absolute; right: -100%; }
 	cursor: pointer;
 }
 
-.et_pb_modal_overlay.et_pb_builder_settings .colorpalette .wp-color-result {
-	display: none;
+.colorpalette-colorpicker .wp-picker-container .wp-color-result {
+    border: 0;
+    position: absolute;
+    left: 149px;
+    top: 0px;
+    z-index: 10;
+    width: auto;
+    background: none !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    height: 40px;
+    margin: 0 6px 6px 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: bottom;
+    display: inline-block;
+    padding-left: 0;
+    -webkit-box-shadow: 0 1px 0 #ccc;
+    box-shadow: 0 1px 0 #ccc;
+}
+.colorpalette-colorpicker .wp-picker-container .wp-color-result:after {
+    display: inline-block;
+    background: #32373C !important;
+    height: 40px !important;
+    border: 0 !important;
+    border-radius: 3px;
+    box-shadow: none !important;
+    padding: 0 !important;
+    -webkit-transition: background 200ms ease;
+    transition: background 200ms ease;
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    padding: 0 20px !important;
+}
+
+.colorpalette-colorpicker .wp-picker-container .wp-color-result span {
+    display: none;
+}
+
+.colorpalette-colorpicker .wp-picker-container {
+    position: relative;
+}
+
+.colorpalette-colorpicker input.button.button-small.wp-picker-clear {
+    float: right;
 }
 
 .et_pb_modal_overlay.et_pb_builder_settings .colorpalette .iris-picker {

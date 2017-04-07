@@ -97,7 +97,6 @@ class ET_Global_Settings {
 			'et_pb_fullwidth_post_title-meta_font_size'       => $font_defaults['size'],
 			'et_pb_fullwidth_post_title-meta_line_height'     => '1em',
 			'et_pb_fullwidth_post_title-meta_letter_spacing'  => $font_defaults['letter_spacing'],
-			'et_pb_fullwidth_post_title-module_bg_color'      => 'rgba(255,255,255,0)',
 			'et_pb_fullwidth_header-scroll_down_icon_size'    => '50px',
 			'et_pb_fullwidth_header-subhead_font_size'        => '18px',
 			'et_pb_fullwidth_header-button_one_font_size'     => '20px',
@@ -110,7 +109,7 @@ class ET_Global_Settings {
 			'et_pb_post_title-meta_font_size'                 => $font_defaults['size'],
 			'et_pb_post_title-meta_line_height'               => '1em',
 			'et_pb_post_title-meta_letter_spacing'            => $font_defaults['letter_spacing'],
-			'et_pb_post_title-module_bg_color'                => 'rgba(255,255,255,0)',
+			'et_pb_post_title-parallax_effect'                => 'off',
 			'et_pb_cta-header_font_size'                      => '26',
 			'et_pb_cta-header_font_style'                     => '',
 			'et_pb_cta-custom_padding'                        => '40',
@@ -120,6 +119,7 @@ class ET_Global_Settings {
 			'et_pb_cta-body_font_size'                        => $font_defaults['size'],
 			'et_pb_cta-body_line_height'                      => $font_defaults['line_height'],
 			'et_pb_cta-body_letter_spacing'                   => $font_defaults['letter_spacing'],
+			'et_pb_cta-text_orientation'                      => 'center',
 
 			'et_pb_blurb-header_font_size'                    => '18',
 			'et_pb_blurb-header_color'                        => '#333333',
@@ -129,6 +129,8 @@ class ET_Global_Settings {
 			'et_pb_blurb-body_color'                          => '#666666',
 			'et_pb_blurb-body_letter_spacing'                 => $font_defaults['letter_spacing'],
 			'et_pb_blurb-body_line_height'                    => $font_defaults['line_height'],
+			'et_pb_blurb-text_orientation'                    => 'left',
+
 
 			'et_pb_text-header_font_size'                     => $font_defaults_h1['size'],
 			'et_pb_text-header_letter_spacing'                => $font_defaults_h1['letter_spacing'],

@@ -24,7 +24,7 @@
 					et_widget_area_name : $widget_name_input.val()
 				},
 				success: function( data ){
-					$this_el.siblings( '.et_pb_widget_area_result' ).hide().html( data ).slideToggle();
+					$this_el.closest( '#et_pb_widget_area_create' ).find( '.et_pb_widget_area_result' ).hide().html( data ).slideToggle();
 				}
 			} );
 		} );

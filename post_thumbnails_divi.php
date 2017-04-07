@@ -9,6 +9,7 @@ $et_theme_image_sizes = array(
 	'400x284'   => 'et-pb-portfolio-image',
 	'510x382'   => 'et-pb-portfolio-module-image',
 	'1080x9999' => 'et-pb-portfolio-image-single',
+	'400x516'   => 'et-pb-gallery-module-image-portrait',
 );
 
 $et_theme_image_sizes = apply_filters( 'et_theme_image_sizes', $et_theme_image_sizes );

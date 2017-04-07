@@ -5,7 +5,6 @@ function et_builder_should_load_framework() {
 	global $pagenow;
 
 	$is_admin = is_admin();
-	$action_hook = $is_admin ? 'wp_loaded' : 'wp';
 	$required_admin_pages = array( 'edit.php', 'post.php', 'post-new.php', 'admin.php', 'customize.php', 'edit-tags.php', 'admin-ajax.php', 'export.php', 'options-permalink.php', 'themes.php' ); // list of admin pages where we need to load builder files
 	$specific_filter_pages = array( 'edit.php', 'admin.php', 'edit-tags.php' ); // list of admin pages where we need more specific filtering
 
@@ -942,6 +941,482 @@ function et_pb_get_backbone_templates() {
 }
 add_action( 'wp_ajax_et_pb_get_backbone_templates', 'et_pb_get_backbone_templates' );
 
+function et_builder_is_builder_built( $post_id = 0, $builder = '' ) {
+	$post_id = $post_id ? $post_id : get_the_ID();
+
+	$post = get_post( $post_id );
+
+	if ( ! $post_id || ! $post || ! is_object( $post ) ) {
+		return false;
+	}
+
+	// if no specific builder is passed, just check generically
+	if ( empty( $builder ) ) {
+		return et_pb_is_pagebuilder_used( $post->ID );
+	// if a specific builder has been passed, see if its been used, this can also be used when passed a revision/autosave post
+	} else if ( false !== strpos( $post->post_content, $builder .'_built="1"' ) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
+ * @return bool
+ */
+function et_is_builder_available_cookie_set() {
+	static $builder_available = null;
+
+	if ( null !== $builder_available ) {
+		return $builder_available;
+	}
+
+	foreach( (array) $_COOKIE as $cookie => $value ) {
+		if ( 0 === strpos( $cookie, 'et-editor-available-post-' ) ) {
+			$builder_available = true;
+
+			return $builder_available;
+		}
+	}
+
+	$builder_available = false;
+
+	return $builder_available;
+}
+
+function et_builder_heartbeat_interval() {
+	return apply_filters( 'et_builder_heartbeat_interval', 30 );
+}
+
+function et_builder_ensure_heartbeat_interval( $response, $screen_id ) {
+	if ( ! isset( $response['heartbeat_interval'] ) ) {
+		return $response;
+	}
+
+	if ( et_builder_heartbeat_interval() === $response['heartbeat_interval'] ) {
+		return $response;
+	}
+
+	if ( ! et_is_builder_available_cookie_set() ) {
+		return $response;
+	}
+
+	$response['heartbeat_interval'] = et_builder_heartbeat_interval();
+
+	return $response;
+}
+add_filter( 'heartbeat_send', 'et_builder_ensure_heartbeat_interval', 100, 2 );
+
+function et_pb_heartbeat_post_modified( $response ) {
+	if ( empty( $_POST['data'] ) ) {
+		return $response;
+	}
+
+	$heartbeat_data = $_POST['data'];
+	$has_focus = isset( $_POST['has_focus'] ) && 'true' == $_POST['has_focus'] ? true : false;
+	$heartbeat_data_et = !empty( $heartbeat_data['et'] ) ? $heartbeat_data['et'] : false;
+
+	if ( ! empty( $heartbeat_data_et ) ) {
+		$post_id = absint( $heartbeat_data_et['post_id'] );
+		$last_post_modified = sanitize_text_field( $heartbeat_data_et['last_post_modified'] );
+		$built_by = sanitize_text_field( $heartbeat_data_et['built_by'] );
+		$force_check = isset( $heartbeat_data_et['force_check'] ) && 'true' == $heartbeat_data_et['force_check'] ? true : false;
+		$force_autosave = isset( $heartbeat_data_et['force_autosave'] ) && 'true' == $heartbeat_data_et['force_autosave'] ? true : false;
+		$current_user_id = get_current_user_id();
+
+		$post = get_post( $post_id );
+
+		if ( ! $post_id || ! $post || ! is_object( $post ) ) {
+			return false;
+		}
+
+		// minimum sucessful response
+		$response['et'] = array(
+			'received'       => true,
+			'force_check'    => $force_check,
+			'force_autosave' => $force_autosave,
+		);
+
+		// the editor in focus is not going to be receiving an update from the other editor
+		// so we can return early
+		if ( $has_focus && !$force_check ) {
+			$response['et']['action'] = 'No actions since this editor has focus'; // dev use
+			return $response;
+		}
+
+		if ( $force_autosave ) {
+			$response['et']['action'] = 'No actions since this is a force autosave request'; // dev use
+			return $response;
+		}
+
+		// from here down we know that the following logic applies to the editor
+		// currently *not* in focus, i.e. the one eligable for a potential sync update
+
+		// sync builder settings
+		$builder_settings_autosave = get_post_meta( $post_id, "_et_builder_settings_autosave_{$current_user_id}", true );
+		if ( ! empty( $builder_settings_autosave ) ) {
+			$response['et']['builder_settings_autosave'] = $builder_settings_autosave;
+		}
+
+		$post_content = $post->post_content;
+		$post_modified = $post->post_modified;
+
+		$autosave = wp_get_post_autosave( $post_id, $current_user_id );
+
+		$post_post_modified = date( 'U', strtotime( $post_modified ) );
+		$response['et']['post_post_modified'] = $post->post_modified;
+
+
+		if ( !empty( $autosave ) ) {
+			$response['et']['autosave_exists'] = true;
+			$autosave_post_modified = date( 'U', strtotime( $autosave->post_modified ) );
+			$response['et']['autosave_post_modified'] = $autosave->post_modified;
+		} else {
+			$response['et']['autosave_exists'] = false;
+		}
+
+		if ( !empty( $autosave ) && $autosave_post_modified > $post_post_modified ) {
+			$response['et']['used_autosave'] = true;
+			$post_id = $autosave->ID;
+			$post_content = $autosave->post_content;
+			$post_modified = $autosave->post_modified;
+		} else {
+			$response['et']['used_autosave'] = false;
+		}
+
+		$response['et']['post_id'] = $post_id;
+		$response['et']['last_post_modified'] = $last_post_modified;
+		$response['et']['post_modified'] = $post_modified;
+
+		if ( $last_post_modified != $post_modified ) {
+
+			// check if the newly modified was made by opposite builder,
+			// and if so, send it back in the response
+			if ( 'bb' == $built_by ) {
+				// backend builder in use and in focus
+
+				$response['et']['is_built_by_fb'] = et_builder_is_builder_built( $post_id, 'fb' );
+				// check if latest post_content is built by fb
+				if ( et_builder_is_builder_built( $post_id, 'fb' ) ) {
+					$response['et']['post_content'] = $post_content;
+					$response['et']['action'] = 'current editor is bb, updated to content that was built by fb'; // dev use
+				} else {
+					$response['et']['action'] = 'current editor is bb, content wasnt updated by fb'; // dev use
+				}
+			} else {
+				// frontend builder in use and in focus
+
+				$response['et']['is_built_by_bb'] = et_builder_is_builder_built( $post_id, 'bb' );
+				// check if latest post_content is built by bb
+				if ( et_builder_is_builder_built( $post_id, 'bb' ) ) {
+					$post_content_obj = et_fb_process_shortcode( $post_content );
+
+					$response['et']['post_content_obj'] = $post_content_obj;
+					$response['et']['action'] = 'current editor is fb, updated to content that was built by bb'; // dev use
+				} else {
+					$response['et']['action'] = 'current editor is fb, content wasnt updated by bb'; // dev use
+				}
+			}
+		} else {
+			$response['et']['post_not_modified'] = true;
+			$response['et']['action'] = 'post content not modified externally'; // dev use
+		}
+	}
+
+	return $response;
+}
+add_filter( 'heartbeat_send', 'et_pb_heartbeat_post_modified' );
+
+/**
+ * Save a post submitted via ETBuilder Heartbeat.
+ *
+ * Adapted from WordPress
+ *
+ * @copyright 2016 by the WordPress contributors.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * This program incorporates work covered by the following copyright and
+ * permission notices:
+ *
+ * b2 is (c) 2001, 2002 Michel Valdrighi - m@tidakada.com - http://tidakada.com
+ *
+ * b2 is released under the GPL
+ *
+ * WordPress - Web publishing software
+ *
+ * Copyright 2003-2010 by the contributors
+ *
+ * WordPress is released under the GPL
+ *
+ * @param array $post_data Associative array of the submitted post data.
+ * @return mixed The value 0 or WP_Error on failure. The saved post ID on success.
+ *               The ID can be the draft post_id or the autosave revision post_id.
+ */
+
+function et_fb_autosave( $post_data ) {
+	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
+		define( 'DOING_AUTOSAVE', true );
+	}
+
+	$post_id = (int) $post_data['post_id'];
+	$post_data['ID'] = $post_data['post_ID'] = $post_id;
+
+	if ( false === wp_verify_nonce( $post_data['et_fb_autosave_nonce'], 'et_fb_autosave_nonce' ) ) {
+		return new WP_Error( 'invalid_nonce', __( 'Error while saving.', 'et_builder' ) );
+	}
+
+	$post = get_post( $post_id );
+	$current_user_id = get_current_user_id();
+
+	if ( ! et_fb_current_user_can_save( $post_id ) ) {
+		return new WP_Error( 'edit_posts', __( 'Sorry, you are not allowed to edit this item.', 'et_builder' ) );
+	}
+
+	// NOTE, no stripslashes() needed first as it's already been done on the POST'ed $post_data prior
+	$shortcode_data = json_decode( $post_data['content'], true );
+
+	$options = array(
+		'post_type' => sanitize_text_field( $post_data['post_type'] ),
+	);
+	$post_data['content'] = et_fb_process_to_shortcode( $shortcode_data, $options );
+
+	if ( 'auto-draft' == $post->post_status ) {
+		$post_data['post_status'] = 'draft';
+	}
+
+	if ( ! wp_check_post_lock( $post->ID ) && get_current_user_id() == $post->post_author && ( 'auto-draft' == $post->post_status || 'draft' == $post->post_status ) ) {
+		// Drafts and auto-drafts are just overwritten by autosave for the same user if the post is not locked
+		return edit_post( wp_slash( $post_data ) );
+	} else {
+		// Non drafts or other users drafts are not overwritten. The autosave is stored in a special post revision for each user.
+		return wp_create_post_autosave( wp_slash( $post_data ) );
+	}
+}
+
+function et_pb_autosave_builder_settings( $post_id, $builder_settings ) {
+	$current_user_id = get_current_user_id();
+	// Builder settings autosave
+	if ( !empty( $builder_settings ) ) {
+
+		// Pseudo activate split test for VB draft/builder-sync interface
+		if ( isset( $builder_settings['et_pb_use_ab_testing'] ) ) {
+			// Save autosave/draft split test status
+			update_post_meta(
+				$post_id,
+				'_et_pb_use_ab_testing_draft',
+				sanitize_text_field( $builder_settings['et_pb_use_ab_testing'] )
+			);
+
+			// Format split test data, since BB has UI and actual input IDs. FB uses BB's UI ID
+			$builder_settings['et_pb_enable_ab_testing'] = $builder_settings['et_pb_use_ab_testing'];
+
+			// Unset BB's actual input data
+			unset( $builder_settings['et_pb_use_ab_testing'] );
+		}
+
+		// Pseudo save split test subjects for VB draft/builder-sync interface
+		if ( isset( $builder_settings['et_pb_ab_subjects'] ) ) {
+			// Save autosave/draft subjects
+			update_post_meta(
+				$post_id,
+				'_et_pb_ab_subjects_draft',
+				sanitize_text_field( et_prevent_duplicate_item( $builder_settings['et_pb_ab_subjects'], ',' ) )
+			);
+
+			// Format subjects data into array
+			$builder_settings['et_pb_ab_subjects'] = array_unique( explode( ',', $builder_settings['et_pb_ab_subjects'] ) );
+		}
+
+		$et_builder_settings_autosave_data = get_post_meta( $post_id, "_et_builder_settings_autosave_{$current_user_id}", true );
+
+		// Merge incoming post meta changes with saved ones to avoid missing post meta changes that
+		// has been synced but hasn't been delivered to VB. Let VB drops autosave once it has been
+		// used / inserted into the layout
+		if ( is_array( $et_builder_settings_autosave_data ) && is_array( $builder_settings ) ) {
+			$et_builder_settings_autosave_data = wp_parse_args(
+				$builder_settings,
+				$et_builder_settings_autosave_data
+			);
+		} else {
+			$et_builder_settings_autosave_data = $builder_settings;
+		}
+
+		return update_post_meta(
+			$post_id,
+			"_et_builder_settings_autosave_{$current_user_id}",
+			$et_builder_settings_autosave_data
+		);
+	}
+}
+
+/**
+ * Autosave with heartbeat
+ *
+ * Adapted from WordPress
+ *
+ * @copyright 2016 by the WordPress contributors.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * This program incorporates work covered by the following copyright and
+ * permission notices:
+ *
+ * b2 is (c) 2001, 2002 Michel Valdrighi - m@tidakada.com - http://tidakada.com
+ *
+ * b2 is released under the GPL
+ *
+ * WordPress - Web publishing software
+ *
+ * Copyright 2003-2010 by the contributors
+ *
+ * WordPress is released under the GPL
+ *
+ * @param array $response The Heartbeat response.
+ * @param array $data     The $_POST data sent.
+ * @return array The Heartbeat response.
+ */
+
+function et_fb_heartbeat_autosave( $response, $data ) {
+	if ( ! empty( $data['et_fb_autosave'] ) ) {
+
+		$post_id = (int) $data['et_fb_autosave']['post_id'];
+		$has_focus = !empty( $_POST['has_focus'] ) && 'true' === $_POST['has_focus'];
+		$force_autosave = !empty( $data['et'] ) && !empty( $data['et']['force_autosave'] ) && 'true' === $data['et']['force_autosave'];
+
+		$editor_1 = 'fb' === $data['et']['built_by'] ? 'fb' : 'bb';
+		$editor_2 = 'fb' === $editor_1 ? 'bb' : 'fb';
+		$editor_1_editing_cookie = isset( $_COOKIE[ 'et-editing-post-' . $post_id . '-' . $editor_1 ] ) ? $_COOKIE[ 'et-editing-post-' . $post_id . '-' . $editor_1 ] : false;
+		$editor_2_editor_available_cookie = isset( $_COOKIE[ 'et-editor-available-post-' . $post_id . '-' . $editor_2 ] ) ? $_COOKIE[ 'et-editor-available-post-' . $post_id . '-' . $editor_2 ] : false;
+		$editor_1_autosavable = !empty( $editor_1_editing_cookie ) && empty( $editor_2_editor_available_cookie );
+
+		if ( !$has_focus && !$force_autosave && !$editor_1_autosavable ) {
+			$response['et_fb_autosave'] = array( 'success' => false, 'message' => __( 'Not saved, editor out of focus', 'et_builder' ) );
+			return $response;
+		}
+
+		$saved = et_fb_autosave( $data['et_fb_autosave'] );
+
+		if ( !empty( $data['et_fb_autosave']['builder_settings'] ) ) {
+			$builder_settings_autosaved = et_pb_autosave_builder_settings( $post_id, $data['et_fb_autosave']['builder_settings'] );
+			$response['et_pb_autosave_builder_settings'] = array( 'success' => $builder_settings_autosaved, 'message' => __( 'Builder settings synced', 'et_builder' ) );
+		}
+
+		if ( is_wp_error( $saved ) ) {
+			$response['et_fb_autosave'] = array( 'success' => false, 'message' => $saved->get_error_message() );
+		} elseif ( empty( $saved ) ) {
+			$response['et_fb_autosave'] = array( 'success' => false, 'message' => __( 'Error while saving.', 'et_builder' ) );
+		} else {
+			/* translators: draft saved date format, see https://secure.php.net/date */
+			$draft_saved_date_format = __( 'g:i:s a', 'et_builder' );
+			/* translators: %s: date and time */
+			$response['et_fb_autosave'] = array( 'success' => true, 'message' => sprintf( __( 'Draft saved at %s.', 'et_builder' ), date_i18n( $draft_saved_date_format ) ) );
+		}
+	}
+
+	return $response;
+}
+add_filter( 'heartbeat_received', 'et_fb_heartbeat_autosave', 499, 2 );
+
+function et_bb_heartbeat_autosave( $response, $data ) {
+	if ( ! empty( $data['wp_autosave'] ) ) {
+		$has_focus = !empty( $_POST['has_focus'] ) && 'true' === $_POST['has_focus'];
+		$force_autosave = !empty( $data['et'] ) && !empty( $data['et']['force_autosave'] ) && 'true' === $data['et']['force_autosave'];
+
+		if ( !$has_focus && !$force_autosave ) {
+			$response['wp_autosave'] = array( 'success' => true, 'message' => __( 'Not saved, editor out of focus', 'et_builder' ) );
+			remove_filter( 'heartbeat_received', 'heartbeat_autosave', 500, 2 );
+			remove_filter( 'heartbeat_received', 'et_bb_heartbeat_builder_settings_autosave', 500, 2 );
+		} else if ( $force_autosave ) {
+			$response['wp_autosave_check'] = array( 'success' => true, 'message' => 'saved, because force_autosave ' );
+		}
+	}
+	return $response;
+}
+add_filter( 'heartbeat_received', 'et_bb_heartbeat_autosave', 498, 2 );
+
+function et_bb_heartbeat_builder_settings_autosave( $response, $data ) {
+	if ( ! empty( $data['wp_autosave'] ) ) {
+		$post_id = (int) $data['wp_autosave']['post_id'];
+
+		if ( !empty( $data['wp_autosave']['builder_settings'] ) ) {
+			$builder_settings_autosaved = et_pb_autosave_builder_settings( $post_id, $data['wp_autosave']['builder_settings'] );
+			$response['et_pb_autosave_builder_settings'] = array( 'success' => $builder_settings_autosaved, 'message' => __( 'Builder settings synced', 'et_builder' ) );
+		}
+	}
+
+	return $response;
+}
+add_filter( 'heartbeat_received', 'et_bb_heartbeat_builder_settings_autosave', 500, 2 );
+
+function et_fb_wp_refresh_nonces( $response, $data, $screen_id ) {
+	if ( ! isset( $data['et']['built_by'] ) || 'fb' !== $data['et']['built_by'] ) {
+		return $response;
+	}
+
+	$response['et'] = array(
+		'exportUrl'       => et_fb_get_portability_export_url(),
+		'nonces'          => et_fb_get_nonces(),
+		'heartbeat_nonce' => wp_create_nonce( 'heartbeat-nonce' ),
+	);
+
+	return $response;
+}
+add_filter( 'wp_refresh_nonces', 'et_fb_wp_refresh_nonces', 10, 3 );
+
+function et_fb_get_portability_export_url() {
+	$args = array(
+		'et_core_portability' => true,
+		'context'             => 'et_builder',
+		'name'                => 'temp_name',
+		'nonce'               => wp_create_nonce( 'et_core_portability_nonce' ),
+	);
+	return add_query_arg( $args, admin_url() );
+}
+
+function et_fb_get_nonces() {
+	$nonces    = apply_filters( 'et_fb_nonces', array() );
+	$fb_nonces = array(
+		'moduleContactFormSubmit'  => wp_create_nonce( 'et-pb-contact-form-submit' ),
+		'et_admin_load'            => wp_create_nonce( 'et_admin_load_nonce' ),
+		'computedProperty'         => wp_create_nonce( 'et_pb_process_computed_property_nonce' ),
+		'renderShortcode'          => wp_create_nonce( 'et_pb_render_shortcode_nonce' ),
+		'backendHelper'            => wp_create_nonce( 'et_fb_backend_helper_nonce' ),
+		'renderSave'               => wp_create_nonce( 'et_fb_save_nonce' ),
+		'dropAutosave'             => wp_create_nonce( 'et_fb_drop_autosave_nonce' ),
+		'prepareShortcode'         => wp_create_nonce( 'et_fb_prepare_shortcode_nonce' ),
+		'processImportedData'      => wp_create_nonce( 'et_fb_process_imported_data_nonce' ),
+		'retrieveLibraryModules'   => wp_create_nonce( 'et_fb_retrieve_library_modules_nonce' ),
+		'saveLibraryModules'       => wp_create_nonce( 'et_fb_save_library_modules_nonce' ),
+		'preview'                  => wp_create_nonce( 'et_pb_preview_nonce' ),
+		'autosave'                 => wp_create_nonce( 'et_fb_autosave_nonce' ),
+	);
+
+	return array_merge( $nonces, $fb_nonces );
+}
+
 function et_pb_get_backbone_template() {
 	if ( ! wp_verify_nonce( $_POST['et_admin_load_nonce'], 'et_admin_load_nonce' ) ) {
 		die( -1 );
@@ -1533,6 +2008,97 @@ function et_builder_get_exit_notification_modal() {
 		esc_html__( 'Save & Exit', 'et_builder' )
 	);
 
+	return $output;
+}
+endif;
+
+if ( ! function_exists( 'et_builder_get_browser_autosave_notification_modal' ) ) :
+function et_builder_get_browser_autosave_notification_modal() {
+	$output = sprintf(
+		'<div class="et-core-modal-overlay et-core-modal-two-buttons et-builder-autosave-modal et-core-active">
+			<div class="et-core-modal">
+				<div class="et-core-modal-header">
+					<h3 class="et-core-modal-title">%1$s</h3>
+					<a href="#" class="et-core-modal-close" data-et-core-modal="close"></a>
+				</div>
+				<div class="et-core-modal-content">
+					<p>%2$s</p>
+				</div>
+				<div class="et_pb_prompt_buttons">
+					<br>
+					<span class="spinner"></span>
+					<a href="#" class="et-core-modal-action et-core-modal-action-dont-restore et-core-modal-action-secondary">%3$s</a>
+					<a href="#" class="et-core-modal-action et-core-modal-action-restore">%4$s</a>
+				</div>
+			</div>
+		</div>',
+		esc_html__( 'A Browser Backup Exists', 'et_builder' ),
+		et_get_safe_localization( __( 'A browser backup exists for this post that is newer than  the version you are currently viewing. This backup was captured during your previous editing session, but you never saved it. Would you like to restore this backup and continue editing where you left off?', 'et_builder' ) ),
+		esc_html__( "Don't Restore", 'et_builder' ), // left button
+		esc_html__( 'Restore', 'et_builder' ) // right button
+	);
+	return $output;
+}
+endif;
+
+if ( ! function_exists( 'et_builder_get_server_autosave_notification_modal' ) ) :
+function et_builder_get_server_autosave_notification_modal() {
+	$output = sprintf(
+		'<div class="et-core-modal-overlay et-core-modal-two-buttons et-builder-autosave-modal et-core-active">
+			<div class="et-core-modal">
+				<div class="et-core-modal-header">
+					<h3 class="et-core-modal-title">%1$s</h3>
+					<a href="#" class="et-core-modal-close" data-et-core-modal="close"></a>
+				</div>
+				<div class="et-core-modal-content">
+					<p>%2$s</p>
+				</div>
+				<div class="et_pb_prompt_buttons">
+					<br>
+					<span class="spinner"></span>
+					<a href="#" class="et-core-modal-action et-core-modal-action-dont-restore et-core-modal-action-secondary">%3$s</a>
+					<a href="#" class="et-core-modal-action et-core-modal-action-restore">%4$s</a>
+				</div>
+			</div>
+		</div>',
+		esc_html__( 'An Autosave Exists', 'et_builder' ),
+		et_get_safe_localization( __( 'A recent autosave exists for this post that is newer than the version you are currently viewing. This autosave was captured during your previous editing session, but you never saved it. Would you like to restore this autosave and continue editing where you left off?', 'et_builder' ) ),
+		esc_html__( "Don't Restore", 'et_builder' ), // left button
+		esc_html__( 'Restore', 'et_builder' ) // right button
+	);
+	return $output;
+}
+endif;
+
+if ( ! function_exists( 'et_builder_get_unsaved_notification_modal' ) ) :
+function et_builder_get_unsaved_notification_modal() {
+	$output = sprintf(
+		'<div class="et-core-modal-overlay et-core-modal-two-buttons et-builder-unsaved-modal et-core-active">
+			<div class="et-core-modal">
+				<div class="et-core-modal-header">
+					<h3 class="et-core-modal-title">%1$s</h3>
+					<a href="#" class="et-core-modal-close" data-et-core-modal="close"></a>
+				</div>
+				<div class="et-core-modal-content">
+					<p>%2$s</p>
+					<p>%3$s</p>
+					<p>%4$s</p>
+				</div>
+				<div class="et_pb_prompt_buttons">
+					<br>
+					<span class="spinner"></span>
+					<a href="#" class="et-core-modal-action et-core-modal-action-secondary">%5$s</a>
+					<a href="#" class="et-core-modal-action et-core-modal-action-primary">%6$s</a>
+				</div>
+			</div>
+		</div>',
+		esc_html__( 'Your Save Has Failed', 'et_builder' ),
+		et_get_safe_localization( __( 'An error has occurred while saving your page. Various problems can cause a save to fail, such as a lack of server resources, firewall blockages, plugin conflicts or server misconfiguration. You can try saving again by clicking Try Again, or you can download a backup of your unsaved page by clicking Download Backup. Backups can be restored using the portability system while next editing your page.', 'et_builder' ) ),
+		et_get_safe_localization( __( 'Contacting your host and asking them to increase the following PHP variables may help: memory_limit, max_execution_time, upload_max_filesize, post_max_size, max_input_time, max_input_vars. In addition, auditing your firewall error log (such as ModSecurity) may reveal false positives that are preventing saves from completing.', 'et_builder' ) ),
+		et_get_safe_localization( __( 'Lastly, it is recommend that you temporarily disable all WordPress plugins and browser extensions and try to save again to determine if something is causing a conflict.', 'et_builder' ) ),
+		esc_html__( 'Try Again', 'et_builder' ),
+		esc_html__( 'Download Backup', 'et_builder' )
+	);
 	return $output;
 }
 endif;
@@ -2163,24 +2729,6 @@ function et_fb_is_enabled( $post_id = false ) {
 }
 endif;
 
-if ( ! function_exists( 'et_fb_is_retrieving_builder_data' ) ) :
-function et_fb_is_retrieving_builder_data() {
-	if ( ! isset( $_POST['et_fb_helper_nonce'] ) || ! wp_verify_nonce( $_POST['et_fb_helper_nonce'], 'et_fb_backend_helper_nonce' ) ) {
-		return false;
-	}
-
-	if ( ! current_user_can( 'edit_posts' ) ) {
-		return false;
-	}
-
-	if ( isset( $_POST['action'] ) && 'et_fb_retrieve_builder_data' === $_POST['action'] ) {
-		return true;
-	}
-
-	return false;
-}
-endif;
-
 if ( ! function_exists( 'et_fb_auto_activate_builder' ) ) :
 function et_fb_auto_activate_builder() {
 	$post_id = get_the_ID();
@@ -2215,6 +2763,12 @@ function et_builder_set_content_activation( $post_id = false ) {
 
 	if ( true !== $activate_builder ) {
 		return false;
+	}
+
+	// If content already has a section, it means builder is active and activation has to be
+	// skipped to avoid nested and unwanted builder structure
+	if ( has_shortcode( $post->post_content, 'et_pb_section' ) ) {
+		return true;
 	}
 
 	// Save old content
@@ -2368,7 +2922,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Amatic SC' => array(
 			'styles' 		=> '400,700',
-			'character_set' => 'latin',
+			'character_set' => 'latin,latin-ext',
 			'type'			=> 'cursive',
 		),
 		'Arimo' => array(
@@ -2473,7 +3027,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Dancing Script' => array(
 			'styles' 		=> '400,700',
-			'character_set' => 'latin',
+			'character_set' => 'latin,vietnamese,latin-ext',
 			'type'			=> 'cursive',
 		),
 		'Dosis' => array(
@@ -2528,7 +3082,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Judson' => array(
 			'styles' 		=> '400,400italic,700',
-			'character_set' => 'latin',
+			'character_set' => 'latin,vietnamese,latin-ext',
 			'type'			=> 'serif',
 		),
 		'Kreon' => array(
@@ -2538,7 +3092,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Lato' => array(
 			'styles' 		=> '400,100,100italic,300,300italic,400italic,700,700italic,900,900italic',
-			'character_set' => 'latin',
+			'character_set' => 'latin,latin-ext',
 			'type'			=> 'sans-serif',
 		),
 		'Lato Light' => array(
@@ -2562,7 +3116,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Lora' => array(
 			'styles' 		=> '400,400italic,700,700italic',
-			'character_set' => 'latin',
+			'character_set' => 'cyrillic,cyrillic-ext,vietnamese,latin,latin-ext',
 			'type'			=> 'serif',
 		),
 		'Luckiest Guy' => array(
@@ -2572,7 +3126,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Merriweather' => array(
 			'styles' 		=> '400,300,900,700',
-			'character_set' => 'latin',
+			'character_set' => 'cyrillic,cyrillic-ext,latin,latin-ext',
 			'type'			=> 'serif',
 		),
 		'Metamorphous' => array(
@@ -2597,12 +3151,12 @@ function et_builder_get_google_fonts() {
 		),
 		'Nunito' => array(
 			'styles' 		=> '400,300,700',
-			'character_set' => 'latin',
+			'character_set' => 'vietnamese,latin,latin-ext',
 			'type'			=> 'sans-serif',
 		),
 		'Old Standard TT' => array(
 			'styles' 		=> '400,400italic,700',
-			'character_set' => 'latin',
+			'character_set' => 'cyrillic,cyrillic-ext,vietnamese,latin,latin-ext',
 			'type'			=> 'serif',
 		),
 		'Open Sans' => array(
@@ -2626,7 +3180,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Pacifico' => array(
 			'styles' 		=> '400',
-			'character_set' => 'latin',
+			'character_set' => 'vietnamese,latin,latin-ext',
 			'type'			=> 'cursive',
 		),
 		'Passion One' => array(
@@ -2676,7 +3230,7 @@ function et_builder_get_google_fonts() {
 		),
 		'Raleway' => array(
 			'styles' 		=> '400,100,200,300,600,500,700,800,900',
-			'character_set' => 'latin',
+			'character_set' => 'latin,latin-ext',
 			'type'			=> 'sans-serif',
 		),
 		'Raleway Light' => array(
@@ -3039,3 +3593,85 @@ function et_builder_option( $name ) {
 	return apply_filters( "et_builder_option_{$name}", $option );
 }
 endif;
+
+/**
+ * Pass thru semantical previously escaped acknowledgement
+ * @param string value being passed through
+ * @return string
+ */
+function et_esc_previously( $passthru ) {
+	return $passthru;
+}
+
+/**
+ * Pass thru semantical escaped by WordPress core acknowledgement
+ * @param string value being passed through
+ * @return string
+ */
+
+function et_esc_wp( $passthru ) {
+	return $passthru;
+}
+
+/**
+ * Pass thru semantical intentionally unescaped acknowledgement
+ * @param string value being passed through
+ * @param string excuse the value is allowed to be unescaped
+ * @return string
+ */
+
+function et_intentionally_unescaped( $passthru, $excuse ) {
+	// Add valid excuses as they arise
+	$valid_excuses = array(
+		'cap_based_sanitized',
+		'fixed_string',
+	);
+
+	if ( ! in_array( $excuse, $valid_excuses ) ) {
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'This is not a valid excuse to not escape the passed value.', 'et_builder' ), et_get_theme_version() );
+	}
+
+	return $passthru;
+}
+
+/**
+ * Sanitize value depending on user capability
+ * @return string value being passed through
+ */
+function et_sanitize_value_by_cap( $passthru, $sanitize_function = 'et_sanitize_html_input_text', $cap = 'unfiltered_html' ) {
+	if ( ! current_user_can( $cap ) ) {
+		$passthru = $sanitize_function( $passthru );
+	}
+
+	return $passthru;
+}
+
+/**
+ * Pass thru semantical intentionally unsanitized acknowledgement
+ * @param string value being passed through
+ * @param string excuse the value is allowed to be unsanitized
+ * @return string
+ */
+
+function et_intentionally_unsanitized( $passthru, $excuse ) {
+	// Add valid excuses as they arise
+	$valid_excuses = array();
+
+	if ( ! in_array( $excuse, $valid_excuses ) ) {
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'This is not a valid excuse to not sanitize the passed value.', 'et_builder' ), et_get_theme_version() );
+	}
+
+	return $passthru;
+}
+
+/**
+ * Prevent delimiter-separated string from having duplicate item
+ * @param string delimiter-separated string
+ * @param string delimiter
+ * @return string filtered delimiter-separated string
+ */
+function et_prevent_duplicate_item( $stringList, $delimiter ) {
+	$list = explode( $delimiter, $stringList );
+
+	return implode( $delimiter, array_unique( $list ) );
+}

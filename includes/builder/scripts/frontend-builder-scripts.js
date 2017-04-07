@@ -1,7 +1,10 @@
 (function($){
 	var $et_window = $(window);
 
-	window.et_load_event_fired = false;
+	window.et_load_event_fired   = false;
+	window.et_is_transparent_nav = $( 'body' ).hasClass( 'et_transparent_nav' );
+	window.et_is_vertical_nav    = $( 'body' ).hasClass( 'et_vertical_nav' );
+	window.et_is_fixed_nav       = $( 'body' ).hasClass( 'et_fixed_nav' );
 
 	jQuery.fn.reverse = [].reverse;
 
@@ -243,7 +246,7 @@
 					// Removing DOM that was added by slider
 					$et_slider.find('.et-pb-slider-arrows, .et-pb-controllers').remove();
 					$et_slider.siblings('.et_pb_carousel').remove();
-				}
+				};
 
 				function et_stop_video( active_slide ) {
 					var $et_video, et_video_src;
@@ -264,28 +267,32 @@
 					}
 				}
 
+				$et_slider.et_fix_slider_content_images = et_fix_slider_content_images;
+
 				function et_fix_slider_content_images() {
-					var $this_slider           = $et_slider,
-						$slide_image_container = $this_slider.find( '.et-pb-active-slide .et_pb_slide_image' );
-						$slide_video_container = $this_slider.find( '.et-pb-active-slide .et_pb_slide_video' );
-						$slide                 = $slide_image_container.closest( '.et_pb_slide' ),
-						$slider                = $slide.closest( '.et_pb_slider' ),
-						slide_height           = $slider.innerHeight(),
-						image_height           = parseInt( slide_height * 0.8 ),
-						$top_header 		   = $('#top-header'),
-						$main_header		   = $('#main-header'),
-						$et_transparent_nav    = $( '.et_transparent_nav' ),
-						$et_vertical_nav 	   = $('.et_vertical_nav');
+					var $this_slider                 = $et_slider,
+						$slide_image_container       = $this_slider.find( '.et-pb-active-slide .et_pb_slide_image' ),
+						$slide_video_container       = $this_slider.find( '.et-pb-active-slide .et_pb_slide_video' ),
+						$slide                       = $slide_image_container.closest( '.et_pb_slide' ),
+						$slider                      = $slide.closest( '.et_pb_slider' ),
+						slide_height                 = parseFloat( $slider.innerHeight() ),
+						image_height                 = parseFloat( slide_height * 0.8 ),
+						slide_image_container_height = parseFloat( $slide_image_container.height() ),
+						slide_video_container_height = parseFloat( $slide_video_container.height() );
 
-					$slide_image_container.find( 'img' ).css( 'maxHeight', image_height + 'px' );
+					if ( ! isNaN( image_height ) ) {
+						$slide_image_container.find( 'img' ).css( 'maxHeight', image_height + 'px' );
 
-					if ( $slide.hasClass( 'et_pb_media_alignment_center' ) ) {
-						$slide_image_container.css( 'marginTop', '-' + parseInt( $slide_image_container.height() / 2 ) + 'px' );
+						slide_image_container_height = parseInt( $slide_image_container.height() )
 					}
 
-					$slide_video_container.css( 'marginTop', '-' + parseInt( $slide_video_container.height() / 2 ) + 'px' );
+					if ( ! isNaN( slide_image_container_height ) && $slide.hasClass( 'et_pb_media_alignment_center' ) ) {
+						$slide_image_container.css( 'marginTop', '-' + ( slide_image_container_height / 2 ) + 'px' );
+					}
 
-					$slide_image_container.find( 'img' ).addClass( 'active' );
+					if ( ! isNaN( slide_video_container_height ) ) {
+						$slide_video_container.css( 'marginTop', '-' + ( slide_video_container_height / 2 ) + 'px' );
+					}
 				}
 
 				function et_get_bg_layout_color( $slide ) {
@@ -360,15 +367,15 @@
 				}
 
 				if ( window.et_load_event_fired ) {
-					et_fix_slider_content_images();
+					et_fix_slider_height( $et_slider );
 				} else {
-					$et_window.load( function() {
-						et_fix_slider_content_images();
+					$et_window.on( 'load', function() {
+						et_fix_slider_height( $et_slider );
 					} );
 				}
 
-				$et_window.resize( function() {
-					et_fix_slider_content_images();
+				$et_window.on( 'resize', function() {
+					et_fix_slider_height( $et_slider );
 				} );
 
 				$et_slider.et_slider_move_to = function ( direction ) {
@@ -410,6 +417,37 @@
 
 					if ( typeof $next_slide.find('video')[0] !== 'undefined' && typeof $next_slide.find('video')[0]['player'] !== 'undefined' ) {
 						$next_slide.find('video')[0].player.play();
+					}
+
+					var $active_slide_video = $active_slide.find('.et_pb_video_box iframe');
+
+					if ( $active_slide_video.length ) {
+						var active_slide_video_src = $active_slide_video.attr('src');
+
+						// Removes the "autoplay=1" parameter when switching slides
+						// by covering three possible cases:
+
+						// "?autoplay=1" at the end of the URL
+						active_slide_video_src = active_slide_video_src.replace(/\?autoplay=1$/, '');
+
+						// "?autoplay=1" followed by another parameter
+						active_slide_video_src = active_slide_video_src.replace(/\?autoplay=1&(amp;)?/, '?');
+
+						// "&autoplay=1" anywhere in the URL
+						active_slide_video_src = active_slide_video_src.replace(/&(amp;)?autoplay=1/, '');
+
+						// Delays the URL update so that the cross-fade animation's smoothness is not affected
+						setTimeout(function() {
+							$active_slide_video.attr({
+								'src': active_slide_video_src
+							});
+						}, settings.fade_speed);
+
+						// Restores video overlay
+						$active_slide_video.parents('.et_pb_video_box').next('.et_pb_video_overlay').css({
+							'display' : 'block',
+							'opacity' : 1
+						});
 					}
 
 					$et_slider.trigger( 'simple_slider_before_move_to', { direction : direction, next_slide : $next_slide });
@@ -959,13 +997,10 @@
 				et_is_ie9 = navigator.userAgent.match( /MSIE 9.0/ ) !== null,
 				$et_container = ! et_pb_custom.is_builder_plugin_used ? $( '.container' ) : $( '.et_pb_row' ),
 				et_container_width = $et_container.width(),
-				et_is_fixed_nav = $( 'body' ).hasClass( 'et_fixed_nav' ),
-				et_is_vertical_nav = $( 'body' ).hasClass( 'et_vertical_nav' ),
 				et_is_vertical_fixed_nav = $( 'body' ).hasClass( 'et_vertical_fixed' ),
 				et_is_rtl = $( 'body' ).hasClass( 'rtl' ),
 				et_hide_nav = $( 'body' ).hasClass( 'et_hide_nav' ),
 				et_header_style_left = $( 'body' ).hasClass( 'et_header_style_left' ),
-				et_vertical_navigation = $( 'body' ).hasClass( 'et_vertical_nav' ),
 				$top_header = $('#top-header'),
 				$main_header = $('#main-header'),
 				$main_container_wrapper = $( '#page-container' ),
@@ -981,7 +1016,6 @@
 				et_header_modifier,
 				et_header_offset,
 				et_primary_header_top,
-				$et_vertical_nav = $('.et_vertical_nav'),
 				$et_header_style_split = $('.et_header_style_split'),
 				$et_top_navigation = $('#et-top-navigation'),
 				$logo = $('#logo'),
@@ -1241,7 +1275,7 @@
 						success : function( mediaElement, domObject ) {
 							mediaElement.addEventListener( 'loadeddata', function() {
 								et_pb_resize_section_video_bg( $(domObject) );
-								et_pb_center_video( $(domObject) );
+								et_pb_center_video( $(domObject).closest( '.mejs-video' ) );
 							}, false );
 
 							mediaElement.addEventListener( 'canplay', function() {
@@ -1275,7 +1309,7 @@
 						},
 						mainClass: 'mfp-fade',
 						zoom: {
-							enabled: true,
+							enabled: ! et_pb_custom.is_builder_plugin_used,
 							duration: 500,
 							opener: function(element) {
 								return element.find('img');
@@ -1298,7 +1332,7 @@
 						removalDelay: 500,
 						mainClass: 'mfp-fade',
 						zoom: {
-							enabled: true,
+							enabled: ! et_pb_custom.is_builder_plugin_used,
 							duration: 500,
 							opener: function(element) {
 								return element.find('img');
@@ -1332,7 +1366,7 @@
 
 			if ( $et_pb_fullwidth_portfolio.length || is_frontend_builder ) {
 
-			 	window.et_fullwidth_portfolio_init = function( $the_portfolio ) {
+				window.et_fullwidth_portfolio_init = function( $the_portfolio ) {
 					var $portfolio_items = $the_portfolio.find('.et_pb_portfolio_items');
 
 						$portfolio_items.data('items', $portfolio_items.find('.et_pb_portfolio_item').toArray() );
@@ -1379,10 +1413,10 @@
 						// setup fullwidth portfolio grid
 						set_fullwidth_portfolio_columns( $the_portfolio, false );
 					}
-			 	}
+				}
 
-			 	function fullwidth_portfolio_carousel_slide( $arrow ) {
-			 		var $the_portfolio = $arrow.parents('.et_pb_fullwidth_portfolio'),
+				function fullwidth_portfolio_carousel_slide( $arrow ) {
+					var $the_portfolio = $arrow.parents('.et_pb_fullwidth_portfolio'),
 						$portfolio_items = $the_portfolio.find('.et_pb_portfolio_items'),
 						$the_portfolio_items = $portfolio_items.find('.et_pb_portfolio_item'),
 						$active_carousel_group = $portfolio_items.find('.et_pb_carousel_group.active'),
@@ -1632,7 +1666,7 @@
 							}
 						} );
 					}
-			 	}
+				}
 
 				function set_fullwidth_portfolio_columns( $the_portfolio, carousel_mode ) {
 					var columns,
@@ -1762,9 +1796,10 @@
 				$time_slider.removeAttr( 'style' );
 
 				var $count_timer = $this_player.find( 'div.mejs-currenttime-container' ),
+					$count_timer_width_container = $this_player.find( '.mejs-duration-container' ).length ? $this_player.find( '.mejs-duration-container' ) : $this_player.find( '.mejs-currenttime-container' ),
 					player_width = $this_player.width(),
 					controls_play_width = $this_player.find( '.mejs-play' ).outerWidth(),
-					time_width = $this_player.find( '.mejs-currenttime-container' ).outerWidth(),
+					time_width = $count_timer_width_container.outerWidth(),
 					volume_icon_width = $this_player.find( '.mejs-volume-button' ).outerWidth(),
 					volume_bar_width = $this_player.find( '.mejs-horizontal-volume-slider' ).outerWidth(),
 					new_time_rail_width;
@@ -1926,30 +1961,9 @@
 				}
 
 				function set_filterable_grid_items( $the_portfolio ) {
-					var active_category = $the_portfolio.find('.et_pb_portfolio_filter > a.active').data('category-slug'),
-						container_width = $the_portfolio.find( '.et_pb_portfolio_items' ).innerWidth(),
-						item_width = $the_portfolio.find( '.et_pb_portfolio_item' ).outerWidth( true ),
-						last_item_margin = item_width - $the_portfolio.find( '.et_pb_portfolio_item' ).outerWidth(),
-						columns_count = Math.round( ( container_width + last_item_margin ) / item_width ),
-						counter = 1,
-						first_in_row = 1;
+					var active_category = $the_portfolio.find('.et_pb_portfolio_filter > a.active').data('category-slug');
 
-						$the_portfolio.find( '.et_pb_portfolio_item' ).removeClass( 'last_in_row first_in_row' );
-						$the_portfolio.find( '.et_pb_portfolio_item' ).each( function() {
-							var $this_el = $( this );
-
-							if ( ! $this_el.hasClass( 'inactive' ) ) {
-								if ( first_in_row === counter ) {
-									$this_el.addClass( 'first_in_row' );
-								}
-
-								if ( 0 === counter % columns_count ) {
-									$this_el.addClass( 'last_in_row' );
-									first_in_row = counter + 1;
-								}
-								counter++;
-							}
-						});
+					window.et_pb_set_responsive_grid( $the_portfolio.find( '.et_pb_portfolio_items' ), '.et_pb_portfolio_item' );
 
 					if ( 'all' === active_category ) {
 						$the_portfolio_visible_items = $the_portfolio.find('.et_pb_portfolio_item');
@@ -1959,7 +1973,7 @@
 
 					var visible_grid_items = $the_portfolio_visible_items.length,
 						posts_number = $the_portfolio.data('posts-number'),
-						pages = Math.ceil( visible_grid_items / posts_number );
+						pages = 0 === posts_number ? 1 : Math.ceil( visible_grid_items / posts_number );
 
 					set_filterable_grid_pages( $the_portfolio, pages );
 
@@ -2205,6 +2219,8 @@
 
 						$the_gallery.data('paginating', false );
 
+						window.et_pb_set_responsive_grid( $the_gallery_items_container, '.et_pb_gallery_item' );
+
 						setTimeout(function(){
 							set_gallery_hash( $the_gallery );
 						}, 100 );
@@ -2224,16 +2240,7 @@
 
 			if ( $et_pb_counter_amount.length ) {
 				$et_pb_counter_amount.each(function(){
-					var $bar_item           = $(this),
-						bar_item_width      = $bar_item.attr( 'data-width' ),
-						bar_item_padding    = Math.ceil( parseFloat( $bar_item.css('paddingLeft') ) ) + Math.ceil( parseFloat( $bar_item.css('paddingRight') ) ),
-						$bar_item_text      = $bar_item.children( '.et_pb_counter_amount_number' ),
-						bar_item_text_width = $bar_item_text.width() + bar_item_padding;
-
-					$bar_item.css({
-						'width' : bar_item_width,
-						'min-width' : bar_item_text_width
-					});
+					window.et_bar_counters_init( $( this ) );
 				});
 			} /* $et_pb_counter_amount.length */
 
@@ -2379,6 +2386,8 @@
 
 						return false;
 					} );
+
+					window.et_pb_set_tabs_height();
 				}
 				window.et_pb_tabs_init( $et_pb_tabs );
 			}
@@ -2531,6 +2540,12 @@
 
 			if ( $et_pb_number_counter.length || is_frontend_builder ) {
 				window.et_pb_reinit_number_counters = function( $et_pb_number_counter ) {
+
+					function et_format_number( number_value ) {
+						var separator = $et_pb_number_counter.data('number-separator');
+						return number_value.toString().replace( /\B(?=(\d{3})+(?!\d))/g, separator );
+					}
+
 					if ( $.fn.fitText ) {
 						$et_pb_number_counter.find( '.percent p' ).fitText( 0.3 );
 					}
@@ -2551,10 +2566,10 @@
 							},
 							onStep: function(from, to, percent) {
 								if ( percent != to )
-									$(this.el).find('.percent-value').text( Math.round( parseInt( percent ) ) );
+									$(this.el).find('.percent-value').text( et_format_number( Math.round( parseInt( percent ) ) ) );
 							},
 							onStop: function(from, to) {
-								$(this.el).find('.percent-value').text( $(this.el).data('number-value') );
+								$(this.el).find('.percent-value').text( et_format_number( $(this.el).data('number-value') ) );
 							}
 						});
 					});
@@ -2604,7 +2619,7 @@
 				}
 			}
 
-			$( 'body' ).on( 'click', '.et_pb_toggle_title', function() {
+			$( 'body' ).on( 'click', '.et_pb_toggle_title, .et_fb_toggle_overlay', function() {
 				var $this_heading         = $(this),
 					$module               = $this_heading.closest('.et_pb_toggle'),
 					$section              = $module.parents( '.et_pb_section' ),
@@ -2657,7 +2672,7 @@
 							fixed_header_height += $('#top-header').height();
 						}
 
-						if ( $('#main-header').length && ! et_is_vertical_nav ) {
+						if ( $('#main-header').length && ! window.et_is_vertical_nav ) {
 							fixed_header_height += $('#main-header').height();
 						}
 
@@ -2679,16 +2694,6 @@
 						$et_inputs = $et_contact_form.find( 'input[type=text],textarea' ),
 						et_email_reg = /^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/,
 						redirect_url = typeof $this_contact_container.data( 'redirect_url' ) !== 'undefined' ? $this_contact_container.data( 'redirect_url' ) : '';
-
-					$et_inputs.live( 'focus', function() {
-						if ( $( this ).val() === $( this ).siblings('label').text() ) {
-							$( this ).val('');
-						}
-					}).live( 'blur', function() {
-						if ( '' === $( this ).val() ) {
-							$( this ).val( $( this ).siblings( 'label' ).text() );
-						}
-					});
 
 					$et_contact_form.on( 'submit', function( event ) {
 						var $this_contact_form = $( this ),
@@ -2863,7 +2868,7 @@
 
 					$image.css( 'display', 'none' );
 				} );
-			}
+			};
 
 			$( '.et_pb_post .et_pb_video_overlay, .et_pb_video .et_pb_video_overlay, .et_pb_video_wrap .et_pb_video_overlay' ).click( function() {
 				var $this = $(this);
@@ -2877,17 +2882,25 @@
 				$element = typeof $video !== 'undefined' ? $video.closest( '.et_pb_section_video_bg' ) : $( '.et_pb_section_video_bg' );
 
 				$element.each( function() {
-					var $this_el = $(this),
-						ratio = ( typeof $this_el.attr( 'data-ratio' ) !== 'undefined' ) && ! is_frontend_builder
-							? $this_el.attr( 'data-ratio' )
-							: $this_el.find('video').attr( 'width' ) / $this_el.find('video').attr( 'height' ),
-						$video_elements = $this_el.find( '.mejs-video, video, object' ).css( 'margin', 0 ),
-						$container = $this_el.closest( '.et_pb_section_video' ).length
+					var $this_el  = $(this);
+					var el_ratio  = parseFloat( $this_el.attr( 'data-ratio' ) );
+					var el_width  = parseInt( $this_el.find( 'video' ).attr( 'width' ) );
+					var el_height = parseInt( $this_el.find( 'video' ).attr( 'height' ) );
+
+					var ratio = ( ! isNaN( el_ratio ) ) ? el_ratio : ( el_width / el_height );
+
+					var $video_elements = $this_el.find( '.mejs-video, video, object' ).css( 'margin', 0 );
+
+					var  $container = $this_el.closest( '.et_pb_section_video' ).length
 							? $this_el.closest( '.et_pb_section_video' )
-							: $this_el.closest( '.et_pb_slides' ),
-						body_width = $container.innerWidth(),
-						container_height = $container.innerHeight(),
-						width, height;
+							: $this_el.closest( '.et_pb_slides' );
+
+					var body_width = $container.innerWidth();
+
+					var container_height = $container.innerHeight();
+
+					var width, height;
+
 					if ( typeof $this_el.attr( 'data-ratio' ) == 'undefined' && !isNaN(ratio) ) {
 						$this_el.attr( 'data-ratio', ratio );
 					}
@@ -2909,62 +2922,81 @@
 						}, 0 );
 					}
 				} );
-			}
+			};
 
 			window.et_pb_center_video = function( $video ) {
 				$element = typeof $video !== 'undefined' ? $video : $( '.et_pb_section_video_bg .mejs-video' );
 
-					$element.each( function() {
-						var $this_el = $(this);
-						var $video_width = $this_el.width() / 2;
-						var $video_width_negative = 0 - $video_width;
-						$this_el.css("margin-left",$video_width_negative );
+				if ( ! $element.length ) {
+					return;
+				}
 
-						// need to re-calculate the values in Frontend builder
-						if ( is_frontend_builder ) {
-							setTimeout( function() {
-								var $video_width = $this_el.width() / 2;
-								var $video_width_negative = 0 - $video_width;
-								$this_el.css("margin-left",$video_width_negative );
-							}, 0 );
-						}
+				$element.each( function() {
+					var $this_el = $(this);
 
-						if ( typeof $video !== 'undefined' ) {
-							if ( $video.closest( '.et_pb_slider' ).length && ! $video.closest( '.et_pb_first_video' ).length ) {
-								return false;
-							}
+					et_pb_adjust_video_margin( $this_el );
+
+					// need to re-calculate the values in Frontend builder
+					if ( is_frontend_builder ) {
+						setTimeout( function() {
+							et_pb_adjust_video_margin( $this_el );
+						}, 0 );
+					}
+
+					if ( typeof $video !== 'undefined' ) {
+						if ( $video.closest( '.et_pb_slider' ).length && ! $video.closest( '.et_pb_first_video' ).length ) {
+							return false;
 						}
-					} );
+					}
+				} );
+			};
+
+			window.et_pb_adjust_video_margin = function( $el ) {
+				var $video_width          = $el.width() / 2;
+				var $video_width_negative = 0 - $video_width;
+
+				$el.css("margin-left", $video_width_negative );
 			}
 
 			window.et_fix_slider_height = function( $slider ) {
-				var $this_slider = typeof $slider !== 'undefined' ? $slider : $et_pb_slider;
-				if ( ! $this_slider.length ) return;
+				var $this_slider = $slider || $et_pb_slider;
+
+				if ( ! $this_slider || ! $this_slider.length ) {
+					return;
+				}
 
 				$this_slider.each( function() {
 					var $slide_section = $(this).parent( '.et_pb_section' ),
-						$slide = $(this).find( '.et_pb_slide' ),
-						$slide_container = $slide.find( '.et_pb_container' ),
+						$slides = $(this).find( '.et_pb_slide' ),
+						$slide_containers = $slides.find( '.et_pb_container' ),
 						max_height = 0,
 						image_margin = 0,
 						need_image_margin_top = $(this).hasClass( 'et_pb_post_slider_image_top' ),
 						need_image_margin_bottom = $(this).hasClass( 'et_pb_post_slider_image_bottom' );
 
-					// If this is appears at the first section benath transparent nav, skip it
+					// If this is appears at the first section beneath transparent nav, skip it
 					// leave it to et_fix_page_container_position()
 					if ( $slide_section.is( '.et_pb_section_first' ) ){
 						return true;
 					}
 
-					$slide_container.css( 'min-height', 0 );
+					$slide_containers.css( 'height', 0 );
 
 					// make slides visible to calculate the height correctly
-					$slide.addClass( 'et_pb_temp_slide' );
+					$slides.addClass( 'et_pb_temp_slide' );
 
-					$slide.each( function() {
-						var $this_el = $(this),
-							height = $this_el.innerHeight(),
-							$slide_image = $this_el.find( '.et_pb_slide_image' );
+					if ( typeof $(this).data('et_pb_simple_slider') === 'object' ) {
+						$(this).data('et_pb_simple_slider').et_fix_slider_content_images();
+					}
+
+					$slides.each( function() {
+						var height = parseFloat( $(this).innerHeight() ),
+							$slide_image = $(this).find( '.et_pb_slide_image' ),
+							adjustedHeight = parseFloat( $(this).data( 'adjustedHeight' ) ),
+							autoTopPadding = isNaN( adjustedHeight ) ? 0 : adjustedHeight;
+
+						// reduce the height by autopadding value if slider height was adjusted. This is required in VB.
+						height = ( autoTopPadding && autoTopPadding < height ) ? ( height - autoTopPadding ) : height;
 
 						if ( need_image_margin_top || need_image_margin_bottom ) {
 							if ( $slide_image.length ) {
@@ -2973,8 +3005,13 @@
 								image_margin += 10;
 							} else {
 								// add class to slides without image to adjust their height accordingly
-								$this_el.find( '.et_pb_container' ).addClass( 'et_pb_no_image' );
+								$(this).find( '.et_pb_container' ).addClass( 'et_pb_no_image' );
 							}
+						}
+
+						// mark the slides without content
+						if ( 0 === Math.abs( parseInt( $(this).find( '.et_pb_slide_description' ).height() ) ) ) {
+							$(this).find( '.et_pb_container' ).addClass( 'et_pb_empty_slide' );
 						}
 
 						if ( max_height < height ) {
@@ -2982,12 +3019,25 @@
 						}
 					} );
 
-					$slide_container.css( 'min-height', max_height + image_margin );
+					if ( ( max_height + image_margin ) < 1 ) {
+						// No slides have any content. It's probably being used with background images only.
+						// Reset the height so that it falls back to the default padding for the content.
+						$slide_containers.css( 'height', '' );
+
+					} else {
+						$slide_containers.css( 'height', max_height + image_margin );
+					}
 
 					// remove temp class after getting the slider height
-					$slide.removeClass( 'et_pb_temp_slide' );
+					$slides.removeClass( 'et_pb_temp_slide' );
+
+					// Show the active slide's image (if exists)
+					$slides.filter('.et-pb-active-slide')
+						.find( '.et_pb_slide_image' )
+						.children( 'img' )
+						.addClass( 'active' );
 				} );
-			}
+			};
 
 			/**
 			 * Add conditional class to prevent unwanted dropdown nav
@@ -3141,40 +3191,72 @@
 			window.et_fix_testimonial_inner_width();
 
 			window.et_pb_video_background_init = function( $this_video_background, this_video_background ) {
-				var $video_background_wrapper = $this_video_background.closest( '.et_pb_section_video_bg' ),
-					this_video_player = this_video_background.player;
+				var $video_background_wrapper = $this_video_background.closest( '.et_pb_section_video_bg' );
+
+				// Initializing video values
+				var onplaying = false;
+				var onpause   = true;
+
+				// On video playing toggle values
+				this_video_background.onplaying = function() {
+					onplaying = true;
+					onpause   = false;
+				};
+
+				// On video pause toggle values
+				this_video_background.onpause = function() {
+					onplaying = false;
+					onpause   = true;
+				};
 
 				// Entering video's top viewport
 				$video_background_wrapper.waypoint({
 					offset: '100%',
 					handler : function( direction ) {
 						if ( $this_video_background.is(':visible') && direction === 'down' ) {
-							this_video_player.play();
+							if ( this_video_background.paused && ! onplaying ) {
+								this_video_background.play();
+							}
 						} else if ( $this_video_background.is(':visible') && direction === 'up' ) {
-							this_video_player.pause();
+							if ( ! this_video_background.paused && ! onpause ) {
+								this_video_background.pause();
+							}
 						}
 					}
 				});
 
 				// Entering video's bottom viewport
 				$video_background_wrapper.waypoint({
-					offset: '-50%',
+					offset: function() {
+						var video_height = this.element.clientHeight,
+							toggle_offset = Math.ceil( window.innerHeight / 2);
+
+						if ( video_height > toggle_offset ) {
+							toggle_offset = video_height;
+						}
+
+						return toggle_offset * (-1);
+					},
 					handler : function( direction ) {
 						if ( $this_video_background.is(':visible') && direction === 'up' ) {
-							this_video_player.play();
+							if ( this_video_background.paused && ! onplaying ) {
+								this_video_background.play();
+							}
 						} else if ( $this_video_background.is(':visible') && direction === 'down' ) {
-							this_video_player.pause();
+							if ( ! this_video_background.paused && ! onpause ) {
+								this_video_background.pause();
+							}
 						}
 					}
 				});
 			}
 
 			window.et_reinit_waypoint_modules = et_pb_debounce( function() {
-				if ( $.fn.waypoint ) {
 					var $et_pb_circle_counter = $( '.et_pb_circle_counter' ),
 						$et_pb_number_counter = $( '.et_pb_number_counter' ),
 						$et_pb_video_background = $( '.et_pb_section_video_bg video' );
 
+				if ( $.fn.waypoint && 'yes' !== et_pb_custom.ignore_waypoints ) {
 					$( '.et_pb_counter_container, .et-waypoint' ).waypoint( {
 						offset: '75%',
 						handler: function() {
@@ -3199,7 +3281,7 @@
 							$this_counter.waypoint({
 								offset: '65%',
 								handler: function() {
-									if ( $this_counter.data( 'PieChartHasLoaded' ) ) {
+									if ( $this_counter.data( 'PieChartHasLoaded' ) || typeof $this_counter.data('easyPieChart') === 'undefined' ) {
 										return;
 									}
 
@@ -3213,7 +3295,7 @@
 							$this_counter.waypoint({
 								offset: 'bottom-in-view',
 								handler: function() {
-									if ( $this_counter.data( 'PieChartHasLoaded' ) ) {
+									if ( $this_counter.data( 'PieChartHasLoaded' ) || typeof $this_counter.data('easyPieChart') === 'undefined' ) {
 										return;
 									}
 
@@ -3266,14 +3348,61 @@
 							}
 						});
 					}
+				} else {
+					// if no waypoints supported then apply all the animations right away
+					$( '.et_pb_counter_container, .et-waypoint' ).addClass( 'et-animated' );
 
-					if ( $et_pb_video_background.length ) {
-						$et_pb_video_background.each( function(){
-							var $this_video_background = $(this);
+					if ( $et_pb_circle_counter.length ) {
+						$et_pb_circle_counter.each(function() {
+							var $this_counter = $(this);
 
-							et_pb_video_background_init( $this_video_background, this );
+							if ( ! $this_counter.is( ':visible' ) ) {
+								return;
+							}
+
+							if ( $this_counter.data( 'PieChartHasLoaded' ) ) {
+								return;
+							}
+
+							$this_counter.data('easyPieChart').update( $this_counter.data('number-value') );
+
+							$this_counter.data( 'PieChartHasLoaded', true );
+						} );
+					}
+
+					if ( $et_pb_number_counter.length ) {
+						$et_pb_number_counter.each(function(){
+							var $this_counter = $(this);
+
+							$this_counter.data('easyPieChart').update( $this_counter.data('number-value') );
 						});
 					}
+
+					// log the stats without waypoints
+					if ( $( '.et_pb_ab_goal' ).length ) {
+						var $et_pb_ab_goal = $( '.et_pb_ab_goal' );
+
+						if ( et_pb_ab_logged_status['read_goal'] || ! $et_pb_ab_goal.length || ! $et_pb_ab_goal.visible( true ) ) {
+							return;
+						}
+
+						// log the goal_read if goal is still visible after 3 seconds.
+						setTimeout( function() {
+							if ( $et_pb_ab_goal.length && $et_pb_ab_goal.visible( true ) && ! et_pb_ab_logged_status['read_goal'] ) {
+								et_pb_ab_update_stats( 'read_goal' );
+							}
+						}, 3000 );
+
+						et_pb_maybe_log_event( $et_pb_ab_goal, 'view_goal' );
+					}
+				}
+
+				if ( $et_pb_video_background.length ) {
+					$et_pb_video_background.each( function(){
+						var $this_video_background = $(this);
+
+						et_pb_video_background_init( $this_video_background, this );
+					});
 				}
 			}, 100 );
 
@@ -3373,7 +3502,15 @@
 			}
 
 			function et_pb_get_subject_id() {
-				var subject_id_raw = $( '.et_pb_ab_subject' ).attr( 'class' ).split( 'et_pb_ab_subject_id-' )[1],
+				var $subject = $( '.et_pb_ab_subject' );
+
+				// In case no subject found
+				if ( $subject.length <= 0 ) {
+					return false;
+				}
+
+				var subject_classname = $subject.attr( 'class' ),
+					subject_id_raw = subject_classname.split( 'et_pb_ab_subject_id-' )[1],
 					subject_id_clean = subject_id_raw.split( ' ' )[0],
 					subject_id_separated = subject_id_clean.split( '_' ),
 					subject_id = subject_id_separated[1];
@@ -3414,107 +3551,183 @@
 				document.cookie = cookie_content + cookie_expire + "; path=/";
 			}
 
-			window.et_calc_fullscreen_section = function() {
-				var $et_window = $(window),
-					$body = $( 'body' ),
-					$wpadminbar = $( '#wpadminbar' ),
-					et_is_vertical_nav = $body.hasClass( 'et_vertical_nav' ),
+			function et_pb_get_fixed_main_header_height() {
+				if ( ! window.et_is_fixed_nav ) {
+					return 0;
+				}
+
+				var fixed_height_onload = typeof $('#main-header').attr('data-fixed-height-onload') === 'undefined' ? 0 : $('#main-header').attr('data-fixed-height-onload');
+
+				return ! window.et_is_fixed_nav ? 0 : parseFloat( fixed_height_onload );
+			}
+
+			var fullscreen_section_width = {};
+			var fullscreen_section_timeout = {};
+
+			window.et_calc_fullscreen_section = function(event) {
+				var isResizing = typeof event === 'object' && event.type === 'resize',
+					$et_window = $(window),
 					$this_section = $(this),
-					this_section_index = $this_section.index('.et_pb_fullwidth_header'),
-					$header = $this_section.children('.et_pb_fullwidth_header_container'),
-					$header_content = $header.children('.header-content-container'),
-					$header_image = $header.children('.header-image-container'),
-					sectionHeight = $et_window.height(),
-					$wpadminbar = $('#wpadminbar'),
-					$top_header = $('#top-header'),
-					$main_header = $('#main-header'),
-					et_header_height,
-					secondary_nav_height;
+					section_index = $this_section.index('.et_pb_fullscreen'),
+					timeout = isResizing && typeof fullscreen_section_width[section_index] !== 'undefined' && event.target.window_width > fullscreen_section_width[section_index] ? 800 : 0;
 
-					secondary_nav_height = $top_header.length && $top_header.is( ':visible' ) ? $top_header.innerHeight() : 0;
-					et_header_height = $main_header.length ? $main_header.innerHeight() + secondary_nav_height : 0;
+					fullscreen_section_width[section_index] = $et_window.width();
 
-				var calc_header_offset = ( $wpadminbar.length ) ? et_header_height + $wpadminbar.innerHeight() - 1 : et_header_height - 1;
-
-				// Section height adjustment differs in vertical and horizontal nav
-				if ( $body.hasClass('et_vertical_nav') ) {
-					if ( $et_window.width() >= 980 && $top_header.length ) {
-						sectionHeight -= $top_header.height();
+					if ( typeof fullscreen_section_timeout[section_index] !== 'undefined' ) {
+						clearTimeout( fullscreen_section_timeout[section_index] );
 					}
 
-					if ( $wpadminbar.length ) {
-						sectionHeight -= $wpadminbar.height();
+					fullscreen_section_timeout[section_index] = setTimeout( function() {
+					var $body = $( 'body' ),
+						this_section_index = $this_section.index('.et_pb_fullwidth_header'),
+						this_section_offset = $this_section.offset(),
+						$header = $this_section.children('.et_pb_fullwidth_header_container'),
+						$header_content = $header.children('.header-content-container'),
+						$header_image = $header.children('.header-image-container'),
+						sectionHeight = window.innerHeight || $et_window.height(),
+						$wpadminbar = $('#wpadminbar'),
+						has_wpadminbar = $wpadminbar.length,
+						wpadminbar_height = has_wpadminbar ? $wpadminbar.height() : 0,
+						$top_header = $('#top-header'),
+						has_top_header = $top_header.length,
+						top_header_height = has_top_header ? $top_header.height() : 0,
+						$main_header = $('#main-header'),
+						has_main_header = $main_header.length,
+						main_header_height = has_main_header ? $main_header.outerHeight() : 0,
+						fixed_main_header_height = et_pb_get_fixed_main_header_height(),
+						is_mobile_first_module = this_section_offset.top <= (main_header_height + wpadminbar_height),
+						is_wp_relative_admin_bar = $et_window.width() < 782,
+						is_desktop_view = $et_window.width() > 980,
+						is_tablet_view = $et_window.width() <= 980 && $et_window.width() >= 479,
+						is_phone_view = $et_window.width() < 479,
+						overall_header_height = window.et_is_vertical_nav && is_desktop_view ? wpadminbar_height + top_header_height : wpadminbar_height + top_header_height + main_header_height,
+						is_first_module = this_section_offset.top <= overall_header_height;
+
+					// In case theme stored the onload main-header height as data-attribute
+					if ( $main_header.attr('data-height-onload') ) {
+						main_header_height = parseFloat( $main_header.attr('data-height-onload') );
 					}
-				} else {
-					if ( $body.hasClass('et_hide_nav' ) ) {
-						// If user is logged in and hide navigation is in use, adjust the section height
-						if ( $wpadminbar.length ) {
-							sectionHeight -= $wpadminbar.height();
-						}
 
-						// In mobile, header always appears. Adjust the section height
-						if ( $et_window.width() < 981 && ! $body.hasClass('et_transparent_nav') ) {
-							sectionHeight -= $('#main-header').height();
+					/**
+					 * WP Admin Bar:
+					 *
+					 * - Desktop fixed: standard
+					 * - WP Mobile relative: less than 782px window
+					**/
+					if ( has_wpadminbar ) {
+						if ( is_wp_relative_admin_bar ) {
+							if ( is_first_module ) {
+								sectionHeight -= wpadminbar_height;
+							}
+						} else {
+							sectionHeight -= wpadminbar_height;
 						}
-					} else {
-						if ( $this_section.offset().top <= calc_header_offset + 3 ) {
-							if ( et_is_vertical_nav ) {
-								var $top_header = $('#top-header'),
-									top_header_height = ( $top_header.length && 0 === $this_section.index( '.et_pb_fullscreen' ) ) ? $top_header.height() : 0,
-									wpadminbar_height = ( $wpadminbar.length && 0 === $this_section.index( '.et_pb_fullscreen' ) ) ? $wpadminbar.height() : 0,
-									calc_header_offset_vertical = wpadminbar_height + top_header_height;
+					}
 
-								sectionHeight -= calc_header_offset_vertical;
+					/**
+					 * Divi Top Header:
+					 *
+					 * - Desktop fixed: standard.
+					 * - Desktop fixed BUT first header's height shouldn't be substracted: hide nav until scroll activated
+					 * - Desktop relative: fixed nav bar disabled
+					 * - Desktop relative: vertical nav activated
+					 */
+					if ( has_top_header ) {
+						if ( is_desktop_view ) {
+							if ( et_hide_nav && ! window.et_is_vertical_nav ) {
+								if ( ! is_first_module ) {
+									sectionHeight -= top_header_height;
+								}
+							} else if ( ! window.et_is_fixed_nav || window.et_is_vertical_nav ) {
+								if ( is_first_module ) {
+									sectionHeight -= top_header_height;
+								}
 							} else {
-								sectionHeight -= calc_header_offset;
+								sectionHeight -= top_header_height;
 							}
 						}
 					}
-				}
 
-				// If the transparent primary nav + hide nav until scroll is being used,
-				// cancel automatic padding-top added by transparent nav mechanism
-				if ( $body.hasClass('et_transparent_nav') && $body.hasClass( 'et_hide_nav' ) &&  0 === this_section_index ) {
-					$this_section.css( 'padding-top', '' );
-				}
-
-				$this_section.css('min-height', sectionHeight + 'px' );
-				$header.css('min-height', sectionHeight + 'px' );
-
-				if ( $header.hasClass('center') && $header_content.hasClass('bottom') && $header_image.hasClass('bottom') ) {
-					$header.addClass('bottom-bottom');
-				}
-
-				if ( $header.hasClass('center') && $header_content.hasClass('center') && $header_image.hasClass('center') ) {
-					$header.addClass('center-center');
-				}
-
-				if ( $header.hasClass('center') && $header_content.hasClass('center') && $header_image.hasClass('bottom') ) {
-					$header.addClass('center-bottom');
-
-					var contentHeight = sectionHeight - $header_image.outerHeight( true );
-
-					if ( contentHeight > 0 ) {
-						$header_content.css('min-height', contentHeight + 'px' );
+					/**
+					 * Divi Main Header:
+					 *
+					 * - Desktop fixed: standard. Initial and 'fixed' header might have different height
+					 * - Desktop relative: fixed nav bar disabled
+					 * - Desktop fixed BUT height should be ignored: vertical nav activated
+					 * - Desktop fixed BUT height should be ignored for first header only: main header uses rgba
+					 * - Desktop fixed BUT first header's height shouldn't be substracted: hide nav until scroll activated
+					 * - Tablet relative: standard. Including vertical header style
+					 * - Phone relative: standard. Including vertical header style
+					 */
+					if ( has_main_header ) {
+						if ( is_desktop_view ) {
+							if ( et_hide_nav && ! window.et_is_vertical_nav ) {
+								if ( ! is_first_module ) {
+									sectionHeight -= fixed_main_header_height;
+								}
+							} else if ( window.et_is_fixed_nav && ! window.et_is_vertical_nav ) {
+								if ( is_first_module ) {
+									sectionHeight -= main_header_height;
+								} else {
+									sectionHeight -= fixed_main_header_height;
+								}
+							} else if ( ! window.et_is_fixed_nav && ! window.et_is_vertical_nav ) {
+								if ( is_first_module ) {
+									sectionHeight -= main_header_height;
+								}
+							}
+						} else {
+							if ( is_first_module ) {
+								sectionHeight -= main_header_height;
+							}
+						}
 					}
-				}
 
-				if ( $header.hasClass('center') && $header_content.hasClass('bottom') && $header_image.hasClass('center') ) {
-					$header.addClass('bottom-center');
-				}
+					// If the transparent primary nav + hide nav until scroll is being used,
+					// cancel automatic padding-top added by transparent nav mechanism
+					if ( $body.hasClass('et_transparent_nav') && $body.hasClass( 'et_hide_nav' ) &&  0 === this_section_index ) {
+						$this_section.css( 'padding-top', '' );
+					}
 
-				if ( ( $header.hasClass('left') || $header.hasClass('right') ) && !$header_content.length && $header_image.length ) {
-					$header.css('justify-content', 'flex-end');
-				}
+					$this_section.css('min-height', sectionHeight + 'px' );
+					$header.css('min-height', sectionHeight + 'px' );
 
-				if ( $header.hasClass('center') && $header_content.hasClass('bottom') && !$header_image.length ) {
-					$header_content.find('.header-content').css( 'margin-bottom', 80 + 'px' );
-				}
+					if ( $header.hasClass('center') && $header_content.hasClass('bottom') && $header_image.hasClass('bottom') ) {
+						$header.addClass('bottom-bottom');
+					}
 
-				if ( $header_content.hasClass('bottom') && $header_image.hasClass('center') ) {
-					$header_image.find('.header-image').css( 'margin-bottom', 80 + 'px' );
-					$header_image.css('align-self', 'flex-end');
-				}
+					if ( $header.hasClass('center') && $header_content.hasClass('center') && $header_image.hasClass('center') ) {
+						$header.addClass('center-center');
+					}
+
+					if ( $header.hasClass('center') && $header_content.hasClass('center') && $header_image.hasClass('bottom') ) {
+						$header.addClass('center-bottom');
+
+						var contentHeight = sectionHeight - $header_image.outerHeight( true );
+
+						if ( contentHeight > 0 ) {
+							$header_content.css('min-height', contentHeight + 'px' );
+						}
+					}
+
+					if ( $header.hasClass('center') && $header_content.hasClass('bottom') && $header_image.hasClass('center') ) {
+						$header.addClass('bottom-center');
+					}
+
+					if ( ( $header.hasClass('left') || $header.hasClass('right') ) && !$header_content.length && $header_image.length ) {
+						$header.css('justify-content', 'flex-end');
+					}
+
+					if ( $header.hasClass('center') && $header_content.hasClass('bottom') && !$header_image.length ) {
+						$header_content.find('.header-content').css( 'margin-bottom', 80 + 'px' );
+					}
+
+					if ( $header_content.hasClass('bottom') && $header_image.hasClass('center') ) {
+						$header_image.find('.header-image').css( 'margin-bottom', 80 + 'px' );
+						$header_image.css('align-self', 'flex-end');
+					}
+
+				}, timeout );
 			}
 
 			window.et_pb_parallax_init = function( $this_parallax ) {
@@ -3597,6 +3810,12 @@
 				window.et_fix_testimonial_inner_width();
 
 				et_audio_module_set();
+
+				if ( $et_pb_counter_amount.length ) {
+					$et_pb_counter_amount.each(function(){
+						window.et_bar_counters_init( $( this ) );
+					});
+				} /* $et_pb_counter_amount.length */
 			} );
 
 			$( window ).ready( function(){
@@ -3622,38 +3841,31 @@
 			window.et_pb_fullwidth_header_scroll = function( event ) {
 				event.preventDefault();
 
-				var $this_section      = $(this).parents( 'section' ),
-					is_next_fullscreen = $this_section.next().hasClass( 'et_pb_fullscreen' ),
-					$wpadminbar        = $('#wpadminbar'),
-					wpadminbar_height  = ( $wpadminbar.length && ! is_next_fullscreen ) ? $wpadminbar.height() : 0,
-					main_header_height = is_next_fullscreen || ! et_is_fixed_nav ? 0 : $main_header.height(),
-					top_header_height  = is_next_fullscreen || ! et_is_fixed_nav ? 0 : $top_header.height(),
-					section_bottom     = $this_section.offset().top + $this_section.outerHeight( true ) - ( wpadminbar_height + top_header_height + main_header_height );
-
-				// Fixed menu is turned off on 980px below screen
-				if ( 980 > $et_window.width() ) {
-					section_bottom += main_header_height;
-					section_bottom += top_header_height;
-				}
-
-				// Admin bar is sticked to the top of page on 600px screen below
-				if ( 600 > $et_window.width() ) {
-					section_bottom += wpadminbar_height;
-				}
+				var window_width             = $et_window.width(),
+					$body                    = $('body'),
+					is_wp_relative_admin_bar = window_width < 782,
+					is_transparent_main_header = $body.hasClass( 'et_transparent_nav' ),
+					is_hide_nav              = $body.hasClass( 'et_hide_nav' ),
+					is_desktop_view          = window_width > 980,
+					is_tablet_view           = window_width <= 980 && window_width >= 479,
+					is_phone_view            = window_width < 479,
+					$this_section            = $(this).parents( 'section' ),
+					this_section_offset      = $this_section.offset(),
+					$wpadminbar              = $('#wpadminbar'),
+					$main_header             = $('#main-header'),
+					wpadminbar_height        = $wpadminbar.length && ! is_wp_relative_admin_bar ? $wpadminbar.height() : 0,
+					top_header_height        = !window.et_is_fixed_nav || !is_desktop_view ? 0 : $top_header.height(),
+					data_height_onload       = typeof $main_header.attr('data-height-onload') === 'undefined' ? 0 : $main_header.attr('data-height-onload');
+					initial_fixed_difference = $main_header.height() === et_pb_get_fixed_main_header_height() || ! is_desktop_view || ! window.et_is_fixed_nav || is_transparent_main_header || is_hide_nav ? 0 : et_pb_get_fixed_main_header_height() - parseFloat( data_height_onload ),
+					section_bottom           = ( this_section_offset.top + $this_section.outerHeight( true ) + initial_fixed_difference ) - ( wpadminbar_height + top_header_height + et_pb_get_fixed_main_header_height() ),
+					animate_modified         = false;
 
 				if ( $this_section.length ) {
-					$( 'html, body' ).animate( { scrollTop : section_bottom }, 800 );
+					var fullscreen_scroll_duration = 800;
 
-					if ( ! $( '#main-header' ).hasClass( 'et-fixed-header' ) && $( 'body' ).hasClass( 'et_fixed_nav' ) && $( window ).width() > 980 ) {
-						setTimeout(function(){
-							var section_offset_top = $this_section.offset().top,
-								section_height     = $this_section.outerHeight( true ),
-								main_header_height = is_next_fullscreen ? 0 : $main_header.height(),
-								section_bottom     = section_offset_top + section_height - ( main_header_height + top_header_height + wpadminbar_height);
-
-							$( 'html, body' ).animate( { scrollTop : section_bottom }, 280, 'linear' );
-						}, 780 );
-					}
+					$( 'html, body' ).animate( { scrollTop : section_bottom }, {
+						duration: fullscreen_scroll_duration
+					} );
 				}
 			}
 
@@ -3764,6 +3976,9 @@
 					input_padding = $search.hasClass( 'et_pb_text_align_right' ) ? 'paddingLeft' : 'paddingRight',
 					disabled_button = $search.hasClass( 'et_pb_hide_search_button' );
 
+				// set the relative button position to get its height correctly
+				$button.css( { 'position' : 'relative' } );
+
 				if ( $button.innerHeight() > $input_field.innerHeight() ) {
 					$input_field.height( $button.innerHeight() );
 				}
@@ -3771,6 +3986,9 @@
 				if ( ! disabled_button ) {
 					$input_field.css( input_padding, $button.innerWidth() + 10 );
 				}
+
+				// reset the button position back to default
+				$button.css( { 'position' : '' } );
 			}
 
 			/**
@@ -3849,6 +4067,8 @@
 					et_pb_comments_init( $comments_module );
 				});
 			}
+
+			window.et_fix_pricing_currency_position();
 
 			/**
 			 * Provide event listener for plugins to hook up to

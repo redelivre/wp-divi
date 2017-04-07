@@ -1297,7 +1297,7 @@ function et_advanced_buttons(){
 		jQuery(document).ready(function(){
 			var buttonTypeField = jQuery('table.et-button select#et-type');
 
-			buttonTypeField.live('change',function() {
+			buttonTypeField.on('change',function() {
 				var optionsSmallButton = ['blue','lightblue','teal','silver','black','pink','purple','orange','green','red'],
 					optionsBigButton = ['blue','purple','orange','green','red','teal'],
 					options = '';
@@ -1329,7 +1329,7 @@ function et_advanced_buttons(){
 			});
 
 			var tabTypeField = jQuery('table.et-tabs select#et-slidertype');
-			tabTypeField.live('change',function() {
+			tabTypeField.on('change',function() {
 				if (jQuery(this).val() === 'images') {
 					if (!jQuery('.et-tabs #et-imagewidth').length) {
 						$heightImage = jQuery('<tr><th><label for="et-imageheight"><?php esc_html_e( 'Image Height', $themename ); ?></label></th><td><input type="text" value="" id="et-imageheight" name="et-imageheight"><br><small></small></td></tr>').prependTo('form#et_shortcodes tbody');

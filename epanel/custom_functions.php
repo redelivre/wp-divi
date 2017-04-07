@@ -213,24 +213,6 @@ if ( ! function_exists( 'et_delete_option' ) ) {
 
 }
 
-add_filter( 'body_class', 'et_browser_body_class' );
-
-function et_browser_body_class($classes) {
-	global $is_lynx, $is_gecko, $is_IE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone;
-
-	if($is_lynx) $classes[] = 'lynx';
-	elseif($is_gecko) $classes[] = 'gecko';
-	elseif($is_opera) $classes[] = 'opera';
-	elseif($is_NS4) $classes[] = 'ns4';
-	elseif($is_safari) $classes[] = 'safari';
-	elseif($is_chrome) $classes[] = 'chrome';
-	elseif($is_IE) $classes[] = 'ie';
-	else $classes[] = 'unknown';
-
-	if($is_iphone) $classes[] = 'iphone';
-	return $classes;
-}
-
 /*this function allows for the auto-creation of post excerpts*/
 if ( ! function_exists( 'truncate_post' ) ) {
 
@@ -353,6 +335,11 @@ if ( ! function_exists( 'et_first_image' ) ) {
 	function et_first_image() {
 		global $post;
 		$img = '';
+
+		if ( empty( $post->ID ) ) {
+			return $img;
+		}
+
 		$unprocessed_content = $post->post_content;
 
 		// truncate Post based shortcodes if Divi Builder enabled to avoid infinite loops
@@ -400,7 +387,7 @@ if ( ! function_exists( 'get_thumbnail' ) ) {
 				if ($thumb_array['thumb'] == '') $thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) );
 			}
 
-			if (($thumb_array['thumb'] == '') && ((et_get_option( $shortname.'_grab_image' )) == 'on')) {
+			if ( '' === $thumb_array['thumb'] && et_grab_image_setting() ) {
 				$thumb_array['thumb'] = esc_attr( et_first_image() );
 				if ( $fullpath ) $thumb_array['fullpath'] = $thumb_array['thumb'];
 			}
@@ -417,6 +404,26 @@ if ( ! function_exists( 'get_thumbnail' ) ) {
 	}
 
 }
+
+if ( ! function_exists( 'et_grab_image_setting' ) ) :
+/**
+ * Filterable "Grab the first post image" setting.
+ * "Grab the first post image" needs to be filterable so it can be disabled forcefully.
+ * It uses et_first_image() which uses apply_filters( 'the_content' ) which could cause
+ * a conflict with third party plugin which extensively uses 'the_content' filter (ie. BuddyPress)
+ * @return bool
+ */
+function et_grab_image_setting() {
+	global $shortname;
+
+	// Force disable "Grab the first post image" in BuddyPress component page
+	$is_buddypress_component = function_exists( 'bp_current_component' ) && bp_current_component();
+
+	$setting = 'on' === et_get_option( "{$shortname}_grab_image" ) && ! $is_buddypress_component;
+
+	return apply_filters( 'et_grab_image_setting', $setting );
+}
+endif;
 
 /* this function prints thumbnail from Post Thumbnail or Custom field or First post image */
 if ( ! function_exists( 'print_thumbnail' ) ) {

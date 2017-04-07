@@ -42,10 +42,10 @@ function et_sanitize_font_style( $styles ) {
  * @param array
  * @return string|bool
  */
-function et_sanitize_key_based_option( $choosen, $options ) {
+function et_sanitize_key_based_option( $choosen, $options, $default = false ) {
 	// Validate choosen option based on available options
 	if ( ! isset( $options[ $choosen ] ) ) {
-		return false;
+		return $default;
 	}
 
 	return $choosen;
@@ -265,4 +265,28 @@ function et_allowed_html_tags_short_block() {
  */
 function et_sanitize_html_input_text( $string ) {
 	return wp_kses( $string, et_allowed_html_tags_short_block() );
+}
+
+/**
+ * Sanitize background repeat value
+ * @return string
+ */
+function et_sanitize_background_repeat( $choosen ) {
+	return et_sanitize_key_based_option(
+		$choosen,
+		et_divi_background_repeat_choices(),
+		apply_filters( 'et_divi_background_repeat_default', 'repeat' )
+	);
+}
+
+/**
+ * Sanitize background attachment value
+ * @return string
+ */
+function et_sanitize_background_attachment( $choosen ) {
+	return et_sanitize_key_based_option(
+		$choosen,
+		et_divi_background_attachment_choices(),
+		apply_filters( 'et_sanitize_background_attachment_default', 'scroll' )
+	);
 }

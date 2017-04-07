@@ -64,6 +64,7 @@ input[type=checkbox]:checked:before { color: #2E86B9; float: none; }
 .wp-color-result:after { background-color: rgba(0,0,0,.2); color: #fff; height: 30px; line-height: 30px; border: none; box-shadow: none; font-size: 12px; border-radius: 0 4px 4px 0; padding: 0 15px; }
 .wp-color-result:hover, .wp-color-result:focus:after, .wp-color-result:hover:after { color: #fff; border: none; }
 .wp-picker-container .iris-picker { margin: 15px 0 0 0; }
+.wp-picker-container .iris-square, .wp-picker-container .iris-palette-container { margin-left: -1px; }
 .wp-picker-container, .wp-picker-input-wrap { width: 100%; border-radius: 4px; overflow: hidden; }
 .wp-picker-container input[type=text].wp-color-picker, .wp-core-ui .wp-picker-default, .wp-core-ui .wp-picker-clear { width: 45% !important; vertical-align: bottom; margin-top: 10px; }
 .wp-core-ui .wp-picker-default, .wp-core-ui .wp-picker-clear { margin-left: 10%; }

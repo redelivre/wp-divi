@@ -2,7 +2,20 @@
 
 if ( ! function_exists( 'et_get_safe_localization' ) ) :
 function et_get_safe_localization( $string ) {
-	return wp_kses( $string, et_get_allowed_localization_html_elements() );
+	return apply_filters( 'et_get_safe_localization', wp_kses( $string, et_get_allowed_localization_html_elements() ) );
+}
+endif;
+
+if ( ! function_exists( 'et_allow_ampersand' ) ) :
+/**
+ * Convert &amp; into &
+ * Escaped ampersand by wp_kses() which is used by et_get_safe_localization()
+ * can be a troublesome in some cases, ie.: outputted string is sent as email
+ * @param string  original string
+ * @return string modified string
+ */
+function et_allow_ampersand( $string ) {
+	return str_replace('&amp;', '&', $string);
 }
 endif;
 
@@ -24,6 +37,7 @@ function et_get_allowed_localization_html_elements() {
 			'rel'    => array(),
 		),
 		'b'      => array(),
+		'br'     => array(),
 		'em'     => array(),
 		'p'      => array(),
 		'span'   => array(),
@@ -85,3 +99,29 @@ function et_core_load_main_fonts() {
 	wp_enqueue_style( 'et-core-main-fonts', esc_url_raw( $fonts_url ), array(), null );
 }
 endif;
+
+if ( ! function_exists( 'et_core_browser_body_class' ) ) :
+function et_core_browser_body_class( $classes ) {
+	global $is_lynx, $is_gecko, $is_IE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone;
+
+	if( $is_lynx ) $classes[] = 'lynx';
+	elseif( $is_gecko ) $classes[] = 'gecko';
+	elseif( $is_opera ) $classes[] = 'opera';
+	elseif( $is_NS4 ) $classes[] = 'ns4';
+	elseif( $is_safari ) $classes[] = 'safari';
+	elseif( $is_chrome ) $classes[] = 'chrome';
+	elseif( $is_IE ) $classes[] = 'ie';
+	else $classes[] = 'unknown';
+
+	if( $is_iphone ) $classes[] = 'iphone';
+	return $classes;
+}
+endif;
+add_filter( 'body_class', 'et_core_browser_body_class' );
+
+if ( ! function_exists( 'et_force_edge_compatibility_mode' ) ) :
+function et_force_edge_compatibility_mode() {
+	echo '<meta http-equiv="X-UA-Compatible" content="IE=edge">';
+}
+endif;
+add_action( 'et_head_meta', 'et_force_edge_compatibility_mode' );

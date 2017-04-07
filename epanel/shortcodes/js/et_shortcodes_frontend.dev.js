@@ -293,7 +293,7 @@ jQuery(document).ready(function($){
 	var $et_pricing_table_button = $('.pricing-table a.icon-button');
 
 	$et_tooltip = $('.et-tooltip');
-	$et_tooltip.live('mouseover mouseout', function(event){
+	$et_tooltip.on('mouseover mouseout', function(event){
 		if (event.type == 'mouseover') {
 			$(this).find('.et-tooltip-box').stop(true,true).animate({ opacity: 'show', bottom: '25px' }, 300);
 		} else {
@@ -302,7 +302,7 @@ jQuery(document).ready(function($){
 	});
 	// learn more
 	$et_learn_more = $('.et-learn-more .heading-more');
-	$et_learn_more.live('click', function() {
+	$et_learn_more.on('click', function() {
 		if ( $(this).hasClass('open') )
 			$(this).removeClass('open');
 		else

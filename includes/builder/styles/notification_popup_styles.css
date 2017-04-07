@@ -57,5 +57,5 @@ a#et_load_category_page,
 a#et_load_category_page:hover,
 .post-type-et_pb_layout .et-pb-portability-button:hover { background: #008bdb; color: #FFF; }
 
-.post-type-et_pb_layout [data-et-core-modal*="data-et-core-portability"] span { display: initial; }
+.post-type-et_pb_layout [data-et-core-modal*="data-et-core-portability"] span { display: block; display: initial; }
 .post-type-et_pb_layout .et-pb-portability-button:before { display: none; }

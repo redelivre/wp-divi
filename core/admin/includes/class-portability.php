@@ -266,24 +266,104 @@ final class ET_Core_Portability {
 				if ( 0 == $term->parent || isset( $terms[$term->parent] ) ) {
 					$terms[$term->term_id] = $term;
 				} else {
-					$get_terms[] = $term;
+					// if parent category is also exporting then add the term to the end of the list and process it later
+					// otherwise add a term as usual
+					if ( $this->is_parent_term_included( $get_terms, $term->parent ) ) {
+						$get_terms[] = $term;
+					} else {
+						$terms[$term->term_id] = $term;
+					}
 				}
 			}
 
 			$posts[$post->ID]->terms = array();
 
 			foreach ( $terms as $term ) {
+				$parents_data = array();
+
+				if ( $term->parent ) {
+					$parent_slug = isset( $terms[$term->parent] ) ? $terms[$term->parent]->slug : $this->get_parent_slug( $term->parent, $term->taxonomy );
+					$parents_data = $this->get_all_parents( $term->parent, $term->taxonomy );
+				} else {
+					$parent_slug = 0;
+				}
+
 				$posts[$post->ID]->terms[$term->term_id] = array(
 					'name'        => $term->name,
 					'slug'        => $term->slug,
 					'taxonomy'    => $term->taxonomy,
-					'parent'      => $term->parent ? $terms[$term->parent]->slug : 0,
+					'parent'      => $parent_slug,
+					'all_parents' => $parents_data,
 					'description' => $term->description
 				);
 			}
 		}
 
 		return $posts;
+	}
+
+	/**
+	 * Check whether the $parent_id included into the $terms_list.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $terms_list Array of term objects.
+	 * @param int $parent_id.
+	 */
+	private function is_parent_term_included( $terms_list, $parent_id ) {
+		$is_parent_found = false;
+
+		foreach ( $terms_list as $term => $term_details ) {
+			if ( $parent_id === $term_details->term_id ) {
+				$is_parent_found = true;
+			}
+		}
+
+		return $is_parent_found;
+	}
+
+	/**
+	 * Retrieve the term slug.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $parent_id.
+	 * @param string $taxonomy.
+	 */
+	private function get_parent_slug( $parent_id, $taxonomy ) {
+		$term_data = get_term( $parent_id, $taxonomy );
+		$slug = '' === $term_data->slug ? 0 : $term_data->slug;
+
+		return $slug;
+	}
+
+	/**
+	 * Prepare array of all parents so the correct hierarchy can be restored during the import.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $parent_id.
+	 * @param string $taxonomy.
+	 */
+	private function get_all_parents( $parent_id, $taxonomy ) {
+		$parents_data_array = array();
+		$parent = $parent_id;
+
+		// retrieve data for all parent categories
+		if ( 0 !== $parent  ) {
+			while( 0 !== $parent ) {
+				$parent_term_data = get_term( $parent, $taxonomy );
+				$parents_data_array[$parent_term_data->slug] = array(
+					'name' => $parent_term_data->name,
+					'description' => $parent_term_data->description,
+					'parent' => 0 !== $parent_term_data->parent ? $this->get_parent_slug( $parent_term_data->parent, $taxonomy ) : 0,
+				);
+
+				$parent = $parent_term_data->parent;
+			}
+		}
+		//reverse order of items, to simplify the restoring process
+		return array_reverse( $parents_data_array );
 	}
 
 	/**
@@ -361,6 +441,10 @@ final class ET_Core_Portability {
 					if ( empty( $term['parent'] ) ) {
 						$parent = 0;
 					} else {
+						if ( isset( $term['all_parents'] ) && ! empty( $term['all_parents'] ) ) {
+							$this->restore_parent_categories( $term['all_parents'], $term['taxonomy'] );
+						}
+
 						$parent = term_exists( $term['parent'], $term['taxonomy'] );
 
 						if ( is_array( $parent ) ){
@@ -405,6 +489,32 @@ final class ET_Core_Portability {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Restore the categories hierarchy in library.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $parents_array    Array of parent categories data.
+	 * @param string $taxonomy
+	 */
+	private function restore_parent_categories( $parents_array, $taxonomy ) {
+		foreach( $parents_array as $slug => $category_data ) {
+			$current_category = term_exists( $slug, $taxonomy );
+
+			if ( ! is_array( $current_category ) ) {
+				$parent_id = 0 !== $category_data['parent'] ? term_exists( $category_data['parent'], $taxonomy ) : 0;
+				wp_insert_term( $category_data['name'], $taxonomy, array(
+					'slug'        => $slug,
+					'description' => $category_data['description'],
+					'parent'      => is_array( $parent_id ) ? $parent_id['term_id'] : $parent_id,
+				) );
+			} else if ( ( ! isset( $current_category['parent'] ) || 0 === $current_category['parent'] ) && 0 !== $category_data['parent'] ) {
+				$parent_id = 0 !== $category_data['parent'] ? term_exists( $category_data['parent'], $taxonomy ) : 0;
+				wp_update_term( $current_category['term_id'], $taxonomy, array( 'parent' => is_array( $parent_id ) ? $parent_id['term_id'] : $parent_id ) );
+			}
+		}
 	}
 
 	/**
