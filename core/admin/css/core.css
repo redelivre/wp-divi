@@ -589,7 +589,7 @@ body.rtl button.et-core-button {
   6.0 - Loader
 ------------------------------------------------------------------------------*/
 .et-core-loader {
-	background: transparent url( "../images/loader.gif" ) 8px 9px no-repeat;
+	background: transparent url("../images/loader.gif") 8px 9px no-repeat;
 	transition: background, box-shadow 0.3s;
 	height: 50px;
 	width: 50px;

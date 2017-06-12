@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Divi 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/init\n"
-"POT-Creation-Date: 2016-03-30 15:21:59+00:00\n"
-"PO-Revision-Date: 2016-03-30 00:03+0300\n"
+"POT-Creation-Date: 2017-05-18 15:37:54+00:00\n"
+"PO-Revision-Date: 2017-05-18 19:32+0300\n"
 "Last-Translator: \n"
 "Language-Team: Elegant Themes\n"
 "Language: id\n"
@@ -22,15 +22,11 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: ../includes/builder\n"
 "X-Poedit-SearchPathExcluded-1: ../node_modules\n"
 
-#: admin/includes/assets.php:21
-msgid "Got it, thanks!"
-msgstr "Mengerti, terima kasih!"
-
-#: admin/includes/class-portability.php:184
+#: components/Portability.php:197
 msgid "The export process failed. Please refresh the page and try again."
 msgstr "Proses ekspor gagal. Harap segarkan laman lalu cobalah kembali."
 
-#: admin/includes/class-portability.php:854
+#: components/Portability.php:1008
 msgid ""
 "The browser version you are currently using is outdated. Please update to "
 "the newest version."
@@ -38,7 +34,7 @@ msgstr ""
 "Versi peramban yang Anda gunakan sudah usang. Harap perbarui ke versi "
 "terbaru."
 
-#: admin/includes/class-portability.php:855
+#: components/Portability.php:1009
 msgid ""
 "You reached your server memory limit. Please try increasing your PHP memory "
 "limit."
@@ -46,7 +42,7 @@ msgstr ""
 "Anda sudah mencapai limit memori server. Harap coba tingkatkan limit memori "
 "PHP Anda."
 
-#: admin/includes/class-portability.php:856
+#: components/Portability.php:1010
 msgid ""
 "This file cannot be imported. It may be caused by file_uploads being "
 "disabled in your php.ini. It may also be caused by post_max_size or/and "
@@ -58,39 +54,39 @@ msgstr ""
 "dan upload_max_filesize lebih kecil dari berkas yang dipilih. Harap "
 "memperbesarnya atau transfer data yang lebih substansial saat ini."
 
-#: admin/includes/class-portability.php:857
+#: components/Portability.php:1011
 msgid "Invalid File format. You should be uploading a JSON file."
 msgstr "Format berkas salah. Anda harus mengunggah berkas JSON."
 
-#: admin/includes/class-portability.php:858
+#: components/Portability.php:1012
 msgid "This file should not be imported in this context."
 msgstr "Berkas ini tidak dapat diimpor dalam konteks ini."
 
-#: admin/includes/class-portability.php:859
+#: components/Portability.php:1013
 msgid "Import estimated time remaining: %smin"
 msgstr "Estimasi sisa waktu impor: %smnt"
 
-#: admin/includes/class-portability.php:860
+#: components/Portability.php:1014
 msgid "Export estimated time remaining: %smin"
 msgstr "Estimasi sisa waktu ekspor: %smnt"
 
-#: admin/includes/class-portability.php:861
+#: components/Portability.php:1015
 msgid "Backup estimated time remaining: %smin"
 msgstr "Estimasi sisa waktu pencadangan: %smnt"
 
-#: admin/includes/class-portability.php:883
+#: components/Portability.php:1037
 msgid "Portability"
 msgstr "Portabilitas"
 
-#: admin/includes/class-portability.php:887
+#: components/Portability.php:1041
 msgid "Export"
 msgstr "Ekspor"
 
-#: admin/includes/class-portability.php:888
+#: components/Portability.php:1042
 msgid "Import"
 msgstr "Impor"
 
-#: admin/includes/class-portability.php:892
+#: components/Portability.php:1046
 msgid ""
 "Exporting your %s will create a JSON file that can be imported into a "
 "different website."
@@ -98,23 +94,23 @@ msgstr ""
 "Mengekspor %s Anda akan menciptakan berkas JSON yang dapat diimpor ke dalam "
 "website lain."
 
-#: admin/includes/class-portability.php:893
+#: components/Portability.php:1047
 msgid "Export File Name"
 msgstr "Nama Berkas Ekspor"
 
-#: admin/includes/class-portability.php:898
+#: components/Portability.php:1052
 msgid "Only export selected items"
 msgstr "Hanya ekspor item terpilih"
 
-#: admin/includes/class-portability.php:902
+#: components/Portability.php:1056
 msgid "Export %s"
 msgstr "Ekspor %s"
 
-#: admin/includes/class-portability.php:903
+#: components/Portability.php:1057
 msgid "Cancel Export"
-msgstr ""
+msgstr "Batalkan Ekspor"
 
-#: admin/includes/class-portability.php:908
+#: components/Portability.php:1062
 msgid ""
 "Importing a previously-exported %s file will overwrite all content currently "
 "on this page."
@@ -122,7 +118,7 @@ msgstr ""
 "Mengimpor berkas %s yang diekspor sebelumnya akan menimpa semua konten yang "
 "saat ini ada di laman ini."
 
-#: admin/includes/class-portability.php:910
+#: components/Portability.php:1064
 msgid ""
 "Select a previously-exported Divi Builder Layouts file to begin importing "
 "items. Large collections of image-heavy exports may take several minutes to "
@@ -132,7 +128,7 @@ msgstr ""
 "mengimpor item. Ekspor dengan gambar dalam jumlah besar dapat membutuhkan "
 "beberapa menit untuk diunggah."
 
-#: admin/includes/class-portability.php:912
+#: components/Portability.php:1066
 msgid ""
 "Importing a previously-exported %s file will overwrite all current data. "
 "Please proceed with caution!"
@@ -140,33 +136,260 @@ msgstr ""
 "Mengimpor berkas %s yang diekspor sebelumnya akan menimpa semua data saat "
 "ini. Harap berhati-hati!"
 
-#: admin/includes/class-portability.php:914
+#: components/Portability.php:1068
 msgid "Select File To Import"
 msgstr "Pilih Berkas Untuk Diimpor"
 
-#: admin/includes/class-portability.php:916
+#: components/Portability.php:1070
 msgid "No File Selected"
 msgstr "Tidak Ada Berkas Dipilih"
 
-#: admin/includes/class-portability.php:917
+#: components/Portability.php:1071
 msgid "Choose File"
 msgstr "Pilih Berkas"
 
-#: admin/includes/class-portability.php:921
+#: components/Portability.php:1075
 msgid "Download backup before importing"
 msgstr "Unduh cadangan sebelum mengimpor"
 
-#: admin/includes/class-portability.php:925
+#: components/Portability.php:1079
 msgid "Import %s"
 msgstr "Impor %s"
 
-#: admin/includes/class-portability.php:926
+#: components/Portability.php:1080
 msgid "Cancel Import"
-msgstr ""
+msgstr "Batalkan Impor"
 
-#: admin/includes/portability.php:90
+#: components/Portability.php:1176
 msgid "Import & Export"
 msgstr "Impor & Ekspor"
+
+#: components/Updates.php:25
+msgid "%s: You cannot create a second instance of this class."
+msgstr "%s: Anda tidak dapat membuat instance kedua dari kelas ini."
+
+#: components/Updates.php:417
+msgid ""
+"<em>Before you can receive product updates, you must first authenticate your "
+"Elegant Themes subscription. To do this, you need to enter both your Elegant "
+"Themes Username and your Elegant Themes API Key into the Updates Tab in your "
+"theme and plugin settings. To locate your API Key, <a href=\"https://www."
+"elegantthemes.com/members-area/api/\" target=\"_blank\">log in</a> to your "
+"Elegant Themes account and navigate to the <strong>Account > API Key</"
+"strong> page. <a href=\"http://www.elegantthemes.com/gallery/divi/"
+"documentation/update/\" target=\"_blank\">Learn more here</a></em>. If you "
+"still get this message, please make sure that your Username and API Key have "
+"been entered correctly"
+msgstr ""
+"<em>Sebelum Anda dapat menerima pembaruan produk, pertama-tama Anda perlu "
+"mengotentikasikan langganan Elegant Themes Anda. Untuk melakukannya, Anda "
+"perlu memasukkan Nama Pengguna Elegant Themes dan Kunci API Elegant Themes "
+"Anda pada Tab Pembaruan di pengaturan tema dan plugin Anda. Untuk melacak "
+"Kunci API Anda, <a href=\"https://www.elegantthemes.com/members-area/api/\" "
+"target=\"_blank\">masuk</a> ke akun Elegant Themes Anda dan buka halaman "
+"<strong>Akun > Kunci API</strong>. <a href=\"http://www.elegantthemes.com/"
+"gallery/divi/documentation/update/\" target=\"_blank\">Ketahui selengkapnya "
+"di sini</a></em>. Jika Anda masih menerima pesan ini, harap pastikan Nama "
+"Pengguna dan Kunci API Anda telah dimasukkan dengan benar"
+
+#: components/Updates.php:419
+msgid ""
+"Automatic updates currently unavailable. For all Elegant Themes products, "
+"please <a href=\"http://www.elegantthemes.com/gallery/divi/documentation/"
+"update/\" target=\"_blank\">authenticate your subscription</a> via the "
+"Updates tab in your theme & plugin settings to enable product updates. Make "
+"sure that your Username and API Key have been entered correctly."
+msgstr ""
+"Pembaruan otomatis tidak tersedia saat ini. Untuk semua produk Elegant "
+"Themes, harap <a href=\"http://www.elegantthemes.com/gallery/divi/"
+"documentation/update/\" target=\"_blank\">otentikasikan langganan Anda</a> "
+"melalui tab Pembaruan di pengaturan tema & plugin Anda untuk mengaktifkan "
+"pembaruan produk. Harap pastikan Nama Pengguna dan Kunci API Anda telah "
+"dimasukkan dengan benar."
+
+#: components/Updates.php:443
+msgid ""
+"Your Elegant Themes subscription has expired. You must <a href=\"https://www."
+"elegantthemes.com/members-area/\" target=\"_blank\">renew your account</a> "
+"to regain access to product updates and support. To ensure compatibility and "
+"security, it is important to always keep your themes and plugins updated."
+msgstr ""
+"Langganan Elegant Themes Anda telah berakhir. Anda perlu <a href=\"https://"
+"www.elegantthemes.com/members-area/\" target=\"_blank\">memperbarui akun "
+"Anda</a> untuk dapat kembali mengakses dukungan dan pembaruan produk. Untuk "
+"memastikan kompatibilitas dan keamanan, penting untuk selalu memperbarui "
+"tema dan plugin Anda."
+
+#: components/api/Service.php:231
+msgid "API request failed, please try again."
+msgstr "Permintaan API gagal, silakan coba lagi."
+
+#: components/api/Service.php:232
+msgid "API request failed. API Key is required."
+msgstr "Permintaan API gagal. Kunci API dibutuhkan."
+
+#: components/api/email/ActiveCampaign.php:42
+#: components/api/email/CampaignMonitor.php:94
+#: components/api/email/ConvertKit.php:101
+#: components/api/email/Feedblitz.php:43
+#: components/api/email/GetResponse.php:67
+#: components/api/email/Infusionsoft.php:189
+#: components/api/email/MailChimp.php:130
+#: components/api/email/MailerLite.php:56 components/api/email/Ontraport.php:59
+#: components/api/email/SendinBlue.php:59
+msgid "API Key"
+msgstr "Kunci API"
+
+#: components/api/email/ActiveCampaign.php:45
+msgid "API URL"
+msgstr "URL API"
+
+#: components/api/email/ActiveCampaign.php:48
+msgid "Form ID"
+msgstr "ID Formulir"
+
+#: components/api/email/Aweber.php:119
+msgid "Authorization Code"
+msgstr "Kode Otorisasi"
+
+#: components/api/email/ConvertKit.php:104
+msgid "API Secret"
+msgstr "API Secret"
+
+#: components/api/email/Emma.php:49
+msgid "Public API Key"
+msgstr "Kunci API Publik"
+
+#: components/api/email/Emma.php:52
+msgid "Private API Key"
+msgstr "Kunci API Pribadi"
+
+#: components/api/email/Emma.php:55
+msgid "Account ID"
+msgstr "ID Akun"
+
+#: components/api/email/Infusionsoft.php:192
+msgid "App Name"
+msgstr "Nama Aplikasi"
+
+#: components/api/email/Infusionsoft.php:283
+msgid ""
+"Successfully authorized. Subscribers count will be updated in background, "
+"please check back in %1$s %2$s"
+msgstr ""
+"Otorisasi berhasil. Jumlah pelanggan akan diperbarui di latar belakang, "
+"silakan periksa kembali dalam %1$s %2$s"
+
+#: components/api/email/Infusionsoft.php:285
+msgid "minute"
+msgstr "menit"
+
+#: components/api/email/Infusionsoft.php:285
+msgid "minutes"
+msgstr "menit"
+
+#: components/api/email/Infusionsoft.php:313
+msgid "Already subscribed"
+msgstr "Sudah berlangganan"
+
+#: components/api/email/MailChimp.php:198
+msgid ""
+"You have signed up to a lot of lists very recently, please try again later"
+msgstr ""
+"Anda baru-baru ini mendaftar ke cukup banyak daftar, silakan coba lagi nanti"
+
+#: components/api/email/Mailster.php:48
+msgid "Opt-in"
+msgstr "Berlangganan"
+
+#: components/api/email/Mailster.php:84
+msgid "Mailster Newsletter Plugin is not enabled!"
+msgstr "Plugin Buletin Mailster tidak diaktifkan!"
+
+#: components/api/email/Mailster.php:88
+msgid "No lists were found. Please create a Mailster list first!"
+msgstr "Daftar tidak ditemukan. Silakan buat daftar Mailster terlebih dulu!"
+
+#: components/api/email/Mailster.php:104
+msgid "An error occurred. Please try again later."
+msgstr "Terjadi kesalahan. Silakan coba lagi nanti."
+
+#: components/api/email/Ontraport.php:62
+msgid "APP ID"
+msgstr "ID APLIKASI"
+
+#: components/api/email/Provider.php:36
+msgid "Subscribed via"
+msgstr "Berlangganan melalui"
+
+#: components/api/email/SalesForce.php:93
+#: components/api/email/SalesForce.php:110
+msgid "Organization ID"
+msgstr "ID Organisasi"
+
+#: components/api/email/SalesForce.php:97
+msgid "Instance URL"
+msgstr "URL Instance"
+
+#: components/api/email/SalesForce.php:100
+msgid "Consumer Key"
+msgstr "Consumer Key"
+
+#: components/api/email/SalesForce.php:103
+msgid "Consumer Secret"
+msgstr "Consumer Secret"
+
+#: components/api/email/SalesForce.php:134
+msgid "Organization ID cannot be empty"
+msgstr "ID Organisasi tidak boleh kosong"
+
+#: components/api/email/SalesForce.php:187
+#: components/api/email/SalesForce.php:264
+msgid "An error occurred. Please try again."
+msgstr "Terjadi kesalahan. Silakan coba lagi nanti."
+
+#: components/api/email/SalesForce.php:234
+msgid "Unknown Organization ID"
+msgstr "ID Organisasi Tak Diketahui"
+
+#: components/api/email/init.php:25
+msgid "ERROR: Invalid arguments."
+msgstr "GALAT: Argumen tidak valid."
+
+#: components/lib/WPHttp.php:192
+msgid "A valid URL was not provided."
+msgstr "URL valid tidak diberikan."
+
+#: components/lib/WPHttp.php:196
+msgid "User has blocked requests through HTTP."
+msgstr "Pengguna telah memblokir permintaan melalui HTTP."
+
+#: components/lib/WPHttp.php:209
+msgid ""
+"Destination directory for file streaming does not exist or is not writable."
+msgstr ""
+"Direktori tujuan untuk streaming berkas tidak ditemukan atau tidak dapat "
+"disunting."
+
+#: functions.php:145
+msgid "Got it, thanks!"
+msgstr "Mengerti, terima kasih!"
+
+#: functions.php:290
+msgid "Configuration Error"
+msgstr "Kesalahan Konfigurasi"
+
+#. Translators: If there are characters in your language that are not supported
+#. by Open Sans, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:74
+msgctxt "Open Sans font: on or off"
+msgid "on"
+msgstr " "
+
+#, fuzzy
+#~ msgid "An error occured. Please try again."
+#~ msgstr "Terjadi kesalahan. Silakan coba lagi nanti."
 
 #~ msgid ""
 #~ "This post is password protected. Enter the password to view comments."
@@ -521,10 +744,6 @@ msgstr "Impor & Ekspor"
 #~ "kunjungi laman <a style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" "
 #~ "target=\"_blank\">Divi Documentation</a> untuk akses ke lusinan tutorial "
 #~ "menyeluruh."
-
-#~ msgctxt "Open Sans font: on or off"
-#~ msgid "on"
-#~ msgstr " "
 
 #~ msgid "Select Page"
 #~ msgstr "Pilih Laman"
@@ -1577,18 +1796,12 @@ msgstr "Impor & Ekspor"
 #~ "Di sini Anda dapat memilih Tata Letak Laman Gerai & Laman Kategori untuk "
 #~ "WooCommerce."
 
-#~ msgid "MailChimp API Key"
-#~ msgstr "Kunci API MailChimp"
-
 #~ msgid ""
 #~ "Enter your MailChimp API key. You can create an api key <a target=\"_blank"
 #~ "\" href=\"%1$s\">here</a>"
 #~ msgstr ""
 #~ "Masukkan kunci API MailChimp Anda. Anda dapat membuat kunci api <a target="
 #~ "\"_blank\" href=\"%1$s\">di sini</a>"
-
-#~ msgid "Aweber Authorization"
-#~ msgstr "Otorisasi Aweber"
 
 #~ msgid "Authorize your Aweber account here."
 #~ msgstr "Otorisasikan akun Aweber Anda di sini."

@@ -2,10 +2,10 @@
 
 require_once( ET_BUILDER_DIR . 'core.php' );
 
-if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! is_customize_preview() ) {
+if ( wp_doing_ajax() && ! is_customize_preview() ) {
 	define( 'WPE_HEARTBEAT_INTERVAL', et_builder_heartbeat_interval() );
 
-	$builder_load_actions = array(
+	$_builder_load_actions = array(
 		'et_pb_get_backbone_template',
 		'et_pb_get_backbone_templates',
 		'et_pb_process_computed_property',
@@ -25,11 +25,17 @@ if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! is_customize_preview() ) {
 		'et_fb_process_imported_content',
 		'et_fb_get_saved_templates',
 		'et_fb_retrieve_builder_data',
+		'et_builder_email_add_account',
+		'et_builder_email_remove_account',
+		'et_builder_email_get_lists',
 	);
 
 	if ( class_exists( 'Easy_Digital_Downloads') ) {
-		$builder_load_actions[] = 'edd_load_gateway';
+		$_builder_load_actions[] = 'edd_load_gateway';
 	}
+
+	$builder_load_actions = apply_filters( 'et_builder_load_actions', array() );
+	$builder_load_actions = array_merge( $builder_load_actions, $_builder_load_actions );
 
 	$force_builder_load = isset( $_POST['et_load_builder_modules'] ) && '1' === $_POST['et_load_builder_modules'];
 

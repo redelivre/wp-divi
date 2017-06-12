@@ -219,9 +219,12 @@ h1#epanel-title {
 #epanel-mainmenu {
 	background-color: #7e3bd0;
 	display: block;
-	width: 100%;
-	float: left;
 	position: relative;
+	overflow: hidden;
+}
+
+#epanel #epanel-mainmenu {
+	padding-right: 140px;
 }
 
 #epanel-mainmenu li {
@@ -1174,6 +1177,19 @@ input.checkbox.yes_no_button {
 	content: '4';
 }
 
+#epanel p.postinfo-rating_stars img {
+	vertical-align: middle;
+	width: 91px;
+	height: 19px;
+	margin-right: 5px;
+	margin-left: 0px !important;
+}
+
+#epanel p.postinfo-rating_stars .mark:before {
+	content: "\E033";
+	font: 16px 'ETModules';
+}
+
 /**
  * Colorpicker
  */
@@ -1674,6 +1690,11 @@ Copyright (c) 2015 Daniel Eden
 	#epanel-mainmenu li:first-of-type a,
 	#epanel-content ul.idTabs li:first-of-type a {
 		padding: 20px;
+	}
+
+	#epanel-mainmenu li {
+		display: block;
+		float: none;
 	}
 
 	#epanel-content .tab-content {

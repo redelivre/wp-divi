@@ -154,7 +154,7 @@
 								// Remove confirmation popup before relocation.
 								$( window ).unbind( 'beforeunload' );
 
-								window.location = window.location.href;
+								window.location = window.location.href.replace(/reset\=true\&|\&reset\=true/,'');
 							} )
 						}
 					} );

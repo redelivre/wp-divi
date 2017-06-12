@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Divi 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2017-02-08 23:18:38+00:00\n"
-"PO-Revision-Date: 2016-03-30 01:03+0300\n"
+"POT-Creation-Date: 2017-05-18 15:55:34+00:00\n"
+"PO-Revision-Date: 2017-05-18 19:07+0300\n"
 "Last-Translator: \n"
 "Language-Team: Elegant Themes\n"
 "Language: ko\n"
@@ -72,7 +72,7 @@ msgstr "도움말"
 msgid "Options"
 msgstr "옵션"
 
-#: epanel/core_functions.php:121 functions.php:8468
+#: epanel/core_functions.php:121 functions.php:8474
 msgid "Theme Options"
 msgstr "테마 옵션"
 
@@ -88,7 +88,7 @@ msgstr "설정이 리셋되었습니다."
 msgid "Save Changes"
 msgstr "변경 사항 저장"
 
-#: epanel/core_functions.php:161 epanel/core_functions.php:801
+#: epanel/core_functions.php:161 epanel/core_functions.php:814
 msgid "%s Theme Options"
 msgstr "%s 테마 옵션"
 
@@ -96,7 +96,7 @@ msgstr "%s 테마 옵션"
 msgid "Reset to Defaults"
 msgstr "기본값으로 재설정"
 
-#: epanel/core_functions.php:173 options_divi.php:38 options_divi.php:866
+#: epanel/core_functions.php:173 options_divi.php:38 options_divi.php:840
 msgid "General"
 msgstr "일반"
 
@@ -104,7 +104,7 @@ msgstr "일반"
 msgid "Navigation"
 msgstr "네비게이션"
 
-#: epanel/core_functions.php:179 functions.php:696
+#: epanel/core_functions.php:179 functions.php:700
 msgid "Layout"
 msgstr "레이아웃"
 
@@ -126,11 +126,11 @@ msgstr "통합"
 
 #: epanel/core_functions.php:194
 msgid "Support"
-msgstr ""
+msgstr "지원"
 
 #: epanel/core_functions.php:197
 msgid "Updates"
-msgstr ""
+msgstr "업데이트"
 
 #: epanel/core_functions.php:300 epanel/core_functions.php:511
 msgid "Reset"
@@ -168,47 +168,51 @@ msgstr "저작자"
 msgid "Date"
 msgstr "날짜"
 
-#: epanel/core_functions.php:550 options_divi.php:339
+#: epanel/core_functions.php:550 options_divi.php:313
 msgid "Categories"
 msgstr "카테고리"
 
-#: epanel/core_functions.php:759
+#: epanel/core_functions.php:558
+msgid "Ratings"
+msgstr "순위"
+
+#: epanel/core_functions.php:772
 msgid "Choose an Image"
 msgstr "이미지 선택하기"
 
-#: epanel/custom_functions.php:305
+#: epanel/custom_functions.php:287
 msgid "&hellip;"
 msgstr "&hellip;"
 
-#: epanel/custom_functions.php:639 header.php:188 header.php:231
+#: epanel/custom_functions.php:626 header.php:188 header.php:231
 msgid "Home"
 msgstr "홈"
 
-#: epanel/custom_functions.php:936
+#: epanel/custom_functions.php:923
 msgid "Archives"
 msgstr "아카이브"
 
-#: epanel/custom_functions.php:938
+#: epanel/custom_functions.php:925
 msgid "Search results for \"%s\""
 msgstr "\"%s\" 에 대한 검색 결과"
 
-#: epanel/custom_functions.php:940
+#: epanel/custom_functions.php:927
 msgid "404 Not Found"
 msgstr "404 을/를 찾지 못했습니다"
 
-#: epanel/custom_functions.php:1010
+#: epanel/custom_functions.php:997
 msgid "Currently viewing archives from %1$s"
 msgstr "현재 보고 있는 아카이브는 %1$s 에서 온 것입니다"
 
-#: epanel/custom_functions.php:1023
+#: epanel/custom_functions.php:1010
 msgid "Search Results for: %s"
 msgstr "%s에 대한 검색 결과"
 
-#: epanel/custom_functions.php:1264
+#: epanel/custom_functions.php:1251
 msgid "Image doesn't exist"
 msgstr "이미지가 존재하지 않습니다"
 
-#: epanel/custom_functions.php:1429
+#: epanel/custom_functions.php:1416
 msgid ""
 "<div class=\"updated\"><p>This is a fresh installation of %1$s theme. Don't "
 "forget to go to <a href=\"%2$s\">ePanel</a> to set it up. This message will "
@@ -244,7 +248,7 @@ msgstr "아이디: "
 msgid "Password: "
 msgstr "암호: "
 
-#: epanel/shortcodes/shortcodes.php:294 functions.php:3876
+#: epanel/shortcodes/shortcodes.php:294 functions.php:3880
 msgid "Login"
 msgstr "로그인"
 
@@ -428,27 +432,27 @@ msgstr "사이즈 조정 사용"
 msgid "+ Add One More Tab"
 msgstr "+ 탭 한 개더 추가"
 
-#: epanel/shortcodes/shortcodes.php:1335 functions.php:3542
+#: epanel/shortcodes/shortcodes.php:1335 functions.php:3546
 msgid "Image Height"
 msgstr "이미지 높이"
 
-#: epanel/shortcodes/shortcodes.php:1336 functions.php:3522
+#: epanel/shortcodes/shortcodes.php:1336 functions.php:3526
 msgid "Image Width"
 msgstr "이미지 너비"
 
-#: functions.php:40
+#: functions.php:36
 msgid "Primary Menu"
 msgstr "기본 메뉴"
 
-#: functions.php:41
+#: functions.php:37
 msgid "Secondary Menu"
 msgstr "2차 메뉴"
 
-#: functions.php:42 functions.php:711
+#: functions.php:38 functions.php:715
 msgid "Footer Menu"
 msgstr "푸터 메뉴"
 
-#: functions.php:91
+#: functions.php:90
 msgid ""
 "Welcome to Divi! Before diving in to your new theme, please visit the <a "
 "style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank"
@@ -458,605 +462,604 @@ msgstr ""
 "\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank\">Divi "
 "Documentation</a> 페이지에 방문하셔서 여러 심화 튜토리얼을 체험하세요.."
 
-#: functions.php:216
+#: functions.php:215
 msgid "Select Page"
 msgstr "페이지 선택"
 
-#: functions.php:278
+#: functions.php:277
 msgid "Divi Page Settings"
 msgstr "Divi 페이지 설정"
 
-#: functions.php:280
+#: functions.php:279
 msgid "Divi Post Settings"
 msgstr "Divi 포스트 설정"
 
-#: functions.php:281
+#: functions.php:280
 msgid "Divi Product Settings"
 msgstr "Divi 제품 설정"
 
-#: functions.php:282
+#: functions.php:281
 msgid "Divi Project Settings"
 msgstr "Divi 프로젝트 설정"
 
-#: functions.php:289
+#: functions.php:288
 msgid "Skills"
 msgstr "특기"
 
-#: functions.php:292
+#: functions.php:291
 msgid "Posted on"
 msgstr "에 포스트 됨"
 
-#: functions.php:316 options_divi.php:103
+#: functions.php:315 options_divi.php:103
 msgid "Right Sidebar"
 msgstr "오른쪽 사이드바"
 
-#: functions.php:317 options_divi.php:104
+#: functions.php:316 options_divi.php:104
 msgid "Left Sidebar"
 msgstr "왼쪽 사이드바"
 
-#: functions.php:318 options_divi.php:105
+#: functions.php:317 options_divi.php:105
 msgid "Full Width"
 msgstr "전체 너비"
 
-#: functions.php:322
+#: functions.php:321
 msgid "Light"
 msgstr "밝은"
 
-#: functions.php:323
+#: functions.php:322
 msgid "Dark"
 msgstr "어두운"
 
-#: functions.php:336
+#: functions.php:335
 msgid "Page Layout"
 msgstr "페이지 레이아웃"
 
-#: functions.php:350
+#: functions.php:349
 msgid "Dot Navigation"
 msgstr "닷 네비게이션"
 
-#: functions.php:353 functions.php:362
+#: functions.php:352 functions.php:361
 msgid "Off"
 msgstr "끄기"
 
-#: functions.php:354 functions.php:363
+#: functions.php:353 functions.php:362
 msgid "On"
 msgstr "켜기"
 
-#: functions.php:358
+#: functions.php:357
 msgid "Hide Nav Before Scroll"
 msgstr "스크롤 이전의 네비게이션 숨기기"
 
-#: functions.php:361 functions.php:5733 includes/functions/choices.php:24
+#: functions.php:360 functions.php:5737 includes/functions/choices.php:24
 #: includes/functions/choices.php:40
 msgid "Default"
 msgstr "기본"
 
-#: functions.php:369
+#: functions.php:368
 msgid "Post Title"
 msgstr "포스트 제목"
 
-#: functions.php:372 functions.php:407
+#: functions.php:371 functions.php:406
 msgid "Show"
 msgstr "보여주기"
 
-#: functions.php:373 functions.php:406
+#: functions.php:372 functions.php:405
 msgid "Hide"
 msgstr "숨기기"
 
-#: functions.php:378
+#: functions.php:377
 msgid "Use Background Color"
 msgstr "배경 색상 사용"
 
-#: functions.php:383 functions.php:5772
+#: functions.php:382 functions.php:5776
 msgid "Hex Value"
 msgstr "색상 값"
 
-#: functions.php:387 functions.php:2047 functions.php:2074 functions.php:2201
-#: functions.php:2723 functions.php:2851 functions.php:3055
+#: functions.php:386 functions.php:2051 functions.php:2078 functions.php:2205
+#: functions.php:2727 functions.php:2855 functions.php:3059
 msgid "Text Color"
 msgstr "문자 색상"
 
-#: functions.php:403
+#: functions.php:402
 msgid "Project Navigation"
 msgstr "프로젝트 탐색"
 
-#: functions.php:551 functions.php:563 functions.php:8547
+#: functions.php:550 functions.php:562 functions.php:8553
 msgid "you don't have sufficient permissions to access this page"
 msgstr "이 페이지에 액세스 할 수있는 권한이 없습니다"
 
-#: functions.php:611 options_divi.php:344 options_divi.php:492
+#: functions.php:615 options_divi.php:318 options_divi.php:466
 msgid "General Settings"
 msgstr "일반 설정"
 
-#: functions.php:616
+#: functions.php:620
 msgid "Site Identity"
 msgstr "사이트 ID"
 
-#: functions.php:621
+#: functions.php:625
 msgid "Layout Settings"
 msgstr "레이아웃 설정"
 
-#: functions.php:626
+#: functions.php:630
 msgid "Typography"
 msgstr "활판기술"
 
-#: functions.php:631
+#: functions.php:635
 msgid "Mobile Styles"
 msgstr "모바일 양식"
 
-#: functions.php:636
+#: functions.php:640
 msgid "Tablet"
 msgstr "타블렛"
 
-#: functions.php:641
+#: functions.php:645
 msgid "Phone"
 msgstr "폰"
 
-#: functions.php:646
+#: functions.php:650
 msgid "Mobile Menu"
 msgstr "모바일 메뉴"
 
-#: functions.php:651
+#: functions.php:655
 msgid "Background"
 msgstr "배경"
 
-#: functions.php:656
+#: functions.php:660
 msgid "Header & Navigation"
 msgstr "헤더 및 네비게이션"
 
-#: functions.php:661
+#: functions.php:665
 msgid "Header Format"
 msgstr "헤더 양식"
 
-#: functions.php:666
+#: functions.php:670
 msgid "Primary Menu Bar"
 msgstr "주요 메뉴바"
 
-#: functions.php:671
+#: functions.php:675
 msgid "Secondary Menu Bar"
 msgstr "보조 메뉴바"
 
-#: functions.php:676
+#: functions.php:680
 msgid "Slide In & Fullscreen Header Settings"
 msgstr "슬라이드 인 및 전체화면 헤더 설정"
 
-#: functions.php:681
+#: functions.php:685
 msgid "Fixed Navigation Settings"
 msgstr "고정 네비게이션 설정"
 
-#: functions.php:686
+#: functions.php:690
 msgid "Header Elements"
 msgstr "헤더 요소"
 
-#: functions.php:691
+#: functions.php:695
 msgid "Footer"
 msgstr "푸터"
 
-#: functions.php:701
+#: functions.php:705
 msgid "Widgets"
 msgstr "위젯"
 
-#: functions.php:706
+#: functions.php:710
 msgid "Footer Elements"
 msgstr "푸터 요소"
 
-#: functions.php:716
+#: functions.php:720
 msgid "Bottom Bar"
 msgstr "하단 바"
 
-#: functions.php:721 functions.php:1461
+#: functions.php:725 functions.php:1465
 msgid "Color Schemes"
 msgstr "색 배합"
 
-#: functions.php:723
+#: functions.php:727
 msgid ""
 "Note: Color settings set above should be applied to the Default color scheme."
 msgstr "알림: 위의 색상 설정 세트는 기본 색 배합에 적용되어야 합니다."
 
-#: functions.php:727
+#: functions.php:731
 msgid "Buttons"
 msgstr "버튼"
 
-#: functions.php:732
+#: functions.php:736
 msgid "Buttons Style"
 msgstr "버튼 양식"
 
-#: functions.php:737
+#: functions.php:741
 msgid "Buttons Hover Style"
 msgstr "버튼 맴돌 때 양식"
 
-#: functions.php:742 functions.php:5055
+#: functions.php:746 functions.php:5059
 msgid "Blog"
 msgstr "블로그"
 
-#: functions.php:747
+#: functions.php:751
 msgid "Post"
 msgstr "포스트"
 
-#: functions.php:764
+#: functions.php:768
 msgid "Meta Text Size"
 msgstr "메타 문구 사이즈"
 
-#: functions.php:783
+#: functions.php:787
 msgid "Meta Line Height"
 msgstr "메타 줄 높이"
 
-#: functions.php:802
+#: functions.php:806
 msgid "Meta Letter Spacing"
 msgstr "메타 글자 간격"
 
-#: functions.php:821 functions.php:5124 functions.php:5203
+#: functions.php:825 functions.php:5128 functions.php:5207
 msgid "Meta Font Style"
 msgstr "메타 폰트 양식"
 
-#: functions.php:836 functions.php:1261 functions.php:1333 functions.php:1352
-#: functions.php:2469
+#: functions.php:840 functions.php:1265 functions.php:1337 functions.php:1356
+#: functions.php:2473
 msgid "Header Text Size"
 msgstr "헤더 문구 사이즈"
 
-#: functions.php:855 functions.php:1299
+#: functions.php:859 functions.php:1303
 msgid "Header Line Height"
 msgstr "헤더 줄 높이"
 
-#: functions.php:874 functions.php:1280
+#: functions.php:878 functions.php:1284
 msgid "Header Letter Spacing"
 msgstr "헤더 글자 간격"
 
-#: functions.php:893 functions.php:1318 functions.php:2488 functions.php:3411
-#: functions.php:3589 functions.php:3704 functions.php:3767 functions.php:3846
-#: functions.php:3910 functions.php:4701 functions.php:5397 functions.php:5503
+#: functions.php:897 functions.php:1322 functions.php:2492 functions.php:3415
+#: functions.php:3593 functions.php:3708 functions.php:3771 functions.php:3850
+#: functions.php:3914 functions.php:4705 functions.php:5401 functions.php:5507
 msgid "Header Font Style"
 msgstr "헤드 폰트 양식"
 
-#: functions.php:907
+#: functions.php:911
 msgid "Enable Boxed Layout"
 msgstr "박스 레이아웃 활성화"
 
-#: functions.php:921
+#: functions.php:925
 msgid "Website Content Width"
 msgstr "웹사이트 내용 너비"
 
-#: functions.php:940
+#: functions.php:944
 msgid "Website Gutter Width"
 msgstr "웹사이트 열 간격"
 
-#: functions.php:958
+#: functions.php:962
 msgid "Use Custom Sidebar Width"
 msgstr "사용자 정의 사이드 바 너비를 사용하여"
 
-#: functions.php:972
+#: functions.php:976
 msgid "Sidebar Width"
 msgstr "사이드바 너비"
 
-#: functions.php:991 functions.php:1010 functions.php:1029
+#: functions.php:995 functions.php:1014 functions.php:1033
 msgid "Section Height"
 msgstr "절 높이"
 
-#: functions.php:1048 functions.php:1067 functions.php:1086
+#: functions.php:1052 functions.php:1071 functions.php:1090
 msgid "Row Height"
 msgstr "행 높이"
 
-#: functions.php:1105
+#: functions.php:1109
 msgid "Stretch Background Image"
 msgstr "배경 이미지 늘리기"
 
-#: functions.php:1112 functions.php:1725 functions.php:2102 functions.php:2173
-#: functions.php:2187 functions.php:2709 functions.php:2865 functions.php:3069
+#: functions.php:1116 functions.php:1729 functions.php:2106 functions.php:2177
+#: functions.php:2191 functions.php:2713 functions.php:2869 functions.php:3073
 msgid "Background Color"
 msgstr "배경 색상"
 
-#: functions.php:1119
+#: functions.php:1123
 msgid "Background Image"
 msgstr "배경 이미지:"
 
-#: functions.php:1139
+#: functions.php:1143
 msgid "Background Repeat"
 msgstr "배경 반복"
 
-#: functions.php:1146 functions.php:1170
+#: functions.php:1150 functions.php:1174
 msgid "Background Position"
 msgstr "배경 위치"
 
-#: functions.php:1150 includes/functions/choices.php:106
+#: functions.php:1154 includes/functions/choices.php:106
 msgid "Left"
 msgstr "왼쪽"
 
-#: functions.php:1151
+#: functions.php:1155
 msgid "Center"
 msgstr "가운데"
 
-#: functions.php:1152 includes/functions/choices.php:105
+#: functions.php:1156 includes/functions/choices.php:105
 msgid "Right"
 msgstr "오른쪽"
 
-#: functions.php:1185 functions.php:1223 functions.php:1242
+#: functions.php:1189 functions.php:1227 functions.php:1246
 msgid "Body Text Size"
 msgstr "본문 문구 사이즈"
 
-#: functions.php:1204
+#: functions.php:1208
 msgid "Body Line Height"
 msgstr "본문 줄 높이"
 
-#: functions.php:1372
+#: functions.php:1376
 msgid "Header Font"
 msgstr "헤더 폰트"
 
-#: functions.php:1388
+#: functions.php:1392
 msgid "Body Font"
 msgstr "바디 폰트"
 
-#: functions.php:1405
+#: functions.php:1409
 msgid "Body Link Color"
 msgstr "본문 링크 색"
 
-#: functions.php:1419
+#: functions.php:1423
 msgid "Body Text Color"
 msgstr "본문 문구 색"
 
-#: functions.php:1433
+#: functions.php:1437
 msgid "Header Text Color"
 msgstr "헤더 문구 색"
 
-#: functions.php:1447
+#: functions.php:1451
 msgid "Theme Accent Color"
 msgstr "테마 강조 색"
 
-#: functions.php:1477
+#: functions.php:1481
 msgid "Header Style"
 msgstr "헤더 스타일"
 
-#: functions.php:1491
+#: functions.php:1495
 msgid "Enable Vertical Navigation"
 msgstr "수직 네비게이션 활성화"
 
-#: functions.php:1505
+#: functions.php:1509
 msgid "Vertical Menu Orientation"
 msgstr "수직 메뉴 방향"
 
-#: functions.php:1521
+#: functions.php:1525
 msgid "Hide Navigation Until Scroll"
 msgstr "스크롤까지 네비게이션 숨기기"
 
-#: functions.php:1536 functions.php:2425
+#: functions.php:1540 functions.php:2429
 msgid "Show Social Icons"
 msgstr "소셜 아이콘 보이기"
 
-#: functions.php:1550
+#: functions.php:1554
 msgid "Show Search Icon"
 msgstr "검색 아이콘 보여주기"
 
-#: functions.php:1564
+#: functions.php:1568
 msgid "Show Top Bar"
 msgstr "상단 바 보기"
 
-#: functions.php:1578
+#: functions.php:1582
 msgid "Menu Width"
 msgstr "메뉴 폭"
 
-#: functions.php:1597 functions.php:1635
+#: functions.php:1601 functions.php:1639
 msgid "Menu Text Size"
 msgstr "메뉴 텍스트 크기"
 
-#: functions.php:1616 functions.php:1654
+#: functions.php:1620 functions.php:1658
 msgid "Top Bar Text Size"
 msgstr "상단 바 텍스트 크기"
 
-#: functions.php:1673 functions.php:1911 functions.php:1995 functions.php:2655
-#: functions.php:2931 functions.php:3116
+#: functions.php:1677 functions.php:1915 functions.php:1999 functions.php:2659
+#: functions.php:2935 functions.php:3120
 msgid "Letter Spacing"
 msgstr "글자 간격"
 
-#: functions.php:1693 functions.php:1931 functions.php:2015
+#: functions.php:1697 functions.php:1935 functions.php:2019
 msgid "Font"
 msgstr "폰트"
 
-#: functions.php:1710 functions.php:1948 functions.php:2032 functions.php:2674
-#: functions.php:2737
+#: functions.php:1714 functions.php:1952 functions.php:2036 functions.php:2678
+#: functions.php:2741
 msgid "Font Style"
 msgstr "폰트 양식"
 
-#: functions.php:1739
+#: functions.php:1743
 msgid "Menu Link Color"
 msgstr "메뉴 링크 색상"
 
-#: functions.php:1753 functions.php:2088
+#: functions.php:1757 functions.php:2092
 msgid "Active Link Color"
 msgstr "활성 링크 색"
 
-#: functions.php:1767
+#: functions.php:1771
 msgid "Top Bar Text Color"
 msgstr "상단 바 텍스트 색상"
 
-#: functions.php:1781
+#: functions.php:1785
 msgid "Search Bar Text Color"
 msgstr "검색 바 텍스트 색상"
 
-#: functions.php:1795
+#: functions.php:1799
 msgid "Search Bar Background Color"
 msgstr "검색 바 배경 색상"
 
-#: functions.php:1808 functions.php:1970
+#: functions.php:1812 functions.php:1974
 msgid "Make Full Width"
 msgstr "전체 너비 만들기"
 
-#: functions.php:1821 functions.php:2060 functions.php:2276
+#: functions.php:1825 functions.php:2064 functions.php:2280
 msgid "Hide Logo Image"
 msgstr "로고 이미지 숨기기"
 
-#: functions.php:1835
+#: functions.php:1839
 msgid "Menu Height"
 msgstr "메뉴 높이"
 
-#: functions.php:1854
+#: functions.php:1858
 msgid "Logo Max Height"
 msgstr "로고 최대 높이"
 
-#: functions.php:1873
+#: functions.php:1877
 msgid "Menu Top Margin"
-msgstr ""
+msgstr "메뉴 상단 여백"
 
-#: functions.php:1892 functions.php:1976 functions.php:2309 functions.php:2832
+#: functions.php:1896 functions.php:1980 functions.php:2313 functions.php:2836
 msgid "Text Size"
 msgstr "문구 사이즈"
 
-#: functions.php:2116 functions.php:2215
+#: functions.php:2120 functions.php:2219
 msgid "Dropdown Menu Background Color"
 msgstr "드랍다운 메뉴 배경 색"
 
-#: functions.php:2130
+#: functions.php:2134
 msgid "Dropdown Menu Line Color"
 msgstr "드랍다운 메뉴 줄 색"
 
-#: functions.php:2144 functions.php:2229
+#: functions.php:2148 functions.php:2233
 msgid "Dropdown Menu Text Color"
 msgstr "드랍다운 메뉴 문구 색"
 
-#: functions.php:2158 functions.php:2243
+#: functions.php:2162 functions.php:2247
 msgid "Dropdown Menu Animation"
 msgstr "드랍다운 메뉴 애니메이션"
 
-#: functions.php:2290
+#: functions.php:2294
 msgid "Fixed Menu Height"
 msgstr "고정 메뉴 높이"
 
-#: functions.php:2328
+#: functions.php:2332
 msgid "Primary Menu Background Color"
 msgstr "주요 메뉴 배경 색"
 
-#: functions.php:2342
+#: functions.php:2346
 msgid "Secondary Menu Background Color"
 msgstr "보조 메뉴 배경 색"
 
-#: functions.php:2356
+#: functions.php:2360
 msgid "Primary Menu Link Color"
 msgstr "주 메뉴 링크 색상"
 
-#: functions.php:2370
+#: functions.php:2374
 msgid "Secondary Menu Link Color"
 msgstr "보조 메뉴 링크 색상"
 
-#: functions.php:2384
+#: functions.php:2388
 msgid "Active Primary Menu Link Color"
 msgstr "활성 기본 메뉴 링크 색상"
 
-#: functions.php:2398
+#: functions.php:2402
 msgid "Phone Number"
 msgstr "전화 번호"
 
-#: functions.php:2411
+#: functions.php:2415
 msgid "Email"
 msgstr "이메일"
 
-#: functions.php:2439
+#: functions.php:2443
 msgid "Column Layout"
 msgstr "열 레이아웃"
 
-#: functions.php:2455
+#: functions.php:2459
 msgid "Footer Background Color"
 msgstr "푸터 배경 색상"
 
-#: functions.php:2503
+#: functions.php:2507
 msgid "Body/Link Text Size"
 msgstr "본문/링크 문구 사이즈"
 
-#: functions.php:2522
+#: functions.php:2526
 msgid "Body/Link Line Height"
 msgstr "본문/링크 줄 높이"
 
-#: functions.php:2541
+#: functions.php:2545
 msgid "Body Font Style"
 msgstr "본문 폰트 양식"
 
-#: functions.php:2556
+#: functions.php:2560
 msgid "Widget Text Color"
 msgstr "위젯 문구 색"
 
-#: functions.php:2570
+#: functions.php:2574
 msgid "Widget Link Color"
 msgstr "위젯 링크 색"
 
-#: functions.php:2584
+#: functions.php:2588
 msgid "Widget Header Color"
 msgstr "위젯 헤더 색"
 
-#: functions.php:2598
+#: functions.php:2602
 msgid "Widget Bullet Color"
 msgstr "위젯 점 색"
 
-#: functions.php:2613
+#: functions.php:2617
 msgid "Footer Menu Background Color"
 msgstr "푸터 메뉴 배경 색"
 
-#: functions.php:2627
+#: functions.php:2631
 msgid "Footer Menu Text Color"
 msgstr "푸터 메뉴 문구 색"
 
-#: functions.php:2641
+#: functions.php:2645
 msgid "Footer Menu Active Link Color"
 msgstr "푸터 메뉴 활성 링크 색"
 
-#: functions.php:2689 functions.php:2752
+#: functions.php:2693 functions.php:2756
 msgid "Font Size"
 msgstr "폰트 사이즈"
 
-#: functions.php:2771
+#: functions.php:2775
 msgid "Social Icon Size"
 msgstr "소셜 아이콘 사이즈"
 
-#: functions.php:2790
+#: functions.php:2794
 msgid "Social Icon Color"
 msgstr "소셜 아이콘 색"
 
-#: functions.php:2803
+#: functions.php:2807
 msgid "Disable Footer Credits"
-msgstr ""
+msgstr "푸터 저작권 문구 사용 안 함"
 
-#: functions.php:2817
-#, fuzzy
+#: functions.php:2821
 msgid "Edit Footer Credits"
-msgstr "풋터 영역"
+msgstr "푸터 저작권 문구 편집"
 
-#: functions.php:2879
+#: functions.php:2883
 msgid "Border Width"
 msgstr "테두리 너비"
 
-#: functions.php:2898 functions.php:3083
+#: functions.php:2902 functions.php:3087
 msgid "Border Color"
 msgstr "테두리 색"
 
-#: functions.php:2912 functions.php:3097
+#: functions.php:2916 functions.php:3101
 msgid "Border Radius"
 msgstr "테두리 반경"
 
-#: functions.php:2950 functions.php:5440
+#: functions.php:2954 functions.php:5444
 msgid "Button Font Style"
 msgstr "버튼 폰트 양식"
 
-#: functions.php:2966
+#: functions.php:2970
 msgid "Buttons Font"
 msgstr "버튼 폰트"
 
-#: functions.php:2982
+#: functions.php:2986
 msgid "Add Button Icon"
 msgstr "버튼 아이콘 추가"
 
-#: functions.php:2997
+#: functions.php:3001
 msgid "Select Icon"
 msgstr "아이콘 선택"
 
-#: functions.php:3011
+#: functions.php:3015
 msgid "Icon Color"
 msgstr "아이콘 색상"
 
-#: functions.php:3025
+#: functions.php:3029
 msgid "Icon Placement"
 msgstr "아이콘 배치"
 
-#: functions.php:3040
+#: functions.php:3044
 msgid "Only Show Icon on Hover"
 msgstr "맴돌 때만 아이콘 보이기"
 
-#: functions.php:3134 includes/widgets/widget-about.php:50
+#: functions.php:3138 includes/widgets/widget-about.php:50
 #: includes/widgets/widget-ads.php:180 includes/widgets/widget-ads.php:188
 #: includes/widgets/widget-ads.php:196 includes/widgets/widget-ads.php:204
 #: includes/widgets/widget-ads.php:212 includes/widgets/widget-ads.php:220
@@ -1064,399 +1067,399 @@ msgstr "맴돌 때만 아이콘 보이기"
 msgid "Image"
 msgstr "이미지"
 
-#: functions.php:3135
+#: functions.php:3139
 msgid "Image Module Settings"
 msgstr "이미지 모듈 성정"
 
-#: functions.php:3146
+#: functions.php:3150
 msgid "Animation"
 msgstr "애니메이션"
 
-#: functions.php:3147
+#: functions.php:3151
 msgid "This controls default direction of the lazy-loading animation."
 msgstr "이것은 느린 로딩 애니메이션의 기본방향을 제어합니다."
 
-#: functions.php:3157
+#: functions.php:3161
 msgid "Gallery"
 msgstr "갤러리"
 
-#: functions.php:3170 functions.php:3953 functions.php:4062
+#: functions.php:3174 functions.php:3957 functions.php:4066
 msgid "Zoom Icon Color"
 msgstr "아이콘 색 확대"
 
-#: functions.php:3185 functions.php:3968 functions.php:4077
+#: functions.php:3189 functions.php:3972 functions.php:4081
 msgid "Hover Overlay Color"
 msgstr "맴돌 때 오버레이 색"
 
-#: functions.php:3200 functions.php:3306 functions.php:3983 functions.php:4092
-#: functions.php:4361 functions.php:4440 functions.php:4482 functions.php:4582
+#: functions.php:3204 functions.php:3310 functions.php:3987 functions.php:4096
+#: functions.php:4365 functions.php:4444 functions.php:4486 functions.php:4586
 msgid "Title Font Size"
 msgstr "제목 폰트 사이즈"
 
-#: functions.php:3220 functions.php:3326 functions.php:4003 functions.php:4112
-#: functions.php:4381 functions.php:4460 functions.php:5088 functions.php:5167
+#: functions.php:3224 functions.php:3330 functions.php:4007 functions.php:4116
+#: functions.php:4385 functions.php:4464 functions.php:5092 functions.php:5171
 msgid "Title Font Style"
 msgstr "제목 폰트 양식"
 
-#: functions.php:3236 functions.php:4019 functions.php:4128
+#: functions.php:3240 functions.php:4023 functions.php:4132
 msgid "Caption Font Size"
 msgstr "자막 폰트 사이즈"
 
-#: functions.php:3256 functions.php:4039 functions.php:4148
+#: functions.php:3260 functions.php:4043 functions.php:4152
 msgid "Caption Font Style"
 msgstr "자막 폰트 양식"
 
-#: functions.php:3266
+#: functions.php:3270
 msgid "Blurb"
 msgstr "안내문"
 
-#: functions.php:3279 functions.php:3391 functions.php:3569 functions.php:3684
-#: functions.php:3747 functions.php:3826 functions.php:3890 functions.php:4681
-#: functions.php:5377 functions.php:5483
+#: functions.php:3283 functions.php:3395 functions.php:3573 functions.php:3688
+#: functions.php:3751 functions.php:3830 functions.php:3894 functions.php:4685
+#: functions.php:5381 functions.php:5487
 msgid "Header Font Size"
 msgstr "헤더 폰트 사이즈"
 
-#: functions.php:3293
+#: functions.php:3297
 msgid "Tabs"
 msgstr "탭"
 
-#: functions.php:3343 functions.php:3720 functions.php:3862 functions.php:3926
+#: functions.php:3347 functions.php:3724 functions.php:3866 functions.php:3930
 msgid "Padding"
 msgstr "내부여백"
 
-#: functions.php:3357
+#: functions.php:3361
 msgid "Slider"
 msgstr "슬라이더"
 
-#: functions.php:3371 functions.php:5463
+#: functions.php:3375 functions.php:5467
 msgid "Top & Bottom Padding"
 msgstr "상단 및 하단 내부여백"
 
-#: functions.php:3427 functions.php:5519
+#: functions.php:3431 functions.php:5523
 msgid "Content Font Size"
 msgstr "내용 폰트 사이즈"
 
-#: functions.php:3447 functions.php:5539
+#: functions.php:3451 functions.php:5543
 msgid "Content Font Style"
 msgstr "내용 폰트 양식"
 
-#: functions.php:3457
+#: functions.php:3461
 msgid "Testimonial"
 msgstr "추천글"
 
-#: functions.php:3470 functions.php:4989
+#: functions.php:3474 functions.php:4993
 msgid "Name Font Style"
 msgstr "이름 폰트 양식"
 
-#: functions.php:3486
+#: functions.php:3490
 msgid "Details Font Style"
 msgstr "상세 폰트 양식"
 
-#: functions.php:3502
+#: functions.php:3506
 msgid "Portrait Border Radius"
 msgstr "인물사진 반지름"
 
-#: functions.php:3556
+#: functions.php:3560
 msgid "Pricing Table"
 msgstr "가격 테이블"
 
-#: functions.php:3605 functions.php:3783 functions.php:5005
+#: functions.php:3609 functions.php:3787 functions.php:5009
 msgid "Subheader Font Size"
 msgstr "소제목 폰트 사이즈"
 
-#: functions.php:3625 functions.php:3803 functions.php:5025
+#: functions.php:3629 functions.php:3807 functions.php:5029
 msgid "Subheader Font Style"
 msgstr "소제목 폰트 양식"
 
-#: functions.php:3641 functions.php:5298
+#: functions.php:3645 functions.php:5302
 msgid "Price Font Size"
 msgstr "가격 폰트 사이즈"
 
-#: functions.php:3661
+#: functions.php:3665
 msgid "Pricing Font Style"
 msgstr "가격 폰트 양식"
 
-#: functions.php:3671
+#: functions.php:3675
 msgid "Call To Action"
 msgstr "행동개시"
 
-#: functions.php:3734
+#: functions.php:3738
 msgid "Audio"
 msgstr "오디오"
 
-#: functions.php:3813
+#: functions.php:3817
 msgid "Email Optin"
 msgstr "이메일 수신 선택"
 
-#: functions.php:3940
+#: functions.php:3944
 msgid "Portfolio"
 msgstr "포트폴리오"
 
-#: functions.php:4049
+#: functions.php:4053
 msgid "Filterable Portfolio"
 msgstr "필터 가능한 포트폴리오"
 
-#: functions.php:4164
+#: functions.php:4168
 msgid "Filters Font Size"
 msgstr "필터 폰트 사이즈"
 
-#: functions.php:4184
+#: functions.php:4188
 msgid "Filters Font Style"
 msgstr "필터 폰트 양식"
 
-#: functions.php:4194
+#: functions.php:4198
 msgid "Bar Counter"
 msgstr "바 카운터"
 
-#: functions.php:4207
+#: functions.php:4211
 msgid "Label Font Size"
 msgstr "라벨 폰트 사이즈"
 
-#: functions.php:4227
+#: functions.php:4231
 msgid "Label Font Style"
 msgstr "라벨 폰트 양식"
 
-#: functions.php:4243
+#: functions.php:4247
 msgid "Percent Font Size"
 msgstr "퍼센트 폰트 사이즈"
 
-#: functions.php:4263
+#: functions.php:4267
 msgid "Percent Font Style"
 msgstr "퍼센트 폰트 양식"
 
-#: functions.php:4279
+#: functions.php:4283
 msgid "Bar Padding"
 msgstr "바 내부여백"
 
-#: functions.php:4299
+#: functions.php:4303
 msgid "Bar Border Radius"
 msgstr "바 테두리 반지름"
 
-#: functions.php:4313
+#: functions.php:4317
 msgid "Circle Counter"
 msgstr "원형 카운터"
 
-#: functions.php:4325 functions.php:4404
+#: functions.php:4329 functions.php:4408
 msgid "Number Font Size"
 msgstr "숫자 폰트 사이즈"
 
-#: functions.php:4345 functions.php:4424
+#: functions.php:4349 functions.php:4428
 msgid "Number Font Style"
 msgstr "숫자 폰트 양식"
 
-#: functions.php:4391
+#: functions.php:4395
 msgid "Number Counter"
 msgstr "숫자 카운터"
 
-#: functions.php:4470
+#: functions.php:4474
 msgid "Accordion"
 msgstr "아코디언"
 
-#: functions.php:4502 functions.php:4602
+#: functions.php:4506 functions.php:4606
 msgid "Opened Title Font Style"
 msgstr "열린 제목 폰트 양식"
 
-#: functions.php:4518 functions.php:4618
+#: functions.php:4522 functions.php:4622
 msgid "Closed Title Font Style"
 msgstr "닫힌 제목 폰트 양식"
 
-#: functions.php:4534 functions.php:4634
+#: functions.php:4538 functions.php:4638
 msgid "Toggle Icon Size"
 msgstr "토글 아이콘 사이즈"
 
-#: functions.php:4555 functions.php:4654
+#: functions.php:4559 functions.php:4658
 msgid "Toggle Padding"
 msgstr "토글 내부여백"
 
-#: functions.php:4569
+#: functions.php:4573
 msgid "Toggle"
 msgstr "토글"
 
-#: functions.php:4668
+#: functions.php:4672
 msgid "Contact Form"
 msgstr "연락처 양식"
 
-#: functions.php:4717
+#: functions.php:4721
 msgid "Input Font Size"
 msgstr "입력 폰트 사이즈"
 
-#: functions.php:4737
+#: functions.php:4741
 msgid "Input Font Style"
 msgstr "입력 폰트 양식"
 
-#: functions.php:4753
+#: functions.php:4757
 msgid "Input Field Padding"
 msgstr "입력 칸 내부여백"
 
-#: functions.php:4773
+#: functions.php:4777
 msgid "Captcha Font Size"
 msgstr "캡챠 폰트 사이즈"
 
-#: functions.php:4793
+#: functions.php:4797
 msgid "Captcha Font Style"
 msgstr "캡챠 폰트 양식"
 
-#: functions.php:4803 includes/functions/sidebars.php:4
+#: functions.php:4807 includes/functions/sidebars.php:4
 msgid "Sidebar"
 msgstr "사이드바"
 
-#: functions.php:4816
+#: functions.php:4820
 msgid "Widget Header Font Size"
 msgstr "위젯 헤더 폰트 사이즈"
 
-#: functions.php:4836
+#: functions.php:4840
 msgid "Widget Header Font Style"
 msgstr "위젯 헤더 폰트 양식"
 
-#: functions.php:4852
+#: functions.php:4856
 msgid "Remove Vertical Divider"
 msgstr "수직 분리기호 제거"
 
-#: functions.php:4861
+#: functions.php:4865
 msgid "Divider"
 msgstr "디바이더"
 
-#: functions.php:4873
+#: functions.php:4877
 msgid "Show Divider"
 msgstr "디바이더 보여주기"
 
-#: functions.php:4888
+#: functions.php:4892
 msgid "Divider Style"
 msgstr "분리기호 양식"
 
-#: functions.php:4905
+#: functions.php:4909
 msgid "Divider Weight"
 msgstr "분리기호 무게"
 
-#: functions.php:4925
+#: functions.php:4929
 msgid "Divider Height"
 msgstr "분리기호 높이"
 
-#: functions.php:4945
+#: functions.php:4949
 msgid "Divider Position"
 msgstr "분리기호 위치"
 
-#: functions.php:4956
+#: functions.php:4960
 msgid "Person"
 msgstr "인물"
 
-#: functions.php:4969
+#: functions.php:4973
 msgid "Name Font Size"
 msgstr "이름 폰트 사이즈"
 
-#: functions.php:5041
+#: functions.php:5045
 msgid "Social Network Icon Size"
 msgstr "소셜 네트워크 아이콘 사이즈"
 
-#: functions.php:5068 functions.php:5147
+#: functions.php:5072 functions.php:5151
 msgid "Post Title Font Size"
 msgstr "포스트 제목 폰트 사이즈"
 
-#: functions.php:5104 functions.php:5183
+#: functions.php:5108 functions.php:5187
 msgid "Meta Font Size"
 msgstr "메타 폰트 사이즈"
 
-#: functions.php:5134
+#: functions.php:5138
 msgid "Blog Grid"
 msgstr "블로그 그리드"
 
-#: functions.php:5213
+#: functions.php:5217
 msgid "Shop"
 msgstr "상점"
 
-#: functions.php:5226
+#: functions.php:5230
 msgid "Product Name Font Size"
 msgstr "제품명 폰트 사이즈"
 
-#: functions.php:5246
+#: functions.php:5250
 msgid "Product Name Font Style"
 msgstr "제품명 폰트 사이즈"
 
-#: functions.php:5262
+#: functions.php:5266
 msgid "Sale Badge Font Size"
 msgstr "판매 뱃지"
 
-#: functions.php:5282
+#: functions.php:5286
 msgid "Sale Badge Font Style"
 msgstr "판매 뱃지 폰트 양식"
 
-#: functions.php:5318
+#: functions.php:5322
 msgid "Price Font Style"
 msgstr "가격 폰트 양식"
 
-#: functions.php:5334
+#: functions.php:5338
 msgid "Sale Price Font Size"
 msgstr "판매가격 폰트 사이즈"
 
-#: functions.php:5354
+#: functions.php:5358
 msgid "Sale Price Font Style"
 msgstr "판매가격 폰트 양식"
 
-#: functions.php:5364
+#: functions.php:5368
 msgid "Countdown"
 msgstr "카운트다운"
 
-#: functions.php:5407
+#: functions.php:5411
 msgid "Social Follow"
 msgstr "소셜 팔로우"
 
-#: functions.php:5420
+#: functions.php:5424
 msgid "Follow Font & Icon Size"
 msgstr "폰트 및 아이콘 사이즈 따라가기"
 
-#: functions.php:5450
+#: functions.php:5454
 msgid "Fullwidth Slider"
 msgstr "전각 슬라이더"
 
-#: functions.php:7971
+#: functions.php:7977
 msgid "0 comments"
 msgstr "코멘트 0개"
 
-#: functions.php:7971
+#: functions.php:7977
 msgid "1 comment"
 msgstr "코멘트 1개"
 
-#: functions.php:7971
+#: functions.php:7977
 msgid "comments"
 msgstr "코멘트"
 
-#: functions.php:8054
+#: functions.php:8060
 msgid "Password Protected"
 msgstr "암호로 보호됨"
 
-#: functions.php:8055
+#: functions.php:8061
 msgid "To view this protected post, enter the password below"
 msgstr "이 보호된 포스트를 보시려면 아래에 암호를 입력하세요"
 
-#: functions.php:8058
+#: functions.php:8064
 msgid "Password"
 msgstr "암호"
 
-#: functions.php:8059
+#: functions.php:8065
 msgid "Submit"
 msgstr "제출"
 
-#: functions.php:8472 functions.php:8508
+#: functions.php:8478 functions.php:8514
 msgid "Theme Customizer"
 msgstr "테마 커스터마이저"
 
-#: functions.php:8476 functions.php:8521
+#: functions.php:8482 functions.php:8527
 msgid "Module Customizer"
 msgstr "모듈 커스터마이저"
 
-#: functions.php:8478
+#: functions.php:8484
 msgid "Role Editor"
 msgstr "역할 편집기"
 
-#: functions.php:8481
+#: functions.php:8487
 msgid "Divi Library"
 msgstr "Divi 라이브러리"
 
-#: functions.php:8694
+#: functions.php:8700
 msgid "Divi Customizer Settings"
 msgstr "Divi 사용자 정의 세팅"
 
-#: functions.php:8735
+#: functions.php:8741
 msgid "Designed by %1$s | Powered by %2$s"
 msgstr "%1$s 디자인 | %2$s 제공"
 
@@ -1891,36 +1894,27 @@ msgstr ""
 "여기서 WooCommerce 을/를 위한 쇼핑 페이지 & 카테고리 페이지 레이아웃을 선택"
 "할 수 있습니다."
 
-#: options_divi.php:112
-msgid "MailChimp API Key"
-msgstr "MailChimp API 키"
-
-#: options_divi.php:117
-msgid ""
-"Enter your MailChimp API key. You can create an api key <a target=\"_blank\" "
-"href=\"%1$s\">here</a>"
-msgstr ""
-"당신의 MailChimp API 키를 입력하세요. 당신은 api 키를 만들 수 있습니다 <a "
-"target=\"_blank\" href=\"%1$s\">here</a>"
+#: options_divi.php:113
+msgid "Google API Key"
+msgstr "Google API 키"
 
 #: options_divi.php:121
-#, fuzzy
-msgid "Google API Key"
-msgstr "Google"
-
-#: options_divi.php:129
 msgid ""
 "The Maps module uses the Google Maps API and requires a valid Google API Key "
 "to function. Before using the map module, please make sure you have added "
 "your API key here. Learn more about how to create your Google API Key <a "
 "target=\"_blank\" href=\"%1$s\">here</a>."
 msgstr ""
+"Maps 모듈은 Google Maps API를 사용하므로, 제대로 작동하려면 유효한 Google "
+"API 키가 있어야 합니다. 지도 모듈을 사용하기 전에 이곳에서 API 키를 추가했는"
+"지 확인하시기 바랍니다. Google API 키의 생성 방법에 관한 자세한 정보는 <a "
+"target=\"_blank\" href=\"%1$s\">here</a>를 참고해 주세요."
 
-#: options_divi.php:133
+#: options_divi.php:125
 msgid "Enqueue Google Maps Script"
-msgstr ""
+msgstr "Google Maps 스크립트의 인큐"
 
-#: options_divi.php:140
+#: options_divi.php:132
 msgid ""
 "Disable this option to remove the Google Maps API script from your Divi "
 "Builder Pages. This may improve compatibility with third party plugins that "
@@ -1929,112 +1923,82 @@ msgid ""
 "Modules, will still be available but will not function while this option is "
 "disabled (unless you manually add Google Maps API script)."
 msgstr ""
+"Google Maps API 스크립트를 Divi 빌더 페이지에서 제거하려면 이 옵션을 사용하"
+"지 마십시오. 이렇게 하면, 이 스크립트를 인큐하는 제삼자 플러그인과의 호환성"
+"이 향상될 수 있습니다. 참고: 이 옵션을 사용하지 않고도, Google Maps API에 의"
+"존하는 모듈들(Maps, Fullwidth Maps 모듈 등)을 계속 제공할 수는 있습니다. 하지"
+"만, 직접 Google Maps API 스크립트를 추가하지 않는 한 모듈이 정상 작동되지는 "
+"않습니다."
 
-#: options_divi.php:143
-msgid "Aweber Authorization"
-msgstr "Aweber 인증"
-
-#: options_divi.php:145
-msgid "Authorize your Aweber account here."
-msgstr "당신의 Aweber 계정을 여기서 인증하세요."
-
-#: options_divi.php:149
-msgid "Regenerate MailChimp Lists"
-msgstr "MailChimp 목록 재생성"
-
-#: options_divi.php:153
-msgid ""
-"By default, MailChimp lists are cached for one day. If you added new list, "
-"but it doesn't appear within the Email Optin module settings, activate this "
-"option. Don't forget to disable it once the list has been regenerated."
-msgstr ""
-"기본적으로 메일 침프리스트는 하루 동안 캐시됩니다. 새로운 목록을 추가,하지만 "
-"이메일 별 수신 모듈 설정에서 표시되지 않는 경우,이 옵션을 활성화합니다. 목록"
-"이 재생 된 후 사용하지 않도록 설정하는 것을 잊지 마십시오."
-
-#: options_divi.php:155
-msgid "Regenerate Aweber Lists"
-msgstr "Aweber 목록 재생성"
-
-#: options_divi.php:159
-msgid ""
-"By default, Aweber lists are cached for one day. If you added new list, but "
-"it doesn't appear within the Email Optin module settings, activate this "
-"option. Don't forget to disable it once the list has been regenerated."
-msgstr ""
-"기본적으로 Aweber리스트는 하루 동안 캐시됩니다. 새로운 목록을 추가,하지만 이"
-"메일 별 수신 모듈 설정에서 표시되지 않는 경우,이 옵션을 활성화합니다. 목록이 "
-"재생 된 후 사용하지 않도록 설정하는 것을 잊지 마십시오."
-
-#: options_divi.php:161
+#: options_divi.php:135
 msgid "Show Facebook Icon"
 msgstr "Facebook 아이콘 보이기"
 
-#: options_divi.php:165
+#: options_divi.php:139
 msgid "Here you can choose to display the Facebook Icon on your homepage. "
 msgstr "당신의 홈페이지에 Facebook 아이콘이 보여지도록 선택할 수 있습니다. "
 
-#: options_divi.php:167
+#: options_divi.php:141
 msgid "Show Twitter Icon"
 msgstr "Twitter 아이콘 보이기"
 
-#: options_divi.php:171
+#: options_divi.php:145
 msgid "Here you can choose to display the Twitter Icon. "
 msgstr "당신의 홈페이지에 Twitter 아이콘이 보여지도록 선택할 수 있습니다. "
 
-#: options_divi.php:173
+#: options_divi.php:147
 msgid "Show Google+ Icon"
 msgstr "Google+ 아이콘 보이기"
 
-#: options_divi.php:177
+#: options_divi.php:151
 msgid "Here you can choose to display the Google+ Icon on your homepage. "
 msgstr "당신의 홈페이지에 Google+ 아이콘이 보여지도록 선택할 수 있습니다. "
 
-#: options_divi.php:179
+#: options_divi.php:153
 msgid "Show RSS Icon"
 msgstr "RSS 아이콘 보이기"
 
-#: options_divi.php:183
+#: options_divi.php:157
 msgid "Here you can choose to display the RSS Icon. "
 msgstr "당신의 홈페이지에 RSS 아이콘이 보여지도록 선택할 수 있습니다."
 
-#: options_divi.php:185
+#: options_divi.php:159
 msgid "Facebook Profile Url"
 msgstr "Facebook 프로필 URL"
 
-#: options_divi.php:190
+#: options_divi.php:164
 msgid "Enter the URL of your Facebook Profile. "
 msgstr "Facebook 프로필 URL 을 입력하십시오. "
 
-#: options_divi.php:192
+#: options_divi.php:166
 msgid "Twitter Profile Url"
 msgstr "Twitter 프로필 URL"
 
-#: options_divi.php:197
+#: options_divi.php:171
 msgid "Enter the URL of your Twitter Profile."
 msgstr "Twitter 프로필 URL 을 입력하십시오."
 
-#: options_divi.php:199
+#: options_divi.php:173
 msgid "Google+ Profile Url"
 msgstr "Google+ 프로필 URL"
 
-#: options_divi.php:204
+#: options_divi.php:178
 msgid "Enter the URL of your Google+ Profile. "
 msgstr "Google+ 프로필 URL 을 입력하십시오. "
 
-#: options_divi.php:206
+#: options_divi.php:180
 msgid "RSS Icon Url"
 msgstr "RSS 아이콘 URL"
 
-#: options_divi.php:211
+#: options_divi.php:185
 msgid "Enter the URL of your RSS feed. "
 msgstr "RSS 피드 URL 을 입력하십시오. "
 
-#: options_divi.php:213
+#: options_divi.php:187
 msgid "Number of Products displayed on WooCommerce archive pages"
 msgstr "WooCommerce 보관 페이지에 제품 수 표시"
 
-#: options_divi.php:217
+#: options_divi.php:191
 msgid ""
 "Here you can designate how many WooCommerce products are displayed on the "
 "archive page. This option works independently from the Settings > Reading "
@@ -2043,11 +2007,11 @@ msgstr ""
 "여기에서 얼마나 많은 WooCommerce 제품을 표시할 것인지 지정할 수 있습니다. 이 "
 "옵션은 wp-admin에서 설정 > 읽기 옵션과는 독립적으로 작동합니다."
 
-#: options_divi.php:221
+#: options_divi.php:195
 msgid "Number of Posts displayed on Category page"
 msgstr "포스트 수가 카테고리 페이지에 표시됩니다"
 
-#: options_divi.php:225
+#: options_divi.php:199
 msgid ""
 "Here you can designate how many recent articles are displayed on the "
 "Category page. This option works independently from the Settings > Reading "
@@ -2056,11 +2020,11 @@ msgstr ""
 "최근 글이 몇 개나 카테고리 페이지에 표시될 지 여기에서 정할 수 있습니다. 이 "
 "옵션은 wp-admin 의 읽기 옵션과는 따로 작동합니다."
 
-#: options_divi.php:229
+#: options_divi.php:203
 msgid "Number of Posts displayed on Archive pages"
 msgstr "포스트 수가 아카이브 페이지에 표시됩니다"
 
-#: options_divi.php:233
+#: options_divi.php:207
 msgid ""
 "Here you can designate how many recent articles are displayed on the Archive "
 "pages. This option works independently from the Settings > Reading options "
@@ -2069,11 +2033,11 @@ msgstr ""
 "최근 글이 몇 개나 아카이브 페이지에 표시될 지 여기에서 정할 수 있습니다. 이 "
 "옵션은 wp-admin 의 읽기 옵션과는 따로 작동합니다."
 
-#: options_divi.php:237
+#: options_divi.php:211
 msgid "Number of Posts displayed on Search pages"
 msgstr "검색 페이지에서 표시되는 포스트 수"
 
-#: options_divi.php:241
+#: options_divi.php:215
 msgid ""
 "Here you can designate how many recent articles are displayed on the Search "
 "results pages. This option works independently from the Settings > Reading "
@@ -2082,11 +2046,11 @@ msgstr ""
 "최근 글이 몇 개나 검색 결과 페이지에 표시될 지 여기에서 정할 수 있습니다. 이 "
 "옵션은 wp-admin 의 읽기 옵션과는 따로 작동합니다."
 
-#: options_divi.php:245
+#: options_divi.php:219
 msgid "Number of Posts displayed on Tag pages"
 msgstr "태그 페이지에서 표시되는 포스트 수"
 
-#: options_divi.php:249
+#: options_divi.php:223
 msgid ""
 "Here you can designate how many recent articles are displayed on the Tag "
 "pages. This option works independently from the Settings > Reading options "
@@ -2095,11 +2059,11 @@ msgstr ""
 "최근 글이 몇 개나 태그 페이지에 표시될 지 여기에서 정할 수 있습니다. 이 옵션"
 "은 wp-admin 의 읽기 옵션과는 따로 작동합니다."
 
-#: options_divi.php:253
+#: options_divi.php:227
 msgid "Date format"
 msgstr "날짜 포맷"
 
-#: options_divi.php:257
+#: options_divi.php:231
 msgid ""
 "This option allows you to change how your dates are displayed. For more "
 "information please refer to the WordPress codex here:<a href='http://codex."
@@ -2110,86 +2074,86 @@ msgstr ""
 "원하시면 WordPress 사본을 여기에서 참고하시기 바랍니다:<a href='http://codex."
 "wordpress.org/Formatting_Date_and_Time' target='_blank'>포맷 날짜와 시간</a>"
 
-#: options_divi.php:261
+#: options_divi.php:235
 msgid "Use excerpts when defined"
 msgstr "정의될 때 발췌 사용"
 
-#: options_divi.php:265
+#: options_divi.php:239
 msgid "This will enable the use of excerpts in posts or pages."
 msgstr "이것은 포스트나 페이지에서 발췌를 사용할 수 있게 해줍니다."
 
-#: options_divi.php:268
+#: options_divi.php:242
 msgid "Responsive shortcodes"
 msgstr "반응하는 shortcodes"
 
-#: options_divi.php:272
+#: options_divi.php:246
 msgid "Enable this option to make shortcodes respond to various screen sizes"
 msgstr ""
 "shortcodes 이/가 여러 가지의 화면 크기로 응답하게 하려면 이 옵션을 활성화시키"
 "세요"
 
-#: options_divi.php:275
+#: options_divi.php:249
 msgid "Google Fonts subsets"
 msgstr "Google Fonts 서브세트"
 
-#: options_divi.php:279
+#: options_divi.php:253
 msgid "This will enable Google Fonts for Non-English languages."
 msgstr "이것은 영어 이외의 언어를 위한 Google Fonts 을/를 활성화 합니다."
 
-#: options_divi.php:282
+#: options_divi.php:256
 msgid "Back To Top Button"
 msgstr "탑 버튼으로 돌아가기"
 
-#: options_divi.php:286
+#: options_divi.php:260
 msgid "Enable this option to display Back To Top Button while scrolling"
 msgstr ""
 "스크롤 하는 동안 탑 버튼으로 돌아가기를 표시하려면 이 옵션을 활성화시키세요"
 
-#: options_divi.php:289
+#: options_divi.php:263
 msgid "Smooth Scrolling"
 msgstr "매끄러운 스크롤"
 
-#: options_divi.php:293
+#: options_divi.php:267
 msgid "Enable this option to get the smooth scrolling effect with mouse wheel"
 msgstr "마우스 휠로 매끄러운 스크롤 효과를 얻으려면 이 옵션을 활성화시키세요"
 
-#: options_divi.php:296
+#: options_divi.php:270
 msgid "Disable Translations"
 msgstr "번역 사용 안 함"
 
-#: options_divi.php:300
+#: options_divi.php:274
 msgid ""
 "Disable translations if you don't want to display translated theme strings "
 "on your site."
 msgstr "사이트에서 번역된 테마 문자열을 표시하지 않으려면 사용하지 않습니다."
 
-#: options_divi.php:303
+#: options_divi.php:277
 msgid "Custom CSS"
 msgstr "사용자 맞춤 CSS"
 
-#: options_divi.php:307
+#: options_divi.php:281
 msgid "Here you can add custom css to override or extend default styles."
 msgstr ""
 "기본 스타일을 덮어쓰거나 확장할 수 있는 사용자 맞춤 CSS 를 여기에서 추가할 "
 "수 있습니다."
 
-#: options_divi.php:312
+#: options_divi.php:286
 msgid "Memory Limit Increase"
 msgstr "메모리 용량 증가"
 
-#: options_divi.php:314
+#: options_divi.php:288
 msgid "Here you can disable automatic memory limit increase."
 msgstr "여기에서 메모리 용량이 자동으로 증가하는 것을 막을 수 있습니다."
 
-#: options_divi.php:334
+#: options_divi.php:308
 msgid "Pages"
 msgstr "페이지"
 
-#: options_divi.php:352
+#: options_divi.php:326
 msgid "Exclude pages from the navigation bar"
 msgstr "네비게이션 바에서 페이지 제외"
 
-#: options_divi.php:356
+#: options_divi.php:330
 msgid ""
 "Here you can choose to remove certain pages from the navigation menu. All "
 "pages marked with an X will not appear in your navigation bar. "
@@ -2197,22 +2161,22 @@ msgstr ""
 "네비게이션 메뉴에서 특정 페이지를 삭제하는 선택을 여기에서 할 수 있습니다. X "
 "표시가 된 페이지는 네비게이션 바에 나타나지 않습니다. "
 
-#: options_divi.php:360 options_divi.php:410
+#: options_divi.php:334 options_divi.php:384
 msgid "Show dropdown menus"
 msgstr "드롭다운 메뉴 보여주기"
 
-#: options_divi.php:364
+#: options_divi.php:338
 msgid ""
 "If you would like to remove the dropdown menus from the pages navigation bar "
 "disable this feature."
 msgstr ""
 "네비게이션 바에서 드롭다운 메뉴를 삭제하려면 이 기능을 비활성화 해주십시오."
 
-#: options_divi.php:367
+#: options_divi.php:341
 msgid "Display Home link"
 msgstr "홈 링크 표시"
 
-#: options_divi.php:371
+#: options_divi.php:345
 msgid ""
 "By default the theme creates a Home link that, when clicked, leads back to "
 "your blog's homepage. If, however, you are using a static homepage and have "
@@ -2224,19 +2188,19 @@ msgstr ""
 "고 홈이라고 명명된 페이지를 이미 만들었다면, 이것은 반복된 링크를 만들게 됩니"
 "다. 이럴 경우 링크를 삭제하기 위해서 이 기능을 비활성화 하십시오."
 
-#: options_divi.php:374
+#: options_divi.php:348
 msgid "Sort Pages Links"
 msgstr "페이지 링크 분류"
 
-#: options_divi.php:378
+#: options_divi.php:352
 msgid "Here you can choose to sort your pages links."
 msgstr "페이지 링크를 분류하는 법을 여기서 선택할 수 있습니다."
 
-#: options_divi.php:381
+#: options_divi.php:355
 msgid "Order Pages Links by Ascending/Descending"
 msgstr "올림차순/ 내림차순으로 페이지 링크 순서 정하기"
 
-#: options_divi.php:385
+#: options_divi.php:359
 msgid ""
 "Here you can choose to reverse the order that your pages links are "
 "displayed. You can choose between ascending and descending."
@@ -2244,11 +2208,11 @@ msgstr ""
 "당신의 페이지 링크가 표시되는 순서를 바꾸는 선택을 여기서 할 수 있습니다. 올"
 "림차순과 내림차순 사이에서 선택할 수 있습니다."
 
-#: options_divi.php:388 options_divi.php:424
+#: options_divi.php:362 options_divi.php:398
 msgid "Number of dropdown tiers shown"
 msgstr "보여지는 드롭다운 계층 수"
 
-#: options_divi.php:392 options_divi.php:428
+#: options_divi.php:366 options_divi.php:402
 msgid ""
 "This options allows you to control how many teirs your pages dropdown menu "
 "has. Increasing the number allows for additional menu items to be shown."
@@ -2256,11 +2220,11 @@ msgstr ""
 "이 옵션은 당신의 페이지 드롭다운 메뉴의 계층 수를 관리하게 해 줍니다. 숫자를 "
 "늘리면 추가 메뉴 아이템을 보여주게 합니다."
 
-#: options_divi.php:402
+#: options_divi.php:376
 msgid "Exclude categories from the navigation bar"
 msgstr "네비게이션 바에서 카테고리 제외하기"
 
-#: options_divi.php:406
+#: options_divi.php:380
 msgid ""
 "Here you can choose to remove certain categories from the navigation menu. "
 "All categories marked with an X will not appear in your navigation bar. "
@@ -2268,7 +2232,7 @@ msgstr ""
 "네비게이션 메뉴에서 특정 카테고리를 삭제하는 선택을 여기에서 할 수 있습니다. "
 "X 표시가 된 카테고리는 네비게이션 바에 나타나지 않습니다. "
 
-#: options_divi.php:414
+#: options_divi.php:388
 msgid ""
 "If you would like to remove the dropdown menus from the categories "
 "navigation bar disable this feature."
@@ -2276,11 +2240,11 @@ msgstr ""
 "카테고리 네비게이션 바에서 드롭다운 메뉴를 삭제하시려면 이 기능을 비활성화 하"
 "십시오."
 
-#: options_divi.php:417
+#: options_divi.php:391
 msgid "Hide empty categories"
 msgstr "비어 있는 카테고리 숨기기"
 
-#: options_divi.php:421
+#: options_divi.php:395
 msgid ""
 "If you would like categories to be displayed in your navigationbar that "
 "don't have any posts in them then disable this option. By default empty "
@@ -2289,11 +2253,11 @@ msgstr ""
 "포스트가 없는 네비게이션 바에서 카테고리가 표시되길 원한다면 이 옵션을 비활성"
 "화 하십시오. 기본적으로 비어 있는 카테고리는 숨겨집니다."
 
-#: options_divi.php:432
+#: options_divi.php:406
 msgid "Sort Categories Links by Name/ID/Slug/Count/Term Group"
 msgstr "Name/ID/Slug/Count/Term 그룹으로 카테고리 링크 분류"
 
-#: options_divi.php:436
+#: options_divi.php:410
 msgid ""
 "By default pages are sorted by name. However if you would rather have them "
 "sorted by ID you can adjust this setting."
@@ -2301,11 +2265,11 @@ msgstr ""
 "기본적으로 페이지는 이름으로 분류됩니다. 하지만 ID 로 분류하기 원한다면 이러"
 "한 설정으로 조정할 수 있습니다."
 
-#: options_divi.php:439
+#: options_divi.php:413
 msgid "Order Category Links by Ascending/Descending"
 msgstr "오름차순 혹은 내림차순으로 카테고리 링크 순서 정하기"
 
-#: options_divi.php:443
+#: options_divi.php:417
 msgid ""
 "Here you can choose to reverse the order that your categories links are "
 "displayed. You can choose between ascending and descending."
@@ -2313,11 +2277,11 @@ msgstr ""
 "당신의 카테고리 링크가 표시되는 순서를 바꾸는 선택을 여기서 할 수 있습니다. "
 "올림차순과 내림차순 사이에서 선택할 수 있습니다."
 
-#: options_divi.php:452
+#: options_divi.php:426
 msgid "Disable top tier dropdown menu links"
 msgstr "탑 계층 드롭다운 메뉴 링크 비활성화 하기"
 
-#: options_divi.php:456
+#: options_divi.php:430
 msgid ""
 "In some cases users will want to create parent categories or links as "
 "placeholders to hold a list of child links or categories. In this case it is "
@@ -2332,31 +2296,35 @@ msgstr ""
 "다. 이 기능을 활성화 시키면 모든 상위 페이지/카테고리에서 링크가 삭제되어 클"
 "릭해도 어느 곳으로도 이끌지 않게 됩니다."
 
-#: options_divi.php:460
+#: options_divi.php:434
 msgid "Alternative scroll-to-anchor method"
-msgstr ""
+msgstr "대안적 scroll-to-anchor 방식"
 
-#: options_divi.php:464
+#: options_divi.php:438
 msgid ""
 "Sometimes when using the CSS ID of a section to link directly to it from "
 "another page, the page's final scroll position can be inaccurate. Enable "
 "this option to use an alternative method for scrolling to anchors which can "
 "be more accurate than the default method in some cases."
 msgstr ""
+"다른 페이지에서 바로 연결하기 위해 섹션의 CSS ID를 사용할 때 해당 페이지의 마"
+"지막 스크롤 위치가 부정확한 경우가 간혹 있습니다. 일부의 경우 기본 방식보다 "
+"더 정확할 수 있으므로, 이 옵션을 사용해 앵커로 스크롤 이동하는 대안적 방식을 "
+"사용해 보시기 바랍니다."
 
-#: options_divi.php:482
+#: options_divi.php:456
 msgid "Single Post Layout"
 msgstr "개별 포스트 레이아웃"
 
-#: options_divi.php:487
+#: options_divi.php:461
 msgid "Single Page Layout"
 msgstr "개별 페이지 레이아웃"
 
-#: options_divi.php:500
+#: options_divi.php:474
 msgid "Choose which items to display in the postinfo section"
 msgstr "포스트 정보 섹션에 어떤 항목이 표시될지 선택"
 
-#: options_divi.php:504
+#: options_divi.php:478
 msgid ""
 "Here you can choose which items appear in the postinfo section on single "
 "post pages. This is the area, usually below the post title, which displays "
@@ -2367,11 +2335,11 @@ msgstr ""
 "할 수 있습니다. 이것은 당신의 포스트에 대한 기본 정보가 표시되는 영역으로 보"
 "통 포스트 제목 아래에 있습니다. 아래에 하이라이트된 항목이 나타날 것입니다. "
 
-#: options_divi.php:508
+#: options_divi.php:482
 msgid "Show comments on posts"
 msgstr "포스트에 코멘트 보여주기"
 
-#: options_divi.php:512
+#: options_divi.php:486
 msgid ""
 "You can disable this option if you want to remove the comments and comment "
 "form from single post pages. "
@@ -2379,11 +2347,11 @@ msgstr ""
 "코멘트나 포스트에서의 코멘트 양식을 삭제하기 원하면 이 옵션을 비활성화 하십시"
 "오. "
 
-#: options_divi.php:515
+#: options_divi.php:489
 msgid "Place Thumbs on Posts"
 msgstr "포스트에 썸네일 이미지 넣기"
 
-#: options_divi.php:519
+#: options_divi.php:493
 msgid ""
 "By default thumbnails are placed at the beginning of your post on single "
 "post pages. If you would like to remove this initial thumbnail image to "
@@ -2392,11 +2360,11 @@ msgstr ""
 "기본적으로 개별 포스트 페이지의 처음에 썸네일이 배치됩니다. 반복을 피하기 위"
 "해 이 썸네일 이미지를 삭제하고 싶다면 이 옵션을 비활성화 하십시오. "
 
-#: options_divi.php:528
+#: options_divi.php:502
 msgid "Place Thumbs on Pages"
 msgstr "페이지에 썸네일 이미지 넣기"
 
-#: options_divi.php:532
+#: options_divi.php:506
 msgid ""
 "By default thumbnails are not placed on pages (they are only used on posts). "
 "However, if you want to use thumbnails on pages you can! Just enable this "
@@ -2406,11 +2374,11 @@ msgstr ""
 "지만, 페에지에 썸네일들을 배치하기 원하시면 하실 수 있습니다! 이 옵션을 켜십"
 "시오."
 
-#: options_divi.php:535
+#: options_divi.php:509
 msgid "Show comments on pages"
 msgstr "페이지에서 코멘트 보여주기"
 
-#: options_divi.php:539
+#: options_divi.php:513
 msgid ""
 "By default comments are not placed on pages, however, if you would like to "
 "allow people to comment on your pages simply enable this option. "
@@ -2418,11 +2386,11 @@ msgstr ""
 "기본적으로 코멘트는 페이지에 들어가지 않습니다. 하지만, 당신의 페이지에 사람"
 "들이 코멘트를 할 수 있도록 허락하길 원한다면 이 옵션을 활성화 해 주세요. "
 
-#: options_divi.php:548
+#: options_divi.php:522
 msgid "Post info section"
 msgstr "포스트 정보 섹션"
 
-#: options_divi.php:552
+#: options_divi.php:526
 msgid ""
 "Here you can choose which items appear in the postinfo section on pages. "
 "This is the area, usually below the post title, which displays basic "
@@ -2432,31 +2400,31 @@ msgstr ""
 "것은 당신의 포스트에 대한 기본 정보가 표시되는 영역으로 보통 포스트 제목 아래"
 "에 있습니다. 아래 에 하이라이트된 항목이 나타날 것입니다. "
 
-#: options_divi.php:555
+#: options_divi.php:529
 msgid "Show Thumbs on Index pages"
 msgstr "색인 페이지에서 썸네일 이미지 보여주기"
 
-#: options_divi.php:559
+#: options_divi.php:533
 msgid "Enable this option to show thumbnails on Index Pages."
 msgstr "색인 페이지에서 썸네일을 보여주려면 이 옵션을 활성화 하십시오."
 
-#: options_divi.php:576
+#: options_divi.php:550
 msgid "Homepage SEO"
 msgstr "홈페이지 SEO"
 
-#: options_divi.php:581
+#: options_divi.php:555
 msgid "Single Post Page SEO"
 msgstr "개별 포스트 페이지 SEO"
 
-#: options_divi.php:586
+#: options_divi.php:560
 msgid "Index Page SEO"
 msgstr "색인 페이지 SEO"
 
-#: options_divi.php:594
+#: options_divi.php:568
 msgid " Enable custom title "
 msgstr "사용자 맞춤 제목 활성화 "
 
-#: options_divi.php:598
+#: options_divi.php:572
 msgid ""
 "By default the theme uses a combination of your blog name and your blog "
 "description, as defined when you created your blog, to create your homepage "
@@ -2468,11 +2436,11 @@ msgstr ""
 "만 사용자 맞춤 제목을 만들고 싶다면 이 기능을 활성화 해서 아래에 사용자 맞춤 "
 "제목 필드를 채우면 됩니다. "
 
-#: options_divi.php:601
+#: options_divi.php:575
 msgid " Enable meta description"
 msgstr "메타 태그 설명 활성화"
 
-#: options_divi.php:605
+#: options_divi.php:579
 msgid ""
 "By default the theme uses your blog description, as defined when you created "
 "your blog, to fill in the meta description field. If you would like to use a "
@@ -2483,11 +2451,11 @@ msgstr ""
 "기 위해서 테마는 당신의 블로그 설명을 사용합니다. 다른 설명을 사용하고 싶다"
 "면 이 기능을 활성화 해서 아래에 사용자 맞춤 설명 필드를 채우면 됩니다. "
 
-#: options_divi.php:608
+#: options_divi.php:582
 msgid " Enable meta keywords"
 msgstr "메타 키워드 활성화"
 
-#: options_divi.php:612
+#: options_divi.php:586
 msgid ""
 "By default the theme does not add keywords to your header. Most search "
 "engines don't use keywords to rank your site anymore, but some people define "
@@ -2500,11 +2468,11 @@ msgstr ""
 "가하고 싶으면 이 기능을 활성화 해서 아래에 사용자 맞춤 설명 필드를 채우면 됩"
 "니다. "
 
-#: options_divi.php:615 options_divi.php:742
+#: options_divi.php:589 options_divi.php:716
 msgid " Enable canonical URL's"
 msgstr "표준 URL's 활성화"
 
-#: options_divi.php:619 options_divi.php:693 options_divi.php:746
+#: options_divi.php:593 options_divi.php:667 options_divi.php:720
 msgid ""
 "Canonicalization helps to prevent the indexing of duplicate content by "
 "search engines, and as a result, may help avoid duplicate content penalties "
@@ -2527,11 +2495,11 @@ msgstr ""
 "테마는 표준 URL들을 당신의 링크들과 설정 탭의 wp-admin에 정의되어 있는 도메"
 "인 이름에 바탕을 두고 있습니다."
 
-#: options_divi.php:622
+#: options_divi.php:596
 msgid "Homepage custom title (if enabled)"
 msgstr "홈페이지 사용자 맞춤 제목 (활성화 된다면)"
 
-#: options_divi.php:626
+#: options_divi.php:600
 msgid ""
 "If you have enabled custom titles you can add your custom title here. "
 "Whatever you type here will be placed between the < title >< /title > tags "
@@ -2541,22 +2509,22 @@ msgstr ""
 "니다. 여기에 무엇을 입력하든지 header.php 의 < title >< /title > 태그 사이에 "
 "놓이게 됩니다."
 
-#: options_divi.php:630
+#: options_divi.php:604
 msgid "Homepage meta description (if enabled)"
 msgstr "홈페이지 메타 설명 (활성화 된다면)"
 
-#: options_divi.php:634
+#: options_divi.php:608
 msgid ""
 "If you have enabled meta descriptions you can add your custom description "
 "here."
 msgstr ""
 "메타 설명을 활성화 한다면, 여기에서 사용자 맞춤 설명을 추가할 수 있습니다."
 
-#: options_divi.php:638
+#: options_divi.php:612
 msgid "Homepage meta keywords (if enabled)"
 msgstr "홈페이지 메타 키워드 (활성화 된다면)"
 
-#: options_divi.php:642
+#: options_divi.php:616
 msgid ""
 "If you have enabled meta keywords you can add your custom keywords here. "
 "Keywords should be separated by comas. For example: wordpress,themes,"
@@ -2566,11 +2534,11 @@ msgstr ""
 "다. 키워드는 콤마로 분리 되어야 합니다. 예를 들면, wordpress,themes,"
 "templates,elegant"
 
-#: options_divi.php:646 options_divi.php:720
+#: options_divi.php:620 options_divi.php:694
 msgid "If custom titles are disabled, choose autogeneration method"
 msgstr "사용자 맞춤 제목이 비활성화 되면, 자동 생성 방법을 선택하세요"
 
-#: options_divi.php:651
+#: options_divi.php:625
 msgid ""
 "If you are not using cutsom post titles you can still have control over how "
 "your titles are generated. Here you can choose which order you would like "
@@ -2582,11 +2550,11 @@ msgstr ""
 "는 순서를 정할 수 있고 제목으로부터 블로그 이름을 완전히 삭제할 수도 있습니"
 "다."
 
-#: options_divi.php:654 options_divi.php:728 options_divi.php:764
+#: options_divi.php:628 options_divi.php:702 options_divi.php:738
 msgid "Define a character to separate BlogName and Post title"
 msgstr "웹사이트 이름과 포스트 제목을 분리하는 특징 정의"
 
-#: options_divi.php:658 options_divi.php:732
+#: options_divi.php:632 options_divi.php:706
 msgid ""
 "Here you can change which character separates your blog title and post name "
 "when using autogenerated post titles. Common values are | or -"
@@ -2594,11 +2562,11 @@ msgstr ""
 "여기서, 자동 생성 포스트 제목을 사용할 때 어떤 캐릭터가 블로그 제목과 포스트 "
 "이름을 분리할 지 변경할 수 있습니다. 일반 값은 | 혹은  ? 입니다."
 
-#: options_divi.php:668
+#: options_divi.php:642
 msgid "Enable custom titles"
 msgstr "사용자 맞춤 제목 활성화"
 
-#: options_divi.php:672
+#: options_divi.php:646
 msgid ""
 "By default the theme creates post titles based on the title of your post and "
 "your blog name. If you would like to make your meta title different than "
@@ -2612,11 +2580,11 @@ msgstr ""
 "이 옵션은 사용자 맞춤 제목이 작동하도록 활성화 되어야 합니다. 그리고 아래에 "
 "당신의 제목을 위한 사용자 맞춤 필드 이름을 선택해야 합니다."
 
-#: options_divi.php:675
+#: options_divi.php:649
 msgid "Enable custom description"
 msgstr "사용자 맞춤 설명 활성화"
 
-#: options_divi.php:679
+#: options_divi.php:653
 msgid ""
 "If you would like to add a meta description to your post you can do so using "
 "custom fields. This option must be enabled for descriptions to be displayed "
@@ -2628,11 +2596,11 @@ msgstr ""
 "합니다. 당신이 아래에서 정의한 사용자 맞춤 필드 이름을 기반으로 하는 사용자 "
 "맞춤 필드를 사용해서 메타 설명을 추가할 수 있습니다."
 
-#: options_divi.php:682
+#: options_divi.php:656
 msgid "Enable custom keywords"
 msgstr "사용자 키워드 활성화"
 
-#: options_divi.php:686
+#: options_divi.php:660
 msgid ""
 "If you would like to add meta keywords to your post you can do so using "
 "custom fields. This option must be enabled for keywords to be displayed on "
@@ -2644,15 +2612,15 @@ msgstr ""
 "지정하신 사용자 필드 이름에 기반한 사용자 필드를 이용해서 메타 키워드를 추가"
 "할 수 있습니다."
 
-#: options_divi.php:689
+#: options_divi.php:663
 msgid "Enable canonical URL's"
 msgstr "표준 URL's 활성화"
 
-#: options_divi.php:696
+#: options_divi.php:670
 msgid "Custom field Name to be used for title"
 msgstr "타이틀을 위하여 사용자 필드 이름 사용"
 
-#: options_divi.php:700
+#: options_divi.php:674
 msgid ""
 "When you define your title using custom fields you should use this value for "
 "the custom field Name. The Value of your custom field should be the custom "
@@ -2662,11 +2630,11 @@ msgstr ""
 "위해 이 값을 사용해야 합니다. 당신의 사용자 맞춤 필드 값은 당신이 사용하기 원"
 "하는 사용자 맞춤 제목이 되어야 합니다."
 
-#: options_divi.php:704
+#: options_divi.php:678
 msgid "Custom field Name to be used for description"
 msgstr "설명으로 사용되는 사용자 맞춤 필드 이름"
 
-#: options_divi.php:708
+#: options_divi.php:682
 msgid ""
 "When you define your meta description using custom fields you should use "
 "this value for the custom field Name. The Value of your custom field should "
@@ -2676,11 +2644,11 @@ msgstr ""
 "름을 위해 이 값을 사용해야 합니다. 당신의 사용자 필드 값은 당신이 사용하길 원"
 "하는 사용자 맞춤 설명이 되어야 합니다."
 
-#: options_divi.php:712
+#: options_divi.php:686
 msgid "Custom field Name to be used for keywords"
 msgstr "키워드로 사용되는 사용자 맞춤 필드 이름"
 
-#: options_divi.php:716
+#: options_divi.php:690
 msgid ""
 "When you define your keywords using custom fields you should use this value "
 "for the custom field Name. The Value of your custom field should be the meta "
@@ -2690,7 +2658,7 @@ msgstr ""
 "으로 사용해야 합니다. 당신의 사용자 맞춤 필드 값은 콤마로 분리된 당신이 사용"
 "하길 원하는 메타 키워드여야 합니다."
 
-#: options_divi.php:725
+#: options_divi.php:699
 msgid ""
 "If you are not using cutsom post titles you can still have control over hw "
 "your titles are generated. Here you can choose which order you would like "
@@ -2702,11 +2670,11 @@ msgstr ""
 "이 보여질 것인지 선택하거나 블로그 이름을 제목에서 완전히 삭제할 수도 있습니"
 "다."
 
-#: options_divi.php:749
+#: options_divi.php:723
 msgid "Enable meta descriptions"
 msgstr "메타 설명 활성화"
 
-#: options_divi.php:753
+#: options_divi.php:727
 msgid ""
 "Check this box if you want to display meta descriptions on category/archive "
 "pages. The description is based off the category description you choose when "
@@ -2716,11 +2684,11 @@ msgstr ""
 "오. 설명은 당신이 wp-admin. 에서 카테고리를 생성/편집할 때 선택한 카테고리 설"
 "명에 기반하고 있습니다."
 
-#: options_divi.php:756
+#: options_divi.php:730
 msgid "Choose title autogeneration method"
 msgstr "제목 생성 방법 선택"
 
-#: options_divi.php:761
+#: options_divi.php:735
 msgid ""
 "Here you can choose how your titles on index pages are generated. You can "
 "change which order your blog name and index title are displayed, or you can "
@@ -2730,7 +2698,7 @@ msgstr ""
 "다. 당신의 블로그 이름과 색인 제목이 어떤 순서로 보여질 것인지 변경할 수 있"
 "고 혹은 제목에서 블로그 이름을 제목에서 완전히 삭제할 수 있습니다."
 
-#: options_divi.php:768
+#: options_divi.php:742
 msgid ""
 "Here you can change which character separates your blog title and index page "
 "name when using autogenerated post titles. Common values are | or -"
@@ -2739,15 +2707,15 @@ msgstr ""
 "과 인덱스 페이지를 구분할 것인지 반경할 수 있습니다. 보통 값은 | 혹은  ? 입니"
 "다"
 
-#: options_divi.php:787
+#: options_divi.php:761
 msgid "Code Integration"
 msgstr "코드 통합"
 
-#: options_divi.php:795
+#: options_divi.php:769
 msgid "Enable header code"
 msgstr "헤더 코드 활성화"
 
-#: options_divi.php:799
+#: options_divi.php:773
 msgid ""
 "Disabling this option will remove the header code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2755,11 +2723,11 @@ msgstr ""
 "이 옵션의 비활성화는 당신의 블로그로부터 아래 헤더 코드를 삭제할 것입니다. 향"
 "후 사용을 위해 저장 중에 당신이 코드를 삭제할 수 있도록 할 것입니다."
 
-#: options_divi.php:802
+#: options_divi.php:776
 msgid "Enable body code"
 msgstr "< body > 코드 활성화"
 
-#: options_divi.php:806
+#: options_divi.php:780
 msgid ""
 "Disabling this option will remove the body code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2767,11 +2735,11 @@ msgstr ""
 "이 옵션의 비활성화는 당신의 블로그로부터 아래 바디 코드를 삭제할 것입니다. 향"
 "후 사용을 위해 저장 중에 당신이 코드를 삭제할 수 있도록 할 것입니다."
 
-#: options_divi.php:809
+#: options_divi.php:783
 msgid "Enable single top code"
 msgstr "싱글 상단 코드 활성화"
 
-#: options_divi.php:813
+#: options_divi.php:787
 msgid ""
 "Disabling this option will remove the single top code below from your blog. "
 "This allows you to remove the code while saving it for later use."
@@ -2779,11 +2747,11 @@ msgstr ""
 "이 옵션의 비활성화는 당신의 블로그로부터 아래 싱글 상단 코드를 삭제할 것입니"
 "다. 향후 사용을 위해 저장 중에 당신이 코드를 삭제할 수 있도록 할 것입니다."
 
-#: options_divi.php:816
+#: options_divi.php:790
 msgid "Enable single bottom code"
 msgstr "싱글 하단 코드 활성화"
 
-#: options_divi.php:820
+#: options_divi.php:794
 msgid ""
 "Disabling this option will remove the single bottom code below from your "
 "blog. This allows you to remove the code while saving it for later use."
@@ -2791,11 +2759,11 @@ msgstr ""
 "이 옵션의 비활성화는 당신의 블로그로부터 아래 싱글 하단 코드를 삭제할 것입니"
 "다. 향후 사용을 위해 저장 중에 당신이 코드를 삭제할 수 있도록 할 것입니다."
 
-#: options_divi.php:823
+#: options_divi.php:797
 msgid "Add code to the < head > of your blog"
 msgstr "당신의 블로그의 < head > 에 코드 추가"
 
-#: options_divi.php:827
+#: options_divi.php:801
 msgid ""
 "Any code you place here will appear in the head section of every page of "
 "your blog. This is useful when you need to add javascript or css to all "
@@ -2804,12 +2772,12 @@ msgstr ""
 "당신이 여기 추가하는 코드는 당신의 블로그의 모든 페이지 헤드 섹션에 나타납니"
 "다. 이 기능은 모든 페이지에 Javascript 혹은 CSS 를 추가할 때 유용합니다."
 
-#: options_divi.php:830
+#: options_divi.php:804
 msgid ""
 "Add code to the < body > (good for tracking codes such as google analytics)"
 msgstr "< body > 에 코드 추가 (Google Analytics 같은 코드로서 추적하기 좋음)"
 
-#: options_divi.php:834
+#: options_divi.php:808
 msgid ""
 "Any code you place here will appear in body section of all pages of your "
 "blog. This is usefull if you need to input a tracking pixel for a state "
@@ -2819,11 +2787,11 @@ msgstr ""
 "다. 이 기능은 당신이  Google Analytics 같은 상태 카운터를 위한 추적 픽셀을 입"
 "력할 때 유용합니다."
 
-#: options_divi.php:837
+#: options_divi.php:811
 msgid "Add code to the top of your posts"
 msgstr "당신의 포스트 상단에 코드 추가"
 
-#: options_divi.php:841 options_divi.php:848
+#: options_divi.php:815 options_divi.php:822
 msgid ""
 "Any code you place here will be placed at the top of all single posts. This "
 "is useful if you are looking to integrating things such as social "
@@ -2832,47 +2800,50 @@ msgstr ""
 "당신이 여기 추가하는 코드는 모든 포스트 상단에 나타납니다. 이 기능은 당신이 "
 "소셜 즐겨찾기 링크와 같은 통합된 것들을 볼 때 유용합니다."
 
-#: options_divi.php:844
+#: options_divi.php:818
 msgid "Add code to the bottom of your posts, before the comments"
 msgstr "코멘트 전 당신의 포스트 하단에 코드 추가"
 
-#: options_divi.php:875
-#, fuzzy
+#: options_divi.php:849
 msgid "Username"
-msgstr "아이디: "
+msgstr "사용자 이름"
 
-#: options_divi.php:880
+#: options_divi.php:854 options_divi.php:866
 msgid ""
-"Before you can receive product updates, you must first authenticate your "
+"<em>Before you can receive product updates, you must first authenticate your "
 "Elegant Themes subscription. To do this, you need to enter both your Elegant "
-"Themes Username and your Elegant Themes API Key. Your username is the same "
-"username you use when logging in to <a href=\"http://elegantthemes.com/\" "
-"target=\"_blank\">ElegantThemes.com</a>"
+"Themes Username and your Elegant Themes API Key into the Updates Tab in your "
+"theme and plugin settings. To locate your API Key, <a href=\"https://www."
+"elegantthemes.com/members-area/api/\" target=\"_blank\">log in</a> to your "
+"Elegant Themes account and navigate to the <strong>Account > API Key</"
+"strong> page. <a href=\"http://www.elegantthemes.com/gallery/divi/"
+"documentation/update/\" target=\"_blank\">Learn more here</a></em>. If you "
+"still get this message, please make sure that your Username and API Key have "
+"been entered correctly"
 msgstr ""
+"<em>제품 업데이트를 받으려면, 먼저 Elegant Themes 구독을 인증해 주셔야 합니"
+"다. 인증을 하려면, 테마 및 플러그인 설정의 업데이트 탭에 Elegant Themes 사용"
+"자 이름과 Elegant Themes API 키를 모두 입력하셔야 합니다. API 키를 확인하려"
+"면, Elegant Themes 계정으로 <a href=\"https://www.elegantthemes.com/members-"
+"area/api/\" target=\"_blank\">로그인</a>한 다음, <strong>계정 > API 키</"
+"strong> 페이지로 이동해 주세요. <a href=\"http://www.elegantthemes.com/"
+"gallery/divi/documentation/update/\" target=\"_blank\">자세한 정보는 여기를 "
+"클릭해 주세요</a></em>. 이 메시지가 계속 표시되는 경우, 사용자 이름과 API 키"
+"를 올바르게 입력했는지 확인해 주십시오."
+
+#: options_divi.php:861
+msgid "API Key"
+msgstr "API 키"
 
 #: options_divi.php:887
-msgid "API Key"
-msgstr ""
-
-#: options_divi.php:892
-msgid ""
-"Before you can receive product updates, you must first authenticate your "
-"Elegant Themes subscription. To do this, you need to enter both your Elegant "
-"Themes Username and your Elegant Themes API Key. To locate your API Key, <a "
-"href=\"https://www.elegantthemes.com/members-area/\" target=\"_blank\">log "
-"in</a> to your Elegant Themes account and navigate to the <strong>Account > "
-"API Key</strong> page."
-msgstr ""
-
-#: options_divi.php:913
 msgid "Manage Un-widgetized Advertisements"
 msgstr "광고 관리"
 
-#: options_divi.php:921
+#: options_divi.php:895
 msgid "Enable Single Post 468x60 banner"
 msgstr "개별 푸스트 468x60 배너 활성화"
 
-#: options_divi.php:925
+#: options_divi.php:899
 msgid ""
 "Enabling this option will display a 468x60 banner ad on the bottom of your "
 "post pages below the single post content. If enabled you must fill in the "
@@ -2881,27 +2852,27 @@ msgstr ""
 "이 옵션을 활성화 하면 포스트 내용 밑의 포스트 페이지 마지막에 468x60 배너가 "
 "보여집니다. 활성화 되면 배너 이미지와 관련 URL을 입력해야 합니다."
 
-#: options_divi.php:928
+#: options_divi.php:902
 msgid "Input 468x60 advertisement banner image"
 msgstr "468x60 광고 배너 이미지 입력"
 
-#: options_divi.php:932
+#: options_divi.php:906
 msgid "Here you can provide 468x60 banner image url"
 msgstr "여기에 468x60 배너 이미지 URL을 넣을 수 있습니다."
 
-#: options_divi.php:936
+#: options_divi.php:910
 msgid "Input 468x60 advertisement destination url"
 msgstr "468x60 광고 목적지 URL 입력"
 
-#: options_divi.php:940
+#: options_divi.php:914
 msgid "Here you can provide 468x60 banner destination url"
 msgstr "여기에 468x60 배너 이미지 목적지 URL 을 넣을 수 있습니다."
 
-#: options_divi.php:944
+#: options_divi.php:918
 msgid "Input 468x60 adsense code"
 msgstr "468x60 Google Adsense 코드 입력"
 
-#: options_divi.php:948
+#: options_divi.php:922
 msgid "Place your adsense code here."
 msgstr "Google Adsense 코드를 이곳에 넣으십시오."
 
@@ -2912,17 +2883,16 @@ msgstr "페이지:"
 #. Translators: If there are characters in your language that are not supported
 #. by Open Sans, translate this to 'off'. Do not translate into your own
 #. language.
-#: functions.php:115
+#: functions.php:114
 msgctxt "Open Sans font: on or off"
 msgid "on"
 msgstr " "
 
-#: functions.php:8271
-#, fuzzy
+#: functions.php:8277
 msgctxt "WooCommerce items number"
 msgid "%1$s Item"
 msgid_plural "%1$s Items"
-msgstr[0] " "
+msgstr[0] "%1$s 항목"
 
 #: single-project.php:68
 msgctxt "Previous post link"
@@ -2933,6 +2903,48 @@ msgstr " "
 msgctxt "Next post link"
 msgid "&rarr;"
 msgstr " "
+
+#~ msgid "MailChimp API Key"
+#~ msgstr "MailChimp API 키"
+
+#~ msgid ""
+#~ "Enter your MailChimp API key. You can create an api key <a target=\"_blank"
+#~ "\" href=\"%1$s\">here</a>"
+#~ msgstr ""
+#~ "당신의 MailChimp API 키를 입력하세요. 당신은 api 키를 만들 수 있습니다 <a "
+#~ "target=\"_blank\" href=\"%1$s\">here</a>"
+
+#~ msgid "Aweber Authorization"
+#~ msgstr "Aweber 인증"
+
+#~ msgid "Authorize your Aweber account here."
+#~ msgstr "당신의 Aweber 계정을 여기서 인증하세요."
+
+#~ msgid "Regenerate MailChimp Lists"
+#~ msgstr "MailChimp 목록 재생성"
+
+#~ msgid ""
+#~ "By default, MailChimp lists are cached for one day. If you added new "
+#~ "list, but it doesn't appear within the Email Optin module settings, "
+#~ "activate this option. Don't forget to disable it once the list has been "
+#~ "regenerated."
+#~ msgstr ""
+#~ "기본적으로 메일 침프리스트는 하루 동안 캐시됩니다. 새로운 목록을 추가,하지"
+#~ "만 이메일 별 수신 모듈 설정에서 표시되지 않는 경우,이 옵션을 활성화합니"
+#~ "다. 목록이 재생 된 후 사용하지 않도록 설정하는 것을 잊지 마십시오."
+
+#~ msgid "Regenerate Aweber Lists"
+#~ msgstr "Aweber 목록 재생성"
+
+#~ msgid ""
+#~ "By default, Aweber lists are cached for one day. If you added new list, "
+#~ "but it doesn't appear within the Email Optin module settings, activate "
+#~ "this option. Don't forget to disable it once the list has been "
+#~ "regenerated."
+#~ msgstr ""
+#~ "기본적으로 Aweber리스트는 하루 동안 캐시됩니다. 새로운 목록을 추가,하지만 "
+#~ "이메일 별 수신 모듈 설정에서 표시되지 않는 경우,이 옵션을 활성화합니다. 목"
+#~ "록이 재생 된 후 사용하지 않도록 설정하는 것을 잊지 마십시오."
 
 #~ msgid ""
 #~ "There is a new version of %1$s available. <a href=\"%2$s\" class="

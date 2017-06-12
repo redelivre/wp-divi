@@ -2541,8 +2541,7 @@
 			if ( $et_pb_number_counter.length || is_frontend_builder ) {
 				window.et_pb_reinit_number_counters = function( $et_pb_number_counter ) {
 
-					function et_format_number( number_value ) {
-						var separator = $et_pb_number_counter.data('number-separator');
+					function et_format_number( number_value, separator ) {
 						return number_value.toString().replace( /\B(?=(\d{3})+(?!\d))/g, separator );
 					}
 
@@ -2552,6 +2551,8 @@
 
 					$et_pb_number_counter.each(function(){
 						var $this_counter = $(this);
+						var separator     = $this_counter.data('number-separator');
+
 						$this_counter.easyPieChart({
 							animate: {
 								duration: 1800,
@@ -2566,10 +2567,10 @@
 							},
 							onStep: function(from, to, percent) {
 								if ( percent != to )
-									$(this.el).find('.percent-value').text( et_format_number( Math.round( parseInt( percent ) ) ) );
+									$(this.el).find('.percent-value').text( et_format_number( Math.round( parseInt( percent ) ), separator ) );
 							},
 							onStop: function(from, to) {
-								$(this.el).find('.percent-value').text( et_format_number( $(this.el).data('number-value') ) );
+								$(this.el).find('.percent-value').text( et_format_number( $(this.el).data('number-value'), separator ) );
 							}
 						});
 					});
@@ -2590,7 +2591,7 @@
 
 				main_position = 'translate(0, ' + y_pos + 'px)';
 
-				$this.find('.et_parallax_bg').css( {
+				$this.children('.et_parallax_bg').css( {
 					'-webkit-transform' : main_position,
 					'-moz-transform'    : main_position,
 					'-ms-transform'     : main_position,
@@ -2691,13 +2692,21 @@
 					var $this_contact_container = $( this ),
 						$et_contact_form = $this_contact_container.find( 'form' ),
 						$et_contact_submit = $this_contact_container.find( 'input.et_pb_contact_submit' ),
-						$et_inputs = $et_contact_form.find( 'input[type=text],textarea' ),
+						$et_inputs = $et_contact_form.find( 'input[type=text], input[type=radio]:checked, textarea, .et_pb_contact_select' ),
 						et_email_reg = /^[\w-]+(\.[\w-]+)*@([a-z0-9-]+(\.[a-z0-9-]+)*?\.[a-z]{2,6}|(\d{1,3}\.){3}\d{1,3})(:\d{4})?$/,
 						redirect_url = typeof $this_contact_container.data( 'redirect_url' ) !== 'undefined' ? $this_contact_container.data( 'redirect_url' ) : '';
 
+					$et_contact_form.find( 'input[type=checkbox]' ).on( 'change', function() {
+						var $checkbox = $(this);
+						var $checkbox_field = $checkbox.siblings( 'input[type=text]:first' );
+						var is_checked = $checkbox.prop( 'checked' );
+
+						$checkbox_field.val( is_checked ? $checkbox_field.data( 'checked' ) : $checkbox_field.data( 'unchecked' ) );
+					} );
+
 					$et_contact_form.on( 'submit', function( event ) {
 						var $this_contact_form = $( this ),
-							$this_inputs = $this_contact_form.find( 'input[type=text],textarea' ),
+							$this_inputs = $this_contact_form.find( 'input[type=text], .et_pb_contact_field[data-type="checkbox"], .et_pb_contact_field[data-type="radio"], textarea, select' ),
 							this_et_contact_error = false,
 							$et_contact_message = $this_contact_form.closest( '.et_pb_contact_form_container' ).find( '.et-pb-contact-message' ),
 							et_message = '',
@@ -2711,22 +2720,85 @@
 						$this_inputs.removeClass( 'et_contact_error' );
 
 						$this_inputs.each( function(){
-							var $this_el = $( this ),
-								this_val = $this_el.val(),
-								this_label = $this_el.siblings( 'label' ).text(),
-								field_type = typeof $this_el.data( 'field_type' ) !== 'undefined' ? $this_el.data( 'field_type' ) : 'text',
-								required_mark = typeof $this_el.data( 'required_mark' ) !== 'undefined' ? $this_el.data( 'required_mark' ) : 'not_required',
-								original_id = typeof $this_el.data( 'original_id' ) !== 'undefined' ? $this_el.data( 'original_id' ) : '',
-								default_value;
+							var $this_el      = $( this );
+							var $this_wrapper = false;
+
+							// Prevent field processing if that field is not visible (conditional logic)
+							if ( ! $this_el.is(':visible') ) {
+								return;
+							}
+
+							if ( 'checkbox' === $this_el.data('type') ) {
+								$this_el      = $this_el.find('input[type="checkbox"]');
+								$this_wrapper = $this_el.parents('.et_pb_contact_field');
+							}
+
+							if ( 'radio' === $this_el.data('type') ) {
+								$this_el = $this_el.find('input[type="radio"]');
+								$this_wrapper = $this_el.parents('.et_pb_contact_field');
+							}
+
+							var this_id       = $this_el.attr( 'id' );
+							var this_val      = $this_el.val();
+							var this_label    = $this_el.siblings( 'label:first' ).text();
+							var field_type    = typeof $this_el.data( 'field_type' ) !== 'undefined' ? $this_el.data( 'field_type' ) : 'text';
+							var required_mark = typeof $this_el.data( 'required_mark' ) !== 'undefined' ? $this_el.data( 'required_mark' ) : 'not_required';
+							var original_id   = typeof $this_el.data( 'original_id' ) !== 'undefined' ? $this_el.data( 'original_id' ) : '';
+							var unchecked     = false;
+							var default_value;
+
+							// Escape double quotes in label
+							this_label = this_label.replace(/"/g, "&quot;");
+
+							// radio field properties adjustment
+							if ( 'radio' === field_type ) {
+								if ( 0 !== $this_wrapper.find( 'input[type="radio"]').length ) {
+									field_type = 'radio';
+
+									var $firstRadio = $this_wrapper.find('input[type="radio"]:first');
+
+									required_mark = typeof $firstRadio.data( 'required_mark' ) !== 'undefined' ? $firstRadio.data( 'required_mark' ) : 'not_required';
+									original_id   = typeof $firstRadio.data( 'original_id' ) !== 'undefined' ? $firstRadio.data( 'original_id' ) : '';
+
+									this_val = '';
+									if ( $this_wrapper.find('input[type="radio"]:checked') ) {
+										this_val = $this_wrapper.find('input[type="radio"]:checked').val();
+									}
+								}
+
+								this_label = $this_wrapper.find('.et_pb_contact_form_label').text();
+								this_id = $this_wrapper.find('input[type="radio"]:first').attr('name');
+
+								if ( 0 === $this_wrapper.find('input[type="radio"]:checked').length ) {
+									unchecked = true;
+								}
+							}
+
+							// checkbox field value adjustment
+							if ( 'checkbox' === field_type ) {
+								var $checkbox = $this_el;
+								var $handle   = $checkbox.siblings('[data-checked][data-unchecked]');
+
+								this_id       = $handle.attr('id');
+								this_val      = $checkbox.prop('checked') ? $handle.data('checked') : $handle.data('unchecked');
+								unchecked     = ! $checkbox.prop('checked');
+
+								$handle.val( this_val );
+							}
 
 							// add current field data into array of inputs
-							if ( typeof $this_el.attr( 'id' ) !== 'undefined' ) {
-								inputs_list.push( { 'field_id' : $this_el.attr( 'id' ), 'original_id' : original_id, 'required_mark' : required_mark, 'field_type' : field_type, 'field_label' : this_label } );
+							if ( typeof this_id !== 'undefined' ) {
+								inputs_list.push( { 'field_id' : this_id, 'original_id' : original_id, 'required_mark' : required_mark, 'field_type' : field_type, 'field_label' : this_label } );
 							}
 
 							// add error message for the field if it is required and empty
-							if ( 'required' === required_mark && ( '' === this_val || this_label === this_val ) ) {
-								$this_el.addClass( 'et_contact_error' );
+							if ( 'required' === required_mark && ( '' === this_val || true === unchecked ) ) {
+								if ( false === $this_wrapper ) {
+									$this_el.addClass( 'et_contact_error' );
+								} else {
+									$this_wrapper.addClass( 'et_contact_error' );
+								}
+
 								this_et_contact_error = true;
 
 								default_value = this_label;
@@ -2883,9 +2955,15 @@
 
 				$element.each( function() {
 					var $this_el  = $(this);
+
+					if ( is_frontend_builder ) {
+						$this_el.removeAttr('data-ratio');
+						$this_el.find('video').removeAttr('style');
+					}
+
 					var el_ratio  = parseFloat( $this_el.attr( 'data-ratio' ) );
-					var el_width  = parseInt( $this_el.find( 'video' ).attr( 'width' ) );
-					var el_height = parseInt( $this_el.find( 'video' ).attr( 'height' ) );
+					var el_width  = parseInt( $this_el.find( 'video' ).attr( 'width' ) || $this_el.find( 'video' ).width() );
+					var el_height = parseInt( $this_el.find( 'video' ).attr( 'height' ) || $this_el.find( 'video' ).height() );
 
 					var ratio = ( ! isNaN( el_ratio ) ) ? el_ratio : ( el_width / el_height );
 
@@ -3093,7 +3171,8 @@
 					$email = $newsletter_container.find( 'input[name="et_pb_signup_email"]' ),
 					list_id = $newsletter_container.find( 'input[name="et_pb_signup_list_id"]' ).val(),
 					$result = $newsletter_container.find( '.et_pb_newsletter_result' ).hide(),
-					service = $submit.closest( '.et_pb_newsletter_form' ).data( 'service' ) || 'mailchimp';
+					service = $submit.closest( '.et_pb_newsletter_form' ).data( 'service' ) || 'mailchimp',
+					account = $newsletter_container.find( 'input[name="et_pb_signup_account_name"]' ).val();
 
 				$firstname.removeClass( 'et_pb_signup_error' );
 				$lastname.removeClass( 'et_pb_signup_error' );
@@ -3130,7 +3209,8 @@
 						et_firstname : $firstname.val(),
 						et_lastname : $lastname.val(),
 						et_email : $email.val(),
-						et_service : service
+						et_service : service,
+						et_account: account
 					},
 					beforeSend: function() {
 						$newsletter_container
@@ -3162,27 +3242,27 @@
 						}
 					}
 				} );
-			}
+			};
 
 			window.et_fix_testimonial_inner_width = function() {
 				var window_width = $( window ).width();
 
-				if( window_width > 767 ){
+				if ( window_width > 767 ) {
 					$( '.et_pb_testimonial' ).each( function() {
-						if ( ! $(this).is(':visible') ) {
+						if ( ! $(this).is( ':visible' ) ) {
 							return;
 						}
 
-						var $testimonial      = $(this),
-							testimonial_width = $testimonial.width(),
-							$portrait         = $testimonial.find( '.et_pb_testimonial_portrait' ),
-							portrait_width    = $portrait.width(),
-							$testimonial_inner= $testimonial.find( '.et_pb_testimonial_description_inner' ),
-							$outer_column     = $testimonial.closest( '.et_pb_column' ),
-							testimonial_inner_width = testimonial_width,
-							subtract = ! ( $outer_column.hasClass( 'et_pb_column_1_3' ) || $outer_column.hasClass( 'et_pb_column_1_4' ) || $outer_column.hasClass( 'et_pb_column_3_8' ) ) ? portrait_width + 31 : 0;
+						var $testimonial            = $(this);
+						var testimonial_width       = $testimonial.width();
+						var $portrait               = $testimonial.find( '.et_pb_testimonial_portrait' );
+						var portrait_width          = $portrait.outerWidth( true );
+						var $testimonial_inner      = $testimonial.find( '.et_pb_testimonial_description_inner' );
+						var $outer_column           = $testimonial.closest( '.et_pb_column' );
+						var testimonial_inner_width = testimonial_width;
+						var subtract                = ! ( $outer_column.hasClass( 'et_pb_column_1_3' ) || $outer_column.hasClass( 'et_pb_column_1_4' ) || $outer_column.hasClass( 'et_pb_column_3_8' ) ) ? portrait_width : 0;
 
-							$testimonial_inner.width( testimonial_inner_width - subtract );
+						$testimonial_inner.width( testimonial_inner_width - subtract );
 					} );
 				} else {
 					$( '.et_pb_testimonial_description_inner' ).removeAttr( 'style' );
@@ -4069,6 +4149,155 @@
 			}
 
 			window.et_fix_pricing_currency_position();
+
+			$('.et_pb_contact_form_container').each( function() {
+				var $form = $(this);
+
+				/* Listen for any field change */
+				$form.on( 'change', 'input, textarea, select', function() {
+					et_conditional_check( $form );
+				} );
+
+				// Conditions may be satisfied on default form state
+				et_conditional_check( $form );
+			} );
+
+			function et_conditional_check( $form ) {
+				var $conditionals = $form.find('[data-conditional-logic]');
+
+				/* Upon change loop all the fields that have conditional logic */
+				$conditionals
+					.hide()
+					.each( function() {
+						var $conditional = $(this);
+
+						/* jQuery automatically parses the JSON */
+						var rules    = $conditional.data('conditional-logic');
+						var relation = $conditional.data('conditional-relation');
+
+						show_field = false;
+
+						/* Loop all the conditional logic rules */
+						var matched_rules = [];
+
+						for ( var i = 0; i < rules.length; i++ ) {
+							var ruleset     = rules[i];
+							var check_id    = ruleset[0];
+							var check_type  = ruleset[1];
+							var check_value = ruleset[2];
+							var $wrapper    = $form.find('.et_pb_contact_field[data-id="' + check_id + '"]');
+							var field_id    = $wrapper.data('id');
+							var field_type  = $wrapper.data('type');
+							var field_value;
+
+							/* Get the proper compare value based on the field type */
+							switch( field_type ) {
+								case 'input':
+								case 'email':
+									field_value = $wrapper.find('input').val();
+									break;
+								case 'text':
+									field_value = $wrapper.find('textarea').val();
+									break;
+								case 'radio':
+									field_value = $wrapper.find('input:checked').val();
+									break;
+								case 'checkbox':
+									var $checkbox      = $wrapper.find(':checkbox');
+									var $checkbox_data = $wrapper.find('[data-checked][data-unchecked]');
+
+									field_value = true === $checkbox.prop('checked') ? $checkbox_data.data('checked') : $checkbox_data.data('unchecked');
+									break;
+								case 'select':
+									field_value = $wrapper.find('select').val();
+									break;
+							}
+
+							/*
+								'is empty' / 'is not empty' are comparing against an empty value so simply
+								reset the `check_value` and update the condition to 'is' / 'is not'
+							*/
+							if ( 'is empty' === check_type || 'is not empty' === check_type ) {
+								check_type  = 'is empty' === check_type ? 'is' : 'is not';
+								check_value = '';
+							}
+
+							/* Check if the value IS matching (if it has to) */
+							if ( 'is' === check_type && field_value !== check_value ) {
+								continue;
+							}
+
+							/* Check if the value IS NOT matching (if it has to) */
+							if ( 'is not' === check_type && field_value === check_value ) {
+								continue;
+							}
+
+							/* Create the contains/not contains regular expresion */
+							var containsRegExp = new RegExp( check_value, 'i' );
+
+							/* Check if the value IS containing */
+							if ( 'contains' === check_type && ! field_value.match( containsRegExp ) ) {
+								continue;
+							}
+
+							/* Check if the value IS NOT containing */
+							if ( 'does not contain' === check_type && field_value.match( containsRegExp ) ) {
+								continue;
+							}
+
+							/* Prepare the values for the 'is greater than' / 'is less than' check */
+							var maybeNumericValue       = parseInt( field_value );
+							var maybeNumbericCheckValue = parseInt( check_value );
+
+							if (
+								( 'is greater' === check_type || 'is less' === check_type ) &&
+								( isNaN( maybeNumericValue ) || isNaN( maybeNumbericCheckValue ) )
+							) {
+								continue;
+							}
+
+							/* Check if the value is greater than */
+							if ( 'is greater' === check_type && maybeNumericValue <= maybeNumbericCheckValue) {
+								continue;
+							}
+
+							/* Check if the value is less than */
+							if ( 'is less' === check_type && maybeNumericValue >= maybeNumbericCheckValue) {
+								continue;
+							}
+
+							matched_rules.push( true );
+						}
+
+						// Hide all the conditional fields initially
+						$conditional.hide();
+
+						/*
+							Input fields may have HTML5 pattern validation which must be ignored
+							if the field is not visible. In order for the pattern to not be
+							taken into account the field must have novalidate property and
+							to not be required (or to not have a pattern attribute)
+						*/
+						var $conditional_input  = $conditional.find('input[type="text"]');
+						var conditional_pattern = $conditional_input.attr('pattern');
+
+						$conditional_input.attr('novalidate', 'novalidate');
+						$conditional_input.attr('data-pattern', conditional_pattern);
+						$conditional_input.removeAttr('pattern');
+
+						if ( 'all' === relation && rules.length === matched_rules.length ) {
+							$conditional.show();
+							$conditional_input.removeAttr('novalidate');
+							$conditional_input.attr('pattern', $conditional_input.data('pattern'));
+						}
+
+						if ( 'any' === relation && 0 < matched_rules.length ) {
+							$conditional.show();
+							$conditional_input.removeAttr('novalidate');
+							$conditional_input.attr('pattern', $conditional_input.data('pattern'));
+						}
+					} );
+			}
 
 			/**
 			 * Provide event listener for plugins to hook up to

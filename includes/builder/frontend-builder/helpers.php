@@ -28,10 +28,14 @@ function et_fb_prepare_library_cats() {
 }
 
 function et_fb_get_layout_type( $post_id ) {
-	$post_terms  = wp_get_post_terms( $post_id, 'layout_type' );
-	$layout_type = $post_terms[0]->slug;
+	return et_fb_get_layout_term_slug( $post_id, 'layout_type' );
+}
 
-	return $layout_type;
+function et_fb_get_layout_term_slug( $post_id, $term_name ) {
+	$post_terms  = wp_get_post_terms( $post_id, $term_name );
+	$slug = $post_terms[0]->slug;
+
+	return $slug;
 }
 
 function et_fb_comments_template() {
@@ -104,6 +108,7 @@ function et_fb_backend_helpers() {
 	global $post, $paged, $wp_query;
 
 	$layout_type = '';
+	$layout_scope = '';
 
 	$post_type    = isset( $post->post_type ) ? $post->post_type : false;
 	$post_id      = isset( $post->ID ) ? $post->ID : false;
@@ -112,6 +117,7 @@ function et_fb_backend_helpers() {
 
 	if ( 'et_pb_layout' === $post_type ) {
 		$layout_type = et_fb_get_layout_type( $post_id );
+		$layout_scope = et_fb_get_layout_term_slug( $post_id, 'scope' );
 	}
 
 	$google_fonts = array_merge( array( 'Default' => array() ), et_builder_get_google_fonts() );
@@ -128,6 +134,7 @@ function et_fb_backend_helpers() {
 		'postStatus'                   => $post_status,
 		'postType'                     => $post_type,
 		'layoutType'                   => $layout_type,
+		'layoutScope'                  => $layout_scope,
 		'publishCapability'            => ( is_page() && ! current_user_can( 'publish_pages' ) ) || ( ! is_page() && ! current_user_can( 'publish_posts' ) ) ? 'no_publish' : 'publish',
 		'shortcodeObject'              => array(),
 		'autosaveShortcodeObject'      => array(),
@@ -141,6 +148,7 @@ function et_fb_backend_helpers() {
 			'customCssFields'              => array(),
 			'fieldsDefaults'               => array(),
 			'defaults'                     => array(),
+			'optionsToggles'               => array(),
 		),
 		'moduleParentShortcodes'       => ET_Builder_Element::get_parent_shortcodes( $post_type ),
 		'moduleChildShortcodes'        => ET_Builder_Element::get_child_shortcodes( $post_type ),
@@ -153,6 +161,7 @@ function et_fb_backend_helpers() {
 		'structureModules'             => ET_Builder_Element::get_structure_modules( $post_type ),
 		'et_builder_css_media_queries' => ET_Builder_Element::get_media_quries( 'for_js' ),
 		'builderOptions'               => et_builder_options(),
+		'builderVersion'               => ET_BUILDER_PRODUCT_VERSION,
 		'commentsModuleMarkup'         => et_fb_get_comments_markup(),
 		'shortcode_tags'               => et_fb_shortcode_tags(),
 		'getFontIconSymbols'           => et_pb_get_font_icon_symbols(),
@@ -207,61 +216,385 @@ function et_fb_backend_helpers() {
 		'defaults'                     => array(
 			'contactFormInputs'        => array(),
 		),
-		'saveModuleLibraryCategories'      => et_fb_prepare_library_cats(),
-		'columnSettingFields'              => array(
-			'advanced'                     => array(
-				'bg_img_%s'                => array(
-					'label'                => esc_html__( 'Column %s Background Image', 'et_builder' ),
-					'type'                 => 'upload',
-					'option_category'      => 'basic_option',
-					'upload_button_text'   => esc_attr__( 'Upload an image', 'et_builder' ),
-					'choose_text'          => esc_attr__( 'Choose a Background Image', 'et_builder' ),
-					'update_text'          => esc_attr__( 'Set As Background', 'et_builder' ),
-					'description'          => esc_html__( 'If defined, this image will be used as the background for this module. To remove a background image, simply delete the URL from the settings field.', 'et_builder' ),
-					'tab_slug'             => 'advanced',
+		'saveModuleLibraryCategories'  => et_fb_prepare_library_cats(),
+		'columnSettingFields'          => array(
+			'general' => array(
+				'bg_img_%s' => array(
+					'label'              => esc_html__( 'Column %s Background Image', 'et_builder' ),
+					'type'               => 'upload',
+					'option_category'    => 'basic_option',
+					'upload_button_text' => esc_attr__( 'Upload an image', 'et_builder' ),
+					'choose_text'        => esc_attr__( 'Choose a Background Image', 'et_builder' ),
+					'update_text'        => esc_attr__( 'Set As Background', 'et_builder' ),
+					'description'        => esc_html__( 'If defined, this image will be used as the background for this module. To remove a background image, simply delete the URL from the settings field.', 'et_builder' ),
+					'tab_slug'           => 'general',
+					'toggle_slug'        => 'background',
+					'sub_toggle'         => 'column_%s',
 				),
-				'parallax_%s'              => array(
-					'label'                => esc_html__( 'Column %s Parallax Effect', 'et_builder' ),
-					'type'                 => 'yes_no_button',
-					'option_category'      => 'configuration',
-					'options'              => array(
-						'on'               => esc_html__( 'Yes', 'et_builder' ),
-						'off'              => esc_html__( 'No', 'et_builder' ),
+				'background_color_%s' => array(
+					'label'        => esc_html__( 'Column %s Background Color', 'et_builder' ),
+					'type'         => 'color-alpha',
+					'custom_color' => true,
+					'tab_slug'     => 'general',
+					'toggle_slug'  => 'background',
+					'sub_toggle'   => 'column_%s',
+				),
+				'parallax_%s' => array(
+					'label'           => esc_html__( 'Column %s Parallax Effect', 'et_builder' ),
+					'type'            => 'yes_no_button',
+					'option_category' => 'configuration',
+					'options'         => array(
+						'on'  => esc_html__( 'Yes', 'et_builder' ),
+						'off' => esc_html__( 'No', 'et_builder' ),
 					),
-					'affects'              => array(
+					'default'         => 'off',
+					'affects'         => array(
 						'parallax_method_%s',
+						'background_size_%s',
+						'background_position_%s',
+						'background_repeat_%s',
+						'background_blend_%s',
 					),
-					'description'          => esc_html__( 'Here you can choose whether or not use parallax effect for the featured image', 'et_builder' ),
-					'tab_slug'             => 'advanced',
+					'description'     => esc_html__( 'Here you can choose whether or not use parallax effect for the featured image', 'et_builder' ),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
 				),
-				'parallax_method_%s'       => array(
-					'label'                => esc_html__( 'Column %s Parallax Method', 'et_builder' ),
-					'type'                 => 'select',
-					'option_category'      => 'configuration',
-					'options'              => array(
-						'off'              => esc_html__( 'CSS', 'et_builder' ),
-						'on'               => esc_html__( 'True Parallax', 'et_builder' ),
+				'parallax_method_%s' => array(
+					'label'           => esc_html__( 'Column %s Parallax Method', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'configuration',
+					'options'         => array(
+						'off' => esc_html__( 'CSS', 'et_builder' ),
+						'on'  => esc_html__( 'True Parallax', 'et_builder' ),
 					),
-					'depends_show_if'      => 'on',
-					'depends_to'           => array(
+					'depends_show_if' => 'on',
+					'depends_to'      => array(
 						'parallax_%s',
 					),
-					'description'          => esc_html__( 'Here you can choose which parallax method to use for the featured image', 'et_builder' ),
-					'tab_slug'             => 'advanced',
+					'description'     => esc_html__( 'Here you can choose which parallax method to use for the featured image', 'et_builder' ),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
 				),
-				'background_color_%s'      => array(
-					'label'                => esc_html__( 'Column %s Background Color', 'et_builder' ),
-					'type'                 => 'color-alpha',
-					'custom_color'         => true,
-					'tab_slug'             => 'advanced',
+				'background_size_%s' => array(
+					'label'           => esc_html__( 'Column %s Background Image Size', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'layout',
+					'options'         => array(
+						'cover'   => esc_html__( 'Cover', 'et_builder' ),
+						'contain' => esc_html__( 'Fit', 'et_builder' ),
+						'initial' => esc_html__( 'Actual Size', 'et_builder' ),
+					),
+					'default'         => 'cover',
+					'depends_to'      => array(
+						'parallax_%s',
+					),
+					'depends_show_if' => 'off',
+					'toggle_slug'     => 'background',
 				),
-				'padding_%s'               => array(
-					'label'                => esc_html__( 'Column %s Custom Padding', 'et_builder' ),
-					'type'                 => 'custom_padding',
-					'mobile_options'       => true,
-					'option_category'      => 'layout',
-					'description'          => esc_html__( 'Adjust padding to specific values, or leave blank to use the default padding.', 'et_builder' ),
-					'tab_slug'             => 'advanced',
+				'background_position_%s' => array(
+					'label'           => esc_html__( 'Column %s Background Image Position', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'layout',
+					'options' => array(
+						'top_left'      => esc_html__( 'Top Left', 'et_builder' ),
+						'top_center'    => esc_html__( 'Top Center', 'et_builder' ),
+						'top_right'     => esc_html__( 'Top Right', 'et_builder' ),
+						'center_left'   => esc_html__( 'Center Left', 'et_builder' ),
+						'center'        => esc_html__( 'Center', 'et_builder' ),
+						'center_right'  => esc_html__( 'Center Right', 'et_builder' ),
+						'bottom_left'   => esc_html__( 'Bottom Left', 'et_builder' ),
+						'bottom_center' => esc_html__( 'Bottom Center', 'et_builder' ),
+						'bottom_right'  => esc_html__( 'Bottom Right', 'et_builder' ),
+					),
+					'default'         => 'center',
+					'depends_to'      => array(
+						'parallax_%s',
+					),
+					'depends_show_if' => 'off',
+					'toggle_slug'     => 'background',
+				),
+				'background_repeat_%s' => array(
+					'label'           => esc_html__( 'Column %s Background Image Repeat', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'layout',
+					'options'         => array(
+						'repeat'    => esc_html__( 'Repeat', 'et_builder' ),
+						'repeat-x'  => esc_html__( 'Repeat X (horizontal)', 'et_builder' ),
+						'repeat-y'  => esc_html__( 'Repeat Y (vertical)', 'et_builder' ),
+						'space'     => esc_html__( 'Space', 'et_builder' ),
+						'round'     => esc_html__( 'Round', 'et_builder' ),
+						'no-repeat' => esc_html__( 'No Repeat', 'et_builder' ),
+					),
+					'default'         => 'repeat',
+					'depends_to'      => array(
+						'parallax_%s',
+					),
+					'depends_show_if' => 'off',
+					'toggle_slug'     => 'background',
+				),
+				'background_blend_%s' => array(
+					'label'           => esc_html__( 'Column %s Background Image Blend', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'layout',
+					'options' => array(
+						'normal'      => esc_html__( 'Normal', 'et_builder' ),
+						'multiply'    => esc_html__( 'Multiply', 'et_builder' ),
+						'screen'      => esc_html__( 'Screen', 'et_builder' ),
+						'overlay'     => esc_html__( 'Overlay', 'et_builder' ),
+						'darken'      => esc_html__( 'Darken', 'et_builder' ),
+						'lighten'     => esc_html__( 'Lighten', 'et_builder' ),
+						'color-dodge' => esc_html__( 'Color Dodge', 'et_builder' ),
+						'color-burn'  => esc_html__( 'Color Burn', 'et_builder' ),
+						'hard-light'  => esc_html__( 'Hard Light', 'et_builder' ),
+						'soft-light'  => esc_html__( 'Soft Light', 'et_builder' ),
+						'difference'  => esc_html__( 'Difference', 'et_builder' ),
+						'exclusion'   => esc_html__( 'Exclusion', 'et_builder' ),
+						'hue'         => esc_html__( 'Hue', 'et_builder' ),
+						'saturation'  => esc_html__( 'Saturation', 'et_builder' ),
+						'color'       => esc_html__( 'Color', 'et_builder' ),
+						'luminosity'  => esc_html__( 'Luminosity', 'et_builder' ),
+					),
+					'default'         => 'normal',
+					'depends_to'      => array(
+						'parallax_%s',
+					),
+					'depends_show_if' => 'off',
+					'toggle_slug'     => 'background',
+				),
+				'use_background_color_gradient_%s' => array(
+					'label'           => esc_html__( 'Column %s Use Background Color Gradient', 'et_builder' ),
+					'type'            => 'yes_no_button',
+					'option_category' => 'configuration',
+					'options'         => array(
+						'off' => esc_html__( 'No', 'et_builder' ),
+						'on'  => esc_html__( 'Yes', 'et_builder' ),
+					),
+					'default'         => 'off',
+					'affects'         => array(
+						'background_color_gradient_start_%s',
+						'background_color_gradient_end_%s',
+						'background_color_gradient_start_position_%s',
+						'background_color_gradient_end_position_%s',
+						'background_color_gradient_type_%s',
+					),
+					'description'     => esc_html__( '', 'et_builder' ),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_start_%s' => array(
+					'label'           => esc_html__( 'Column %s Gradient Start', 'et_builder' ),
+					'type'            => 'color-alpha',
+					'option_category' => 'configuration',
+					'description'     => esc_html__( '', 'et_builder' ),
+					'depends_show_if' => 'on',
+					'default'         => '#2b87da',
+					'depends_to'      => array(
+						'use_background_color_gradient_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_end_%s' => array(
+					'label'           => esc_html__( 'Column %s Gradient End', 'et_builder' ),
+					'type'            => 'color-alpha',
+					'option_category' => 'configuration',
+					'description'     => esc_html__( '', 'et_builder' ),
+					'depends_show_if' => 'on',
+					'default'         => '#29c4a9',
+					'depends_to'      => array(
+						'use_background_color_gradient_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_type_%s' => array(
+					'label'           => esc_html__( 'Column %s Gradient Type', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'configuration',
+					'options'         => array(
+						'linear' => esc_html__( 'Linear', 'et_builder' ),
+						'radial' => esc_html__( 'Radial', 'et_builder' ),
+					),
+					'affects'         => array(
+						'background_color_gradient_direction_%s',
+						'background_color_gradient_direction_radial_%s',
+					),
+					'default'         => 'linear',
+					'description'     => esc_html__( '', 'et_builder' ),
+					'depends_show_if' => 'on',
+					'depends_to'      => array(
+						'use_background_color_gradient_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_direction_%s' => array(
+					'label'           => esc_html__( 'Column %s Gradient Direction', 'et_builder' ),
+					'type'            => 'range',
+					'option_category' => 'configuration',
+					'range_settings'  => array(
+						'min'  => 1,
+						'max'  => 360,
+						'step' => 1,
+					),
+					'default'         => '180deg',
+					'validate_unit'   => true,
+					'fixed_unit'      => 'deg',
+					'fixed_range'     => true,
+					'depends_show_if' => 'linear',
+					'depends_to'      => array(
+						'background_color_gradient_type_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_direction_radial_%s' => array(
+					'label'           => esc_html__( 'Column %s Radial Direction', 'et_builder' ),
+					'type'            => 'select',
+					'option_category' => 'configuration',
+					'options'         => array(
+						'center'       => esc_html__( 'Center', 'et_builder' ),
+						'top left'     => esc_html__( 'Top Left', 'et_builder' ),
+						'top'          => esc_html__( 'Top', 'et_builder' ),
+						'top right'    => esc_html__( 'Top Right', 'et_builder' ),
+						'right'        => esc_html__( 'Right', 'et_builder' ),
+						'bottom right' => esc_html__( 'Bottom Right', 'et_builder' ),
+						'bottom'       => esc_html__( 'Bottom', 'et_builder' ),
+						'bottom left'  => esc_html__( 'Bottom Left', 'et_builder' ),
+						'left'         => esc_html__( 'Left', 'et_builder' ),
+					),
+					'default'         => '',
+					'description'     => esc_html__( '', 'et_builder' ),
+					'depends_show_if' => 'radial',
+					'depends_to'      => array(
+						'background_color_gradient_type_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_start_position_%s' => array(
+					'label'           => esc_html__( 'Column %s Start Position', 'et_builder' ),
+					'type'            => 'range',
+					'option_category' => 'configuration',
+					'range_settings'  => array(
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					),
+					'default'         => 0,
+					'validate_unit'   => true,
+					'fixed_unit'      => '%',
+					'fixed_range'     => true,
+					'depends_show_if' => 'on',
+					'depends_to'      => array(
+						'use_background_color_gradient_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_color_gradient_end_position_%s' => array(
+					'label'           => esc_html__( 'Column %s End Position', 'et_builder' ),
+					'type'            => 'range',
+					'option_category' => 'configuration',
+					'range_settings'  => array(
+						'min'  => 0,
+						'max'  => 100,
+						'step' => 1,
+					),
+					'default'         => 100,
+					'validate_unit'   => true,
+					'fixed_unit'      => '%',
+					'fixed_range'     => true,
+					'depends_show_if' => 'on',
+					'depends_to'      => array(
+						'use_background_color_gradient_%s',
+					),
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_video_mp4_%s' => array(
+					'label'              => esc_html__( 'Column %s Background Video MP4', 'et_builder' ),
+					'type'               => 'upload',
+					'option_category'    => 'basic_option',
+					'data_type'          => 'video',
+					'upload_button_text' => esc_attr__( 'Upload a video', 'et_builder' ),
+					'choose_text'        => esc_attr__( 'Choose a Background Video MP4 File', 'et_builder' ),
+					'update_text'        => esc_attr__( 'Set As Background Video', 'et_builder' ),
+					'tab_slug'           => 'general',
+					'toggle_slug'        => 'background',
+					'sub_toggle'         => 'column_%s',
+				),
+				'background_video_webm_%s' => array(
+					'label'              => esc_html__( 'Column %s Background Video Webm', 'et_builder' ),
+					'type'               => 'upload',
+					'option_category'    => 'basic_option',
+					'data_type'          => 'video',
+					'upload_button_text' => esc_attr__( 'Upload a video', 'et_builder' ),
+					'choose_text'        => esc_attr__( 'Choose a Background Video WEBM File', 'et_builder' ),
+					'update_text'        => esc_attr__( 'Set As Background Video', 'et_builder' ),
+					'tab_slug'           => 'general',
+					'toggle_slug'        => 'background',
+					'sub_toggle'         => 'column_%s',
+				),
+				'background_video_width_%s' => array(
+					'label'           => esc_html__( 'Column %s Background Video Width', 'et_builder' ),
+					'type'            => 'text',
+					'option_category' => 'basic_option',
+					'tab_slug'        => 'general',
+					'sub_toggle'      => 'column_%s',
+				),
+				'background_video_height_%s' => array(
+					'label'           => esc_html__( 'Column %s Background Video Height', 'et_builder' ),
+					'type'            => 'text',
+					'option_category' => 'basic_option',
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'allow_player_pause_%s' => array(
+					'label'           => esc_html__( 'Column %s Pause Video', 'et_builder' ),
+					'type'            => 'yes_no_button',
+					'option_category' => 'configuration',
+					'options'         => array(
+						'off' => esc_html__( 'No', 'et_builder' ),
+						'on'  => esc_html__( 'Yes', 'et_builder' ),
+					),
+					'default'         => 'off',
+					'tab_slug'        => 'general',
+					'toggle_slug'     => 'background',
+					'sub_toggle'      => 'column_%s',
+				),
+				'__video_background_%s' => array(
+					'type'                => 'computed',
+					'computed_callback'   => array( 'ET_Builder_Column', 'get_column_video_background' ),
+					'computed_depends_on' => array(
+						'background_video_mp4_%s',
+						'background_video_webm_%s',
+						'background_video_width_%s',
+						'background_video_height_%s',
+					),
+				),
+			),
+			'advanced'                => array(
+				'padding_%s'          => array(
+					'label'           => esc_html__( 'Column %s Custom Padding', 'et_builder' ),
+					'type'            => 'custom_padding',
+					'mobile_options'  => true,
+					'option_category' => 'layout',
+					'description'     => esc_html__( 'Adjust padding to specific values, or leave blank to use the default padding.', 'et_builder' ),
+					'tab_slug'        => 'advanced',
+					'toggle_slug'     => 'margin_padding',
+					'sub_toggle'      => 'column_%s',
 				),
 			),
 			'css'                     => array(
@@ -270,6 +603,8 @@ function et_fb_backend_helpers() {
 					'type'            => 'text',
 					'option_category' => 'configuration',
 					'tab_slug'        => 'custom_css',
+					'toggle_slug'     => 'classes',
+					'sub_toggle'      => 'column_%s',
 					'option_class'    => 'et_pb_custom_css_regular',
 				),
 				'module_class_%s'     => array(
@@ -277,20 +612,31 @@ function et_fb_backend_helpers() {
 					'type'            => 'text',
 					'option_category' => 'configuration',
 					'tab_slug'        => 'custom_css',
+					'toggle_slug'     => 'classes',
+					'sub_toggle'      => 'column_%s',
 					'option_class'    => 'et_pb_custom_css_regular',
 				),
 				'custom_css_before_%s'=> array(
 					'label'           => esc_html__( 'Column %s before', 'et_builder' ),
 					'no_space_before_selector' => true,
 					'selector'        => ':before',
+					'tab_slug'        => 'custom_css',
+					'toggle_slug'     => 'custom_css',
+					'sub_toggle'      => 'column_%s',
 				),
 				'custom_css_main_%s'  => array(
 					'label'           => esc_html__( 'Column %s Main Element', 'et_builder' ),
+					'tab_slug'        => 'custom_css',
+					'toggle_slug'     => 'custom_css',
+					'sub_toggle'      => 'column_%s',
 				),
 				'custom_css_after_%s' => array(
 					'label'           => esc_html__( 'Column %s After', 'et_builder' ),
 					'no_space_before_selector' => true,
 					'selector'        => ':after',
+					'tab_slug'        => 'custom_css',
+					'toggle_slug'     => 'custom_css',
+					'sub_toggle'      => 'column_%s',
 				),
 
 			),
@@ -312,9 +658,20 @@ function et_fb_backend_helpers() {
 			'audio'    => array(
 				'meta' => _x( 'by <strong>%1$s</strong>', 'Audio Module meta information', 'et_builder' ),
 			),
+			'background' => array(
+				'label'       => __( 'Background', 'et_builder' ),
+				'description' => '',
+			),
+			'column' => array(
+				'backgroundColor' => esc_html__( 'Column %s Background', 'et_builder' ),
+			),
 			'contactForm' => array(
 				'thankYou' => esc_html__( 'Thanks for contacting us', 'et_builder' ),
 				'submit'   => esc_attr__( 'Submit', 'et_builder' ),
+			),
+			'contactFormItem' => array(
+				'noOptions'     => esc_html__( 'No options added.', 'et_builder' ),
+				'selectDefault' => esc_html__( '-- Please Select --', 'et_builder' ),
 			),
 			'countdownTimer' => array(
 				'dayFull'     => esc_html__( 'Day(s)', 'et_builder' ),
@@ -395,14 +752,27 @@ function et_fb_backend_helpers() {
 				'mapPinAddressInvalid' => esc_html__( 'Invalid Pin and address data. Please try again.', 'et_builder' ),
 			),
 			'tabs'                     => array(
-				'general'              => esc_html__( 'General', 'et_builder' ),
+				'general'              => esc_html__( 'Content', 'et_builder' ),
 				'design'               => esc_html__( 'Design', 'et_builder' ),
-				'css'                  => esc_html__( 'CSS', 'et_builder' ),
+				'css'                  => esc_html__( 'Advanced', 'et_builder' ),
 			),
 			'additionalButton'         => array(
 				'changeApiKey'         => esc_html__( 'Change API Key', 'et_builder' ),
 				'generateImageUrlFromVideo' => esc_html__( 'Generate From Video', 'et_builder' ),
 			),
+			'conditionalLogic'         => array(
+				'checked'              => esc_html__( 'checked', 'et_builder' ),
+				'unchecked'            => esc_html__( 'not checked', 'et_builder' ),
+				'is'                   => esc_html__( 'equals', 'et_builder' ),
+				'isNot'                => esc_html__( 'does not equal', 'et_builder' ),
+				'isGreater'            => esc_html__( 'is greater than', 'et_builder' ),
+				'isLess'               => esc_html__( 'is less than', 'et_builder' ),
+				'contains'             => esc_html__( 'contains', 'et_builder' ),
+				'doesNotContain'       => esc_html__( 'does not contain', 'et_builder' ),
+				'isEmpty'              => esc_html__( 'is empty', 'et_builder' ),
+				'isNotEmpty'           => esc_html__( 'is not empty', 'et_builder' ),
+			),
+			'cssText'                  => esc_html__( 'CSS', 'et_builder'),
 		),
 		'rightClickMenuItems' => array(
 			'undo'            => esc_html__( 'Undo', 'et_builder' ),
@@ -464,7 +834,6 @@ function et_fb_backend_helpers() {
 			'css'                   => esc_html__( 'Include Custom CSS', 'et_builder' ),
 			'selectCategoriesText'  => esc_html__( 'Select category(ies) for new template or type a new name ( optional )', 'et_builder' ),
 			'templateName'          => esc_html__( 'Template Name', 'et_builder' ),
-			'selectiveSync'         => esc_html__( 'Selective Sync', 'et_builder' ),
 			'selectiveError'        => esc_html__( 'Please select at least 1 tab to save', 'et_builder' ),
 			'globalTitle'           => esc_html__( 'Save as Global', 'et_builder' ),
 			'globalText'            => esc_html__( 'Make this a global item', 'et_builder' ),
@@ -487,6 +856,7 @@ function et_fb_backend_helpers() {
 			'pageSettings' => array(
 				'title' => esc_html__( 'Page Settings', 'et_builder' ),
 			),
+			'searchOptions' => esc_html__( 'Search Options', 'et_builder' ),
 		),
 		'history' => array(
 			'modal' => array(
@@ -519,6 +889,7 @@ function et_fb_backend_helpers() {
 		'tooltip' => array(
 			'pageSettingsBar' => array(
 				'responsive' => array(
+					'wireframe'    => esc_html__( 'Wireframe View', 'et_builder' ),
 					'zoom'    => esc_html__( 'Zoom Out', 'et_builder' ),
 					'desktop' => esc_html__( 'Desktop View', 'et_builder' ),
 					'tablet'  => esc_html__( 'Tablet View', 'et_builder' ),

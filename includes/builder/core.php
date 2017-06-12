@@ -592,16 +592,22 @@ function et_pb_retrieve_templates( $layout_type = 'layout', $module_width = '', 
 					$this_layout_type = 'on' === get_post_meta( $single_post->ID, '_et_pb_predefined_layout', true ) ? 'predefined' : 'library';
 				}
 
+				// get unsynced global optoins for module
+				if ( 'module' === $layout_type && 'false' !== $is_global ) {
+					$unsynced_options = get_post_meta( $single_post->ID, '_et_pb_excluded_global_options' );
+				}
+
 				$templates_data[] = array(
-					'ID'           => $single_post->ID,
-					'title'        => esc_html( $single_post->post_title ),
-					'shortcode'    => $single_post->post_content,
-					'is_global'    => $global_scope,
-					'layout_type'  => $layout_type,
-					'layouts_type' => $this_layout_type,
-					'module_type'  => $module_type,
-					'categories'   => $categories_processed,
-					'row_layout'   => $row_layout,
+					'ID'               => $single_post->ID,
+					'title'            => esc_html( $single_post->post_title ),
+					'shortcode'        => $single_post->post_content,
+					'is_global'        => $global_scope,
+					'layout_type'      => $layout_type,
+					'layouts_type'     => $this_layout_type,
+					'module_type'      => $module_type,
+					'categories'       => $categories_processed,
+					'row_layout'       => $row_layout,
+					'unsynced_options' => ! empty( $unsynced_options ) ? json_decode( $unsynced_options[0], true ) : array(),
 				);
 			}
 		}
@@ -681,10 +687,10 @@ if ( ! function_exists( 'et_pb_add_new_layout' ) ) {
 				$args['layout_content'] = '[et_pb_section template_type="section"][et_pb_row][/et_pb_row][/et_pb_section]';
 				break;
 			case 'module' :
-				$args['layout_content'] = sprintf( '[et_pb_module_placeholder selected_tabs="%1$s"]', ! empty( $processed_data_array['selected_tabs'] ) ? $processed_data_array['selected_tabs'] : 'all' );
+				$args['layout_content'] = '[et_pb_module_placeholder selected_tabs="all"]';
 				break;
 			case 'fullwidth_module' :
-				$args['layout_content'] = sprintf( '[et_pb_fullwidth_module_placeholder selected_tabs="%1$s"]', ! empty( $processed_data_array['selected_tabs'] ) ? $processed_data_array['selected_tabs'] : 'all' );
+				$args['layout_content'] = '[et_pb_fullwidth_module_placeholder selected_tabs="all"]';
 				$args['module_width'] = 'fullwidth';
 				$args['layout_type'] = 'module';
 				break;
@@ -725,6 +731,11 @@ if ( ! function_exists( 'et_pb_submit_layout' ) ) {
 
 		if ( 'module' === $args['layout_type'] ) {
 			$meta = array_merge( $meta, array( '_et_pb_module_type' => $args['module_type'] ) );
+
+			// save unsynced options for global modules. Always empty for new modules.
+			if ( 'global' === $args['layout_scope'] ) {
+				$meta = array_merge( $meta, array( '_et_pb_excluded_global_options' => json_encode( array() ) ) );
+			}
 		}
 
 		//et_layouts_built_for_post_type
@@ -826,6 +837,11 @@ function et_pb_get_global_module() {
 
 		if ( !empty( $query->post ) ) {
 			$global_shortcode['shortcode'] = $query->post->post_content;
+			$excluded_global_options = get_post_meta( $post_id, '_et_pb_excluded_global_options' );
+			$selective_sync_status = empty( $excluded_global_options ) ? '' : 'updated';
+
+			$global_shortcode['sync_status'] = $selective_sync_status;
+			$global_shortcode['excluded_options'] = $excluded_global_options;
 		}
 	}
 
@@ -848,6 +864,7 @@ function et_pb_update_layout() {
 
 	$post_id = isset( $_POST['et_template_post_id'] ) ? $_POST['et_template_post_id'] : '';
 	$new_content = isset( $_POST['et_layout_content'] ) ? et_pb_builder_post_content_capability_check( $_POST['et_layout_content'] ) : '';
+	$layout_type = isset( $_POST['et_layout_type'] ) ? sanitize_text_field( $_POST['et_layout_type'] ) : '';
 
 	if ( '' !== $post_id ) {
 		$update = array(
@@ -856,6 +873,12 @@ function et_pb_update_layout() {
 		);
 
 		wp_update_post( $update );
+
+		if ( 'module' === $layout_type && isset( $_POST['et_unsynced_options'] ) ) {
+			$unsynced_options = stripslashes( $_POST['et_unsynced_options'] );
+
+			update_post_meta( $post_id, '_et_pb_excluded_global_options', $unsynced_options );
+		}
 	}
 
 	die();
@@ -1399,19 +1422,22 @@ function et_fb_get_portability_export_url() {
 function et_fb_get_nonces() {
 	$nonces    = apply_filters( 'et_fb_nonces', array() );
 	$fb_nonces = array(
-		'moduleContactFormSubmit'  => wp_create_nonce( 'et-pb-contact-form-submit' ),
-		'et_admin_load'            => wp_create_nonce( 'et_admin_load_nonce' ),
-		'computedProperty'         => wp_create_nonce( 'et_pb_process_computed_property_nonce' ),
-		'renderShortcode'          => wp_create_nonce( 'et_pb_render_shortcode_nonce' ),
-		'backendHelper'            => wp_create_nonce( 'et_fb_backend_helper_nonce' ),
-		'renderSave'               => wp_create_nonce( 'et_fb_save_nonce' ),
-		'dropAutosave'             => wp_create_nonce( 'et_fb_drop_autosave_nonce' ),
-		'prepareShortcode'         => wp_create_nonce( 'et_fb_prepare_shortcode_nonce' ),
-		'processImportedData'      => wp_create_nonce( 'et_fb_process_imported_data_nonce' ),
-		'retrieveLibraryModules'   => wp_create_nonce( 'et_fb_retrieve_library_modules_nonce' ),
-		'saveLibraryModules'       => wp_create_nonce( 'et_fb_save_library_modules_nonce' ),
-		'preview'                  => wp_create_nonce( 'et_pb_preview_nonce' ),
-		'autosave'                 => wp_create_nonce( 'et_fb_autosave_nonce' ),
+		'moduleContactFormSubmit'       => wp_create_nonce( 'et-pb-contact-form-submit' ),
+		'et_admin_load'                 => wp_create_nonce( 'et_admin_load_nonce' ),
+		'computedProperty'              => wp_create_nonce( 'et_pb_process_computed_property_nonce' ),
+		'renderShortcode'               => wp_create_nonce( 'et_pb_render_shortcode_nonce' ),
+		'backendHelper'                 => wp_create_nonce( 'et_fb_backend_helper_nonce' ),
+		'renderSave'                    => wp_create_nonce( 'et_fb_save_nonce' ),
+		'dropAutosave'                  => wp_create_nonce( 'et_fb_drop_autosave_nonce' ),
+		'prepareShortcode'              => wp_create_nonce( 'et_fb_prepare_shortcode_nonce' ),
+		'processImportedData'           => wp_create_nonce( 'et_fb_process_imported_data_nonce' ),
+		'retrieveLibraryModules'        => wp_create_nonce( 'et_fb_retrieve_library_modules_nonce' ),
+		'saveLibraryModules'            => wp_create_nonce( 'et_fb_save_library_modules_nonce' ),
+		'preview'                       => wp_create_nonce( 'et_pb_preview_nonce' ),
+		'autosave'                      => wp_create_nonce( 'et_fb_autosave_nonce' ),
+		'moduleEmailOptinFetchLists'    => wp_create_nonce( 'et_builder_email_fetch_lists_nonce' ),
+		'moduleEmailOptinAddAccount'    => wp_create_nonce( 'et_builder_email_add_account_nonce' ),
+		'moduleEmailOptinRemoveAccount' => wp_create_nonce( 'et_builder_email_remove_account_nonce' ),
 	);
 
 	return array_merge( $nonces, $fb_nonces );
@@ -1436,233 +1462,292 @@ function et_pb_get_backbone_template() {
 }
 add_action( 'wp_ajax_et_pb_get_backbone_template', 'et_pb_get_backbone_template' );
 
-function et_pb_submit_subscribe_form() {
-	if ( ! wp_verify_nonce( $_POST['et_frontend_nonce'], 'et_frontend_nonce' ) ) die( json_encode( array( 'error' => esc_html__( 'Configuration error', 'et_builder' ) ) ) );
 
-	$service = sanitize_text_field( $_POST['et_service'] );
+if ( ! function_exists( 'et_builder_email_add_account' ) ):
+/**
+ * Ajax handler for the Email Opt-in Module's "Add Account" action.
+ */
+function et_builder_email_add_account() {
+	et_core_security_check( 'manage_options', 'et_builder_email_add_account_nonce' );
 
-	$list_id = sanitize_text_field( $_POST['et_list_id'] );
+	$provider_slug = isset( $_POST['et_provider'] ) ? sanitize_text_field( $_POST['et_provider'] ) : '';
+	$account_name  = isset( $_POST['et_account'] ) ? sanitize_text_field( $_POST['et_account'] ) : '';
+	$api_key       = isset( $_POST['et_api_key'] ) ? sanitize_text_field( $_POST['et_api_key'] ) : '';
+	$is_BB         = isset( $_POST['et_bb'] );
 
-	$email = sanitize_email( $_POST['et_email'] );
-
-	$firstname = sanitize_text_field( $_POST['et_firstname'] );
-
-	if ( '' === $firstname ) die( json_encode( array( 'error' => esc_html__( 'Please enter first name', 'et_builder' ) ) ) );
-
-	if ( ! is_email( $email ) ) die( json_encode( array( 'error' => esc_html__( 'Incorrect email', 'et_builder' ) ) ) );
-
-	if ( '' == $list_id ) die( json_encode( array( 'error' => esc_html__( 'Configuration error: List is not defined', 'et_builder' ) ) ) );
-
-	$success_message = sprintf(
-		'<h2 class="et_pb_subscribed">%s</h2>',
-		esc_html__( 'Subscribed - look for the confirmation email!', 'et_builder' )
-	);
-
-	switch ( $service ) {
-		case 'mailchimp' :
-			$lastname = sanitize_text_field( $_POST['et_lastname'] );
-			$email = array( 'email' => $email );
-
-			if ( ! class_exists( 'MailChimp_Divi' ) )
-				require_once( ET_BUILDER_DIR . 'subscription/mailchimp/mailchimp.php' );
-
-			if ( et_is_builder_plugin_active() ) {
-				$mailchimp_api_option = get_option( 'et_pb_builder_options' );
-				$mailchimp_api_key = isset( $mailchimp_api_option['newsletter_main_mailchimp_key'] ) ? $mailchimp_api_option['newsletter_main_mailchimp_key'] : '';
-			} else {
-				$mailchimp_api_key = et_get_option( 'divi_mailchimp_api_key' );
-			}
-
-			if ( '' === $mailchimp_api_key ) die( json_encode( array( 'error' => esc_html__( 'Configuration error: api key is not defined', 'et_builder' ) ) ) );
-				$mailchimp = new MailChimp_Divi( $mailchimp_api_key );
-
-				$subscribe_args = array(
-					'id'         => $list_id,
-					'email'      => $email,
-					'merge_vars' => array(
-						'FNAME'  => $firstname,
-						'LNAME'  => $lastname,
-					),
-				);
-
-				$retval =  $mailchimp->call('lists/subscribe', $subscribe_args );
-
-				if ( 200 !== wp_remote_retrieve_response_code( $retval ) ) {
-					if ( '214' === wp_remote_retrieve_header( $retval, 'x-mailchimp-api-error-code' ) ) {
-						$mailchimp_message = json_decode( wp_remote_retrieve_body( $retval ), true );
-						$error_message = isset( $mailchimp_message['error'] ) ? $mailchimp_message['error'] : wp_remote_retrieve_body( $retval );
-						$result = json_encode( array( 'success' => esc_html( $error_message ) ) );
-					} else {
-						$result = json_encode( array( 'success' => esc_html( wp_remote_retrieve_response_message( $retval ) ) ) );
-					}
-				} else {
-					$result = json_encode( array( 'success' => $success_message ) );
-				}
-
-			die( $result );
-			break;
-		case 'aweber' :
-			if ( ! class_exists( 'AWeberAPI' ) ) {
-				require_once( ET_BUILDER_DIR . 'subscription/aweber/aweber_api.php' );
-			}
-
-			$account = et_pb_get_aweber_account();
-
-			if ( ! $account ) {
-				die( json_encode( array( 'error' => esc_html__( 'Aweber: Wrong configuration data', 'et_builder' ) ) ) );
-			}
-
-			try {
-				$list_url = "/accounts/{$account->id}/lists/{$list_id}";
-				$list = $account->loadFromUrl( $list_url );
-
-				$new_subscriber = $list->subscribers->create(
-					array(
-						'email' => $email,
-						'name'  => $firstname,
-					)
-				);
-
-				die( json_encode( array( 'success' => $success_message ) ) );
-			} catch ( Exception $exc ) {
-				die( json_encode( array( 'error' => esc_html( $exc->message ) ) ) );
-			}
-
-			break;
+	if ( empty( $provider_slug ) || empty( $account_name ) || empty( $api_key ) ) {
+		et_core_die();
 	}
 
-	die();
+	$result = et_core_api_email_fetch_lists( $provider_slug, $account_name, $api_key );
+
+	// Get data in builder format
+	$accounts_list = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
+
+	// Make sure the BB updates its cached templates
+	et_pb_force_regenerate_templates();
+
+	if ( 'success' === $result ) {
+		$result = array(
+			'error'         => false,
+			'accounts_list' => $accounts_list,
+		);
+	} else {
+		$result = array(
+			'error'         => true,
+			'message'       => esc_html__( 'Error: ', 'et_core' ) . esc_html( $result ),
+			'accounts_list' => $accounts_list,
+		);
+	}
+
+	die( json_encode( $result ) );
+}
+add_action( 'wp_ajax_et_builder_email_add_account', 'et_builder_email_add_account' );
+endif;
+
+
+if ( ! function_exists( 'et_builder_email_get_lists_field_data' ) ):
+/**
+ * Get email list data in a builder's options field format.
+ *
+ * @param string $provider_slug
+ * @param bool   $is_BB
+ *
+ * @return array|string The data in the BB's format if `$is_BB` is `true`, the FB's format otherwise.
+ */
+function et_builder_email_get_lists_field_data( $provider_slug, $is_BB = false ) {
+	$signup     = new ET_Builder_Module_Signup();
+	$fields     = $signup->get_fields( 'no_cache' );
+	$field_name = $provider_slug . '_list';
+	$field      = $fields[ $field_name ];
+
+	if ( $is_BB ) {
+		$field['only_options'] = true;
+		$field['name']         = $field_name;
+		$field_data            = $signup->render_field( $field );
+	} else {
+		$field_data = $field['options'];
+	}
+
+	// Make sure the BB updates its cached templates
+	et_pb_force_regenerate_templates();
+
+	return $field_data;
+}
+endif;
+
+
+if ( ! function_exists( 'et_builder_email_get_lists' ) ):
+/**
+ * Ajax handler for the Email Opt-in Module's "Fetch Lists" action.
+ */
+function et_builder_email_get_lists() {
+	et_core_security_check( 'manage_options', 'et_builder_email_fetch_lists_nonce' );
+
+	$provider_slug = isset( $_POST['et_provider'] ) ? sanitize_text_field( $_POST['et_provider'] ) : '';
+	$account_name  = isset( $_POST['et_account'] ) ? sanitize_text_field( $_POST['et_account'] ) : '';
+	$is_BB         = isset( $_POST['et_bb'] );
+
+	if ( empty( $provider_slug ) || empty( $account_name ) ) {
+		et_core_die();
+	}
+
+	// Make sure email component group is loaded;
+	new ET_Core_API_Email_Providers();
+
+	// Fetch lists from provider
+	$message = et_core_api_email_fetch_lists( $provider_slug, $account_name );
+
+	// Get data in builder format
+	$accounts_list = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
+
+	$result = array(
+		'error'         => false,
+		'accounts_list' => $accounts_list,
+	);
+
+	if ( 'success' !== $message ) {
+		$result['error']   = true;
+		$result['message'] = esc_html__( 'Error: ', 'et_core' ) . esc_html( $message );
+	}
+
+	die( json_encode( $result ) );
+}
+add_action( 'wp_ajax_et_builder_email_get_lists', 'et_builder_email_get_lists' );
+endif;
+
+
+if ( ! function_exists( 'et_builder_email_maybe_migrate_accounts') ):
+function et_builder_email_maybe_migrate_accounts() {
+	$divi_migrated_key    = 'divi_email_provider_credentials_migrated';
+	$builder_migrated_key = 'email_provider_credentials_migrated';
+
+	$builder_options  = (array) get_option( 'et_pb_builder_options' );
+	$builder_migrated = isset( $builder_options[ $builder_migrated_key ] );
+	$divi_migrated    = et_get_option( $divi_migrated_key, false );
+
+	$data_utils = new ET_Core_Data_Utils();
+	$migrations = array( 'builder' => $builder_migrated, 'divi' => $divi_migrated );
+	$providers  = new ET_Core_API_Email_Providers(); // Ensure the email component group is loaded.
+
+	if ( $data_utils->all( $migrations, true ) ) {
+		// We've already migrated accounts data
+		return;
+	}
+
+	foreach ( $migrations as $product => $completed ) {
+		if ( 'builder' === $product ) {
+			$account_name      = 'Divi Builder Plugin';
+			$mailchimp_api_key = isset( $builder_options['newsletter_main_mailchimp_key'] ) ? $builder_options['newsletter_main_mailchimp_key'] : '';
+
+			$consumer_key    = isset( $builder_options['aweber_consumer_key'] ) ? $builder_options['aweber_consumer_key'] : '';
+			$consumer_secret = isset( $builder_options['aweber_consumer_secret'] ) ? $builder_options['aweber_consumer_secret'] : '';
+			$access_key      = isset( $builder_options['aweber_access_key'] ) ? $builder_options['aweber_access_key'] : '';
+			$access_secret   = isset( $builder_options['aweber_access_secret'] ) ? $builder_options['aweber_access_secret'] : '';
+		} else if ( 'divi' === $product ) {
+			$account_name      = 'Divi Builder';
+			$mailchimp_api_key = et_get_option( 'divi_mailchimp_api_key' );
+
+			$consumer_key    = et_get_option( 'divi_aweber_consumer_key' );
+			$consumer_secret = et_get_option( 'divi_aweber_consumer_secret' );
+			$access_key      = et_get_option( 'divi_aweber_access_key' );
+			$access_secret   = et_get_option( 'divi_aweber_access_secret' );
+		} else {
+			continue; // Satisfy code linter.
+		}
+
+		$aweber_key_parts = array( $consumer_key, $consumer_secret, $access_key, $access_secret );
+
+		if ( $data_utils->all( $aweber_key_parts ) ) {
+			// Typically AWeber tokens have five parts. We don't have the last part (the verifier token) because
+			// we didn't save it at the time it was originally input by the user. Thus, we add an additional separator
+			// (|) so that the token passes the processing performed by ET_Core_API_Email_Aweber::_parse_ID().
+			$aweber_api_key = implode( '|', array( $consumer_key, $consumer_secret, $access_key, $access_secret, '|' ) );
+		}
+
+		if ( ! empty( $mailchimp_api_key ) ) {
+			et_core_api_email_fetch_lists( 'MailChimp', "{$account_name} MailChimp", $mailchimp_api_key );
+		}
+
+		if ( ! empty( $aweber_api_key ) ) {
+			$aweber = $providers->get( 'Aweber', "{$account_name} Aweber", 'builder' );
+
+			$aweber->data['api_key']         = $aweber_api_key;
+			$aweber->data['consumer_key']    = $consumer_key;
+			$aweber->data['consumer_secret'] = $consumer_secret;
+			$aweber->data['access_key']      = $access_key;
+			$aweber->data['access_secret']   = $access_secret;
+			$aweber->data['is_authorized']   = true;
+
+			$aweber->save_data();
+			$aweber->fetch_subscriber_lists();
+		}
+	}
+
+	// Make sure the BB updates its cached templates
+	et_pb_force_regenerate_templates();
+
+	$builder_options[ $builder_migrated_key ] = true;
+
+	update_option( 'et_pb_builder_options', $builder_options );
+	et_update_option( $divi_migrated_key, true );
+}
+endif;
+
+
+if ( ! function_exists( 'et_builder_email_remove_account' ) ):
+/**
+ * Ajax handler for the Email Opt-in Module's "Remove Account" action.
+ */
+function et_builder_email_remove_account() {
+	et_core_security_check( 'manage_options', 'et_builder_email_remove_account_nonce' );
+
+	$provider_slug = sanitize_text_field( $_POST['et_provider'] );
+	$account_name  = sanitize_text_field( $_POST['et_account'] );
+	$is_BB         = isset( $_POST['et_bb'] );
+
+	if ( empty( $provider_slug ) || empty( $account_name ) ) {
+		et_core_die();
+	}
+
+	et_core_api_email_remove_account( $provider_slug, $account_name );
+
+	// Get data in builder format
+	$accounts_list = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
+
+	$result = array(
+		'error'         => false,
+		'accounts_list' => $accounts_list,
+	);
+
+	die( json_encode( $result ) );
+}
+add_action( 'wp_ajax_et_builder_email_remove_account', 'et_builder_email_remove_account' );
+endif;
+
+
+if ( ! function_exists( 'et_pb_submit_subscribe_form' ) ):
+/**
+ * Ajax handler for Email Opt-in Module form submissions.
+ */
+function et_pb_submit_subscribe_form() {
+	et_core_security_check( '', 'et_frontend_nonce' );
+
+	$provider_slug = sanitize_text_field( $_POST['et_service'] );
+	$account_name  = sanitize_text_field( $_POST['et_account'] );
+	$args          = array(
+		'list_id'   => sanitize_text_field( $_POST['et_list_id'] ),
+		'email'     => sanitize_email( $_POST['et_email'] ),
+		'name'      => sanitize_text_field( $_POST['et_firstname'] ),
+		'last_name' => sanitize_text_field( $_POST['et_lastname'] ),
+	);
+
+	if ( empty( $args['name'] ) ) {
+		et_core_die( esc_html__( 'Please enter first name', 'et_builder' ) );
+	}
+
+	if ( ! is_email( $args['email'] ) ) {
+		et_core_die( esc_html__( 'Incorrect email', 'et_builder' ) );
+	}
+
+	if ( empty( $args['list_id'] ) ) {
+		et_core_die( esc_html__( 'Configuration error: List is not defined', 'et_builder' ) );
+	}
+
+	et_builder_email_maybe_migrate_accounts();
+
+	$providers = et_core_api_email_providers();
+	$provider  = $providers->get( $provider_slug, $account_name );
+	$message   = $provider->subscribe( $args );
+
+	if ( 'success' === $message ) {
+		$message = sprintf( '
+			<h2 class="et_pb_subscribed">%s</h2>',
+			esc_html__( 'Subscribed - look for the confirmation email!', 'et_builder' )
+		);
+		$result  = array( 'success' => $message );
+	} else {
+		$message = esc_html__( 'Subscription Error: ', 'et_builder' ) . $message;
+		$result  = array( 'error' => $message );
+	}
+
+	die( json_encode( $result ) );
 }
 add_action( 'wp_ajax_et_pb_submit_subscribe_form', 'et_pb_submit_subscribe_form' );
 add_action( 'wp_ajax_nopriv_et_pb_submit_subscribe_form', 'et_pb_submit_subscribe_form' );
+endif;
 
-/*
+
+if ( ! function_exists( 'et_is_builder_plugin_active' ) ):
+/**
  * Is Builder plugin active?
  *
  * @return bool  True - if the plugin is active
  */
-if ( ! function_exists( 'et_is_builder_plugin_active' ) ) :
 function et_is_builder_plugin_active() {
 	return (bool) defined( 'ET_BUILDER_PLUGIN_ACTIVE' );
 }
 endif;
-
-if ( ! function_exists( 'et_pb_get_aweber_account' ) ) :
-function et_pb_get_aweber_account() {
-	if ( ! class_exists( 'AWeberAPI' ) ) {
-		require_once( ET_BUILDER_DIR . 'subscription/aweber/aweber_api.php' );
-	}
-	if ( et_is_builder_plugin_active() ) {
-		$aweber_api_option = get_option( 'et_pb_builder_options' );
-		$consumer_key = isset( $aweber_api_option['aweber_consumer_key'] ) ? $aweber_api_option['aweber_consumer_key'] : '';
-		$consumer_secret = isset( $aweber_api_option['aweber_consumer_secret'] ) ? $aweber_api_option['aweber_consumer_secret'] : '';
-		$access_key = isset( $aweber_api_option['aweber_access_key'] ) ? $aweber_api_option['aweber_access_key'] : '';
-		$access_secret = isset( $aweber_api_option['aweber_access_secret'] ) ? $aweber_api_option['aweber_access_secret'] : '';
-	} else {
-		$consumer_key = et_get_option( 'divi_aweber_consumer_key' );
-		$consumer_secret = et_get_option( 'divi_aweber_consumer_secret' );
-		$access_key = et_get_option( 'divi_aweber_access_key' );
-		$access_secret = et_get_option( 'divi_aweber_access_secret' );
-	}
-
-	if ( ! empty( $consumer_key ) && ! empty( $consumer_secret ) && ! empty( $access_key ) && ! empty( $access_secret ) ) {
-		try {
-			// Aweber requires curl extension to be enabled
-			if ( ! function_exists( 'curl_init' ) ) {
-				return false;
-			}
-
-			$aweber = new AWeberAPI( $consumer_key, $consumer_secret );
-
-			if ( ! $aweber ) {
-				return false;
-			}
-
-			$account = $aweber->getAccount( $access_key, $access_secret );
-		} catch ( Exception $exc ) {
-			return false;
-		}
-	} else {
-		return false;
-	}
-
-	return $account;
-}
-endif;
-
-function et_aweber_submit_authorization_code() {
-	if ( ! wp_verify_nonce( $_POST['et_admin_load_nonce'], 'et_admin_load_nonce' ) ) {
-		die( esc_html__( 'Nonce failed.', 'et_builder' ) );
-	}
-
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( -1 );
-	}
-
-	$et_authorization_code = sanitize_text_field( $_POST['et_authorization_code'] );
-
-	if ( '' === $et_authorization_code ) {
-		die( esc_html__( 'Authorization code is empty.', 'et_builder' ) );
-	}
-
-	if ( ! class_exists( 'AWeberAPI' ) ) {
-		require_once( ET_BUILDER_DIR . 'subscription/aweber/aweber_api.php' );
-	}
-
-	try {
-		$auth = AWeberAPI::getDataFromAweberID( $et_authorization_code );
-
-		if ( ! ( is_array( $auth ) && 4 === count( $auth ) ) ) {
-			die ( esc_html__( 'Authorization code is invalid. Try regenerating it and paste in the new code.', 'et_builder' ) );
-		}
-
-		list( $consumer_key, $consumer_secret, $access_key, $access_secret ) = $auth;
-
-		et_update_option( 'divi_aweber_consumer_key', $consumer_key );
-		et_update_option( 'divi_aweber_consumer_secret', $consumer_secret );
-		et_update_option( 'divi_aweber_access_key', $access_key );
-		et_update_option( 'divi_aweber_access_secret', $access_secret );
-
-		die( 'success' );
-	} catch ( AWeberAPIException $exc ) {
-		printf(
-			'<p>%4$s.</p>
-			<ul>
-				<li>%5$s: %1$s</li>
-				<li>%6$s: %2$s</li>
-				<li>%7$s: %3$s</li>
-			</ul>',
-			esc_html( $exc->type ),
-			esc_html( $exc->message ),
-			esc_html( $exc->documentation_url ),
-			esc_html__( 'Aweber API Exception', 'et_builder' ),
-			esc_html__( 'Type', 'et_builder' ),
-			esc_html__( 'Message', 'et_builder' ),
-			esc_html__( 'Documentation', 'et_builder' )
-		);
-	}
-
-	die();
-}
-add_action( 'wp_ajax_et_aweber_submit_authorization_code', 'et_aweber_submit_authorization_code' );
-
-function et_aweber_remove_connection() {
-	if ( ! wp_verify_nonce( $_POST['et_admin_load_nonce'], 'et_admin_load_nonce' ) ) {
-		die( esc_html__( 'Nonce failed', 'et_builder' ) );
-	}
-
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( -1 );
-	}
-
-	et_delete_option( 'divi_aweber_consumer_key' );
-	et_delete_option( 'divi_aweber_consumer_secret' );
-	et_delete_option( 'divi_aweber_access_key' );
-	et_delete_option( 'divi_aweber_access_secret' );
-
-	die( 'success' );
-}
-add_action( 'wp_ajax_et_aweber_remove_connection', 'et_aweber_remove_connection' );
 
 /**
  * Saves the Role Settings into WP database
@@ -1690,6 +1775,8 @@ function et_pb_save_role_settings() {
 	}
 
 	update_option( 'et_pb_role_settings', $processed_options );
+	// set the flag to reload backbone templates and make sure all the role settings applied correctly right away
+	et_update_option( 'et_pb_clear_templates_cache', true );
 
 	die();
 }
@@ -2095,7 +2182,7 @@ function et_builder_get_unsaved_notification_modal() {
 		esc_html__( 'Your Save Has Failed', 'et_builder' ),
 		et_get_safe_localization( __( 'An error has occurred while saving your page. Various problems can cause a save to fail, such as a lack of server resources, firewall blockages, plugin conflicts or server misconfiguration. You can try saving again by clicking Try Again, or you can download a backup of your unsaved page by clicking Download Backup. Backups can be restored using the portability system while next editing your page.', 'et_builder' ) ),
 		et_get_safe_localization( __( 'Contacting your host and asking them to increase the following PHP variables may help: memory_limit, max_execution_time, upload_max_filesize, post_max_size, max_input_time, max_input_vars. In addition, auditing your firewall error log (such as ModSecurity) may reveal false positives that are preventing saves from completing.', 'et_builder' ) ),
-		et_get_safe_localization( __( 'Lastly, it is recommend that you temporarily disable all WordPress plugins and browser extensions and try to save again to determine if something is causing a conflict.', 'et_builder' ) ),
+		et_get_safe_localization( __( 'Lastly, it is recommended that you temporarily disable all WordPress plugins and browser extensions and try to save again to determine if something is causing a conflict.', 'et_builder' ) ),
 		esc_html__( 'Try Again', 'et_builder' ),
 		esc_html__( 'Download Backup', 'et_builder' )
 	);
@@ -2395,7 +2482,7 @@ endif;
 
 function et_pb_force_regenerate_templates() {
 	// add option to indicate that templates cache should be updated in case of term added/removed/updated
-	et_update_option( 'et_pb_clear_templates_cache', 'on' );
+	et_update_option( 'et_pb_clear_templates_cache', true );
 }
 
 add_action( 'created_term', 'et_pb_force_regenerate_templates' );
@@ -3346,113 +3433,6 @@ function et_builder_get_google_fonts() {
 }
 endif;
 
-if ( ! function_exists( 'et_pb_get_mailchimp_lists' ) ) :
-function et_pb_get_mailchimp_lists( $regenerate_mailchimp_list = 'off' ) {
-	$lists = array();
-
-	if ( et_is_builder_plugin_active() ) {
-		$mailchimp_api_option = get_option( 'et_pb_builder_options' );
-		$mailchimp_api_key = isset( $mailchimp_api_option['newsletter_main_mailchimp_key'] ) ? $mailchimp_api_option['newsletter_main_mailchimp_key'] : '';
-	} else {
-		$mailchimp_api_key = et_get_option( 'divi_mailchimp_api_key' );
-		$regenerate_mailchimp_list = et_get_option( 'divi_regenerate_mailchimp_lists', 'false' );
-	}
-
-	if ( empty( $mailchimp_api_key ) || false === strpos( $mailchimp_api_key, '-' ) ) {
-		return false;
-	}
-
-	$et_pb_mailchimp_lists = get_transient( 'et_pb_mailchimp_lists' );
-
-	if ( 'on' === $regenerate_mailchimp_list || false === $et_pb_mailchimp_lists ) {
-		if ( ! class_exists( 'MailChimp_Divi' ) ) {
-			require_once( ET_BUILDER_DIR . 'subscription/mailchimp/mailchimp.php' );
-		}
-
-		try {
-			$mailchimp = new MailChimp_Divi( $mailchimp_api_key );
-			$retval = $mailchimp->call( 'lists/list', array( 'limit' => 100 ) );
-			$retval_body = json_decode( wp_remote_retrieve_body( $retval ), true );
-			$retrieved_lists = isset( $retval_body['data'] ) ? $retval_body['data'] : array();
-
-			if ( 200 !== wp_remote_retrieve_response_code( $retval ) || empty( $retval_body['data'] ) || ! is_array( $retval_body['data'] ) ) {
-				return $et_pb_mailchimp_lists;
-			}
-
-			// if there is more than 100 lists in account, then perform additional calls to retrieve all the lists.
-			if ( ! empty( $retval_body['total'] ) && 100 < $retval_body['total'] ) {
-				// determine how many requests we need to retrieve all the lists
-				$total_pages = ceil( $retval_body['total'] / 100 );
-
-				for ( $i = 1; $i <= $total_pages; $i++ ) {
-					$retval_additional = $mailchimp->call( 'lists/list', array(
-							'limit' => 100,
-							'start' => $i,
-						)
-					);
-
-					if ( ! empty( $retval_additional ) && empty( $retval_additional['errors'] ) ) {
-						if ( ! empty( $retval_additional['data'] ) ) {
-							$retrieved_lists = array_merge( $retrieved_lists, $retval_additional['data'] );
-						}
-					}
-				}
-			}
-
-			if ( ! empty( $retrieved_lists ) ) {
-				foreach ( $retrieved_lists as $list ) {
-					$lists[$list['id']] = $list['name'];
-				}
-			}
-
-			set_transient( 'et_pb_mailchimp_lists', $lists, 60*60*24 );
-		} catch ( Exception $exc ) {
-			$lists = $et_pb_mailchimp_lists;
-		}
-
-		return $lists;
-	} else {
-		return $et_pb_mailchimp_lists;
-	}
-}
-endif;
-
-if ( ! function_exists( 'et_pb_get_aweber_lists' ) ) :
-function et_pb_get_aweber_lists( $regenerate_aweber_list = 'off' ) {
-	$lists = array();
-
-	$account = et_pb_get_aweber_account();
-
-	if ( ! et_is_builder_plugin_active() ) {
-		$regenerate_aweber_list = et_get_option( 'divi_regenerate_aweber_lists', 'false' );
-	}
-
-	if ( ! $account ) {
-		return false;
-	}
-
-	if ( 'on' === $regenerate_aweber_list || false === ( $et_pb_aweber_lists = get_transient( 'et_pb_aweber_lists' ) ) ) {
-
-		if ( ! class_exists( 'AWeberAPI' ) ) {
-			require_once( ET_BUILDER_DIR . 'subscription/aweber/aweber_api.php' );
-		}
-
-		$aweber_lists = $account->lists;
-
-		if ( isset( $aweber_lists ) ) {
-			foreach ( $aweber_lists as $list ) {
-				$lists[$list->id] = $list->name;
-			}
-		}
-
-		set_transient( 'et_pb_aweber_lists', $lists, 60*60*24 );
-	} else {
-		$lists = $et_pb_aweber_lists;
-	}
-
-	return $lists;
-}
-endif;
 
 if ( ! function_exists( 'et_pb_register_global_js' ) ) :
 function et_pb_register_global_js() {
@@ -3545,6 +3525,14 @@ function et_fb_get_saved_templates() {
 		} else {
 			foreach( $templates_data as $index => $data ) {
 				$templates_data_processed[ $index ]['shortcode'] = et_fb_process_shortcode( $data['shortcode'] );
+
+				if ( 'global' === $templates_data_processed[ $index ]['is_global'] && 'module' === $templates_data_processed[ $index ]['layout_type'] ) {
+					$templates_data_processed[ $index ]['shortcode'][0]['unsyncedGlobalSettings'] = $templates_data_processed[ $index ]['unsynced_options'];
+
+					if ( empty( $templates_data_processed[ $index ]['unsynced_options'] ) && isset( $templates_data_processed[ $index ]['shortcode'][0]['attrs']['saved_tabs'] ) && 'all' !== $templates_data_processed[ $index ]['shortcode'][0]['attrs']['saved_tabs'] ) {
+						$templates_data_processed[ $index ]['shortcode'][0]['unsyncedGlobalSettings'] = et_pb_get_unsynced_legacy_options( $post_type, $templates_data_processed[ $index ]['shortcode'][0] );
+					}
+				}
 			}
 			$next_page = 'all' === $is_global ? $start_from + 25 : $start_from + 50;
 		}
@@ -3555,6 +3543,33 @@ function et_fb_get_saved_templates() {
 	die( $json_templates );
 }
 add_action( 'wp_ajax_et_fb_get_saved_templates', 'et_fb_get_saved_templates' );
+
+function et_pb_get_unsynced_legacy_options( $post_type, $shortcode_data ) {
+	if ( ! isset( $shortcode_data['attrs']['saved_tabs'] ) && 'all' === $shortcode_data['attrs']['saved_tabs'] ) {
+		return array();
+	}
+
+	// get all options
+	$general_fields = ET_Builder_Element::get_general_fields( $post_type, 'all', $shortcode_data['type'] );
+	$advanced_fields = ET_Builder_Element::get_advanced_fields( $post_type, 'all', $shortcode_data['type'] );
+	$css_fields = ET_Builder_Element::get_custom_css_fields( $post_type, 'all', $shortcode_data['type'] );
+	$saved_fields = array_keys( $shortcode_data['attrs'] );
+
+	// content fields should never be included into unsynced options. We use different key for the content options.
+	$saved_fields[] = 'content_new';
+	$saved_fields[] = 'raw_content';
+
+	$all_fields = array_merge( array_keys( $general_fields ), array_keys( $advanced_fields ), array_keys( $css_fields ) );
+
+	// compare all options with saved options to get array of unsynced ones.
+	$unsynced_options = array_diff( $all_fields, $saved_fields );
+
+	if ( false === strpos( $shortcode_data['attrs']['saved_tabs'], 'general' ) ) {
+		$unsynced_options[] = 'et_pb_content_field';
+	}
+
+	return $unsynced_options;
+}
 
 // prepare the ssl link for FB
 function et_fb_prepare_ssl_link( $link ) {

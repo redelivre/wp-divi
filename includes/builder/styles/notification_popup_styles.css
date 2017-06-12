@@ -26,8 +26,6 @@
 .et_pb_new_template_modal .et_pb_prompt_modal input[type=checkbox] { float: left; margin-bottom: 10px; margin-right: 10px; margin-top: 0; width: 25px; height: 25px; }
 .et_pb_new_template_modal .et_pb_prompt_modal input:focus, .et_pb_prompt_modal select:focus { box-shadow: none !important; outline: none !important; background: #E0E5EA; -webkit-transition: background .5s; -moz-transition: background .5s; transition: background .5s; }
 .et_pb_new_template_modal .et_pb_prompt_modal input.et_pb_prompt_proceed, .et_pb_new_template_modal .et_pb_prompt_modal .et_pb_prompt_proceed:focus { background-color: #008bdb; }
-.et_pb_new_template_modal .et_module_tabs_options label { font-size: 14px; margin-top: 5px; font-weight: 400; text-transform: none; float: left; width: 100%; }
-.et_pb_new_template_modal .et_module_tabs_options { margin-top: 15px; }
 .et_pb_new_template_modal .et_pb_prompt_modal input[type=checkbox]:checked:before { color: #00c3aa; float: none; margin-top: 2px; }
 .et_pb_new_template_modal .et_pb_prompt_buttons { width: 100%; text-align: center; position: absolute; bottom: 0; margin: 0 0 -1px 0; }
 .et_pb_new_template_modal .et_pb_prompt_modal .layout_cats_container label { clear: both; font-weight: 400; font-size: 14px; }
@@ -36,7 +34,6 @@
 .et_pb_new_template_modal.et_modal_on_top.et_pb_modal_overlay { margin-top: 0; }
 .et_pb_new_template_modal.et_modal_on_top .et_pb_prompt_modal { overflow: hidden; }
 .et_pb_new_template_modal.et_modal_on_top .et_pb_prompt_dont_proceed { display: block; padding: 22px !important; }
-.et_pb_new_template_modal .et_module_tabs_options label { margin-bottom: 0; }
 .et_pb_modal_overlay a.et_pb_reload_builder { height: 68px !important; text-shadow: none !important; line-height: 68px; }
 
 /* export layouts section */

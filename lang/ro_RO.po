@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Divi 1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
-"POT-Creation-Date: 2017-02-08 23:18:38+00:00\n"
-"PO-Revision-Date: 2016-03-30 01:03+0300\n"
+"POT-Creation-Date: 2017-05-18 15:55:34+00:00\n"
+"PO-Revision-Date: 2017-05-18 19:10+0300\n"
 "Last-Translator: \n"
 "Language-Team: Elegant Themes\n"
 "Language: ro\n"
@@ -74,7 +74,7 @@ msgstr "Ajutor"
 msgid "Options"
 msgstr "Opțiuni"
 
-#: epanel/core_functions.php:121 functions.php:8468
+#: epanel/core_functions.php:121 functions.php:8474
 msgid "Theme Options"
 msgstr "Opțiuni Temă"
 
@@ -90,7 +90,7 @@ msgstr "setări resetate."
 msgid "Save Changes"
 msgstr "Salvează Modificările"
 
-#: epanel/core_functions.php:161 epanel/core_functions.php:801
+#: epanel/core_functions.php:161 epanel/core_functions.php:814
 msgid "%s Theme Options"
 msgstr "%s Opțiuni Temă"
 
@@ -98,7 +98,7 @@ msgstr "%s Opțiuni Temă"
 msgid "Reset to Defaults"
 msgstr "Resetează la Implicit"
 
-#: epanel/core_functions.php:173 options_divi.php:38 options_divi.php:866
+#: epanel/core_functions.php:173 options_divi.php:38 options_divi.php:840
 msgid "General"
 msgstr "General"
 
@@ -106,7 +106,7 @@ msgstr "General"
 msgid "Navigation"
 msgstr "Navigare"
 
-#: epanel/core_functions.php:179 functions.php:696
+#: epanel/core_functions.php:179 functions.php:700
 msgid "Layout"
 msgstr "Schemă"
 
@@ -128,11 +128,11 @@ msgstr "Integrare"
 
 #: epanel/core_functions.php:194
 msgid "Support"
-msgstr ""
+msgstr "Sprijin"
 
 #: epanel/core_functions.php:197
 msgid "Updates"
-msgstr ""
+msgstr "Actualizări"
 
 #: epanel/core_functions.php:300 epanel/core_functions.php:511
 msgid "Reset"
@@ -170,47 +170,51 @@ msgstr "Autor"
 msgid "Date"
 msgstr "Data"
 
-#: epanel/core_functions.php:550 options_divi.php:339
+#: epanel/core_functions.php:550 options_divi.php:313
 msgid "Categories"
 msgstr "Categorii"
 
-#: epanel/core_functions.php:759
+#: epanel/core_functions.php:558
+msgid "Ratings"
+msgstr "Evaluări"
+
+#: epanel/core_functions.php:772
 msgid "Choose an Image"
 msgstr "Alegeți o Imagine"
 
-#: epanel/custom_functions.php:305
+#: epanel/custom_functions.php:287
 msgid "&hellip;"
 msgstr "&hellip;"
 
-#: epanel/custom_functions.php:639 header.php:188 header.php:231
+#: epanel/custom_functions.php:626 header.php:188 header.php:231
 msgid "Home"
 msgstr "Acasă"
 
-#: epanel/custom_functions.php:936
+#: epanel/custom_functions.php:923
 msgid "Archives"
 msgstr "Arhive"
 
-#: epanel/custom_functions.php:938
+#: epanel/custom_functions.php:925
 msgid "Search results for \"%s\""
 msgstr "Rezultate căutare după \"%s\""
 
-#: epanel/custom_functions.php:940
+#: epanel/custom_functions.php:927
 msgid "404 Not Found"
 msgstr "404 Neidentificat"
 
-#: epanel/custom_functions.php:1010
+#: epanel/custom_functions.php:997
 msgid "Currently viewing archives from %1$s"
 msgstr "Vizualizare arhive de pe %1$s"
 
-#: epanel/custom_functions.php:1023
+#: epanel/custom_functions.php:1010
 msgid "Search Results for: %s"
 msgstr "Rezultate Căutare după: %s"
 
-#: epanel/custom_functions.php:1264
+#: epanel/custom_functions.php:1251
 msgid "Image doesn't exist"
 msgstr "Imaginea nu există"
 
-#: epanel/custom_functions.php:1429
+#: epanel/custom_functions.php:1416
 msgid ""
 "<div class=\"updated\"><p>This is a fresh installation of %1$s theme. Don't "
 "forget to go to <a href=\"%2$s\">ePanel</a> to set it up. This message will "
@@ -246,7 +250,7 @@ msgstr "Utilizator: "
 msgid "Password: "
 msgstr "Parola: "
 
-#: epanel/shortcodes/shortcodes.php:294 functions.php:3876
+#: epanel/shortcodes/shortcodes.php:294 functions.php:3880
 msgid "Login"
 msgstr "Conectare"
 
@@ -430,27 +434,27 @@ msgstr "Utilizează redimensionare"
 msgid "+ Add One More Tab"
 msgstr "+ Adaugă Încă O Filă"
 
-#: epanel/shortcodes/shortcodes.php:1335 functions.php:3542
+#: epanel/shortcodes/shortcodes.php:1335 functions.php:3546
 msgid "Image Height"
 msgstr "Înălțime Inagine"
 
-#: epanel/shortcodes/shortcodes.php:1336 functions.php:3522
+#: epanel/shortcodes/shortcodes.php:1336 functions.php:3526
 msgid "Image Width"
 msgstr "Lățime Imagine"
 
-#: functions.php:40
+#: functions.php:36
 msgid "Primary Menu"
 msgstr "Meniu Principal"
 
-#: functions.php:41
+#: functions.php:37
 msgid "Secondary Menu"
 msgstr "Meniu Secundar"
 
-#: functions.php:42 functions.php:711
+#: functions.php:38 functions.php:715
 msgid "Footer Menu"
 msgstr "Meniu Subsol"
 
-#: functions.php:91
+#: functions.php:90
 msgid ""
 "Welcome to Divi! Before diving in to your new theme, please visit the <a "
 "style=\"color: #fff; font-weight: bold;\" href=\"%1$s\" target=\"_blank"
@@ -461,607 +465,606 @@ msgstr ""
 "\"%1$s\" target=\"_blank\">Divi Documentation</a> pentru a accesa zecile de "
 "tutoriale amănunțite."
 
-#: functions.php:216
+#: functions.php:215
 msgid "Select Page"
 msgstr "Selectează o Pagină"
 
-#: functions.php:278
+#: functions.php:277
 msgid "Divi Page Settings"
 msgstr "Setări pagină Divi"
 
-#: functions.php:280
+#: functions.php:279
 msgid "Divi Post Settings"
 msgstr "Setări postare Divi"
 
-#: functions.php:281
+#: functions.php:280
 msgid "Divi Product Settings"
 msgstr "Setări produs Divi"
 
-#: functions.php:282
+#: functions.php:281
 msgid "Divi Project Settings"
 msgstr "Setări proiect Divi"
 
-#: functions.php:289
+#: functions.php:288
 msgid "Skills"
 msgstr "Aptitudini"
 
-#: functions.php:292
+#: functions.php:291
 msgid "Posted on"
 msgstr "Postat pe"
 
-#: functions.php:316 options_divi.php:103
+#: functions.php:315 options_divi.php:103
 msgid "Right Sidebar"
 msgstr "Bară Dreapta"
 
-#: functions.php:317 options_divi.php:104
+#: functions.php:316 options_divi.php:104
 msgid "Left Sidebar"
 msgstr "Bară Stânga"
 
-#: functions.php:318 options_divi.php:105
+#: functions.php:317 options_divi.php:105
 msgid "Full Width"
 msgstr "Lățime Completă"
 
-#: functions.php:322
+#: functions.php:321
 msgid "Light"
 msgstr "Alb"
 
-#: functions.php:323
+#: functions.php:322
 msgid "Dark"
 msgstr "Negru"
 
-#: functions.php:336
+#: functions.php:335
 msgid "Page Layout"
 msgstr "Schemă Pagină"
 
-#: functions.php:350
+#: functions.php:349
 msgid "Dot Navigation"
 msgstr "Navigare punct"
 
-#: functions.php:353 functions.php:362
+#: functions.php:352 functions.php:361
 msgid "Off"
 msgstr "Închide"
 
-#: functions.php:354 functions.php:363
+#: functions.php:353 functions.php:362
 msgid "On"
 msgstr "Deschide"
 
-#: functions.php:358
+#: functions.php:357
 msgid "Hide Nav Before Scroll"
 msgstr "Ascunde navigarea înainte de derulare"
 
-#: functions.php:361 functions.php:5733 includes/functions/choices.php:24
+#: functions.php:360 functions.php:5737 includes/functions/choices.php:24
 #: includes/functions/choices.php:40
 msgid "Default"
 msgstr "Implicit"
 
-#: functions.php:369
+#: functions.php:368
 msgid "Post Title"
 msgstr "Titlu postare"
 
-#: functions.php:372 functions.php:407
+#: functions.php:371 functions.php:406
 msgid "Show"
 msgstr "Afișare"
 
-#: functions.php:373 functions.php:406
+#: functions.php:372 functions.php:405
 msgid "Hide"
 msgstr "Ascundere"
 
-#: functions.php:378
+#: functions.php:377
 msgid "Use Background Color"
 msgstr "Utilizează Culoare Fundal"
 
-#: functions.php:383 functions.php:5772
+#: functions.php:382 functions.php:5776
 msgid "Hex Value"
 msgstr "Valoare Culoare"
 
-#: functions.php:387 functions.php:2047 functions.php:2074 functions.php:2201
-#: functions.php:2723 functions.php:2851 functions.php:3055
+#: functions.php:386 functions.php:2051 functions.php:2078 functions.php:2205
+#: functions.php:2727 functions.php:2855 functions.php:3059
 msgid "Text Color"
 msgstr "Culoare Text"
 
-#: functions.php:403
+#: functions.php:402
 msgid "Project Navigation"
 msgstr "Navigare Proiect"
 
-#: functions.php:551 functions.php:563 functions.php:8547
+#: functions.php:550 functions.php:562 functions.php:8553
 msgid "you don't have sufficient permissions to access this page"
 msgstr "nu aveți permisiuni suficiente pentru a accesa această pagină"
 
-#: functions.php:611 options_divi.php:344 options_divi.php:492
+#: functions.php:615 options_divi.php:318 options_divi.php:466
 msgid "General Settings"
 msgstr "Setări Generale"
 
-#: functions.php:616
+#: functions.php:620
 msgid "Site Identity"
 msgstr "Identitatea site-ul"
 
-#: functions.php:621
+#: functions.php:625
 msgid "Layout Settings"
 msgstr "Setări Schemă"
 
-#: functions.php:626
+#: functions.php:630
 msgid "Typography"
 msgstr "Tipografie"
 
-#: functions.php:631
+#: functions.php:635
 msgid "Mobile Styles"
 msgstr "Stiluri mobile"
 
-#: functions.php:636
+#: functions.php:640
 msgid "Tablet"
 msgstr "Tabletă"
 
-#: functions.php:641
+#: functions.php:645
 msgid "Phone"
 msgstr "Telefon"
 
-#: functions.php:646
+#: functions.php:650
 msgid "Mobile Menu"
 msgstr "Meniu mobil"
 
-#: functions.php:651
+#: functions.php:655
 msgid "Background"
 msgstr "Fundal"
 
-#: functions.php:656
+#: functions.php:660
 msgid "Header & Navigation"
 msgstr "Antet & navigare"
 
-#: functions.php:661
+#: functions.php:665
 msgid "Header Format"
 msgstr "Format antet"
 
-#: functions.php:666
+#: functions.php:670
 msgid "Primary Menu Bar"
 msgstr "Bară meniu principal"
 
-#: functions.php:671
+#: functions.php:675
 msgid "Secondary Menu Bar"
 msgstr "Bară meniu secundar"
 
-#: functions.php:676
+#: functions.php:680
 msgid "Slide In & Fullscreen Header Settings"
 msgstr "Glisare & Setări Antet pe tot ecranul"
 
-#: functions.php:681
+#: functions.php:685
 msgid "Fixed Navigation Settings"
 msgstr "Setări navigare fixă"
 
-#: functions.php:686
+#: functions.php:690
 msgid "Header Elements"
 msgstr "Elemente antet"
 
-#: functions.php:691
+#: functions.php:695
 msgid "Footer"
 msgstr "Subsol"
 
-#: functions.php:701
+#: functions.php:705
 msgid "Widgets"
 msgstr "Aplicații"
 
-#: functions.php:706
+#: functions.php:710
 msgid "Footer Elements"
 msgstr "Elemente subsol"
 
-#: functions.php:716
+#: functions.php:720
 msgid "Bottom Bar"
 msgstr "Bară jos"
 
-#: functions.php:721 functions.php:1461
+#: functions.php:725 functions.php:1465
 msgid "Color Schemes"
 msgstr "Combinații Culoare"
 
-#: functions.php:723
+#: functions.php:727
 msgid ""
 "Note: Color settings set above should be applied to the Default color scheme."
 msgstr ""
 "Atenție: Setările de culoare de mai sus trebuie aplicate combinației "
 "Implicite de culoare."
 
-#: functions.php:727
+#: functions.php:731
 msgid "Buttons"
 msgstr "Butoane"
 
-#: functions.php:732
+#: functions.php:736
 msgid "Buttons Style"
 msgstr "Stil butoane"
 
-#: functions.php:737
+#: functions.php:741
 msgid "Buttons Hover Style"
 msgstr "Stil planare butoane"
 
-#: functions.php:742 functions.php:5055
+#: functions.php:746 functions.php:5059
 msgid "Blog"
 msgstr "Blog"
 
-#: functions.php:747
+#: functions.php:751
 msgid "Post"
 msgstr "Postare"
 
-#: functions.php:764
+#: functions.php:768
 msgid "Meta Text Size"
 msgstr "Marime text metadate"
 
-#: functions.php:783
+#: functions.php:787
 msgid "Meta Line Height"
 msgstr "Înălțime linie metadate"
 
-#: functions.php:802
+#: functions.php:806
 msgid "Meta Letter Spacing"
 msgstr "Spațiu litere metadate"
 
-#: functions.php:821 functions.php:5124 functions.php:5203
+#: functions.php:825 functions.php:5128 functions.php:5207
 msgid "Meta Font Style"
 msgstr "Stil font metadate"
 
-#: functions.php:836 functions.php:1261 functions.php:1333 functions.php:1352
-#: functions.php:2469
+#: functions.php:840 functions.php:1265 functions.php:1337 functions.php:1356
+#: functions.php:2473
 msgid "Header Text Size"
 msgstr "Mărime text antet"
 
-#: functions.php:855 functions.php:1299
+#: functions.php:859 functions.php:1303
 msgid "Header Line Height"
 msgstr "Înălțime linie antet"
 
-#: functions.php:874 functions.php:1280
+#: functions.php:878 functions.php:1284
 msgid "Header Letter Spacing"
 msgstr "Spațiu litere antet"
 
-#: functions.php:893 functions.php:1318 functions.php:2488 functions.php:3411
-#: functions.php:3589 functions.php:3704 functions.php:3767 functions.php:3846
-#: functions.php:3910 functions.php:4701 functions.php:5397 functions.php:5503
+#: functions.php:897 functions.php:1322 functions.php:2492 functions.php:3415
+#: functions.php:3593 functions.php:3708 functions.php:3771 functions.php:3850
+#: functions.php:3914 functions.php:4705 functions.php:5401 functions.php:5507
 msgid "Header Font Style"
 msgstr "Stil font antet"
 
-#: functions.php:907
+#: functions.php:911
 msgid "Enable Boxed Layout"
 msgstr "Activează afișare casetată"
 
-#: functions.php:921
+#: functions.php:925
 msgid "Website Content Width"
 msgstr "Lățime conținut site"
 
-#: functions.php:940
+#: functions.php:944
 msgid "Website Gutter Width"
 msgstr "Spațiu coloană site"
 
-#: functions.php:958
+#: functions.php:962
 msgid "Use Custom Sidebar Width"
 msgstr "Utilizați personalizată Sidebar Lățime"
 
-#: functions.php:972
+#: functions.php:976
 msgid "Sidebar Width"
 msgstr "Lățime bară laterală"
 
-#: functions.php:991 functions.php:1010 functions.php:1029
+#: functions.php:995 functions.php:1014 functions.php:1033
 msgid "Section Height"
 msgstr "Înălțime secțiune"
 
-#: functions.php:1048 functions.php:1067 functions.php:1086
+#: functions.php:1052 functions.php:1071 functions.php:1090
 msgid "Row Height"
 msgstr "Înalțime rând"
 
-#: functions.php:1105
+#: functions.php:1109
 msgid "Stretch Background Image"
 msgstr "Mărește Imagine Fundal"
 
-#: functions.php:1112 functions.php:1725 functions.php:2102 functions.php:2173
-#: functions.php:2187 functions.php:2709 functions.php:2865 functions.php:3069
+#: functions.php:1116 functions.php:1729 functions.php:2106 functions.php:2177
+#: functions.php:2191 functions.php:2713 functions.php:2869 functions.php:3073
 msgid "Background Color"
 msgstr "Culoare Fundal"
 
-#: functions.php:1119
+#: functions.php:1123
 msgid "Background Image"
 msgstr "Imagine de fundal"
 
-#: functions.php:1139
+#: functions.php:1143
 msgid "Background Repeat"
 msgstr "Repetare fundal"
 
-#: functions.php:1146 functions.php:1170
+#: functions.php:1150 functions.php:1174
 msgid "Background Position"
 msgstr "Poziție fundal"
 
-#: functions.php:1150 includes/functions/choices.php:106
+#: functions.php:1154 includes/functions/choices.php:106
 msgid "Left"
 msgstr "Stânga"
 
-#: functions.php:1151
+#: functions.php:1155
 msgid "Center"
 msgstr "Centru"
 
-#: functions.php:1152 includes/functions/choices.php:105
+#: functions.php:1156 includes/functions/choices.php:105
 msgid "Right"
 msgstr "Dreapta"
 
-#: functions.php:1185 functions.php:1223 functions.php:1242
+#: functions.php:1189 functions.php:1227 functions.php:1246
 msgid "Body Text Size"
 msgstr "Mărime text conținut"
 
-#: functions.php:1204
+#: functions.php:1208
 msgid "Body Line Height"
 msgstr "Înălțime linie conținut"
 
-#: functions.php:1372
+#: functions.php:1376
 msgid "Header Font"
 msgstr "Font Antet"
 
-#: functions.php:1388
+#: functions.php:1392
 msgid "Body Font"
 msgstr "Font Text"
 
-#: functions.php:1405
+#: functions.php:1409
 msgid "Body Link Color"
 msgstr "Culoare legătură conținut"
 
-#: functions.php:1419
+#: functions.php:1423
 msgid "Body Text Color"
 msgstr "Culoare text conținut"
 
-#: functions.php:1433
+#: functions.php:1437
 msgid "Header Text Color"
 msgstr "Culoare text antet"
 
-#: functions.php:1447
+#: functions.php:1451
 msgid "Theme Accent Color"
 msgstr "Culoare accent temă"
 
-#: functions.php:1477
+#: functions.php:1481
 msgid "Header Style"
 msgstr "Stil Antet"
 
-#: functions.php:1491
+#: functions.php:1495
 msgid "Enable Vertical Navigation"
 msgstr "Activează navigare verticală"
 
-#: functions.php:1505
+#: functions.php:1509
 msgid "Vertical Menu Orientation"
 msgstr "Orientare Verticală Meniu"
 
-#: functions.php:1521
+#: functions.php:1525
 msgid "Hide Navigation Until Scroll"
 msgstr "Ascunde navigarea până la derulare"
 
-#: functions.php:1536 functions.php:2425
+#: functions.php:1540 functions.php:2429
 msgid "Show Social Icons"
 msgstr "Arată iconițe rețele socializare"
 
-#: functions.php:1550
+#: functions.php:1554
 msgid "Show Search Icon"
 msgstr "Arată Butonul Căutare"
 
-#: functions.php:1564
+#: functions.php:1568
 msgid "Show Top Bar"
 msgstr "Arată Bara de Sus"
 
-#: functions.php:1578
+#: functions.php:1582
 msgid "Menu Width"
 msgstr "Lățime Meniu"
 
-#: functions.php:1597 functions.php:1635
+#: functions.php:1601 functions.php:1639
 msgid "Menu Text Size"
 msgstr "Mărime Text Meniu"
 
-#: functions.php:1616 functions.php:1654
+#: functions.php:1620 functions.php:1658
 msgid "Top Bar Text Size"
 msgstr "Mărime Text Bară Antet"
 
-#: functions.php:1673 functions.php:1911 functions.php:1995 functions.php:2655
-#: functions.php:2931 functions.php:3116
+#: functions.php:1677 functions.php:1915 functions.php:1999 functions.php:2659
+#: functions.php:2935 functions.php:3120
 msgid "Letter Spacing"
 msgstr "Spațiu litere"
 
-#: functions.php:1693 functions.php:1931 functions.php:2015
+#: functions.php:1697 functions.php:1935 functions.php:2019
 msgid "Font"
 msgstr "Font"
 
-#: functions.php:1710 functions.php:1948 functions.php:2032 functions.php:2674
-#: functions.php:2737
+#: functions.php:1714 functions.php:1952 functions.php:2036 functions.php:2678
+#: functions.php:2741
 msgid "Font Style"
 msgstr "Stil font"
 
-#: functions.php:1739
+#: functions.php:1743
 msgid "Menu Link Color"
 msgstr "Culoare Link Meniu"
 
-#: functions.php:1753 functions.php:2088
+#: functions.php:1757 functions.php:2092
 msgid "Active Link Color"
 msgstr "Culoare legătură activă"
 
-#: functions.php:1767
+#: functions.php:1771
 msgid "Top Bar Text Color"
 msgstr "Culoare Text Bară Antet"
 
-#: functions.php:1781
+#: functions.php:1785
 msgid "Search Bar Text Color"
 msgstr "Culoare Text Bară Căutare"
 
-#: functions.php:1795
+#: functions.php:1799
 msgid "Search Bar Background Color"
 msgstr "Culoare Fundal Bară Căutare"
 
-#: functions.php:1808 functions.php:1970
+#: functions.php:1812 functions.php:1974
 msgid "Make Full Width"
 msgstr "Extinde la lățime completă"
 
-#: functions.php:1821 functions.php:2060 functions.php:2276
+#: functions.php:1825 functions.php:2064 functions.php:2280
 msgid "Hide Logo Image"
 msgstr "Ascunde imagine logo"
 
-#: functions.php:1835
+#: functions.php:1839
 msgid "Menu Height"
 msgstr "meniu Înălțime"
 
-#: functions.php:1854
+#: functions.php:1858
 msgid "Logo Max Height"
 msgstr "Logo Max Înălțime"
 
-#: functions.php:1873
+#: functions.php:1877
 msgid "Menu Top Margin"
-msgstr ""
+msgstr "Limită Superioară Meniu"
 
-#: functions.php:1892 functions.php:1976 functions.php:2309 functions.php:2832
+#: functions.php:1896 functions.php:1980 functions.php:2313 functions.php:2836
 msgid "Text Size"
 msgstr "Mărime text"
 
-#: functions.php:2116 functions.php:2215
+#: functions.php:2120 functions.php:2219
 msgid "Dropdown Menu Background Color"
 msgstr "Culoare fundal meniu vertical"
 
-#: functions.php:2130
+#: functions.php:2134
 msgid "Dropdown Menu Line Color"
 msgstr "Culoare linie meniu vertical"
 
-#: functions.php:2144 functions.php:2229
+#: functions.php:2148 functions.php:2233
 msgid "Dropdown Menu Text Color"
 msgstr "Culoare text meniu vertical"
 
-#: functions.php:2158 functions.php:2243
+#: functions.php:2162 functions.php:2247
 msgid "Dropdown Menu Animation"
 msgstr "Animație meniu vertical"
 
-#: functions.php:2290
+#: functions.php:2294
 msgid "Fixed Menu Height"
 msgstr "Fix Meniu Înălțime"
 
-#: functions.php:2328
+#: functions.php:2332
 msgid "Primary Menu Background Color"
 msgstr "Culoare fundal meniu principal"
 
-#: functions.php:2342
+#: functions.php:2346
 msgid "Secondary Menu Background Color"
 msgstr "Culoare fundal meniu secundar"
 
-#: functions.php:2356
+#: functions.php:2360
 msgid "Primary Menu Link Color"
 msgstr "Meniu principal Link Color"
 
-#: functions.php:2370
+#: functions.php:2374
 msgid "Secondary Menu Link Color"
 msgstr "Meniu secundar Link Color"
 
-#: functions.php:2384
+#: functions.php:2388
 msgid "Active Primary Menu Link Color"
 msgstr "Meniu principal activ Link Color"
 
-#: functions.php:2398
+#: functions.php:2402
 msgid "Phone Number"
 msgstr "Număr Telefon"
 
-#: functions.php:2411
+#: functions.php:2415
 msgid "Email"
 msgstr "Email"
 
-#: functions.php:2439
+#: functions.php:2443
 msgid "Column Layout"
 msgstr "Dispunere coloane"
 
-#: functions.php:2455
+#: functions.php:2459
 msgid "Footer Background Color"
 msgstr "Culoare Fundal Subsol"
 
-#: functions.php:2503
+#: functions.php:2507
 msgid "Body/Link Text Size"
 msgstr "Mărime text conținut/legătură"
 
-#: functions.php:2522
+#: functions.php:2526
 msgid "Body/Link Line Height"
 msgstr "Înălțime linie conținut/legătură"
 
-#: functions.php:2541
+#: functions.php:2545
 msgid "Body Font Style"
 msgstr "Stil font conținut"
 
-#: functions.php:2556
+#: functions.php:2560
 msgid "Widget Text Color"
 msgstr "Culoare text aplicație"
 
-#: functions.php:2570
+#: functions.php:2574
 msgid "Widget Link Color"
 msgstr "Culoare legătură aplicație"
 
-#: functions.php:2584
+#: functions.php:2588
 msgid "Widget Header Color"
 msgstr "Culoare antet aplicație"
 
-#: functions.php:2598
+#: functions.php:2602
 msgid "Widget Bullet Color"
 msgstr "Culoare punct aplicație"
 
-#: functions.php:2613
+#: functions.php:2617
 msgid "Footer Menu Background Color"
 msgstr "Culoare fundal meniu subsol"
 
-#: functions.php:2627
+#: functions.php:2631
 msgid "Footer Menu Text Color"
 msgstr "Culoare text meniu subsol"
 
-#: functions.php:2641
+#: functions.php:2645
 msgid "Footer Menu Active Link Color"
 msgstr "Culoare legătură activă meniu subsol"
 
-#: functions.php:2689 functions.php:2752
+#: functions.php:2693 functions.php:2756
 msgid "Font Size"
 msgstr "Mărime font"
 
-#: functions.php:2771
+#: functions.php:2775
 msgid "Social Icon Size"
 msgstr "Mărime iconiță rețele socializare"
 
-#: functions.php:2790
+#: functions.php:2794
 msgid "Social Icon Color"
 msgstr "Culoare iconiță rețele socializare"
 
-#: functions.php:2803
+#: functions.php:2807
 msgid "Disable Footer Credits"
-msgstr ""
+msgstr "Dezactivează Acreditări Subsol"
 
-#: functions.php:2817
-#, fuzzy
+#: functions.php:2821
 msgid "Edit Footer Credits"
-msgstr "Zona Subsol"
+msgstr "Editare Acreditări Subsol"
 
-#: functions.php:2879
+#: functions.php:2883
 msgid "Border Width"
 msgstr "Mărime margine"
 
-#: functions.php:2898 functions.php:3083
+#: functions.php:2902 functions.php:3087
 msgid "Border Color"
 msgstr "Culoare margine"
 
-#: functions.php:2912 functions.php:3097
+#: functions.php:2916 functions.php:3101
 msgid "Border Radius"
 msgstr "Dimensiune margine"
 
-#: functions.php:2950 functions.php:5440
+#: functions.php:2954 functions.php:5444
 msgid "Button Font Style"
 msgstr "Stil font buton"
 
-#: functions.php:2966
+#: functions.php:2970
 msgid "Buttons Font"
 msgstr "Font butoane"
 
-#: functions.php:2982
+#: functions.php:2986
 msgid "Add Button Icon"
 msgstr "Adaugă iconiță buton"
 
-#: functions.php:2997
+#: functions.php:3001
 msgid "Select Icon"
 msgstr "Selectează iconița"
 
-#: functions.php:3011
+#: functions.php:3015
 msgid "Icon Color"
 msgstr "Culoare Pictogramă"
 
-#: functions.php:3025
+#: functions.php:3029
 msgid "Icon Placement"
 msgstr "Poziție iconiță"
 
-#: functions.php:3040
+#: functions.php:3044
 msgid "Only Show Icon on Hover"
 msgstr "Arată iconița doar la planare"
 
-#: functions.php:3134 includes/widgets/widget-about.php:50
+#: functions.php:3138 includes/widgets/widget-about.php:50
 #: includes/widgets/widget-ads.php:180 includes/widgets/widget-ads.php:188
 #: includes/widgets/widget-ads.php:196 includes/widgets/widget-ads.php:204
 #: includes/widgets/widget-ads.php:212 includes/widgets/widget-ads.php:220
@@ -1069,400 +1072,400 @@ msgstr "Arată iconița doar la planare"
 msgid "Image"
 msgstr "Imagine"
 
-#: functions.php:3135
+#: functions.php:3139
 msgid "Image Module Settings"
 msgstr "Setări Modul Imagine"
 
-#: functions.php:3146
+#: functions.php:3150
 msgid "Animation"
 msgstr "Animație"
 
-#: functions.php:3147
+#: functions.php:3151
 msgid "This controls default direction of the lazy-loading animation."
 msgstr "Aceasta controlează direcția implicită a animației cu încărcare lentă."
 
-#: functions.php:3157
+#: functions.php:3161
 msgid "Gallery"
 msgstr "Galerie"
 
-#: functions.php:3170 functions.php:3953 functions.php:4062
+#: functions.php:3174 functions.php:3957 functions.php:4066
 msgid "Zoom Icon Color"
 msgstr "Culoare iconiță zoom"
 
-#: functions.php:3185 functions.php:3968 functions.php:4077
+#: functions.php:3189 functions.php:3972 functions.php:4081
 msgid "Hover Overlay Color"
 msgstr "Culoare planare acoperire"
 
-#: functions.php:3200 functions.php:3306 functions.php:3983 functions.php:4092
-#: functions.php:4361 functions.php:4440 functions.php:4482 functions.php:4582
+#: functions.php:3204 functions.php:3310 functions.php:3987 functions.php:4096
+#: functions.php:4365 functions.php:4444 functions.php:4486 functions.php:4586
 msgid "Title Font Size"
 msgstr "Mărime font titlu"
 
-#: functions.php:3220 functions.php:3326 functions.php:4003 functions.php:4112
-#: functions.php:4381 functions.php:4460 functions.php:5088 functions.php:5167
+#: functions.php:3224 functions.php:3330 functions.php:4007 functions.php:4116
+#: functions.php:4385 functions.php:4464 functions.php:5092 functions.php:5171
 msgid "Title Font Style"
 msgstr "Stil font titlu"
 
-#: functions.php:3236 functions.php:4019 functions.php:4128
+#: functions.php:3240 functions.php:4023 functions.php:4132
 msgid "Caption Font Size"
 msgstr "Mărime font titlu"
 
-#: functions.php:3256 functions.php:4039 functions.php:4148
+#: functions.php:3260 functions.php:4043 functions.php:4152
 msgid "Caption Font Style"
 msgstr "Stil font legendă"
 
-#: functions.php:3266
+#: functions.php:3270
 msgid "Blurb"
 msgstr "Prezentare"
 
-#: functions.php:3279 functions.php:3391 functions.php:3569 functions.php:3684
-#: functions.php:3747 functions.php:3826 functions.php:3890 functions.php:4681
-#: functions.php:5377 functions.php:5483
+#: functions.php:3283 functions.php:3395 functions.php:3573 functions.php:3688
+#: functions.php:3751 functions.php:3830 functions.php:3894 functions.php:4685
+#: functions.php:5381 functions.php:5487
 msgid "Header Font Size"
 msgstr "Mărime font antet"
 
-#: functions.php:3293
+#: functions.php:3297
 msgid "Tabs"
 msgstr "Fișier"
 
-#: functions.php:3343 functions.php:3720 functions.php:3862 functions.php:3926
+#: functions.php:3347 functions.php:3724 functions.php:3866 functions.php:3930
 msgid "Padding"
 msgstr "Apropiere"
 
-#: functions.php:3357
+#: functions.php:3361
 msgid "Slider"
 msgstr "Slider"
 
-#: functions.php:3371 functions.php:5463
+#: functions.php:3375 functions.php:5467
 msgid "Top & Bottom Padding"
 msgstr "Apropiere sus & jos"
 
-#: functions.php:3427 functions.php:5519
+#: functions.php:3431 functions.php:5523
 msgid "Content Font Size"
 msgstr "Marime font conținut"
 
-#: functions.php:3447 functions.php:5539
+#: functions.php:3451 functions.php:5543
 msgid "Content Font Style"
 msgstr "Stil font conținut"
 
-#: functions.php:3457
+#: functions.php:3461
 msgid "Testimonial"
 msgstr "Mărturie"
 
-#: functions.php:3470 functions.php:4989
+#: functions.php:3474 functions.php:4993
 msgid "Name Font Style"
 msgstr "Stil font nume"
 
-#: functions.php:3486
+#: functions.php:3490
 msgid "Details Font Style"
 msgstr "Stil font detalii"
 
-#: functions.php:3502
+#: functions.php:3506
 msgid "Portrait Border Radius"
 msgstr "Dimensiune margine portret"
 
-#: functions.php:3556
+#: functions.php:3560
 msgid "Pricing Table"
 msgstr "Tabel Prețuri"
 
-#: functions.php:3605 functions.php:3783 functions.php:5005
+#: functions.php:3609 functions.php:3787 functions.php:5009
 msgid "Subheader Font Size"
 msgstr "Mărime font subtitlu"
 
-#: functions.php:3625 functions.php:3803 functions.php:5025
+#: functions.php:3629 functions.php:3807 functions.php:5029
 msgid "Subheader Font Style"
 msgstr "Stil font subtitlu"
 
-#: functions.php:3641 functions.php:5298
+#: functions.php:3645 functions.php:5302
 msgid "Price Font Size"
 msgstr "Mărime font preț"
 
-#: functions.php:3661
+#: functions.php:3665
 msgid "Pricing Font Style"
 msgstr "Stil font prețuri"
 
-#: functions.php:3671
+#: functions.php:3675
 msgid "Call To Action"
 msgstr "Apel la  Activitate"
 
-#: functions.php:3734
+#: functions.php:3738
 msgid "Audio"
 msgstr "Audio"
 
-#: functions.php:3813
+#: functions.php:3817
 msgid "Email Optin"
 msgstr "email Optin"
 
-#: functions.php:3940
+#: functions.php:3944
 msgid "Portfolio"
 msgstr "Portfoliou"
 
-#: functions.php:4049
+#: functions.php:4053
 msgid "Filterable Portfolio"
 msgstr "Portfoliu Filtrabil"
 
-#: functions.php:4164
+#: functions.php:4168
 msgid "Filters Font Size"
 msgstr "Mărime font filtre"
 
-#: functions.php:4184
+#: functions.php:4188
 msgid "Filters Font Style"
 msgstr "Stil font filtre"
 
-#: functions.php:4194
+#: functions.php:4198
 msgid "Bar Counter"
 msgstr "Bară grafic"
 
-#: functions.php:4207
+#: functions.php:4211
 msgid "Label Font Size"
 msgstr "Mărime font etichetă"
 
-#: functions.php:4227
+#: functions.php:4231
 msgid "Label Font Style"
 msgstr "Stil font etichetă"
 
-#: functions.php:4243
+#: functions.php:4247
 msgid "Percent Font Size"
 msgstr "Mărime font procent"
 
-#: functions.php:4263
+#: functions.php:4267
 msgid "Percent Font Style"
 msgstr "Stil font procent"
 
-#: functions.php:4279
+#: functions.php:4283
 msgid "Bar Padding"
 msgstr "Apropiere bară"
 
-#: functions.php:4299
+#: functions.php:4303
 msgid "Bar Border Radius"
 msgstr "Dimensiune margine bară"
 
-#: functions.php:4313
+#: functions.php:4317
 msgid "Circle Counter"
 msgstr "Contori Cerc"
 
-#: functions.php:4325 functions.php:4404
+#: functions.php:4329 functions.php:4408
 msgid "Number Font Size"
 msgstr "Mărime font număr"
 
-#: functions.php:4345 functions.php:4424
+#: functions.php:4349 functions.php:4428
 msgid "Number Font Style"
 msgstr "Stil font număr"
 
-#: functions.php:4391
+#: functions.php:4395
 msgid "Number Counter"
 msgstr "Contor Număr"
 
-#: functions.php:4470
+#: functions.php:4474
 msgid "Accordion"
 msgstr "Acordeon"
 
-#: functions.php:4502 functions.php:4602
+#: functions.php:4506 functions.php:4606
 msgid "Opened Title Font Style"
 msgstr "Stil font titlu deschis"
 
-#: functions.php:4518 functions.php:4618
+#: functions.php:4522 functions.php:4622
 msgid "Closed Title Font Style"
 msgstr "Stil font titlu închis"
 
-#: functions.php:4534 functions.php:4634
+#: functions.php:4538 functions.php:4638
 msgid "Toggle Icon Size"
 msgstr "Mărime iconiță buton"
 
-#: functions.php:4555 functions.php:4654
+#: functions.php:4559 functions.php:4658
 msgid "Toggle Padding"
 msgstr "Apropiere buton"
 
-#: functions.php:4569
+#: functions.php:4573
 msgid "Toggle"
 msgstr "Comutare"
 
-#: functions.php:4668
+#: functions.php:4672
 msgid "Contact Form"
 msgstr "Formular de Contact"
 
-#: functions.php:4717
+#: functions.php:4721
 msgid "Input Font Size"
 msgstr "Mărime font intrare"
 
-#: functions.php:4737
+#: functions.php:4741
 msgid "Input Font Style"
 msgstr "Stil font intrare"
 
-#: functions.php:4753
+#: functions.php:4757
 msgid "Input Field Padding"
 msgstr "Apropiere câmp intrare"
 
-#: functions.php:4773
+#: functions.php:4777
 msgid "Captcha Font Size"
 msgstr "Mărime font captcha"
 
-#: functions.php:4793
+#: functions.php:4797
 msgid "Captcha Font Style"
 msgstr "Stil font captcha"
 
-#: functions.php:4803 includes/functions/sidebars.php:4
+#: functions.php:4807 includes/functions/sidebars.php:4
 msgid "Sidebar"
 msgstr "Bara laterală"
 
-#: functions.php:4816
+#: functions.php:4820
 msgid "Widget Header Font Size"
 msgstr "Mărime font antet aplicație"
 
-#: functions.php:4836
+#: functions.php:4840
 msgid "Widget Header Font Style"
 msgstr "Stil font antet aplicație"
 
-#: functions.php:4852
+#: functions.php:4856
 msgid "Remove Vertical Divider"
 msgstr "Elimină separator vertical"
 
-#: functions.php:4861
+#: functions.php:4865
 msgid "Divider"
 msgstr "Divizor"
 
-#: functions.php:4873
+#: functions.php:4877
 msgid "Show Divider"
 msgstr "Afișare Divizor"
 
-#: functions.php:4888
+#: functions.php:4892
 msgid "Divider Style"
 msgstr "Stil separator"
 
-#: functions.php:4905
+#: functions.php:4909
 msgid "Divider Weight"
 msgstr "Înălțime separator"
 
-#: functions.php:4925
+#: functions.php:4929
 msgid "Divider Height"
 msgstr "Înălțime separator"
 
-#: functions.php:4945
+#: functions.php:4949
 msgid "Divider Position"
 msgstr "Poziție separator"
 
-#: functions.php:4956
+#: functions.php:4960
 msgid "Person"
 msgstr "Persoană"
 
-#: functions.php:4969
+#: functions.php:4973
 msgid "Name Font Size"
 msgstr "Mărime font nume"
 
-#: functions.php:5041
+#: functions.php:5045
 msgid "Social Network Icon Size"
 msgstr "Mărime iconiță rețele socializare"
 
-#: functions.php:5068 functions.php:5147
+#: functions.php:5072 functions.php:5151
 msgid "Post Title Font Size"
 msgstr "Mărime font titlu postare"
 
-#: functions.php:5104 functions.php:5183
+#: functions.php:5108 functions.php:5187
 msgid "Meta Font Size"
 msgstr "Mărime font metadate"
 
-#: functions.php:5134
+#: functions.php:5138
 msgid "Blog Grid"
 msgstr "Blog Grid"
 
-#: functions.php:5213
+#: functions.php:5217
 msgid "Shop"
 msgstr "Magazin"
 
-#: functions.php:5226
+#: functions.php:5230
 msgid "Product Name Font Size"
 msgstr "Mărime font nume produs"
 
-#: functions.php:5246
+#: functions.php:5250
 msgid "Product Name Font Style"
 msgstr "Stil font nume produs"
 
-#: functions.php:5262
+#: functions.php:5266
 msgid "Sale Badge Font Size"
 msgstr "Mărime font siglă vânzare"
 
-#: functions.php:5282
+#: functions.php:5286
 msgid "Sale Badge Font Style"
 msgstr "Stil font siglă vânzare"
 
-#: functions.php:5318
+#: functions.php:5322
 msgid "Price Font Style"
 msgstr "Stil font preț"
 
-#: functions.php:5334
+#: functions.php:5338
 msgid "Sale Price Font Size"
 msgstr "Mărime font preă vânzare"
 
-#: functions.php:5354
+#: functions.php:5358
 msgid "Sale Price Font Style"
 msgstr "Stil font preț vânzare"
 
-#: functions.php:5364
+#: functions.php:5368
 msgid "Countdown"
 msgstr "Cronometru"
 
-#: functions.php:5407
+#: functions.php:5411
 msgid "Social Follow"
 msgstr "Urmăritori rețele socializare"
 
-#: functions.php:5420
+#: functions.php:5424
 msgid "Follow Font & Icon Size"
 msgstr "Mărime font & iconiță urmăritori"
 
-#: functions.php:5450
+#: functions.php:5454
 msgid "Fullwidth Slider"
 msgstr "Fullwidth Slider"
 
-#: functions.php:7971
+#: functions.php:7977
 msgid "0 comments"
 msgstr "0 comentarii"
 
-#: functions.php:7971
+#: functions.php:7977
 msgid "1 comment"
 msgstr "1 comentariu"
 
-#: functions.php:7971
+#: functions.php:7977
 msgid "comments"
 msgstr "comentarii"
 
-#: functions.php:8054
+#: functions.php:8060
 msgid "Password Protected"
 msgstr "Protejat cu Parolă"
 
-#: functions.php:8055
+#: functions.php:8061
 msgid "To view this protected post, enter the password below"
 msgstr ""
 "Pentru a vizualiza această postare protejată, introduceți parola de mai jos"
 
-#: functions.php:8058
+#: functions.php:8064
 msgid "Password"
 msgstr "Parola"
 
-#: functions.php:8059
+#: functions.php:8065
 msgid "Submit"
 msgstr "Înaintează"
 
-#: functions.php:8472 functions.php:8508
+#: functions.php:8478 functions.php:8514
 msgid "Theme Customizer"
 msgstr "Particularizare temă"
 
-#: functions.php:8476 functions.php:8521
+#: functions.php:8482 functions.php:8527
 msgid "Module Customizer"
 msgstr "Particularizare modul"
 
-#: functions.php:8478
+#: functions.php:8484
 msgid "Role Editor"
 msgstr "Editor rol"
 
-#: functions.php:8481
+#: functions.php:8487
 msgid "Divi Library"
 msgstr "Bibliotecă Divi"
 
-#: functions.php:8694
+#: functions.php:8700
 msgid "Divi Customizer Settings"
 msgstr "Setări personalizare Divi"
 
-#: functions.php:8735
+#: functions.php:8741
 msgid "Designed by %1$s | Powered by %2$s"
 msgstr "Creat de %1$s | Cu sprijinul %2$s"
 
@@ -1902,36 +1905,27 @@ msgstr ""
 "Aici puteți alege Schema Pagină Cumpărare & Pagină Categorie pentru "
 "WooCommerce"
 
-#: options_divi.php:112
-msgid "MailChimp API Key"
-msgstr "Cheie API MailChimp"
-
-#: options_divi.php:117
-msgid ""
-"Enter your MailChimp API key. You can create an api key <a target=\"_blank\" "
-"href=\"%1$s\">here</a>"
-msgstr ""
-"Introduceți cheia dumneavoastră API pentru MailChimp. Puteți crea o cheie "
-"api <a target=\"_blank\" href=\"%1$s\">here</a>"
+#: options_divi.php:113
+msgid "Google API Key"
+msgstr "Cod Google API"
 
 #: options_divi.php:121
-#, fuzzy
-msgid "Google API Key"
-msgstr "Google"
-
-#: options_divi.php:129
 msgid ""
 "The Maps module uses the Google Maps API and requires a valid Google API Key "
 "to function. Before using the map module, please make sure you have added "
 "your API key here. Learn more about how to create your Google API Key <a "
 "target=\"_blank\" href=\"%1$s\">here</a>."
 msgstr ""
+"Modulul Hărți utilizează aplicația Google Maps și necesită un cod valid API "
+"Google. Înainte de utilizarea modulului hărți, te rugăm să te asiguri că ai "
+"adăugat codul API aici. Află mai multe despre crearea codului API Google <a "
+"target=\"_blank\" href=\"%1$s\">here</a>."
 
-#: options_divi.php:133
+#: options_divi.php:125
 msgid "Enqueue Google Maps Script"
-msgstr ""
+msgstr "Pune în coadă Scriptul Google Maps"
 
-#: options_divi.php:140
+#: options_divi.php:132
 msgid ""
 "Disable this option to remove the Google Maps API script from your Divi "
 "Builder Pages. This may improve compatibility with third party plugins that "
@@ -1940,117 +1934,87 @@ msgid ""
 "Modules, will still be available but will not function while this option is "
 "disabled (unless you manually add Google Maps API script)."
 msgstr ""
+"Dezactivează această opțiune pentru a elimina scriptul API Google Maps din "
+"Paginile Divi Builder. Aceasta poate îmbunătății compatibilitatea cu "
+"pluginurile terțiare care de asemenea pun în coadă acest script. Te rugăm să "
+"reții: Modulele care se bazează pe API Google Maps pentru a funcționa "
+"corect, precum Hărți și Hărți Lățime Completă, vor fi încă disponibile dar "
+"nu vor funcționa atât timp cât această opțiune este dezactivată (decât dacă "
+"adaugi manual scriptul API Google Maps)."
 
-#: options_divi.php:143
-msgid "Aweber Authorization"
-msgstr "Autorizare Aweber"
-
-#: options_divi.php:145
-msgid "Authorize your Aweber account here."
-msgstr "Autorizați contul dumneavoastră Aweber aici."
-
-#: options_divi.php:149
-msgid "Regenerate MailChimp Lists"
-msgstr "Regenerează Liste MailChimp"
-
-#: options_divi.php:153
-msgid ""
-"By default, MailChimp lists are cached for one day. If you added new list, "
-"but it doesn't appear within the Email Optin module settings, activate this "
-"option. Don't forget to disable it once the list has been regenerated."
-msgstr ""
-"În mod implicit, listele de MailChimp sunt în cache pentru o zi. Dacă ați "
-"adăugat o nouă listă, dar nu apare în setările modulului de e-mail OptIn "
-"activa această opțiune. Nu uitați să-l dezactivați odată ce lista a fost "
-"regenerat."
-
-#: options_divi.php:155
-msgid "Regenerate Aweber Lists"
-msgstr "Regnerează Liste Aweber"
-
-#: options_divi.php:159
-msgid ""
-"By default, Aweber lists are cached for one day. If you added new list, but "
-"it doesn't appear within the Email Optin module settings, activate this "
-"option. Don't forget to disable it once the list has been regenerated."
-msgstr ""
-"În mod implicit, listele Aweber sunt în cache pentru o zi. Dacă ați adăugat "
-"o nouă listă, dar nu apare în setările modulului de e-mail OptIn activa "
-"această opțiune. Nu uitați să-l dezactivați odată ce lista a fost regenerat."
-
-#: options_divi.php:161
+#: options_divi.php:135
 msgid "Show Facebook Icon"
 msgstr "Arată Iconița Facebook"
 
-#: options_divi.php:165
+#: options_divi.php:139
 msgid "Here you can choose to display the Facebook Icon on your homepage. "
 msgstr ""
 "Aici puteți opta să afișați Iconița Facebook pe pagina dumneavoastră "
 "principală. "
 
-#: options_divi.php:167
+#: options_divi.php:141
 msgid "Show Twitter Icon"
 msgstr "Arată Iconița Twitter"
 
-#: options_divi.php:171
+#: options_divi.php:145
 msgid "Here you can choose to display the Twitter Icon. "
 msgstr "Aici puteți opta să afișați Iconița Twitter. "
 
-#: options_divi.php:173
+#: options_divi.php:147
 msgid "Show Google+ Icon"
 msgstr "Arată Iconița Google+"
 
-#: options_divi.php:177
+#: options_divi.php:151
 msgid "Here you can choose to display the Google+ Icon on your homepage. "
 msgstr ""
 "Aici puteți opta să afișați Iconița Google+ pe pagina dumneavoastră "
 "principală. "
 
-#: options_divi.php:179
+#: options_divi.php:153
 msgid "Show RSS Icon"
 msgstr "Arată Iconița RSS"
 
-#: options_divi.php:183
+#: options_divi.php:157
 msgid "Here you can choose to display the RSS Icon. "
 msgstr "Aici puteți opta să afișați Iconița RSS. "
 
-#: options_divi.php:185
+#: options_divi.php:159
 msgid "Facebook Profile Url"
 msgstr "URL Profil Facebook"
 
-#: options_divi.php:190
+#: options_divi.php:164
 msgid "Enter the URL of your Facebook Profile. "
 msgstr "Introduceți URL pentru Profilul dumneavoastră Facebook. "
 
-#: options_divi.php:192
+#: options_divi.php:166
 msgid "Twitter Profile Url"
 msgstr "URL Profil Twitter"
 
-#: options_divi.php:197
+#: options_divi.php:171
 msgid "Enter the URL of your Twitter Profile."
 msgstr "Introduceți URL pentru Profilul dumneavoastră Twitter."
 
-#: options_divi.php:199
+#: options_divi.php:173
 msgid "Google+ Profile Url"
 msgstr "URL Profil Google+"
 
-#: options_divi.php:204
+#: options_divi.php:178
 msgid "Enter the URL of your Google+ Profile. "
 msgstr "Introduceți URL pentru Profilul dumneavoastră Google+. "
 
-#: options_divi.php:206
+#: options_divi.php:180
 msgid "RSS Icon Url"
 msgstr "URL Iconiță RSS"
 
-#: options_divi.php:211
+#: options_divi.php:185
 msgid "Enter the URL of your RSS feed. "
 msgstr "Introduceți URL pentru contribuția dumneavoastră RSS. "
 
-#: options_divi.php:213
+#: options_divi.php:187
 msgid "Number of Products displayed on WooCommerce archive pages"
 msgstr "Număr Produse afișate pe paginile arhivă WooCommerce"
 
-#: options_divi.php:217
+#: options_divi.php:191
 msgid ""
 "Here you can designate how many WooCommerce products are displayed on the "
 "archive page. This option works independently from the Settings > Reading "
@@ -2060,11 +2024,11 @@ msgstr ""
 "Această opțiune funcționează independent de Setări > Opțiuni citire din wp-"
 "admin."
 
-#: options_divi.php:221
+#: options_divi.php:195
 msgid "Number of Posts displayed on Category page"
 msgstr "Număr Postări afișat pe pagina Categorie"
 
-#: options_divi.php:225
+#: options_divi.php:199
 msgid ""
 "Here you can designate how many recent articles are displayed on the "
 "Category page. This option works independently from the Settings > Reading "
@@ -2073,11 +2037,11 @@ msgstr ""
 "Aici puteți desemna câte articole recente sunt afișate pe pagina Categorie. "
 "Această opțiune funcționează independent de opțiunile Citire din wp-admin."
 
-#: options_divi.php:229
+#: options_divi.php:203
 msgid "Number of Posts displayed on Archive pages"
 msgstr "Număr Postări afișat pe paginile Arhivă"
 
-#: options_divi.php:233
+#: options_divi.php:207
 msgid ""
 "Here you can designate how many recent articles are displayed on the Archive "
 "pages. This option works independently from the Settings > Reading options "
@@ -2086,11 +2050,11 @@ msgstr ""
 "Aici puteți desemna câte articole recente sunt afișate pe paginile Arhivă. "
 "Această opțiune funcționează independent de opțiunile Citire din wp-admin."
 
-#: options_divi.php:237
+#: options_divi.php:211
 msgid "Number of Posts displayed on Search pages"
 msgstr "Număr Postări afișat pe paginile Căutare"
 
-#: options_divi.php:241
+#: options_divi.php:215
 msgid ""
 "Here you can designate how many recent articles are displayed on the Search "
 "results pages. This option works independently from the Settings > Reading "
@@ -2100,11 +2064,11 @@ msgstr ""
 "căutare. Această opțiune funcționează independent de opțiunile Citire din wp-"
 "admin."
 
-#: options_divi.php:245
+#: options_divi.php:219
 msgid "Number of Posts displayed on Tag pages"
 msgstr "Număr Postări afișat pe paginile Etichetă"
 
-#: options_divi.php:249
+#: options_divi.php:223
 msgid ""
 "Here you can designate how many recent articles are displayed on the Tag "
 "pages. This option works independently from the Settings > Reading options "
@@ -2113,11 +2077,11 @@ msgstr ""
 "Aici puteți desemna câte articole recente sunt afișate pe paginile Etichetă. "
 "Această opțiune funcționează independent de opțiunile Citire din wp-admin."
 
-#: options_divi.php:253
+#: options_divi.php:227
 msgid "Date format"
 msgstr "Format dată"
 
-#: options_divi.php:257
+#: options_divi.php:231
 msgid ""
 "This option allows you to change how your dates are displayed. For more "
 "information please refer to the WordPress codex here:<a href='http://codex."
@@ -2129,57 +2093,57 @@ msgstr ""
 "href='http://codex.wordpress.org/Formatting_Date_and_Time' "
 "target='_blank'>Formatarea Datei și Orei</a>"
 
-#: options_divi.php:261
+#: options_divi.php:235
 msgid "Use excerpts when defined"
 msgstr "Utilizează fragmente când sunt definite"
 
-#: options_divi.php:265
+#: options_divi.php:239
 msgid "This will enable the use of excerpts in posts or pages."
 msgstr "Aceasta va permite utilizarea fragmentelor în postări sau pagini."
 
-#: options_divi.php:268
+#: options_divi.php:242
 msgid "Responsive shortcodes"
 msgstr "shortcodes sensibile"
 
-#: options_divi.php:272
+#: options_divi.php:246
 msgid "Enable this option to make shortcodes respond to various screen sizes"
 msgstr ""
 "Activați această opțiune pentru a face shortcodes sensibile la diferite "
 "mărimi ale ecranului"
 
-#: options_divi.php:275
+#: options_divi.php:249
 msgid "Google Fonts subsets"
 msgstr "submulțimi Google Fonts"
 
-#: options_divi.php:279
+#: options_divi.php:253
 msgid "This will enable Google Fonts for Non-English languages."
 msgstr "Aceasta va activa Google Fonts pentru alte limbi decât engleza."
 
-#: options_divi.php:282
+#: options_divi.php:256
 msgid "Back To Top Button"
 msgstr "Buton Înapoi Sus"
 
-#: options_divi.php:286
+#: options_divi.php:260
 msgid "Enable this option to display Back To Top Button while scrolling"
 msgstr ""
 "Activați această opțiune pentru afișarea Butonului Înapoi Sus în timpul "
 "derulării"
 
-#: options_divi.php:289
+#: options_divi.php:263
 msgid "Smooth Scrolling"
 msgstr "Derulare Lină"
 
-#: options_divi.php:293
+#: options_divi.php:267
 msgid "Enable this option to get the smooth scrolling effect with mouse wheel"
 msgstr ""
 "Activați această opțiune pentru a obține efectul de derulare lină cu rotița "
 "mouseului"
 
-#: options_divi.php:296
+#: options_divi.php:270
 msgid "Disable Translations"
 msgstr "Dezactivează Traducerile"
 
-#: options_divi.php:300
+#: options_divi.php:274
 msgid ""
 "Disable translations if you don't want to display translated theme strings "
 "on your site."
@@ -2187,33 +2151,33 @@ msgstr ""
 "Dezactivați traducerile dacă nu doriți să afișați șiruri temă traduse pe "
 "siteul dumneavoastră."
 
-#: options_divi.php:303
+#: options_divi.php:277
 msgid "Custom CSS"
 msgstr "CSS Predefinit"
 
-#: options_divi.php:307
+#: options_divi.php:281
 msgid "Here you can add custom css to override or extend default styles."
 msgstr ""
 "Aici puteți adăuga CSS predefinit pentru a anula sau extinde stilurile "
 "implicite."
 
-#: options_divi.php:312
+#: options_divi.php:286
 msgid "Memory Limit Increase"
 msgstr "Mărire limită memorie"
 
-#: options_divi.php:314
+#: options_divi.php:288
 msgid "Here you can disable automatic memory limit increase."
 msgstr "Aici puteți dezactiva mărirea automată a limitei memoriei."
 
-#: options_divi.php:334
+#: options_divi.php:308
 msgid "Pages"
 msgstr "Pagini"
 
-#: options_divi.php:352
+#: options_divi.php:326
 msgid "Exclude pages from the navigation bar"
 msgstr "Exclude paginile din bara de navigare"
 
-#: options_divi.php:356
+#: options_divi.php:330
 msgid ""
 "Here you can choose to remove certain pages from the navigation menu. All "
 "pages marked with an X will not appear in your navigation bar. "
@@ -2221,11 +2185,11 @@ msgstr ""
 "Aici puteți opta pentru eliminarea anumitor pagini din meniul de navigare. "
 "Toate paginile marcate cu X nu vor apărea în bara de navigare. "
 
-#: options_divi.php:360 options_divi.php:410
+#: options_divi.php:334 options_divi.php:384
 msgid "Show dropdown menus"
 msgstr "Afișează meniurile listă"
 
-#: options_divi.php:364
+#: options_divi.php:338
 msgid ""
 "If you would like to remove the dropdown menus from the pages navigation bar "
 "disable this feature."
@@ -2233,11 +2197,11 @@ msgstr ""
 "Dacă doriți să eliminați meniurile listă din bara de navigare pagini, "
 "dezactivați această caracteristică."
 
-#: options_divi.php:367
+#: options_divi.php:341
 msgid "Display Home link"
 msgstr "Afișează link Acasă"
 
-#: options_divi.php:371
+#: options_divi.php:345
 msgid ""
 "By default the theme creates a Home link that, when clicked, leads back to "
 "your blog's homepage. If, however, you are using a static homepage and have "
@@ -2250,19 +2214,19 @@ msgstr ""
 "un link dublat. În acest caz, trebuie să dezactivați această caracteristică "
 "pentru eliminarea linkului."
 
-#: options_divi.php:374
+#: options_divi.php:348
 msgid "Sort Pages Links"
 msgstr "Sortează Linkuri Pagini"
 
-#: options_divi.php:378
+#: options_divi.php:352
 msgid "Here you can choose to sort your pages links."
 msgstr "Aici puteți opta cum să sortați linkurile paginilor."
 
-#: options_divi.php:381
+#: options_divi.php:355
 msgid "Order Pages Links by Ascending/Descending"
 msgstr "Ordonează Linkuri Pagini Ascendent/Descendent"
 
-#: options_divi.php:385
+#: options_divi.php:359
 msgid ""
 "Here you can choose to reverse the order that your pages links are "
 "displayed. You can choose between ascending and descending."
@@ -2270,11 +2234,11 @@ msgstr ""
 "Aici puteți opta pentru modificarea ordinii în care sunt afișate linkurile "
 "paginilor. Puteți alege între ascendent și descendent."
 
-#: options_divi.php:388 options_divi.php:424
+#: options_divi.php:362 options_divi.php:398
 msgid "Number of dropdown tiers shown"
 msgstr "Număr niveluri listă afișate"
 
-#: options_divi.php:392 options_divi.php:428
+#: options_divi.php:366 options_divi.php:402
 msgid ""
 "This options allows you to control how many teirs your pages dropdown menu "
 "has. Increasing the number allows for additional menu items to be shown."
@@ -2283,11 +2247,11 @@ msgstr ""
 "al paginilor. Mărirea numărului permite afișarea de itemi adiționali în "
 "meniu."
 
-#: options_divi.php:402
+#: options_divi.php:376
 msgid "Exclude categories from the navigation bar"
 msgstr "Exclude categorii din bara de navigare"
 
-#: options_divi.php:406
+#: options_divi.php:380
 msgid ""
 "Here you can choose to remove certain categories from the navigation menu. "
 "All categories marked with an X will not appear in your navigation bar. "
@@ -2295,7 +2259,7 @@ msgstr ""
 "Aici puteți opta pentru eliminarea anumitor categorii din meniul navigare. "
 "Toate categoriile marcate cu X nu vor apărea în bara de navigare. "
 
-#: options_divi.php:414
+#: options_divi.php:388
 msgid ""
 "If you would like to remove the dropdown menus from the categories "
 "navigation bar disable this feature."
@@ -2303,11 +2267,11 @@ msgstr ""
 "Dacă doriți eliminarea meniurilor listă din bara de navigare categorii, "
 "dezactivați această caracteristică."
 
-#: options_divi.php:417
+#: options_divi.php:391
 msgid "Hide empty categories"
 msgstr "Ascunde categorii goale"
 
-#: options_divi.php:421
+#: options_divi.php:395
 msgid ""
 "If you would like categories to be displayed in your navigationbar that "
 "don't have any posts in them then disable this option. By default empty "
@@ -2316,11 +2280,11 @@ msgstr ""
 "Dacă doriți afișarea categoriilor fără postări în bara de navigare, "
 "dezactivați această opțiune. Implicit, categoriile goale sunt ascunse."
 
-#: options_divi.php:432
+#: options_divi.php:406
 msgid "Sort Categories Links by Name/ID/Slug/Count/Term Group"
 msgstr "Sortează Linkuri Categorii după Grupul Name/ID/Slug/Count/Term"
 
-#: options_divi.php:436
+#: options_divi.php:410
 msgid ""
 "By default pages are sorted by name. However if you would rather have them "
 "sorted by ID you can adjust this setting."
@@ -2328,11 +2292,11 @@ msgstr ""
 "Implicit, paginile sunt sortate după nume. Totuși, dacă preferați sortarea "
 "lor după ID puteți ajusta această setare."
 
-#: options_divi.php:439
+#: options_divi.php:413
 msgid "Order Category Links by Ascending/Descending"
 msgstr "Ordonează Linkuri Categorie Ascendent sau Descendet"
 
-#: options_divi.php:443
+#: options_divi.php:417
 msgid ""
 "Here you can choose to reverse the order that your categories links are "
 "displayed. You can choose between ascending and descending."
@@ -2340,11 +2304,11 @@ msgstr ""
 "Aici puteți opta pentru modificarea ordinii în care sunt afișate linkurile "
 "categorii. Puteți alege între ascendent și descendent."
 
-#: options_divi.php:452
+#: options_divi.php:426
 msgid "Disable top tier dropdown menu links"
 msgstr "Dezactivează linkuri niveluri superioare meniu listă"
 
-#: options_divi.php:456
+#: options_divi.php:430
 msgid ""
 "In some cases users will want to create parent categories or links as "
 "placeholders to hold a list of child links or categories. In this case it is "
@@ -2360,31 +2324,35 @@ msgstr ""
 "linkurile din toate paginile/categoriile sursă pentru a nu conduce nicăieri "
 "la accesarea lor."
 
-#: options_divi.php:460
+#: options_divi.php:434
 msgid "Alternative scroll-to-anchor method"
-msgstr ""
+msgstr "Metodă alternativă derulare la ancoră"
 
-#: options_divi.php:464
+#: options_divi.php:438
 msgid ""
 "Sometimes when using the CSS ID of a section to link directly to it from "
 "another page, the page's final scroll position can be inaccurate. Enable "
 "this option to use an alternative method for scrolling to anchors which can "
 "be more accurate than the default method in some cases."
 msgstr ""
+"Uneori la utilizarea ID CSS al unei secțiuni pentru conectarea directă la ea "
+"din altă pagină, poziția finală a cursorului paginii poate fi inexactă. "
+"Activează această opțiune pentru a utiliza o metodă alternativă de derulare "
+"la ancore care poate fi mai exactă uneori decât metoda implicită."
 
-#: options_divi.php:482
+#: options_divi.php:456
 msgid "Single Post Layout"
 msgstr "Schemă Postare Unică"
 
-#: options_divi.php:487
+#: options_divi.php:461
 msgid "Single Page Layout"
 msgstr "Schemă Pagină Unică"
 
-#: options_divi.php:500
+#: options_divi.php:474
 msgid "Choose which items to display in the postinfo section"
 msgstr "Alegeți itemii de afișat în secțiunea informații postare"
 
-#: options_divi.php:504
+#: options_divi.php:478
 msgid ""
 "Here you can choose which items appear in the postinfo section on single "
 "post pages. This is the area, usually below the post title, which displays "
@@ -2396,11 +2364,11 @@ msgstr ""
 "care afișează informații de bază despre postare. Vor apărea itemii "
 "evidențiați mai jos. "
 
-#: options_divi.php:508
+#: options_divi.php:482
 msgid "Show comments on posts"
 msgstr "Arată comentarii postări"
 
-#: options_divi.php:512
+#: options_divi.php:486
 msgid ""
 "You can disable this option if you want to remove the comments and comment "
 "form from single post pages. "
@@ -2408,11 +2376,11 @@ msgstr ""
 "Puteți dezactiva această opțiune dacă doriți să eliminați comentariile și "
 "formularul de comentarii din postări. "
 
-#: options_divi.php:515
+#: options_divi.php:489
 msgid "Place Thumbs on Posts"
 msgstr "Pune Imaginile Miniatură în Postări"
 
-#: options_divi.php:519
+#: options_divi.php:493
 msgid ""
 "By default thumbnails are placed at the beginning of your post on single "
 "post pages. If you would like to remove this initial thumbnail image to "
@@ -2422,11 +2390,11 @@ msgstr ""
 "postare unică. Dacă doriți eliminarea acestei imagini miniatură inițiale "
 "pentru evitarea repetării, dezactivați această opțiune. "
 
-#: options_divi.php:528
+#: options_divi.php:502
 msgid "Place Thumbs on Pages"
 msgstr "Pune Imaginile Miniatură pe Pagini"
 
-#: options_divi.php:532
+#: options_divi.php:506
 msgid ""
 "By default thumbnails are not placed on pages (they are only used on posts). "
 "However, if you want to use thumbnails on pages you can! Just enable this "
@@ -2437,11 +2405,11 @@ msgstr ""
 "imagini de previzualizare pe pagini, puteți face acest lucru! Doar activați "
 "această opțiune."
 
-#: options_divi.php:535
+#: options_divi.php:509
 msgid "Show comments on pages"
 msgstr "Arată comentarii pe pagini"
 
-#: options_divi.php:539
+#: options_divi.php:513
 msgid ""
 "By default comments are not placed on pages, however, if you would like to "
 "allow people to comment on your pages simply enable this option. "
@@ -2449,11 +2417,11 @@ msgstr ""
 "Implicit, comentariile nu sunt puse pe pagini, totuși, dacă doriți să "
 "permiteți comentariile pe pagini, activați această opțiune. "
 
-#: options_divi.php:548
+#: options_divi.php:522
 msgid "Post info section"
 msgstr "Secțiunea informații postare"
 
-#: options_divi.php:552
+#: options_divi.php:526
 msgid ""
 "Here you can choose which items appear in the postinfo section on pages. "
 "This is the area, usually below the post title, which displays basic "
@@ -2463,32 +2431,32 @@ msgstr ""
 "pagini. Aceasta este zona, de obicei sub titlul postării, care afișează "
 "informații de bază despre postare. Vor apărea itemii evidențiați de mai jos. "
 
-#: options_divi.php:555
+#: options_divi.php:529
 msgid "Show Thumbs on Index pages"
 msgstr "Arată Imaginile Miniatură pe paginile Index"
 
-#: options_divi.php:559
+#: options_divi.php:533
 msgid "Enable this option to show thumbnails on Index Pages."
 msgstr ""
 "Activează această opțiune pentru afișarea miniaturilor pe Paginile Index."
 
-#: options_divi.php:576
+#: options_divi.php:550
 msgid "Homepage SEO"
 msgstr "SEO Prima Pagină"
 
-#: options_divi.php:581
+#: options_divi.php:555
 msgid "Single Post Page SEO"
 msgstr "SEO Pagină Postare Unică"
 
-#: options_divi.php:586
+#: options_divi.php:560
 msgid "Index Page SEO"
 msgstr "SEO Pagină Index"
 
-#: options_divi.php:594
+#: options_divi.php:568
 msgid " Enable custom title "
 msgstr "Activează titlu predefinit"
 
-#: options_divi.php:598
+#: options_divi.php:572
 msgid ""
 "By default the theme uses a combination of your blog name and your blog "
 "description, as defined when you created your blog, to create your homepage "
@@ -2500,11 +2468,11 @@ msgstr ""
 "prima pagină. Totuși, dacă doriți să creați un titlu predefinit, activați "
 "această opțiune și completați câmpul pentru titlul predefinit de mai jos. "
 
-#: options_divi.php:601
+#: options_divi.php:575
 msgid " Enable meta description"
 msgstr "Activează descriere meta-etichetă"
 
-#: options_divi.php:605
+#: options_divi.php:579
 msgid ""
 "By default the theme uses your blog description, as defined when you created "
 "your blog, to fill in the meta description field. If you would like to use a "
@@ -2516,11 +2484,11 @@ msgstr ""
 "utilizați altă descriere, activați această opțiune și completați câmpul "
 "descriere predefinită de mai jos. "
 
-#: options_divi.php:608
+#: options_divi.php:582
 msgid " Enable meta keywords"
 msgstr "Activează meta-cuvinte-cheie"
 
-#: options_divi.php:612
+#: options_divi.php:586
 msgid ""
 "By default the theme does not add keywords to your header. Most search "
 "engines don't use keywords to rank your site anymore, but some people define "
@@ -2533,11 +2501,11 @@ msgstr ""
 "meta-cuvinte-cheie la antet, activați această opțiune și completați câmpul "
 "cuvinte-cheie predefinite de mai jos. "
 
-#: options_divi.php:615 options_divi.php:742
+#: options_divi.php:589 options_divi.php:716
 msgid " Enable canonical URL's"
 msgstr "Activează URL's autorizate"
 
-#: options_divi.php:619 options_divi.php:693 options_divi.php:746
+#: options_divi.php:593 options_divi.php:667 options_divi.php:720
 msgid ""
 "Canonicalization helps to prevent the indexing of duplicate content by "
 "search engines, and as a result, may help avoid duplicate content penalties "
@@ -2563,11 +2531,11 @@ msgstr ""
 "urile canonice pe link-urile dvs. și numele de domeniu definit în fila "
 "Setări în wp-admin."
 
-#: options_divi.php:622
+#: options_divi.php:596
 msgid "Homepage custom title (if enabled)"
 msgstr "Titlu predefinit prima pagină (dacă este activat)"
 
-#: options_divi.php:626
+#: options_divi.php:600
 msgid ""
 "If you have enabled custom titles you can add your custom title here. "
 "Whatever you type here will be placed between the < title >< /title > tags "
@@ -2577,22 +2545,22 @@ msgstr ""
 "Orice veți scrie aici va fi pus între etichetele < title >< /title > din "
 "header.php"
 
-#: options_divi.php:630
+#: options_divi.php:604
 msgid "Homepage meta description (if enabled)"
 msgstr "Meta-descriere prima pagină (dacă este activat)"
 
-#: options_divi.php:634
+#: options_divi.php:608
 msgid ""
 "If you have enabled meta descriptions you can add your custom description "
 "here."
 msgstr ""
 "Dacă ați activat meta-descrierile puteți adăuga descrierea predefinită aici."
 
-#: options_divi.php:638
+#: options_divi.php:612
 msgid "Homepage meta keywords (if enabled)"
 msgstr "Meta-cuvinte-cheie prima pagină (dacă este activat)"
 
-#: options_divi.php:642
+#: options_divi.php:616
 msgid ""
 "If you have enabled meta keywords you can add your custom keywords here. "
 "Keywords should be separated by comas. For example: wordpress,themes,"
@@ -2602,12 +2570,12 @@ msgstr ""
 "predefinite aici. Cuvintele-cheie trebuie despărțite prin virgule. De "
 "exemplu: wordpress,themes,templates,elegant"
 
-#: options_divi.php:646 options_divi.php:720
+#: options_divi.php:620 options_divi.php:694
 msgid "If custom titles are disabled, choose autogeneration method"
 msgstr ""
 "Dacă titlurile predefinite sunt dezactivate, alege metoda generării automate"
 
-#: options_divi.php:651
+#: options_divi.php:625
 msgid ""
 "If you are not using cutsom post titles you can still have control over how "
 "your titles are generated. Here you can choose which order you would like "
@@ -2619,12 +2587,12 @@ msgstr ""
 "de afișare a titlului postării și numelului blogului, sau puteți elimina "
 "complet numele blogului din titlu."
 
-#: options_divi.php:654 options_divi.php:728 options_divi.php:764
+#: options_divi.php:628 options_divi.php:702 options_divi.php:738
 msgid "Define a character to separate BlogName and Post title"
 msgstr ""
 "Definește un caracter pentru separarea Numelui Siteului de Titlul Postării"
 
-#: options_divi.php:658 options_divi.php:732
+#: options_divi.php:632 options_divi.php:706
 msgid ""
 "Here you can change which character separates your blog title and post name "
 "when using autogenerated post titles. Common values are | or -"
@@ -2633,11 +2601,11 @@ msgstr ""
 "la utilizarea titlurilor de postări generate automat. Valorile obișnuite "
 "sunt | sau -"
 
-#: options_divi.php:668
+#: options_divi.php:642
 msgid "Enable custom titles"
 msgstr "Activează titluri predefinite"
 
-#: options_divi.php:672
+#: options_divi.php:646
 msgid ""
 "By default the theme creates post titles based on the title of your post and "
 "your blog name. If you would like to make your meta title different than "
@@ -2652,11 +2620,11 @@ msgstr ""
 "titlurile predefinite să funcționeze și trebuie să alegeți un nume "
 "predefinit pentru tilu în câmpul de mai jos."
 
-#: options_divi.php:675
+#: options_divi.php:649
 msgid "Enable custom description"
 msgstr "Activează descriere predefinită"
 
-#: options_divi.php:679
+#: options_divi.php:653
 msgid ""
 "If you would like to add a meta description to your post you can do so using "
 "custom fields. This option must be enabled for descriptions to be displayed "
@@ -2668,11 +2636,11 @@ msgstr ""
 "ca descrierile să fie afișate pe paginile cu postări. Puteți adăuga meta-"
 "descrierea folosind câmpurile de predefinire de mai jos."
 
-#: options_divi.php:682
+#: options_divi.php:656
 msgid "Enable custom keywords"
 msgstr "Activează cuvinte-cheie predefinite"
 
-#: options_divi.php:686
+#: options_divi.php:660
 msgid ""
 "If you would like to add meta keywords to your post you can do so using "
 "custom fields. This option must be enabled for keywords to be displayed on "
@@ -2684,15 +2652,15 @@ msgstr ""
 "ca aceste cuvinte-cheie să fie afișate pe paginile de postări. Puteți adăuga "
 "meta-cuvinte-cheie folosind câmpurile de predefinire de mai jos."
 
-#: options_divi.php:689
+#: options_divi.php:663
 msgid "Enable canonical URL's"
 msgstr "Activează URL's autorizate"
 
-#: options_divi.php:696
+#: options_divi.php:670
 msgid "Custom field Name to be used for title"
 msgstr "Nume predefinit pentru titlu"
 
-#: options_divi.php:700
+#: options_divi.php:674
 msgid ""
 "When you define your title using custom fields you should use this value for "
 "the custom field Name. The Value of your custom field should be the custom "
@@ -2702,11 +2670,11 @@ msgstr ""
 "această valoare pentru Numele predefinit. Valoarea câmpului predefinit "
 "trebuie să fie titlul predefinit pe care doriți să-l folosiți."
 
-#: options_divi.php:704
+#: options_divi.php:678
 msgid "Custom field Name to be used for description"
 msgstr "Nume predefinit pentru descriere"
 
-#: options_divi.php:708
+#: options_divi.php:682
 msgid ""
 "When you define your meta description using custom fields you should use "
 "this value for the custom field Name. The Value of your custom field should "
@@ -2717,11 +2685,11 @@ msgstr ""
 "predefinit trebuie să fie descrierea predefinită pe care doriți să o "
 "folosiți."
 
-#: options_divi.php:712
+#: options_divi.php:686
 msgid "Custom field Name to be used for keywords"
 msgstr "Nume predefinit pentru cuvinte-cheie"
 
-#: options_divi.php:716
+#: options_divi.php:690
 msgid ""
 "When you define your keywords using custom fields you should use this value "
 "for the custom field Name. The Value of your custom field should be the meta "
@@ -2732,7 +2700,7 @@ msgstr ""
 "predefinit trebuie să fie meta-cuvintele-cheie pe care doriți să le "
 "folosiți, despărțite de virgule."
 
-#: options_divi.php:725
+#: options_divi.php:699
 msgid ""
 "If you are not using cutsom post titles you can still have control over hw "
 "your titles are generated. Here you can choose which order you would like "
@@ -2744,11 +2712,11 @@ msgstr ""
 "de afișare a titlului postării și numelului blogului, sau puteți elimina "
 "complet numele blogului din titlu."
 
-#: options_divi.php:749
+#: options_divi.php:723
 msgid "Enable meta descriptions"
 msgstr "Activează meta-descrieri"
 
-#: options_divi.php:753
+#: options_divi.php:727
 msgid ""
 "Check this box if you want to display meta descriptions on category/archive "
 "pages. The description is based off the category description you choose when "
@@ -2758,11 +2726,11 @@ msgstr ""
 "categorie/arhivă. Descrierea este bazată pe descrierea categoriei aleasă la "
 "crearea/editarea categoriei din wp-admin."
 
-#: options_divi.php:756
+#: options_divi.php:730
 msgid "Choose title autogeneration method"
 msgstr "Alege metodă generare titlu"
 
-#: options_divi.php:761
+#: options_divi.php:735
 msgid ""
 "Here you can choose how your titles on index pages are generated. You can "
 "change which order your blog name and index title are displayed, or you can "
@@ -2772,7 +2740,7 @@ msgstr ""
 "modifica ordinea de afișare a numelui blogului și a titlului index, sau "
 "puteți elimina complet numele blogului din titlu."
 
-#: options_divi.php:768
+#: options_divi.php:742
 msgid ""
 "Here you can change which character separates your blog title and index page "
 "name when using autogenerated post titles. Common values are | or -"
@@ -2781,15 +2749,15 @@ msgstr ""
 "index la utilizarea titlurilor de postări generate automat. Valorile "
 "obișnuite sunt | sau -"
 
-#: options_divi.php:787
+#: options_divi.php:761
 msgid "Code Integration"
 msgstr "Integrare Cod"
 
-#: options_divi.php:795
+#: options_divi.php:769
 msgid "Enable header code"
 msgstr "Activează cod antet"
 
-#: options_divi.php:799
+#: options_divi.php:773
 msgid ""
 "Disabling this option will remove the header code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2798,11 +2766,11 @@ msgstr ""
 "blog. Aceasta vă permite eliminarea codului și salvarea lui pentru mai "
 "târziu."
 
-#: options_divi.php:802
+#: options_divi.php:776
 msgid "Enable body code"
 msgstr "Activează cod < body >"
 
-#: options_divi.php:806
+#: options_divi.php:780
 msgid ""
 "Disabling this option will remove the body code below from your blog. This "
 "allows you to remove the code while saving it for later use."
@@ -2811,11 +2779,11 @@ msgstr ""
 "blog. Aceasta vă permite eliminarea codului și salvarea lui pentru mai "
 "târziu."
 
-#: options_divi.php:809
+#: options_divi.php:783
 msgid "Enable single top code"
 msgstr "Activează cod antet unic"
 
-#: options_divi.php:813
+#: options_divi.php:787
 msgid ""
 "Disabling this option will remove the single top code below from your blog. "
 "This allows you to remove the code while saving it for later use."
@@ -2824,11 +2792,11 @@ msgstr ""
 "blog. Aceasta vă permite eliminarea codului și salvarea lui pentru mai "
 "târziu."
 
-#: options_divi.php:816
+#: options_divi.php:790
 msgid "Enable single bottom code"
 msgstr "Activează cod subsol unic"
 
-#: options_divi.php:820
+#: options_divi.php:794
 msgid ""
 "Disabling this option will remove the single bottom code below from your "
 "blog. This allows you to remove the code while saving it for later use."
@@ -2837,11 +2805,11 @@ msgstr ""
 "pe blog. Aceasta vă permite eliminarea codului și salvarea lui pentru mai "
 "târziu."
 
-#: options_divi.php:823
+#: options_divi.php:797
 msgid "Add code to the < head > of your blog"
 msgstr "Adaugă codul la < head > blogului"
 
-#: options_divi.php:827
+#: options_divi.php:801
 msgid ""
 "Any code you place here will appear in the head section of every page of "
 "your blog. This is useful when you need to add javascript or css to all "
@@ -2851,14 +2819,14 @@ msgstr ""
 "Aceasta este de ajutor când trebuie să adăugați Javascript sau CSS la toate "
 "paginile."
 
-#: options_divi.php:830
+#: options_divi.php:804
 msgid ""
 "Add code to the < body > (good for tracking codes such as google analytics)"
 msgstr ""
 "Adaugă codul la < body > (bună pentru urmărirea codurilor ca Google "
 "Analytics)"
 
-#: options_divi.php:834
+#: options_divi.php:808
 msgid ""
 "Any code you place here will appear in body section of all pages of your "
 "blog. This is usefull if you need to input a tracking pixel for a state "
@@ -2868,11 +2836,11 @@ msgstr ""
 "de pe blog. Aceasta este de ajutor când trebuie să inserați un pixel de "
 "urmărire pentru un contor de stare ca Google Analytics."
 
-#: options_divi.php:837
+#: options_divi.php:811
 msgid "Add code to the top of your posts"
 msgstr "Adaugă codul în antetul postărilor"
 
-#: options_divi.php:841 options_divi.php:848
+#: options_divi.php:815 options_divi.php:822
 msgid ""
 "Any code you place here will be placed at the top of all single posts. This "
 "is useful if you are looking to integrating things such as social "
@@ -2882,47 +2850,52 @@ msgstr ""
 "este de ajutor când doriți integrarea unor lucruri cum ar fi linkurile "
 "sociale."
 
-#: options_divi.php:844
+#: options_divi.php:818
 msgid "Add code to the bottom of your posts, before the comments"
 msgstr "Adaugă codul în subsolul postărilor, înaintea comentariilor"
 
-#: options_divi.php:875
-#, fuzzy
+#: options_divi.php:849
 msgid "Username"
-msgstr "Utilizator: "
+msgstr "Nume utilizator"
 
-#: options_divi.php:880
+#: options_divi.php:854 options_divi.php:866
 msgid ""
-"Before you can receive product updates, you must first authenticate your "
+"<em>Before you can receive product updates, you must first authenticate your "
 "Elegant Themes subscription. To do this, you need to enter both your Elegant "
-"Themes Username and your Elegant Themes API Key. Your username is the same "
-"username you use when logging in to <a href=\"http://elegantthemes.com/\" "
-"target=\"_blank\">ElegantThemes.com</a>"
+"Themes Username and your Elegant Themes API Key into the Updates Tab in your "
+"theme and plugin settings. To locate your API Key, <a href=\"https://www."
+"elegantthemes.com/members-area/api/\" target=\"_blank\">log in</a> to your "
+"Elegant Themes account and navigate to the <strong>Account > API Key</"
+"strong> page. <a href=\"http://www.elegantthemes.com/gallery/divi/"
+"documentation/update/\" target=\"_blank\">Learn more here</a></em>. If you "
+"still get this message, please make sure that your Username and API Key have "
+"been entered correctly"
 msgstr ""
+"<em>Înainte să poți să primești actualizări de produs, trebuie mai întâi să-"
+"ți autentifici înregistrarea pe Elegant Themes. Pentru aceasta, trebuie să "
+"introduci atât Numele de utilizator pentru Elegant Themes, cât și Codul API "
+"Elegant Themes în Tabul Actualizări din setările temei și pluginului. Pentru "
+"identificarea Codului API, <a href=\"https://www.elegantthemes.com/members-"
+"area/api/\" target=\"_blank\">conectează-te</a> la contul tău Elegant Themes "
+"și navighează la pagina <strong>Cont > Cod API</strong>. <a href=\"http://"
+"www.elegantthemes.com/gallery/divi/documentation/update/\" target=\"_blank"
+"\">Află mai multe aici</a></em>. Dacă primești în continuare acest mesaj, te "
+"rugăm asigură-te că Numele de utilizator și Codul API au fost introduse "
+"corect"
+
+#: options_divi.php:861
+msgid "API Key"
+msgstr "Cod API"
 
 #: options_divi.php:887
-msgid "API Key"
-msgstr ""
-
-#: options_divi.php:892
-msgid ""
-"Before you can receive product updates, you must first authenticate your "
-"Elegant Themes subscription. To do this, you need to enter both your Elegant "
-"Themes Username and your Elegant Themes API Key. To locate your API Key, <a "
-"href=\"https://www.elegantthemes.com/members-area/\" target=\"_blank\">log "
-"in</a> to your Elegant Themes account and navigate to the <strong>Account > "
-"API Key</strong> page."
-msgstr ""
-
-#: options_divi.php:913
 msgid "Manage Un-widgetized Advertisements"
 msgstr "Administrează Reclame"
 
-#: options_divi.php:921
+#: options_divi.php:895
 msgid "Enable Single Post 468x60 banner"
 msgstr "Activează banner 468x60 Postare Unică"
 
-#: options_divi.php:925
+#: options_divi.php:899
 msgid ""
 "Enabling this option will display a 468x60 banner ad on the bottom of your "
 "post pages below the single post content. If enabled you must fill in the "
@@ -2932,27 +2905,27 @@ msgstr ""
 "paginilor de postări, sub conținutul postării unice. Dacă este activată "
 "trebuie să completați mai jos imaginea bannerului și URL destinație."
 
-#: options_divi.php:928
+#: options_divi.php:902
 msgid "Input 468x60 advertisement banner image"
 msgstr "Introdu imagine banner reclamă 468x60"
 
-#: options_divi.php:932
+#: options_divi.php:906
 msgid "Here you can provide 468x60 banner image url"
 msgstr "Aici puteți furniza URL imagine banner 468x60"
 
-#: options_divi.php:936
+#: options_divi.php:910
 msgid "Input 468x60 advertisement destination url"
 msgstr "Introdu URL destinație reclamă 468x60"
 
-#: options_divi.php:940
+#: options_divi.php:914
 msgid "Here you can provide 468x60 banner destination url"
 msgstr "Aici puteți furniza URL destinație banner 468x60"
 
-#: options_divi.php:944
+#: options_divi.php:918
 msgid "Input 468x60 adsense code"
 msgstr "Introdu cod Google Adsense 468x60"
 
-#: options_divi.php:948
+#: options_divi.php:922
 msgid "Place your adsense code here."
 msgstr "Puneți codul Google Adsense aici."
 
@@ -2963,19 +2936,18 @@ msgstr "Pagini:"
 #. Translators: If there are characters in your language that are not supported
 #. by Open Sans, translate this to 'off'. Do not translate into your own
 #. language.
-#: functions.php:115
+#: functions.php:114
 msgctxt "Open Sans font: on or off"
 msgid "on"
 msgstr " "
 
-#: functions.php:8271
-#, fuzzy
+#: functions.php:8277
 msgctxt "WooCommerce items number"
 msgid "%1$s Item"
 msgid_plural "%1$s Items"
-msgstr[0] " "
-msgstr[1] " "
-msgstr[2] " "
+msgstr[0] "Articol %1$s"
+msgstr[1] "Articole %1$s"
+msgstr[2] "Articole %1$s"
 
 #: single-project.php:68
 msgctxt "Previous post link"
@@ -2986,6 +2958,50 @@ msgstr " "
 msgctxt "Next post link"
 msgid "&rarr;"
 msgstr " "
+
+#~ msgid "MailChimp API Key"
+#~ msgstr "Cheie API MailChimp"
+
+#~ msgid ""
+#~ "Enter your MailChimp API key. You can create an api key <a target=\"_blank"
+#~ "\" href=\"%1$s\">here</a>"
+#~ msgstr ""
+#~ "Introduceți cheia dumneavoastră API pentru MailChimp. Puteți crea o cheie "
+#~ "api <a target=\"_blank\" href=\"%1$s\">here</a>"
+
+#~ msgid "Aweber Authorization"
+#~ msgstr "Autorizare Aweber"
+
+#~ msgid "Authorize your Aweber account here."
+#~ msgstr "Autorizați contul dumneavoastră Aweber aici."
+
+#~ msgid "Regenerate MailChimp Lists"
+#~ msgstr "Regenerează Liste MailChimp"
+
+#~ msgid ""
+#~ "By default, MailChimp lists are cached for one day. If you added new "
+#~ "list, but it doesn't appear within the Email Optin module settings, "
+#~ "activate this option. Don't forget to disable it once the list has been "
+#~ "regenerated."
+#~ msgstr ""
+#~ "În mod implicit, listele de MailChimp sunt în cache pentru o zi. Dacă ați "
+#~ "adăugat o nouă listă, dar nu apare în setările modulului de e-mail OptIn "
+#~ "activa această opțiune. Nu uitați să-l dezactivați odată ce lista a fost "
+#~ "regenerat."
+
+#~ msgid "Regenerate Aweber Lists"
+#~ msgstr "Regnerează Liste Aweber"
+
+#~ msgid ""
+#~ "By default, Aweber lists are cached for one day. If you added new list, "
+#~ "but it doesn't appear within the Email Optin module settings, activate "
+#~ "this option. Don't forget to disable it once the list has been "
+#~ "regenerated."
+#~ msgstr ""
+#~ "În mod implicit, listele Aweber sunt în cache pentru o zi. Dacă ați "
+#~ "adăugat o nouă listă, dar nu apare în setările modulului de e-mail OptIn "
+#~ "activa această opțiune. Nu uitați să-l dezactivați odată ce lista a fost "
+#~ "regenerat."
 
 #~ msgid ""
 #~ "There is a new version of %1$s available. <a href=\"%2$s\" class="

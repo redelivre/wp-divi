@@ -553,6 +553,10 @@ if ( ! function_exists( 'et_build_epanel' ) ) {
 			#epanel p.postinfo-comments .mark:after {
 				content: '<?php esc_html_e( "Comments", $themename ); ?>';
 			}
+
+			#epanel p.postinfo-rating_stars .mark:after {
+				content: '<?php esc_html_e( "Ratings", $themename ); ?>';
+			}
 		</style>
 
 	<?php
@@ -586,7 +590,7 @@ if ( ! function_exists( 'epanel_save_data' ) ) {
 			do_action( 'et_epanel_changing_options' );
 
 			$epanel = isset( $_GET['page'] ) ? $_GET['page'] : basename( __FILE__ );
-			$redirect_url = esc_url_raw( add_query_arg( 'page', $epanel, admin_url( 'themes.php' ) ) );
+			$redirect_url = esc_url_raw( add_query_arg( 'page', $epanel, admin_url( 'admin.php' ) ) );
 
 			if ( 'save_epanel' == $_POST['action'] ) {
 				if ( 'ajax' != $source ) check_admin_referer( 'epanel_nonce' );
@@ -673,7 +677,7 @@ if ( ! function_exists( 'epanel_save_data' ) ) {
 										}
 									}
 								} else {
-									if ( current_user_can( 'unfiltered_html' ) ) {
+									if ( current_user_can( 'switch_themes' ) ) {
 										$et_option_new_value = stripslashes( $_POST[ $value['id'] ] );
 									} else {
 										$et_option_new_value = stripslashes( wp_filter_post_kses( addslashes( $_POST[ $value['id'] ] ) ) ); // wp_filter_post_kses() expects slashed value
