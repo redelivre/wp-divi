@@ -17,8 +17,16 @@ class ET_Core_API_Email_GetResponse extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $FIELDS_URL = 'https://api.getresponse.com/v3/custom-fields';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $LISTS_URL = 'https://api.getresponse.com/v3/campaigns';
 
+	/**
+	 * @inheritDoc
+	 */
 	public $SUBSCRIBE_URL = 'https://api.getresponse.com/v3/contacts';
 
 	/**
@@ -54,6 +62,35 @@ class ET_Core_API_Email_GetResponse extends ET_Core_API_Email_Provider {
 		}
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields_unprocessed = $args['custom_fields'];
+		$fields             = array();
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields_unprocessed as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+			} else {
+				$value = array( $value );
+			}
+
+			$fields[] = array(
+				'customFieldId' => $field_id,
+				'value'         => $value,
+			);
+		}
+
+		$args['customFieldValues'] = $fields;
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -68,27 +105,45 @@ class ET_Core_API_Email_GetResponse extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$custom_fields_key = 'customFieldValues';
-
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'       => array(
+			'list'              => array(
 				'name'              => 'name',
 				'list_id'           => 'campaignId',
 				'subscribers_count' => 'totalSubscribers',
 			),
-			'subscriber' => array(
-				'name'       => 'name',
-				'email'      => 'email',
-				'list_id'    => 'campaign.campaignId',
-				'ip_address' => 'ipAddress',
+			'subscriber'        => array(
+				'name'          => 'name',
+				'email'         => 'email',
+				'list_id'       => 'campaign.campaignId',
+				'ip_address'    => 'ipAddress',
+				'custom_fields' => 'custom_fields',
 			),
-			'error'      => array(
+			'error'             => array(
 				'error_message' => 'message',
+			),
+			'custom_field'      => array(
+				'field_id' => 'customFieldId',
+				'name'     => 'name',
+				'type'     => 'fieldType',
+				'options'  => 'values',
+				'hidden'   => 'hidden',
+			),
+			'custom_field_type' => array(
+				// Us <=> Them
+				'textarea'      => 'textarea',
+				'radio'         => 'radio',
+				'checkbox'      => 'checkbox',
+				// Us => Them
+				'input'         => 'text',
+				'select'        => 'single_select',
+				// Them => Us
+				'text'          => 'input',
+				'single_select' => 'select',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -110,7 +165,11 @@ class ET_Core_API_Email_GetResponse extends ET_Core_API_Email_Provider {
 	 * @inheritDoc
 	 */
 	public function subscribe( $args, $url = '' ) {
+		$ip_address = 'true' === self::$_->array_get( $args, 'ip_address', 'true' ) ? et_core_get_ip_address() : '0.0.0.0';
+
+		$args['ip_address'] = $ip_address;
 		$args               = $this->transform_data_to_provider_format( $args, 'subscriber' );
+		$args               = $this->_process_custom_fields( $args );
 		$args['note']       = $this->SUBSCRIBED_VIA;
 		$args['dayOfCycle'] = 1;
 

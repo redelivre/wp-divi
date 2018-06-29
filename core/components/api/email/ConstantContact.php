@@ -29,6 +29,13 @@ class ET_Core_API_Email_ConstantContact extends ET_Core_API_Email_Provider {
 	 */
 	public $SUBSCRIBERS_URL = 'https://api.constantcontact.com/v2/contacts';
 
+	protected $_subscriber;
+
+	/**
+	 * @inheritDoc
+	 */
+	public $custom_fields_scope = 'account';
+
 	/**
 	 * @inheritDoc
 	 */
@@ -54,6 +61,20 @@ class ET_Core_API_Email_ConstantContact extends ET_Core_API_Email_Provider {
 		return $this->transform_data_to_provider_format( $args, 'subscriber' );
 	}
 
+	protected function _fetch_custom_fields( $list_id = '', $list = array() ) {
+		$fields = array();
+
+		foreach ( range( 1, 15 ) as $i ) {
+			$fields["custom_field_{$i}"] = array(
+				'field_id' => "custom_field_{$i}",
+				'name'     => "custom_field_{$i}",
+				'type'     => 'any',
+			);
+		}
+
+		return $fields;
+	}
+
 	protected function _get_list_from_subscriber( $subscriber, $list_id ) {
 		if ( ! isset( $subscriber['lists'] ) ) {
 			return false;
@@ -76,6 +97,43 @@ class ET_Core_API_Email_ConstantContact extends ET_Core_API_Email_Provider {
 		}
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields           = $args['custom_fields'];
+		$processed_fields = array();
+
+		unset( $args['custom_fields'], $this->_subscriber['custom_fields_unprocessed'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			$processed_fields[] = array(
+				'name'  => $field_id,
+				'value' => $value,
+			);
+		}
+
+		if ( isset( $this->_subscriber['custom_fields'] ) ) {
+			$processed_fields = array_merge( $processed_fields, $this->_subscriber['custom_fields'] );
+		}
+
+		$this->_subscriber['custom_fields'] = array_unique( $processed_fields, SORT_REGULAR );
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -93,25 +151,30 @@ class ET_Core_API_Email_ConstantContact extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'       => array(
+			'list'         => array(
 				'list_id'           => 'id',
 				'name'              => 'name',
 				'subscribers_count' => 'contact_count',
 			),
-			'subscriber' => array(
-				'name'      => 'first_name',
-				'last_name' => 'last_name',
-				'email'     => 'email_addresses.[0].email_address',
-				'list_id'   => 'lists.[0].id',
+			'subscriber'   => array(
+				'name'          => 'first_name',
+				'last_name'     => 'last_name',
+				'email'         => 'email_addresses.[0].email_address',
+				'list_id'       => 'lists.[0].id',
+				'custom_fields' => 'custom_fields_unprocessed',
 			),
-			'error'      => array(
+			'error'        => array(
 				'error_message' => '[0].error_message',
+			),
+			'custom_field' => array(
+				'field_id' => 'name',
+				'name'     => 'name',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	public function get_subscriber( $email ) {
@@ -158,13 +221,14 @@ class ET_Core_API_Email_ConstantContact extends ET_Core_API_Email_Provider {
 		$query_args = array( 'api_key' => $this->data['api_key'], 'action_by' => 'ACTION_BY_VISITOR' );
 
 		if ( $subscriber ) {
-			$list   = &$this->_get_list_from_subscriber( $subscriber, $args['list_id'] );
-			$result = 'success';
+			if ( $list = $this->_get_list_from_subscriber( $subscriber, $args['list_id'] ) ) {
+				$result = 'success';
+			} else {
+				$subscriber['lists'][] = array( 'id' => $args['list_id'] );
 
-			if ( ! $list || 'ACTIVE' !== $list['status'] ) {
-				$list
-					? $list['status'] = 'UNCONFIRMED'
-					: $subscriber['lists'][] = array( 'id' => $args['list_id'], 'status' => 'UNCONFIRMED' );
+				$this->_subscriber = &$subscriber;
+
+				$args = $this->_process_custom_fields( $args );
 
 				$url = add_query_arg( $query_args, "{$this->SUBSCRIBE_URL}/{$subscriber['id']}" );
 
@@ -174,6 +238,10 @@ class ET_Core_API_Email_ConstantContact extends ET_Core_API_Email_Provider {
 		} else {
 			$url        = add_query_arg( $query_args, $this->SUBSCRIBE_URL );
 			$subscriber = $this->_create_subscriber_data_array( $args );
+
+			$this->_subscriber = &$subscriber;
+
+			$args = $this->_process_custom_fields( $args );
 
 			$this->prepare_request( $url, 'POST', false, $subscriber, true );
 		}

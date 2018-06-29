@@ -38,6 +38,11 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $custom_fields_scope = 'account';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $name = 'Infusionsoft';
 
 	/**
@@ -64,7 +69,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 	protected function _add_contact_to_list( $contact_id, $list_id ) {
 		$params = array( $this->data[ self::$_data_keys['api_key'] ], (int) $contact_id, (int) $list_id );
-		$data = $this->data_utils->prepare_xmlrpc_method_call( 'ContactService.addToGroup', $params );
+		$data = self::$_->prepare_xmlrpc_method_call( 'ContactService.addToGroup', $params );
 
 		$this->_do_request( $data );
 
@@ -72,12 +77,12 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 			return false;
 		}
 
-		return $this->data_utils->process_xmlrpc_response( $this->response->DATA );
+		return self::$_->process_xmlrpc_response( $this->response->DATA );
 	}
 
 	protected function _create_contact( $contact_details ) {
 		$params = array( $this->data[ self::$_data_keys['api_key'] ], $contact_details );
-		$data   = $this->data_utils->prepare_xmlrpc_method_call( 'ContactService.add', $params );
+		$data   = self::$_->prepare_xmlrpc_method_call( 'ContactService.add', $params );
 
 		$this->_do_request( $data );
 
@@ -85,7 +90,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 			return false;
 		}
 
-		$result = $this->data_utils->process_xmlrpc_response( $this->response->DATA );;
+		$result = self::$_->process_xmlrpc_response( $this->response->DATA );
 
 		return $result;
 	}
@@ -96,6 +101,42 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 		$this->make_remote_request();
 	}
 
+	protected function _fetch_custom_fields( $list_id = '', $list = array() ) {
+		$params = array( $this->data[ self::$_data_keys['api_key'] ], 'DataFormField', 100, 0, array( 'FormId' => -1 ), array( 'Name', 'Label', 'DataType', 'Values' ) );
+		$data   = self::$_->prepare_xmlrpc_method_call( 'DataService.query', $params );
+
+		$this->_do_request( $data );
+
+		if ( $this->response->ERROR ) {
+			return array();
+		}
+
+		$data = self::$_->process_xmlrpc_response( $this->response->DATA );
+
+		foreach ( $data as &$custom_field ) {
+			$custom_field = (array) $custom_field;
+			$custom_field = $this->transform_data_to_our_format( $custom_field, 'custom_field' );
+		}
+
+		$fields = array();
+
+		foreach ( $data as $field ) {
+			$field_id = $field['field_id'];
+			$type     = self::$_->array_get( $field, 'type', 'any' );
+
+			$field['type'] = self::$_->array_get( $this->data_keys, "custom_field_type.{$type}", 'any' );
+
+			if ( isset( $field['options'] ) ) {
+				$field['options'] = explode( "\n", $field['options'] );
+				$field['options'] = array_filter( $field['options'] );
+			}
+
+			$fields[ $field_id ] = $field;
+		}
+
+		return $fields;
+	}
+
 	protected function _get_base_url() {
 		$this->BASE_URL = str_replace( '@app_name@', $this->data[ self::$_data_keys['app_name'] ], $this->BASE_URL_PATTERN );
 		return $this->BASE_URL;
@@ -103,7 +144,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 	protected function _get_contact_by_email( $email ) {
 		$params = array( $this->data[ self::$_data_keys['api_key'] ], 'Contact', 1, 0, array( 'Email' => $email ), array( 'Id', 'Groups' ) );
-		$data   = $this->data_utils->prepare_xmlrpc_method_call( 'DataService.query', $params );
+		$data   = self::$_->prepare_xmlrpc_method_call( 'DataService.query', $params );
 
 		$this->_do_request( $data );
 
@@ -111,12 +152,12 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 			return false;
 		}
 
-		return $this->data_utils->process_xmlrpc_response( $this->response->DATA );
+		return self::$_->process_xmlrpc_response( $this->response->DATA );
 	}
 
 	protected function _optin_email_address( $email ) {
 		$params = array( $this->data[ self::$_data_keys['api_key'] ], $email, $this->SUBSCRIBED_VIA );
-		$data   = $this->data_utils->prepare_xmlrpc_method_call('APIEmailService.optIn', $params );
+		$data   = self::$_->prepare_xmlrpc_method_call('APIEmailService.optIn', $params );
 
 		$this->_do_request( $data );
 
@@ -124,7 +165,27 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 			return false;
 		}
 
-		return $this->data_utils->process_xmlrpc_response( $this->response->DATA );
+		return self::$_->process_xmlrpc_response( $this->response->DATA );
+	}
+
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return array();
+		}
+
+		$fields = array();
+
+		foreach ( $args['custom_fields'] as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+				$value = implode( ',', $value );
+			}
+
+			$fields[ "_{$field_id}" ] = $value;
+		}
+
+		return $fields;
 	}
 
 	public function retrieve_subscribers_count() {
@@ -136,7 +197,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 		foreach( $existing_lists as $list_id => $list_data ) {
 			$params = array( $this->data[ self::$_data_keys['api_key'] ], 'Contact', array( 'Groups' => "%{$list_id}%" ) );
-			$data   = $this->data_utils->prepare_xmlrpc_method_call( 'DataService.count', $params );
+			$data   = self::$_->prepare_xmlrpc_method_call( 'DataService.count', $params );
 
 			$this->_do_request( $data );
 
@@ -144,9 +205,9 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 				continue;
 			}
 
-			$subscribers_count = $this->data_utils->process_xmlrpc_response( $this->response->DATA );
+			$subscribers_count = self::$_->process_xmlrpc_response( $this->response->DATA );
 
-			if ( empty( $subscribers_count ) || $this->data_utils->is_xmlrpc_error( $subscribers_count ) ) {
+			if ( empty( $subscribers_count ) || self::$_->is_xmlrpc_error( $subscribers_count ) ) {
 				$subscribers_count = 0;
 			}
 
@@ -197,16 +258,37 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'subscriber' => array(
-				'name'      => 'FirstName',
-				'last_name' => 'LastName',
-				'email'     => 'Email',
+			'subscriber'        => array(
+				'name'          => 'FirstName',
+				'last_name'     => 'LastName',
+				'email'         => 'Email',
+				'custom_fields' => 'custom_fields',
+			),
+			'custom_field'      => array(
+				'field_id' => 'Name',
+				'name'     => 'Label',
+				'type'     => 'DataType',
+				'options'  => 'Values',
+			),
+			'custom_field_type' => array(
+				// Us => Them
+				'input'    => 15,
+				'textarea' => 16,
+				'checkbox' => 17,
+				'radio'    => 20,
+				'select'   => 21,
+				// Them => Us
+				15         => 'input',
+				16         => 'textarea',
+				17         => 'checkbox',
+				20         => 'radio',
+				21         => 'select',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -220,7 +302,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 		$this->response_data_key = false;
 
 		$params_count = array( $this->data[ self::$_data_keys['api_key'] ], 'ContactGroup', array( 'Id' => '%' ) );
-		$data_count   = $this->data_utils->prepare_xmlrpc_method_call( 'DataService.count', $params_count );
+		$data_count   = self::$_->prepare_xmlrpc_method_call( 'DataService.count', $params_count );
 
 		$this->_do_request( $data_count );
 
@@ -228,7 +310,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 			return $this->response->ERROR_MESSAGE;
 		}
 
-		$records_count = (int) $this->data_utils->process_xmlrpc_response( $this->http->response->DATA );
+		$records_count = (int) self::$_->process_xmlrpc_response( $this->http->response->DATA );
 
 		if ( 0 === $records_count ) {
 			return 'success';
@@ -241,7 +323,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 		for ( $i = 0; $i <= $number_of_additional_requests; $i++ ) {
 			$params = array( $this->data[ self::$_data_keys['api_key'] ], 'ContactGroup', 1000, $i, array( 'Id' => '%' ), array( 'Id', 'GroupName' ) );
-			$data   = $this->data_utils->prepare_xmlrpc_method_call( 'DataService.query', $params );
+			$data   = self::$_->prepare_xmlrpc_method_call( 'DataService.query', $params );
 
 			$this->_do_request( $data );
 
@@ -249,9 +331,9 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 				return $this->http->response->ERROR_MESSAGE;
 			}
 
-			$response = $this->data_utils->process_xmlrpc_response( $this->http->response->DATA );
+			$response = self::$_->process_xmlrpc_response( $this->http->response->DATA );
 
-			if ( $this->data_utils->is_xmlrpc_error( $response ) ) {
+			if ( self::$_->is_xmlrpc_error( $response ) ) {
 				return $response->faultString;
 			}
 
@@ -262,13 +344,14 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 		if ( false === $lists ) {
 			return $this->response->ERROR_MESSAGE;
-		} else if ( $this->data_utils->is_xmlrpc_error( $lists ) ) {
+		} else if ( self::$_->is_xmlrpc_error( $lists ) ) {
 			return $lists->faultString;
 		}
 
 		$result = 'success';
 
 		$this->data['lists']         = $lists;
+		$this->data['custom_fields'] = $this->_fetch_custom_fields();
 		$this->data['is_authorized'] = true;
 
 		// retrieve counts right away if it can be done in reasonable time ( in 20 seconds )
@@ -305,7 +388,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 		if ( false === $search_result ) {
 			return $this->response->ERROR_MESSAGE;
-		} else if ( $this->data_utils->is_xmlrpc_error( $search_result ) ) {
+		} else if ( self::$_->is_xmlrpc_error( $search_result ) ) {
 			return $search_result->faultString;
 		}
 
@@ -318,22 +401,23 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 				if ( false === $result ) {
 					return $this->response->ERROR_MESSAGE;
-				} else if ( $this->data_utils->is_xmlrpc_error( $result ) ) {
+				} else if ( self::$_->is_xmlrpc_error( $result ) ) {
 					return $result->faultString;
 				}
 			}
 		} else {
+			$custom_fields   = $this->_process_custom_fields( $args );
 			$contact_details = array(
 				'FirstName' => $args['name'],
 				'LastName'  => $args['last_name'],
 				'Email'     => $args['email'],
 			);
 
-			$new_contact_id = $this->_create_contact( $contact_details );
+			$new_contact_id = $this->_create_contact( array_merge( $contact_details, $custom_fields ) );
 
 			if ( false === $new_contact_id ) {
 				return $this->response->ERROR_MESSAGE;
-			} else if ( $this->data_utils->is_xmlrpc_error( $new_contact_id ) ) {
+			} else if ( self::$_->is_xmlrpc_error( $new_contact_id ) ) {
 				return $new_contact_id->faultString;
 			}
 
@@ -341,7 +425,7 @@ class ET_Core_API_Email_Infusionsoft extends ET_Core_API_Email_Provider {
 
 			if ( false === $result ) {
 				return $this->response->ERROR_MESSAGE;
-			} else if ( $this->data_utils->is_xmlrpc_error( $result ) ) {
+			} else if ( self::$_->is_xmlrpc_error( $result ) ) {
 				return $search_result->faultString;
 			}
 

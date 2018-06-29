@@ -19,6 +19,11 @@ class ET_Core_API_Email_MailPoet extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $custom_fields_scope = 'account';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $name = 'MailPoet';
 
 	/**
@@ -49,7 +54,8 @@ class ET_Core_API_Email_MailPoet extends ET_Core_API_Email_Provider {
 		if ( '3' === $version ) {
 			$this->_MP = new ET_Core_API_Email_MailPoet3( $owner, $account_name, $api_key );
 		} else {
-			$this->_MP = new ET_Core_API_Email_MailPoet2( $owner, $account_name, $api_key );
+			$this->_MP           = new ET_Core_API_Email_MailPoet2( $owner, $account_name, $api_key );
+			$this->custom_fields = false;
 		}
 	}
 
@@ -63,31 +69,30 @@ class ET_Core_API_Email_MailPoet extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		if ( $this->_MP ) {
-			return $this->_MP->get_data_keymap( $keymap, $custom_fields_key );
+			return $this->_MP->get_data_keymap( $keymap );
 		}
 
-		$keymap = array(
-			'list'       => array(
-				'list_id' => 'id',
-				'name'    => 'name',
-			),
-			'subscriber' => array(
-				'name'      => 'first_name',
-				'last_name' => 'last_name',
-				'email'     => 'email',
-			),
-		);
-
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function fetch_subscriber_lists() {
-		return $this->_MP ? $this->_MP->fetch_subscriber_lists() : self::$PLUGIN_REQUIRED;
+		$lists_data = $this->_MP ? $this->_MP->fetch_subscriber_lists() : self::$PLUGIN_REQUIRED;
+
+		// Update data in Main MailPoet class, so correct lists data can be accessed
+		if ( isset( $lists_data['success'] ) ) {
+			$this->data = $lists_data['success'];
+
+			$this->save_data();
+
+			return 'success';
+		}
+
+		return $lists_data;
 	}
 
 	/**

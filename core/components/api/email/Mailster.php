@@ -15,6 +15,11 @@ class ET_Core_API_Email_Mailster extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $custom_fields = 'dynamic';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $name = 'Mailster';
 
 	/**
@@ -51,6 +56,33 @@ class ET_Core_API_Email_Mailster extends ET_Core_API_Email_Provider {
 		);
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			self::$_->array_set( $args, $field_id, $value );
+		}
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -61,7 +93,7 @@ class ET_Core_API_Email_Mailster extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
 			'list'       => array(
 				'list_id'           => 'ID',
@@ -69,14 +101,15 @@ class ET_Core_API_Email_Mailster extends ET_Core_API_Email_Provider {
 				'subscribers_count' => 'subscribers',
 			),
 			'subscriber' => array(
-				'dbl_optin' => 'status',
-				'email'     => 'email',
-				'last_name' => 'lastname',
-				'name'      => 'firstname',
+				'dbl_optin'     => 'status',
+				'email'         => 'email',
+				'last_name'     => 'lastname',
+				'name'          => 'firstname',
+				'custom_fields' => 'custom_fields',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	public function fetch_subscriber_lists() {
@@ -108,8 +141,9 @@ class ET_Core_API_Email_Mailster extends ET_Core_API_Email_Provider {
 		}
 
 		$params       = $this->transform_data_to_provider_format( $args, 'subscriber', array( 'dbl_optin' ) );
+		$params       = $this->_process_custom_fields( $params );
 		$extra_params = array(
-			'status'   => 'disable' === $args['dbl_optin'] ? 0 : 1,
+			'status'   => 'disable' === $args['dbl_optin'] ? 1 : 0,
 			'referrer' => $this->_get_referrer( $args ),
 		);
 

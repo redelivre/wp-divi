@@ -4,29 +4,12 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Fullwidth Menu', 'et_builder' );
 		$this->slug       = 'et_pb_fullwidth_menu';
-		$this->fb_support = true;
+		$this->vb_support = 'on';
 		$this->fullwidth  = true;
-
-		$this->whitelisted_fields = array(
-			'menu_id',
-			'background_layout',
-			'submenu_direction',
-			'admin_label',
-			'module_id',
-			'module_class',
-			'fullwidth_menu',
-			'active_link_color',
-			'dropdown_menu_bg_color',
-			'dropdown_menu_line_color',
-			'dropdown_menu_text_color',
-			'dropdown_menu_animation',
-			'mobile_menu_bg_color',
-			'mobile_menu_text_color',
-		);
 
 		$this->main_css_element = '%%order_class%%.et_pb_fullwidth_menu';
 
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Content', 'et_builder' ),
@@ -50,8 +33,8 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			),
 		);
 
-		$this->advanced_options = array(
-			'fonts' => array(
+		$this->advanced_fields = array(
+			'fonts'      => array(
 				'menu' => array(
 					'label'    => esc_html__( 'Menu', 'et_builder' ),
 					'css'      => array(
@@ -80,16 +63,37 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 					'hide_text_align' => true,
 				),
 			),
-			'background' => array(),
-			'custom_margin_padding' => array(),
-			'max_width' => array(),
-			'text'      => array(
-				'toggle_slug' => 'links',
+			'background' => array(
+				'options' => array(
+					'background_color'  => array(
+						'default'          => '#ffffff',
+					),
+				),
 			),
-			'filters' => array(),
+			'box_shadow' => array(
+				'default' => array(
+					'css' => array(
+						'main' => '%%order_class%%, %%order_class%% .sub-menu',
+						'custom_style' => true,
+					),
+				),
+			),
+			'text'       => array(
+				'use_background_layout' => true,
+				'toggle_slug' => 'links',
+				'options' => array(
+					'text_orientation'  => array(
+						'default_on_front' => 'left',
+					),
+					'background_layout' => array(
+						'default_on_front' => 'light',
+					),
+				),
+			),
+			'button'     => false,
 		);
 
-		$this->custom_css_options = array(
+		$this->custom_css_fields = array(
 			'menu_link' => array(
 				'label'    => esc_html__( 'Menu Link', 'et_builder' ),
 				'selector' => '.fullwidth-menu-nav li a',
@@ -108,11 +112,11 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			),
 		);
 
-		$this->fields_defaults = array(
-			'background_color'        => array( '#ffffff', 'only_default_setting' ),
-			'background_layout'       => array( 'light' ),
-			'text_orientation'        => array( 'left' ),
-			'dropdown_menu_animation' => array( 'fade' ),
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'Q2heZC2GbNg' ),
+				'name' => esc_html__( 'An introduction to the Fullwidth Menu module', 'et_builder' ),
+			),
 		);
 	}
 
@@ -133,18 +137,6 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'computed_affects' => array(
 					'__menu',
 				),
-			),
-			'background_layout' => array(
-				'label'           => esc_html__( 'Text Color', 'et_builder' ),
-				'type'            => 'select',
-				'option_category' => 'color_option',
-				'options'         => array(
-					'light' => esc_html__( 'Dark', 'et_builder' ),
-					'dark'  => esc_html__( 'Light', 'et_builder' ),
-				),
-				'tab_slug'        => 'advanced',
-				'toggle_slug'     => 'links',
-				'description'     => esc_html__( 'Here you can choose the value of your text. If you are working with a dark background, then your text should be set to light. If you are working with a light background, then your text should be dark.', 'et_builder' ),
 			),
 			'submenu_direction' => array(
 				'label'           => esc_html__( 'Sub-Menus Open', 'et_builder' ),
@@ -213,42 +205,6 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'links',
-			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
 			),
 			'__menu' => array(
 				'type'                => 'computed',
@@ -362,21 +318,18 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 		return $menu;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id         = $this->shortcode_atts['module_id'];
-		$module_class      = $this->shortcode_atts['module_class'];
-		$background_color  = $this->shortcode_atts['background_color'];
-		$background_layout = $this->shortcode_atts['background_layout'];
-		$menu_id           = $this->shortcode_atts['menu_id'];
-		$submenu_direction = $this->shortcode_atts['submenu_direction'];
-		$fullwidth_menu           = $this->shortcode_atts['fullwidth_menu'] === 'on' ? ' et_pb_fullwidth_menu_fullwidth' : '';
-		$active_link_color        = $this->shortcode_atts['active_link_color'];
-		$dropdown_menu_bg_color   = $this->shortcode_atts['dropdown_menu_bg_color'];
-		$dropdown_menu_line_color = $this->shortcode_atts['dropdown_menu_line_color'];
-		$dropdown_menu_text_color = $this->shortcode_atts['dropdown_menu_text_color'];
-		$dropdown_menu_animation  = $this->shortcode_atts['dropdown_menu_animation'];
-		$mobile_menu_bg_color     = $this->shortcode_atts['mobile_menu_bg_color'];
-		$mobile_menu_text_color   = $this->shortcode_atts['mobile_menu_text_color'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$background_color  = $this->props['background_color'];
+		$background_layout = $this->props['background_layout'];
+		$menu_id           = $this->props['menu_id'];
+		$submenu_direction = $this->props['submenu_direction'];
+		$active_link_color        = $this->props['active_link_color'];
+		$dropdown_menu_bg_color   = $this->props['dropdown_menu_bg_color'];
+		$dropdown_menu_line_color = $this->props['dropdown_menu_line_color'];
+		$dropdown_menu_text_color = $this->props['dropdown_menu_text_color'];
+		$dropdown_menu_animation  = $this->props['dropdown_menu_animation'];
+		$mobile_menu_bg_color     = $this->props['mobile_menu_bg_color'];
+		$mobile_menu_text_color   = $this->props['mobile_menu_text_color'];
 
 		$style = '';
 
@@ -386,12 +339,8 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			);
 		}
 
-		$module_class = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
-
-		$video_background = $this->video_background();
+		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
-
-		$class = " et_pb_module et_pb_bg_layout_{$background_layout}{$this->get_text_orientation_classname()} et_dropdown_animation_{$dropdown_menu_animation}{$fullwidth_menu}";
 
 		$menu = self::get_fullwidth_menu( array(
 			'menu_id'           => $menu_id,
@@ -399,7 +348,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 		) );
 
 		if ( '' !== $active_link_color ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu ul li.current-menu-item a',
 				'declaration' => sprintf(
 					'color: %1$s !important;',
@@ -411,7 +360,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 		if ( '' !== $background_color || '' !== $dropdown_menu_bg_color ) {
 			$et_menu_bg_color = '' !== $dropdown_menu_bg_color ? $dropdown_menu_bg_color : $background_color;
 
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .nav li ul',
 				'declaration' => sprintf(
 					'background-color: %1$s !important;',
@@ -424,7 +373,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 
 			$dropdown_menu_line_color_selector = 'upwards' === $submenu_direction ? '%%order_class%%.et_pb_fullwidth_menu .fullwidth-menu-nav > ul.upwards li ul' : '%%order_class%%.et_pb_fullwidth_menu .nav li ul';
 
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => $dropdown_menu_line_color_selector,
 				'declaration' => sprintf(
 					'border-color: %1$s;',
@@ -432,7 +381,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				),
 			) );
 
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu',
 				'declaration' => sprintf(
 					'border-color: %1$s;',
@@ -442,7 +391,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 		}
 
 		if ( '' !== $dropdown_menu_text_color ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .nav li ul a',
 				'declaration' => sprintf(
 					'color: %1$s !important;',
@@ -453,7 +402,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 
 		if ( '' !== $mobile_menu_bg_color || '' !== $background_color ) {
 			$et_menu_bg_color_mobile = '' !== $mobile_menu_bg_color ? $mobile_menu_bg_color : $background_color;
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu, %%order_class%%.et_pb_fullwidth_menu .et_mobile_menu ul',
 				'declaration' => sprintf(
 					'background-color: %1$s !important;',
@@ -463,7 +412,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 		}
 
 		if ( '' !== $mobile_menu_text_color ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu a',
 				'declaration' => sprintf(
 					'color: %1$s !important;',
@@ -472,14 +421,25 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			) );
 		}
 
+		// Module classnames
+		$this->add_classname( array(
+			"et_pb_bg_layout_{$background_layout}",
+			$this->get_text_orientation_classname(),
+			"et_dropdown_animation_{$dropdown_menu_animation}",
+		) );
+
+		if ( $this->props['fullwidth_menu'] === 'on' ) {
+			$this->add_classname( 'et_pb_fullwidth_menu_fullwidth' );
+		}
+
 		$output = sprintf(
-			'<div%4$s class="et_pb_fullwidth_menu%3$s%5$s%6$s%8$s"%2$s>
-				%9$s
-				%7$s
+			'<div%4$s class="%3$s"%2$s>
+				%6$s
+				%5$s
 				<div class="et_pb_row clearfix">
 					%1$s
 					<div class="et_mobile_nav_menu">
-						<a href="#" class="mobile_nav closed%10$s">
+						<a href="#" class="mobile_nav closed%7$s">
 							<span class="mobile_menu_bar"></span>
 						</a>
 					</div>
@@ -487,23 +447,14 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			</div>',
 			$menu,
 			$style,
-			esc_attr( $class ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
+			$this->module_classname( $render_slug ),
+			$this->module_id(),
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background,
 			'upwards' === $submenu_direction ? ' et_pb_mobile_menu_upwards' : ''
 		);
 
 		return $output;
-	}
-
-	public function process_box_shadow( $function_name ) {
-		$boxShadow = ET_Builder_Module_Fields_Factory::get( 'BoxShadow' );
-		$selector = sprintf('.%1$s, .%1$s .sub-menu', self::get_module_order_class( $function_name ));
-		self::set_style( $function_name, $boxShadow->get_style( $selector, $this->shortcode_atts ) );
 	}
 }
 

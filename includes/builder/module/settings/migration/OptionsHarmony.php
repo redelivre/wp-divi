@@ -319,7 +319,7 @@ class ET_Builder_Module_Settings_Migration_OptionsHarmony extends ET_Builder_Mod
 		return isset( $map[ $value ] ) ? $map[ $value ] : $default;
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 		// Padding top & bottom migration to full paddings
 		if ( in_array( $module_slug, array( 'et_pb_counters', 'et_pb_post_slider', 'et_pb_fullwidth_post_slider', 'et_pb_slider', 'et_pb_fullwidth_slider' ) ) ) {
 

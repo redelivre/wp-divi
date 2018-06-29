@@ -4,34 +4,11 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 	function init() {
 		$this->name            = esc_html__( 'Map', 'et_builder' );
 		$this->slug            = 'et_pb_map';
-		$this->fb_support      = true;
+		$this->vb_support      = 'on';
 		$this->child_slug      = 'et_pb_map_pin';
 		$this->child_item_text = esc_html__( 'Pin', 'et_builder' );
 
-		$this->whitelisted_fields = array(
-			'address',
-			'zoom_level',
-			'address_lat',
-			'address_lng',
-			'map_center_map',
-			'mouse_wheel',
-			'mobile_dragging',
-			'admin_label',
-			'module_id',
-			'module_class',
-			'use_grayscale_filter',
-			'grayscale_filter_amount',
-		);
-
-		$this->fields_defaults = array(
-			'zoom_level'              => array( '18', 'only_default_setting' ),
-			'mouse_wheel'             => array( 'on' ),
-			'mobile_dragging'         => array( 'on' ),
-			'use_grayscale_filter'    => array( 'off' ),
-			'grayscale_filter_amount' => array( '0' ),
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'map' => esc_html__( 'Map', 'et_builder' ),
@@ -48,15 +25,20 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 			),
 		);
 
-		$this->advanced_options = array(
-			'background' => array(),
-			'custom_margin_padding' => array(
+		$this->advanced_fields = array(
+			'box_shadow'            => array(
+				'default' => array(
+					'css' => array(
+						'custom_style' => true,
+					),
+				),
+			),
+			'margin_padding' => array(
 				'css' => array(
 					'important' => array( 'custom_margin' ), // needed to overwrite last module margin-bottom styling
 				),
 			),
-			'max_width' => array(),
-			'filters' => array(
+			'filters'               => array(
 				'css' => array(
 					'main' => '%%order_class%%',
 				),
@@ -65,10 +47,20 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 					'toggle_slug' => 'child_filters',
 				),
 			),
-			'child_filters' => array(
+			'child_filters'         => array(
 				'css' => array(
 					'main' => '%%order_class%% .gm-style>div>div>div>div>div>img',
 				),
+			),
+			'fonts'                 => false,
+			'text'                  => false,
+			'button'                => false,
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'rV3rxmACDmw' ),
+				'name' => esc_html__( 'An introduction to the Map module', 'et_builder' ),
 			),
 		);
 	}
@@ -119,6 +111,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 			'zoom_level' => array(
 				'type'    => 'hidden',
 				'class'   => array( 'et_pb_zoom_level' ),
+				'default' => '18',
 			),
 			'address_lat' => array(
 				'type'  => 'hidden',
@@ -129,7 +122,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				'class' => array( 'et_pb_address_lng' ),
 			),
 			'map_center_map' => array(
-				'renderer'              => 'et_builder_generate_center_map_setting',
+				'type'                  => 'center_map',
 				'use_container_wrapper' => false,
 				'option_category'       => 'basic_option',
 				'toggle_slug'           => 'map',
@@ -145,6 +138,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				'tab_slug'        => 'advanced',
 				'toggle_slug'     => 'controls',
 				'description'     => esc_html__( 'Here you can choose whether the zoom level will be controlled by mouse wheel or not.', 'et_builder' ),
+				'default_on_front' => 'on',
 			),
 			'mobile_dragging' => array(
 				'label'           => esc_html__( 'Draggable on Mobile', 'et_builder' ),
@@ -157,6 +151,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				'tab_slug'        => 'advanced',
 				'toggle_slug'     => 'controls',
 				'description'     => esc_html__( 'Here you can choose whether or not the map will be draggable on mobile devices.', 'et_builder' ),
+				'default_on_front' => 'on',
 			),
 			'use_grayscale_filter' => array(
 				'label'           => esc_html__( 'Use Grayscale Filter', 'et_builder' ),
@@ -171,6 +166,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				),
 				'tab_slug'    => 'advanced',
 				'toggle_slug' => 'child_filters',
+				'default_on_front' => 'off',
 			),
 			'grayscale_filter_amount' => array(
 				'label'           => esc_html__( 'Grayscale Filter Amount (%)', 'et_builder' ),
@@ -180,68 +176,29 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				'tab_slug'        => 'advanced',
 				'toggle_slug'     => 'child_filters',
 				'depends_show_if' => 'on',
-				'validate_unit'   => false,
-			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
+				'unitless'        => false,
 			),
 		);
 		return $fields;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id               = $this->shortcode_atts['module_id'];
-		$module_class            = $this->shortcode_atts['module_class'];
-		$address_lat             = $this->shortcode_atts['address_lat'];
-		$address_lng             = $this->shortcode_atts['address_lng'];
-		$zoom_level              = $this->shortcode_atts['zoom_level'];
-		$mouse_wheel             = $this->shortcode_atts['mouse_wheel'];
-		$mobile_dragging         = $this->shortcode_atts['mobile_dragging'];
-		$use_grayscale_filter    = $this->shortcode_atts['use_grayscale_filter'];
-		$grayscale_filter_amount = $this->shortcode_atts['grayscale_filter_amount'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$address_lat             = $this->props['address_lat'];
+		$address_lng             = $this->props['address_lng'];
+		$zoom_level              = $this->props['zoom_level'];
+		$mouse_wheel             = $this->props['mouse_wheel'];
+		$mobile_dragging         = $this->props['mobile_dragging'];
+		$use_grayscale_filter    = $this->props['use_grayscale_filter'];
+		$grayscale_filter_amount = $this->props['grayscale_filter_amount'];
 
 		if ( et_pb_enqueue_google_maps_script() ) {
 			wp_enqueue_script( 'google-maps-api' );
 		}
 
-		$module_class              = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
-		$all_pins_content = $this->shortcode_content;
+		$all_pins_content = $this->content;
 
 		$grayscale_filter_data = '';
 		if ( 'on' === $use_grayscale_filter && '' !== $grayscale_filter_amount ) {
@@ -249,18 +206,25 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 		}
 
 		// Map Tiles: Add CSS Filters and Mix Blend Mode rules (if set)
-		if ( array_key_exists( 'child_filters', $this->advanced_options ) && array_key_exists( 'css', $this->advanced_options['child_filters'] ) ) {
-			$module_class .= $this->generate_css_filters(
-				$function_name,
+		if ( array_key_exists( 'child_filters', $this->advanced_fields ) && array_key_exists( 'css', $this->advanced_fields['child_filters'] ) ) {
+			$this->add_classname( $this->generate_css_filters(
+				$render_slug,
 				'child_',
-				self::$data_utils->array_get( $this->advanced_options['child_filters']['css'], 'main', '%%order_class%%' )
-			);
+				self::$data_utils->array_get( $this->advanced_fields['child_filters']['css'], 'main', '%%order_class%%' )
+			) );
 		}
 
+		// Module classnames
+		$this->add_classname( array(
+			'et_pb_map_container',
+		) );
+
+		$this->remove_classname( $render_slug );
+
 		$output = sprintf(
-			'<div%5$s class="et_pb_module et_pb_map_container%6$s%10$s%12$s"%8$s>
-				%13$s
+			'<div%5$s class="%6$s"%8$s>
 				%11$s
+				%10$s
 				<div class="et_pb_map" data-center-lat="%1$s" data-center-lng="%2$s" data-zoom="%3$d" data-mouse-wheel="%7$s" data-mobile-dragging="%9$s"></div>
 				%4$s
 			</div>',
@@ -268,27 +232,16 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 			esc_attr( $address_lng ),
 			esc_attr( $zoom_level ),
 			$all_pins_content,
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
+			$this->module_id(),
+			$this->module_classname( $render_slug ),
 			esc_attr( $mouse_wheel ),
 			$grayscale_filter_data,
 			esc_attr( $mobile_dragging ),
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background
 		);
 
 		return $output;
-	}
-
-	public function process_box_shadow( $function_name ) {
-		$boxShadow = ET_Builder_Module_Fields_Factory::get( 'BoxShadow' );
-
-		self::set_style( $function_name, $boxShadow->get_style(
-			'.' . self::get_module_order_class( $function_name ),
-			$this->shortcode_atts
-		) );
 	}
 }
 

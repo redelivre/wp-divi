@@ -4,30 +4,9 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Text', 'et_builder' );
 		$this->slug       = 'et_pb_text';
-		$this->fb_support = true;
+		$this->vb_support = 'on';
 
-		$this->whitelisted_fields = array(
-			'background_layout',
-			'content_new',
-			'admin_label',
-			'module_id',
-			'module_class',
-			'ul_type',
-			'ul_position',
-			'ul_item_indent',
-			'ol_type',
-			'ol_position',
-			'ol_item_indent',
-			'quote_border_weight',
-			'quote_border_color',
-		);
-
-		$this->fields_defaults = array(
-			'background_layout'   => array( 'light' ),
-			'text_orientation'    => array( 'left' ),
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Text', 'et_builder' ),
@@ -103,8 +82,9 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 		);
 
 		$this->main_css_element = '%%order_class%%';
-		$this->advanced_options = array(
-			'fonts' => array(
+
+		$this->advanced_fields = array(
+			'fonts'                 => array(
 				'text'   => array(
 					'label'    => esc_html__( 'Text', 'et_builder' ),
 					'css'      => array(
@@ -265,40 +245,46 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 					'sub_toggle'  => 'h6',
 				),
 			),
-			'background' => array(
+			'background'            => array(
 				'settings' => array(
 					'color' => 'alpha',
 				),
 			),
-			'custom_margin_padding' => array(
+			'margin_padding' => array(
 				'css' => array(
 					'important' => 'all',
 				),
 			),
-			'max_width' => array(),
-			'text'      => array(
+			'text'                  => array(
+				'use_background_layout' => true,
 				'sub_toggle'  => 'p',
+				'options' => array(
+					'text_orientation' => array(
+						'default'          => 'left',
+					),
+					'background_layout' => array(
+						'default' => 'light',
+					),
+				),
 			),
-			'filters' => array(),
+			'text_shadow'           => array(
+				// Don't add text-shadow fields since they already are via font-options
+				'default' => false,
+			),
+			'button'                => false,
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'oL00RjEKZaU' ),
+				'name' => esc_html__( 'An introduction to the Text module', 'et_builder' ),
+			),
 		);
 	}
 
 	function get_fields() {
 		$fields = array(
-			'background_layout' => array(
-				'label'             => esc_html__( 'Text Color', 'et_builder' ),
-				'type'              => 'select',
-				'option_category'   => 'configuration',
-				'options'           => array(
-					'light' => esc_html__( 'Dark', 'et_builder' ),
-					'dark'  => esc_html__( 'Light', 'et_builder' ),
-				),
-				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'text',
-				'sub_toggle'        => 'p',
-				'description'       => esc_html__( 'Here you can choose the value of your text. If you are working with a dark background, then your text should be set to light. If you are working with a light background, then your text should be dark.', 'et_builder' ),
-			),
-			'content_new' => array(
+			'content' => array(
 				'label'           => esc_html__( 'Content', 'et_builder' ),
 				'type'            => 'tiny_mce',
 				'option_category' => 'basic_option',
@@ -317,6 +303,7 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				),
 				'priority'          => 80,
 				'default'           => 'disc',
+				'default_on_front'  => '',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 				'sub_toggle'        => 'ul',
@@ -331,6 +318,7 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				),
 				'priority'          => 85,
 				'default'           => 'outside',
+				'default_on_front'  => '',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 				'sub_toggle'        => 'ul',
@@ -344,6 +332,8 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				'sub_toggle'      => 'ul',
 				'priority'        => 90,
 				'default'         => '0px',
+				'default_unit'    => 'px',
+				'default_on_front' => '',
 				'range_settings'  => array(
 					'min'  => '0',
 					'max'  => '100',
@@ -377,6 +367,7 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				),
 				'priority'          => 80,
 				'default'           => 'decimal',
+				'default_on_front' => '',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 				'sub_toggle'        => 'ol',
@@ -386,11 +377,12 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				'type'              => 'select',
 				'option_category'   => 'configuration',
 				'options'           => array(
-					'outside' => esc_html__( 'Outside', 'et_builder' ),
 					'inside'  => esc_html__( 'Inside', 'et_builder' ),
+					'outside' => esc_html__( 'Outside', 'et_builder' ),
 				),
 				'priority'          => 85,
-				'default'           => 'outside',
+				'default'           => 'inside',
+				'default_on_front' => '',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 				'sub_toggle'        => 'ol',
@@ -404,6 +396,8 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				'sub_toggle'      => 'ol',
 				'priority'        => 90,
 				'default'         => '0px',
+				'default_unit'    => 'px',
+				'default_on_front' => '',
 				'range_settings'  => array(
 					'min'  => '0',
 					'max'  => '100',
@@ -419,6 +413,8 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				'sub_toggle'      => 'quote',
 				'priority'        => 85,
 				'default'         => '5px',
+				'default_unit'    => 'px',
+				'default_on_front' => '',
 				'range_settings'  => array(
 					'min'  => '0',
 					'max'  => '100',
@@ -436,72 +432,29 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 				'field_template'  => 'color',
 				'priority'        => 90,
 			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
 		);
 
 		return $fields;
 	}
 
-	// Don't add text-shadow fields since they already are via font-options
-	protected function _add_additional_text_shadow_fields() {}
+	function render( $attrs, $content = null, $render_slug ) {
+		$background_layout    = $this->props['background_layout'];
+		$ul_type              = $this->props['ul_type'];
+		$ul_position          = $this->props['ul_position'];
+		$ul_item_indent       = $this->props['ul_item_indent'];
+		$ol_type              = $this->props['ol_type'];
+		$ol_position          = $this->props['ol_position'];
+		$ol_item_indent       = $this->props['ol_item_indent'];
+		$quote_border_weight  = $this->props['quote_border_weight'];
+		$quote_border_color   = $this->props['quote_border_color'];
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id            = $this->shortcode_atts['module_id'];
-		$module_class         = $this->shortcode_atts['module_class'];
-		$background_layout    = $this->shortcode_atts['background_layout'];
-		$ul_type              = $this->shortcode_atts['ul_type'];
-		$ul_position          = $this->shortcode_atts['ul_position'];
-		$ul_item_indent       = $this->shortcode_atts['ul_item_indent'];
-		$ol_type              = $this->shortcode_atts['ol_type'];
-		$ol_position          = $this->shortcode_atts['ol_position'];
-		$ol_item_indent       = $this->shortcode_atts['ol_item_indent'];
-		$quote_border_weight  = $this->shortcode_atts['quote_border_weight'];
-		$quote_border_color   = $this->shortcode_atts['quote_border_color'];
-
-		$module_class = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
-
-		$this->shortcode_content = et_builder_replace_code_content_entities( $this->shortcode_content );
+		$this->content = et_builder_replace_code_content_entities( $this->content );
 
 		$video_background = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
 		if ( '' !== $ul_type || '' !== $ul_position || '' !== $ul_item_indent ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% ul',
 				'declaration' => sprintf(
 					'%1$s
@@ -515,7 +468,7 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 		}
 
 		if ( '' !== $ol_type || '' !== $ol_position || '' !== $ol_item_indent ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% ol',
 				'declaration' => sprintf(
 					'%1$s
@@ -529,7 +482,7 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 		}
 
 		if ( '' !== $quote_border_weight || '' !== $quote_border_color ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% blockquote',
 				'declaration' => sprintf(
 					'%1$s
@@ -540,23 +493,24 @@ class ET_Builder_Module_Text extends ET_Builder_Module {
 			) );
 		}
 
-		$class = " et_pb_module et_pb_bg_layout_{$background_layout}{$this->get_text_orientation_classname()}";
+		// Module classnames
+		$this->add_classname( array(
+			"et_pb_bg_layout_{$background_layout}",
+			$this->get_text_orientation_classname(),
+		) );
 
 		$output = sprintf(
-			'<div%3$s class="et_pb_text%2$s%4$s%5$s%7$s">
-				%8$s
-				%6$s
+			'<div%3$s class="%2$s">
+				%5$s
+				%4$s
 				<div class="et_pb_text_inner">
 					%1$s
 				</div>
 			</div> <!-- .et_pb_text -->',
-			$this->shortcode_content,
-			esc_attr( $class ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '', // #5
+			$this->content,
+			$this->module_classname( $render_slug ),
+			$this->module_id(),
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background
 		);
 

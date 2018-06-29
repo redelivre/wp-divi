@@ -186,12 +186,20 @@ function et_core_get_ip_address() {
 }
 endif;
 
+if ( ! function_exists( 'et_core_use_google_fonts' ) ) :
+function et_core_use_google_fonts() {
+	$utils              = ET_Core_Data_Utils::instance();
+	$google_api_options = get_option( 'et_google_api_settings' );
+
+	return 'on' === $utils->array_get( $google_api_options, 'use_google_fonts', 'on' );
+}
+endif;
 
 if ( ! function_exists( 'et_core_get_main_fonts' ) ) :
 function et_core_get_main_fonts() {
 	global $wp_version;
 
-	if ( version_compare( $wp_version, '4.6', '<' ) ) {
+	if ( version_compare( $wp_version, '4.6', '<' ) || ( ! is_admin() && ! et_core_use_google_fonts() ) ) {
 		return '';
 	}
 
@@ -668,6 +676,42 @@ function et_new_core_setup() {
 	// Initialize top-level components "group"
 	$hook = did_action( 'plugins_loaded' ) ?  'after_setup_theme' : 'plugins_loaded';
 	add_action( $hook, 'et_core_init', 9999999 );
+}
+endif;
+
+
+if ( ! function_exists( 'et_core_add_crossorigin_attribute' ) ):
+function et_core_add_crossorigin_attribute( $tag, $handle, $src ) {
+	if ( ! $handle || ! in_array( $handle, array( 'react', 'react-dom' ) ) ) {
+		return $tag;
+	}
+
+	return sprintf( '<script src="%1$s" crossorigin></script>', esc_attr( $src ) );
+}
+endif;
+
+
+if ( ! function_exists( 'et_core_get_version_from_filesystem' ) ):
+/**
+ * Get the core version from the filesystem.
+ * This is necessary in cases such as Version Rollback where you cannot use
+ * a constant from memory as it is outdated or you wish to get the version
+ * not from the active (latest) core but from a different one.
+ *
+ * @param string $core_directory
+ *
+ * @return string
+ */
+function et_core_get_version_from_filesystem( $core_directory ) {
+	$version_file = $core_directory . DIRECTORY_SEPARATOR . '_et_core_version.php';
+
+	if ( ! file_exists( $version_file ) ) {
+		return '';
+	}
+
+	include $version_file;
+
+	return $ET_CORE_VERSION;
 }
 endif;
 

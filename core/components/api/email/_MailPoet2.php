@@ -39,7 +39,7 @@ class ET_Core_API_Email_MailPoet2 extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
 			'list'       => array(
 				'list_id' => 'id',
@@ -52,7 +52,7 @@ class ET_Core_API_Email_MailPoet2 extends ET_Core_API_Email_Provider {
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -85,7 +85,7 @@ class ET_Core_API_Email_MailPoet2 extends ET_Core_API_Email_Provider {
 
 		$this->save_data();
 
-		return 'success';
+		return array( 'success' => $this->data );
 	}
 
 	/**

@@ -64,6 +64,8 @@ class ET_Core_Portability {
 	 * @return bool|array
 	 */
 	public function import( $file_context = 'upload' ) {
+		global $shortname;
+
 		$this->prevent_failure();
 
 		self::$_doing_import = true;
@@ -127,6 +129,15 @@ class ET_Core_Portability {
 			// Reset all data besides excluded data.
 			$current_data = $this->apply_query( get_option( $this->instance->target, array() ), 'unset' );
 
+			if ( isset( $data['wp_custom_css'] ) && function_exists( 'wp_update_custom_css_post' ) ) {
+				wp_update_custom_css_post( $data['wp_custom_css'] );
+
+				if ( 'yes' === get_theme_mod( 'et_pb_css_synced', 'no' ) ) {
+					// If synced, clear the legacy custom css value to avoid unwanted merging of old and new css.
+					$data[ "{$shortname}_custom_css" ] = '';
+				}
+			}
+
 			// Merge remaining current data with new data and update options.
 			update_option( $this->instance->target, array_merge( $current_data, $data ) );
 
@@ -176,6 +187,11 @@ class ET_Core_Portability {
 
 			if ( 'options' === $this->instance->type ) {
 				$data = get_option( $this->instance->target, array() );
+
+				// Export the Customizer "Additional CSS" value as well.
+				if ( function_exists( 'wp_get_custom_css' ) ) {
+					$data[ 'wp_custom_css' ] = wp_get_custom_css();
+				}
 			}
 
 			if ( 'post' === $this->instance->type ) {
@@ -245,8 +261,8 @@ class ET_Core_Portability {
 
 		// Known units
 		switch ( $unit ) {
-		    case 'G': return $amount << 10;
-		    case 'M': return $amount;
+			case 'G': return $amount << 10;
+			case 'M': return $amount;
 		}
 
 		if ( is_numeric( $unit ) ) {

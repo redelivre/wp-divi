@@ -17,7 +17,17 @@ class ET_Core_API_Email_MailerLite extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $FIELDS_URL = 'https://api.mailerlite.com/api/v2/fields';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $LISTS_URL = 'https://api.mailerlite.com/api/v2/groups';
+
+	/**
+	 * @inheritDoc
+	 */
+	public $custom_fields_scope = 'account';
 
 	/**
 	 * @inheritDoc
@@ -47,6 +57,33 @@ class ET_Core_API_Email_MailerLite extends ET_Core_API_Email_Provider {
 		}
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			self::$_->array_set( $args, "fields.{$field_id}", $value );
+		}
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -61,26 +98,29 @@ class ET_Core_API_Email_MailerLite extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$custom_fields_key = 'fields';
-
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'       => array(
+			'list'         => array(
 				'list_id'           => 'id',
 				'name'              => 'name',
 				'subscribers_count' => 'active',
 			),
-			'subscriber' => array(
-				'name'      => 'fields.name',
-				'last_name' => 'fields.last_name',
-				'email'     => 'email',
+			'subscriber'   => array(
+				'name'          => 'fields.name',
+				'last_name'     => 'fields.last_name',
+				'email'         => 'email',
+				'custom_fields' => 'custom_fields',
 			),
-			'error'      => array(
+			'error'        => array(
 				'error_message' => 'error.message',
+			),
+			'custom_field' => array(
+				'field_id' => 'key',
+				'name'     => 'title',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**

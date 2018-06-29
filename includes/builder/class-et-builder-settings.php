@@ -75,7 +75,7 @@ class ET_Builder_Settings {
 				'depends_show_if' => 'on',
 				'mobile_options'  => false,
 				'unitless'        => true,
-				'depends_to'      => array(
+				'depends_on'      => array(
 					'et_pb_enable_ab_testing',
 				),
 				'tab_slug'        => 'content',
@@ -91,7 +91,7 @@ class ET_Builder_Settings {
 					'hourly' => esc_html__( 'Hourly', 'et_builder' ),
 					'daily'  => esc_html__( 'Daily', 'et_builder' ),
 				),
-				'depends_to'      => array(
+				'depends_on'      => array(
 					'et_pb_enable_ab_testing',
 				),
 				'tab_slug'        => 'content',
@@ -109,7 +109,7 @@ class ET_Builder_Settings {
 				'affects'         => array(
 					'et_pb_ab_current_shortcode',
 				),
-				'depends_to'      => array(
+				'depends_on'      => array(
 					'et_pb_enable_ab_testing',
 				),
 				'tab_slug'        => 'content',
@@ -122,7 +122,7 @@ class ET_Builder_Settings {
 				'autoload'        => false,
 				'readonly'        => 'readonly',
 				'depends_show_if' => 'on',
-				'depends_to'      => array(
+				'depends_on'      => array(
 					'et_pb_enable_shortcode_tracking',
 				),
 				'tab_slug'        => 'content',
@@ -895,7 +895,8 @@ function et_builder_settings_get( $setting, $post_id = '' ) {
 	$has_page   = isset( $page_fields[ $setting ] );
 	$has_global = isset( $builder_fields[ $setting ] );
 
-	$value = '';
+	$value = $global_value = '';
+	$global_is_default = false;
 
 	if ( ! $has_page && ! $has_global ) {
 		return $value;

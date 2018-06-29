@@ -4,7 +4,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Divider', 'et_builder' );
 		$this->slug       = 'et_pb_divider';
-		$this->fb_support = true;
+		$this->vb_support = 'on';
 
 		$style_option_name = sprintf( '%1$s-divider_style', $this->slug );
 		$global_divider_style = ET_Global_Settings::get_value( $style_option_name );
@@ -27,24 +27,9 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 
 		if ( ! et_is_builder_plugin_active() && true === et_get_option( 'et_pb_divider-show_divider', false ) ) {
 			$this->show_divider_options = array_reverse( $this->show_divider_options );
-			$show_divider_default = 'on';
-		} else {
-			$show_divider_default = 'off';
 		}
 
-		$this->whitelisted_fields = array(
-			'color',
-			'show_divider',
-			'height',
-			'admin_label',
-			'module_id',
-			'module_class',
-			'divider_style',
-			'divider_position',
-			'divider_weight',
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general' => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Visibility', 'et_builder' ),
@@ -58,27 +43,32 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			),
 		);
 
-		$this->fields_defaults = array(
-			'color'          => array( '#ffffff', 'only_default_setting' ),
-			'show_divider'   => array( $show_divider_default ),
-			'height'         => array( '23px' ),
-		);
-
-		$this->advanced_options = array(
-			'background' => array(),
-			'custom_margin_padding' => array(
+		$this->advanced_fields = array(
+			'borders'               => array(
+				'default' => false,
+			),
+			'margin_padding' => array(
 				'css' => array(
 					'important' => array( 'custom_margin' ), // needed to overwrite last module margin-bottom styling
 				),
 			),
-			'max_width' => array(),
-			'filters' => array(),
+			'fonts'                 => false,
+			'text'                  => false,
+			'button'                => false,
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'BL4CEVbDZfw' ),
+				'name' => esc_html__( 'An introduction to the Divider module', 'et_builder' ),
+			),
 		);
 	}
 
 	function get_fields() {
 		$fields = array(
 			'color' => array(
+				'default'         => et_builder_accent_color(),
 				'label'           => esc_html__( 'Color', 'et_builder' ),
 				'type'            => 'color-alpha',
 				'tab_slug'        => 'advanced',
@@ -87,6 +77,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'toggle_slug'     => 'color',
 			),
 			'show_divider' => array(
+				'default'           => 'on',
 				'label'             => esc_html__( 'Show Divider', 'et_builder' ),
 				'type'              => 'yes_no_button',
 				'option_category'   => 'configuration',
@@ -108,6 +99,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'styles',
+				'default'           => $this->defaults['divider_style'],
 			),
 			'divider_position' => array(
 				'label'           => esc_html__( 'Divider Position', 'et_builder' ),
@@ -121,6 +113,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'styles',
+				'default'           => $this->defaults['divider_position'],
 			),
 			'divider_weight' => array(
 				'label'             => esc_html__( 'Divider Weight', 'et_builder' ),
@@ -129,6 +122,8 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'width',
+				'default_unit'      => 'px',
+				'default'           => $this->defaults['divider_weight'],
 			),
 			'height' => array(
 				'label'           => esc_html__( 'Height', 'et_builder' ),
@@ -138,62 +133,25 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'toggle_slug'     => 'width',
 				'description'     => esc_html__( 'Define how much space should be added below the divider.', 'et_builder' ),
 				'default'         => '23px',
-			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
+				'default_unit'    => 'px',
+				'default_on_front' => '23px',
 			),
 		);
 		return $fields;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id        = $this->shortcode_atts['module_id'];
-		$module_class     = $this->shortcode_atts['module_class'];
-		$color            = $this->shortcode_atts['color'];
-		$show_divider     = $this->shortcode_atts['show_divider'];
-		$height           = $this->shortcode_atts['height'];
-		$divider_style    = $this->shortcode_atts['divider_style'];
-		$divider_position = $this->shortcode_atts['divider_position'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$color            = $this->props['color'];
+		$show_divider     = $this->props['show_divider'];
+		$height           = $this->props['height'];
+		$divider_style    = $this->props['divider_style'];
+		$divider_position = $this->props['divider_position'];
 		$divider_position_customizer = ! et_is_builder_plugin_active() ? et_get_option( 'et_pb_divider-divider_position', 'top' ) : 'top';
-		$divider_weight   = $this->shortcode_atts['divider_weight'];
-		$custom_padding              = $this->shortcode_atts['custom_padding'];
-		$custom_padding_tablet       = $this->shortcode_atts['custom_padding_tablet'];
-		$custom_padding_phone        = $this->shortcode_atts['custom_padding_phone'];
+		$divider_weight   = $this->props['divider_weight'];
+		$custom_padding              = $this->props['custom_padding'];
+		$custom_padding_tablet       = $this->props['custom_padding_tablet'];
+		$custom_padding_phone        = $this->props['custom_padding_phone'];
 
-		$module_class              = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
@@ -219,21 +177,24 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			}
 
 			if ( '' !== $style ) {
-				ET_Builder_Element::set_style( $function_name, array(
+				ET_Builder_Element::set_style( $render_slug, array(
 					'selector'    => '%%order_class%%:before',
 					'declaration' => ltrim( $style )
 				) );
 			}
 
 			if ( $this->defaults['divider_position'] !== $divider_position ) {
-				$module_class .= " et_pb_divider_position_{$divider_position}";
+				$this->add_classname( "et_pb_divider_position_{$divider_position}" );
 			} elseif ( $this->defaults['divider_position'] !== $divider_position_customizer ) {
-				$module_class .= " et_pb_divider_position_{$divider_position_customizer} customized_et_pb_divider_position";
+				$this->add_classname( array(
+					"et_pb_divider_position_{$divider_position_customizer}",
+					'customized_et_pb_divider_position',
+				) );
 			}
 		}
 
 		if ( '' !== $height ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%',
 				'declaration' => sprintf(
 					'height: %s;',
@@ -243,7 +204,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 		}
 
 		if ( '' !== $custom_padding && '|||' !== $custom_padding ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%:before',
 				'declaration' => sprintf(
 					'width: auto; top: %1$s; right: %2$s; left: %3$s;',
@@ -255,7 +216,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 		}
 
 		if ( '' !== $custom_padding_tablet && '|||' !== $custom_padding_tablet ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%:before',
 				'declaration' => sprintf(
 					'width: auto; top: %1$s; right: %2$s; left: %3$s;',
@@ -268,7 +229,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 		}
 
 		if ( '' !== $custom_padding_phone && '|||' !== $custom_padding_phone ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%:before',
 				'declaration' => sprintf(
 					'width: auto; top: %1$s; right: %2$s; left: %3$s;',
@@ -280,29 +241,24 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			) );
 		}
 
+		// Module classnames
+		$this->add_classname( 'et_pb_space' );
+
+		if ( 'on' !== $show_divider ) {
+			$this->remove_classname( 'et_pb_divider' );
+			$this->add_classname( 'et_pb_divider_hidden' );
+		}
+
 		$output = sprintf(
-			'<div%2$s class="et_pb_module et_pb_space%1$s%3$s%4$s%6$s">%7$s%5$s<div class="et_pb_divider_internal"></div></div>',
-			( 'on' === $show_divider ? ' et_pb_divider' : ' et_pb_divider_hidden' ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( ltrim( $module_class ) ) ) : '' ),
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
+			'<div%2$s class="%1$s">%4$s%3$s<div class="et_pb_divider_internal"></div></div>',
+			$this->module_classname( $render_slug ),
+			$this->module_id(),
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background
 		);
 
 		return $output;
 	}
-
-	protected function _add_additional_border_fields() {
-		return false;
-	}
-
-	function process_advanced_border_options( $function_name ) {
-		return false;
-	}
-
-
 }
 
 new ET_Builder_Module_Divider;

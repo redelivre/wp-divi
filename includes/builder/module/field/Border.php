@@ -19,12 +19,6 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		'et_pb_social_media_follow',
 	);
 
-	public function add_border_reset_class( $output, $module_slug ) {
-		remove_filter( "{$module_slug}_shortcode_output", array( $this, 'add_border_reset_class' ), 10 );
-
-		return preg_replace( "/class=\"(.*?{$module_slug}_\d+.*?)\"/", 'class="$1 et_pb_with_border"', $output, 1 );
-	}
-
 	public function get_fields( array $args = array() ) {
 		$settings = shortcode_atts( array(
 			'suffix'          => '',
@@ -32,7 +26,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 			'tab_slug'        => 'advanced',
 			'toggle_slug'     => 'border',
 			'color_type'      => 'color-alpha',
-			'depends_to'      => null,
+			'depends_on'      => null,
 			'depends_show_if' => null,
 			'defaults'        => array(
 				'border_radii'  => 'on||||',
@@ -47,6 +41,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		$additional_options = array();
 		$suffix             = $settings['suffix'];
 		$defaults           = $settings['defaults']['border_styles'];
+		$defaultUnit        = 'px';
 
 		$additional_options["border_radii{$suffix}"] = array(
 			'label'           => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Rounded Corners', 'et_builder' ) ),
@@ -59,9 +54,6 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 			'option_category' => 'border',
 			'description'     => esc_html__( 'Here you can control the corner radius of this element. Enable the link icon to control all four corners at once, or disable to define custom values for each.', 'et_builder' ),
 			'tooltip'         => esc_html__( 'Sync values', 'et_builder' ),
-			'renderer'        => array(
-				'class' => 'ET_Builder_Module_Field_Template_Border_Radius',
-			),
 		);
 
 		$additional_options["border_styles{$suffix}"] = array(
@@ -80,6 +72,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 							'label'          => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Border Width', 'et_builder' ) ),
 							'type'           => 'range',
 							'default'        => $defaults['width'],
+							'default_unit'    => $defaultUnit,
 							'range_settings' => array(
 								'min'  => 0,
 								'max'  => 50,
@@ -107,6 +100,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 							'type'           => 'range',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
+							'default_unit'    => $defaultUnit,
 							'range_settings' => array(
 								'min'  => 0,
 								'max'  => 50,
@@ -134,6 +128,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 							'type'           => 'range',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
+							'default_unit'    => $defaultUnit,
 							'range_settings' => array(
 								'min'  => 0,
 								'max'  => 50,
@@ -161,6 +156,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 							'type'           => 'range',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
+							'default_unit'    => $defaultUnit,
 							'range_settings' => array(
 								'min'  => 0,
 								'max'  => 50,
@@ -188,6 +184,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 							'type'           => 'range',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
+							'default_unit'    => $defaultUnit,
 							'range_settings' => array(
 								'min'  => 0,
 								'max'  => 50,
@@ -208,15 +205,12 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 					),
 				),
 			),
-			'renderer'            => array(
-				'class' => 'ET_Builder_Module_Field_Template_Border_Styles',
-			),
 		);
 
 		//Add options dependency
-		if ( ! is_null( $settings['depends_to'] ) ) {
+		if ( ! is_null( $settings['depends_on'] ) ) {
 			foreach ( $additional_options as &$option ) {
-				$option['depends_to']      = $settings['depends_to'];
+				$option['depends_on']      = $settings['depends_on'];
 				$option['depends_show_if'] = $settings['depends_show_if'];
 			}
 		}
@@ -224,12 +218,12 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		return $additional_options;
 	}
 
-	public function get_radii_style( array $atts, array $advanced_options, $suffix = '', $overflow = true ) {
+	public function get_radii_style( array $atts, array $advanced_fields, $suffix = '', $overflow = true ) {
 		$style = '';
 
 		$important = '';
-		if ( isset( $advanced_options['border']['css']['important'] ) ) {
-			if ( 'plugin_only' === $advanced_options['border']['css']['important'] ) {
+		if ( isset( $advanced_fields['border']['css']['important'] ) ) {
+			if ( 'plugin_only' === $advanced_fields['border']['css']['important'] ) {
 				$important = et_is_builder_plugin_active() ? '!important' : '';
 			} else {
 				$important = '!important';
@@ -237,7 +231,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		}
 
 		// Border Radius CSS
-		$settings = $advanced_options["border{$suffix}"]["border_radii{$suffix}"];
+		$settings = $advanced_fields["border{$suffix}"]["border_radii{$suffix}"];
 		$radii    = $atts["border_radii{$suffix}"];
 		if ( isset( $settings['default'] ) && ( $settings['default'] != $radii ) ) {
 			$radii = explode( '|', $radii );
@@ -258,7 +252,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		return $style;
 	}
 
-	public function get_borders_style( array $attrs, array $advanced_options, $suffix = '' ) {
+	public function get_borders_style( array $attrs, array $advanced_fields, $suffix = '' ) {
 		$style     = '';
 		$important = '';
 
@@ -268,8 +262,8 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 
 		self::$_is_default = array();
 
-		if ( isset( $advanced_options['border']['css']['important'] ) ) {
-			if ( 'plugin_only' === $advanced_options['border']['css']['important'] ) {
+		if ( isset( $advanced_fields['border']['css']['important'] ) ) {
+			if ( 'plugin_only' === $advanced_fields['border']['css']['important'] ) {
 				$important = et_is_builder_plugin_active() ? '!important' : '';
 			} else {
 				$important = '!important';
@@ -277,7 +271,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		}
 
 		// Border Style CSS
-		$settings = $advanced_options["border{$suffix}"]["border_styles{$suffix}"];
+		$settings = $advanced_fields["border{$suffix}"]["border_styles{$suffix}"];
 
 		if ( ! isset( $settings['composite_structure'] ) || ! is_array( $settings['composite_structure'] ) ) {
 			return $style;
@@ -383,6 +377,24 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Add border reset class using filter. Obsolete method and only applied to old 3rd party modules without `modules_classname()` method
+	 *
+	 * @param string $output
+	 * @param string $module_slug
+	 *
+	 * @return string
+	 */
+	public function add_border_reset_class( $output, $module_slug ) {
+		if ( in_array( $module_slug,  ET_Builder_Element::$uses_module_classname ) ) {
+			return $output;
+		}
+
+		remove_filter( "{$module_slug}_shortcode_output", array( $this, 'add_border_reset_class' ), 10 );
+
+		return preg_replace( "/class=\"(.*?{$module_slug}_\d+.*?)\"/", 'class="$1 et_pb_with_border"', $output, 1 );
 	}
 }
 

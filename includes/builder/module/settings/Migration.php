@@ -18,19 +18,22 @@ abstract class ET_Builder_Module_Settings_Migration {
 
 	public static $last_hook_checked;
 	public static $last_hook_check_decision;
-	public static $max_version = '3.0.102';
+	public static $max_version = '3.6';
 	public static $migrated    = array();
-	public static $migrations  = array(
-		'3.0.48' => 'BackgroundUI',
-		'3.0.72' => 'Animation',
-		'3.0.74' => 'OptionsHarmony',
-		'3.0.84' => 'FullwidthHeader',
-		'3.0.87' => 'BorderOptions',
-		'3.0.91' => 'FilterOptions',
-		'3.0.92' => 'ShopModuleSlugs',
-		'3.0.94' => 'DropShadowToBoxShadow',
-		'3.0.99' => 'InnerShadowToBoxShadow',
+	public static $migrations = array(
+		'3.0.48'  => 'BackgroundUI',
+		'3.0.72'  => 'Animation',
+		'3.0.74'  => 'OptionsHarmony',
+		'3.0.84'  => 'FullwidthHeader',
+		'3.0.87'  => 'BorderOptions',
+		'3.0.91'  => 'FilterOptions',
+		'3.0.92'  => 'ShopModuleSlugs',
+		'3.0.94'  => 'DropShadowToBoxShadow',
+		'3.0.99'  => 'InnerShadowToBoxShadow',
 		'3.0.102' => 'FullwidthHeader2',
+		'3.2'     => 'UIImprovements',
+		'3.4'     => 'EmailOptinContent',
+		'3.6'     => 'ContactFormItemOptionsSerialization',
 	);
 
 	public static $migrations_by_version = array();
@@ -44,7 +47,7 @@ abstract class ET_Builder_Module_Settings_Migration {
 		$this->modules = $this->get_modules();
 	}
 
-	protected static function _migrate_field_names( $fields, $module_slug ) {
+	protected static function _migrate_field_names( $fields, $module_slug, $version ) {
 		foreach ( self::$field_name_migrations[ $module_slug ] as $new_name => $old_names ) {
 			foreach ( $old_names as $old_name ) {
 				if ( ! isset( $fields[ $old_name ] ) ) {
@@ -54,7 +57,10 @@ abstract class ET_Builder_Module_Settings_Migration {
 
 				// For the BB...
 				if ( ! in_array( $old_name, self::$_bb_excluded_name_changes ) ) {
-					self::$migrated['name_changes'][ $module_slug ][ $old_name ] = $new_name;
+					self::$migrated['field_name_changes'][ $module_slug ][ $old_name ] = array(
+						'new_name' => $new_name,
+						'version'  => $version,
+					);
 				}
 			}
 		}
@@ -115,16 +121,15 @@ abstract class ET_Builder_Module_Settings_Migration {
 		}
 
 		return isset( self::$field_name_migrations[ $module_slug ] )
-			? self::_migrate_field_names( $fields, $module_slug )
+			? self::_migrate_field_names( $fields, $module_slug, $this->version )
 			: $fields;
 	}
 
 	public static function init() {
 		$class = 'ET_Builder_Module_Settings_Migration';
 
-		add_filter( 'et_pb_module_whitelisted_fields', array( $class, 'maybe_override_whitelisted_fields' ), 10, 2 );
 		add_filter( 'et_pb_module_processed_fields', array( $class, 'maybe_override_processed_fields' ), 10, 2 );
-		add_filter( 'et_pb_module_shortcode_attributes', array( $class, 'maybe_override_shortcode_attributes' ), 10, 4 );
+		add_filter( 'et_pb_module_shortcode_attributes', array( $class, 'maybe_override_shortcode_attributes' ), 10, 5 );
 	}
 
 	public static function maybe_override_processed_fields( $fields, $module_slug ) {
@@ -143,12 +148,12 @@ abstract class ET_Builder_Module_Settings_Migration {
 		return $fields;
 	}
 
-	public static function maybe_override_shortcode_attributes( $attrs, $unprocessed_attrs, $module_slug, $module_address ) {
+	public static function maybe_override_shortcode_attributes( $attrs, $unprocessed_attrs, $module_slug, $module_address, $content = '' ) {
 		if ( empty( $attrs['_builder_version'] ) ) {
 			$attrs['_builder_version'] = '3.0.47';
 		}
 
-		if ( ! self::_should_handle_shortcode_callback( $module_slug ) ) {
+		if ( ! self::_should_handle_render( $module_slug ) ) {
 			return $attrs;
 		}
 
@@ -158,7 +163,18 @@ abstract class ET_Builder_Module_Settings_Migration {
 
 		$migrations = self::get_migrations( $attrs['_builder_version'] );
 
+		// Register address-based name module's field name change
+		if ( isset( self::$migrated['field_name_changes'] ) && isset( self::$migrated['field_name_changes'][ $module_slug ] ) ) {
+			foreach ( self::$migrated['field_name_changes'][ $module_slug ] as $old_name => $name_change ) {
+				if ( version_compare( $attrs['_builder_version'], $name_change['version'], '<' ) ) {
+					self::$migrated['name_changes'][ $module_address ][ $old_name ] = $name_change['new_name'];
+				}
+			}
+		}
+
 		foreach ( $migrations as $migration ) {
+			$migrated_attrs_count = 0;
+
 			if ( ! in_array( $module_slug, $migration->modules ) ) {
 				continue;
 			}
@@ -179,53 +195,26 @@ abstract class ET_Builder_Module_Settings_Migration {
 
 					$saved_value = isset( $attrs[ $field_name ] ) ? $attrs[ $field_name ] : '';
 
-					$new_value = $migration->migrate( $field_name, $current_value, $module_slug, $saved_value, $affected_field, $attrs );
+					$new_value = $migration->migrate( $field_name, $current_value, $module_slug, $saved_value, $affected_field, $attrs, $content );
 
 					if ( $new_value !== $saved_value || ( $affected_field !== $field_name && $new_value !== $current_value ) ) {
 						$attrs[ $field_name ] = self::$migrated['value_changes'][ $module_address ][ $field_name ] = $new_value;
+						$migrated_attrs_count++;
 					}
 				}
+			}
+
+			if ( $migrated_attrs_count > 0 ) {
+				$attrs['_builder_version'] = $migration->version;
 			}
 		}
 
 		return $attrs;
 	}
 
-	public static function maybe_override_whitelisted_fields( $fields, $module_slug ) {
-		if ( ! self::_should_handle_shortcode_callback( $module_slug ) ) {
-			return $fields;
-		}
+	abstract public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content );
 
-		$migrations = self::get_migrations( 'all' );
-
-		foreach ( $migrations as $migration ) {
-			if ( in_array( $module_slug, $migration->modules ) ) {
-				$fields = $migration->override_whitelisted_fields( $fields, $module_slug );
-			}
-		}
-
-		return $fields;
-	}
-
-	abstract public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs );
-
-	public function override_whitelisted_fields( $fields, $module_slug ) {
-		foreach ( $this->fields as $field_name => $field_info ) {
-			foreach ( $field_info['affected_fields'] as $affected_field => $affected_modules ) {
-				if ( ! in_array( $module_slug, $affected_modules ) ) {
-					continue;
-				}
-
-				if ( in_array( $field_name, $fields ) && ! in_array( $affected_field, $fields ) ) {
-					$fields[] = $affected_field;
-				}
-			}
-		}
-
-		return $fields;
-	}
-
-	public static function _should_handle_shortcode_callback( $slug ) {
+	public static function _should_handle_render( $slug ) {
 		if ( false === strpos( $slug, 'et_pb' ) ) {
 			return false;
 		}

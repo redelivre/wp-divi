@@ -5,9 +5,9 @@ function et_core_data_init() {}
 endif;
 
 
-if ( ! function_exists( 'et_html5_data_attr' ) ):
+if ( ! function_exists( 'et_html_attr' ) ):
 /**
- * Generates a properly escaped HTML5 data attribute string.
+ * Generates a properly escaped attribute string.
  *
  * @param string $name         The attribute name.
  * @param string $value        The attribute value.
@@ -15,10 +15,33 @@ if ( ! function_exists( 'et_html5_data_attr' ) ):
  *
  * @return string
  */
-function et_html5_data_attr( $name, $value, $space_before = true ) {
-	$result = ' data-' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
+function et_html_attr( $name, $value, $space_before = true ) {
+	$result = ' ' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
 
 	return $space_before ? $result : trim( $result );
+}
+endif;
+
+if ( ! function_exists( 'et_html_attrs' ) ):
+/**
+ * Generate properly escaped attributes string
+ *
+ * @since ??
+ *
+ * @param array $attributes Array of attributes
+ *
+ * @return string
+ */
+function et_html_attrs( $attributes = array() ) {
+	$output = '';
+
+	foreach ( $attributes as $name => $value ) {
+		$parsed_value = is_array( $value ) ? implode( ' ', $value ) : $value;
+
+		$output .= et_html_attr( $name, $parsed_value );
+	}
+
+	return $output;
 }
 endif;
 

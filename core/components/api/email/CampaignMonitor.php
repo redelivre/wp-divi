@@ -49,6 +49,37 @@ class ET_Core_API_Email_CampaignMonitor extends ET_Core_API_Email_Provider {
 		$this->http_auth['password'] = $owner;
 	}
 
+	protected function _fetch_custom_fields( $list_id = '', $list = array() ) {
+		$this->prepare_request( "{$this->BASE_URL}/lists/{$list_id}/customfields.json" );
+		$this->make_remote_request();
+
+		$result = array();
+
+		if ( $this->response->ERROR ) {
+			et_debug( $this->get_error_message() );
+
+			return $result;
+		}
+
+		foreach ( $this->response->DATA as &$custom_field ) {
+			$custom_field = $this->transform_data_to_our_format( $custom_field, 'custom_field' );
+			$custom_field['field_id'] = ltrim( rtrim( $custom_field['field_id'], ']' ), '[' );
+		}
+
+		$fields = array();
+
+		foreach ( $this->response->DATA as $field ) {
+			$field_id = $field['field_id'];
+			$type     = self::$_->array_get( $field, 'type', 'any' );
+
+			$field['type'] = self::$_->array_get( $this->data_keys, "custom_field_type.{$type}", 'any' );
+
+			$fields[ $field_id ] = $field;
+		}
+
+		return $fields;
+	}
+
 	protected function _get_clients() {
 		$url = "{$this->BASE_URL}/clients.json";
 
@@ -90,6 +121,39 @@ class ET_Core_API_Email_CampaignMonitor extends ET_Core_API_Email_Provider {
 		return $with_counts;
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields_unprocessed = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		$fields = array();
+
+		foreach ( $fields_unprocessed as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox)
+				foreach ( $value as $selected_option ) {
+					$fields[] = array(
+						'Key'   => $field_id,
+						'Value' => $selected_option,
+					);
+				}
+			} else {
+				$fields[] = array(
+					'Key'   => $field_id,
+					'Value' => $value,
+				);
+			}
+		}
+
+		$args['CustomFields'] = $fields;
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -104,25 +168,42 @@ class ET_Core_API_Email_CampaignMonitor extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$custom_fields_key = 'CustomFields';
-
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'       => array(
+			'list'              => array(
 				'list_id'           => 'ListID',
 				'name'              => 'Name',
 				'subscribers_count' => 'TotalActiveSubscribers',
 			),
-			'subscriber' => array(
-				'name'  => 'Name',
-				'email' => 'EmailAddress',
+			'subscriber'        => array(
+				'name'          => 'Name',
+				'email'         => 'EmailAddress',
+				'custom_fields' => 'custom_fields',
 			),
-			'error'      => array(
+			'error'             => array(
 				'error_message' => 'Message',
+			),
+			'custom_field'      => array(
+				'field_id' => 'Key',
+				'name'     => 'FieldName',
+				'type'     => 'DataType',
+				'options'  => 'FieldOptions',
+			),
+			'custom_field_type' => array(
+				// Us => Them
+				'input'           => 'Text',
+				'select'          => 'MultiSelectOne',
+				'checkbox'        => 'MultiSelectMany',
+				// Them => Us
+				'Text'            => 'input',
+				'Number'          => 'input',
+				'Date'            => 'input',
+				'MultiSelectOne'  => 'select',
+				'MultiSelectMany' => 'checkbox',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -179,6 +260,7 @@ class ET_Core_API_Email_CampaignMonitor extends ET_Core_API_Email_Provider {
 	public function subscribe( $args, $url = '' ) {
 		$url    = "{$this->BASE_URL}/subscribers/{$args['list_id']}.json";
 		$params = $this->transform_data_to_provider_format( $args, 'subscriber' );
+		$params = $this->_process_custom_fields( $params );
 
 		$params['CustomFields'][] = array( 'Key' => 'Note', 'Value' => $this->SUBSCRIBED_VIA );
 

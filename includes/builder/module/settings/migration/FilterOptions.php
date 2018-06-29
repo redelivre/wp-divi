@@ -24,7 +24,7 @@ class ET_Builder_Module_Settings_Migration_FilterOptions extends ET_Builder_Modu
 		return $modules;
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 		// Convert saved Google Maps JS API `stylers->saturation` values to CSS `filter: saturate()` format
 		if ( 0 !== intval( $current_value ) ) {
 			return 100 - intval( $current_value ) . '%';

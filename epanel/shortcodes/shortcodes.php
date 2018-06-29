@@ -858,7 +858,17 @@ function et_testimonial($atts, $content = null) {
 }
 
 add_shortcode('quote','et_quote');
-function et_quote($atts, $content = null) {
+function et_quote( $atts, $content = null ) {
+	if ( function_exists( 'bbpress' ) && function_exists( 'gdbbx_render_the_bbcode' ) ) {
+		// compat for gdbbpress tools plugin.
+		if ( isset( $atts['quote'] ) && ! empty( $atts['quote'] ) ) {
+			$output = gdbbx_render_the_bbcode( 'quote', $atts, $content );
+			if ( $output !== false ) {
+				return $output;
+			}
+		}
+	}
+
 	extract(shortcode_atts(array(
 		'style' => '',
 		'id' => '',

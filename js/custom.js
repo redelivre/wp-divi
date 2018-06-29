@@ -31,10 +31,18 @@
 		$et_top_navigation = $('#et-top-navigation'),
 		$logo = $('#logo'),
 		$et_pb_first_row = $( 'body.et_pb_pagebuilder_layout .et_pb_section:visible:first' ),
-		et_is_touch_device = 'ontouchstart' in window || navigator.maxTouchPoints;
+		et_is_touch_device = 'ontouchstart' in window || navigator.maxTouchPoints,
+		$et_top_cart = $('#et-secondary-menu a.et-cart-info');
+
+	function et_preload_image( src, callback ) {
+		var img = new Image();
+		img.onLoad = callback;
+		img.onload = callback;
+		img.src = src;
+	}
 
 	// We need to check first to see if we are on a woocommerce single product.
-	if ( $("body").hasClass("woocommerce") && $("body").hasClass("single-product") && $(".woocommerce-product-gallery").length > 0 ) {
+	if ( $(".woocommerce .woocommerce-product-gallery").length > 0 ) {
 		// get the gallery container.
 		var gal = $(".woocommerce-product-gallery")[0];
 
@@ -44,6 +52,27 @@
 
 		// finally we re-insert.
 		gal.outerHTML = newstr;
+	}
+
+	// update the cart item on the secondary menu.
+	if ( $et_top_cart.length > 0 && $('.shop_table.cart').length > 0 ) {
+		$( document.body ).on( 'updated_wc_div', function(){
+			var new_total = 0;
+			var new_text;
+			$('.shop_table.cart').find('.product-quantity input').each(function(){
+				new_total = new_total + parseInt( $(this).val() );
+			});
+
+			if ( new_total === 1 ) {
+				new_text  = DIVI.item_count;
+			} else {
+				new_text  = DIVI.items_count;
+			}
+
+			new_text = new_text.replace('%d', new_total);
+
+			$et_top_cart.find('span').text(new_text);
+		});
 	}
 
 	$(document).ready( function(){
@@ -861,9 +890,9 @@
 
 						// Fullscreen section at the first row requires specific adjustment
 						if ( $et_pb_first_row.is( '.et_pb_fullwidth_section' ) ){
-							$waypoint_selector = $et_pb_first_row.children('.et_pb_module');
+							$waypoint_selector = $et_pb_first_row.children('.et_pb_module:visible:first');
 						} else {
-							$waypoint_selector = $et_pb_first_row.find('.et_pb_row');
+							$waypoint_selector = $et_pb_first_row.find('.et_pb_row:visible:first');
 						}
 
 						// Fallback for a less likely but possible scenario: a) fullwidth section
@@ -1218,9 +1247,7 @@
 		if ( $('#logo').length ) {
 			// Wait until logo is loaded before performing logo dimension fix
 			// This comes handy when the page is heavy due to the use of images or other assets
-			$('#logo').attr( 'src', $('#logo').attr('src') ).load( function(){
-				et_define_logo_dimension();
-			} );
+			et_preload_image( $('#logo').attr('src'), et_define_logo_dimension );
 		}
 
 		// Set width for adsense in footer widget

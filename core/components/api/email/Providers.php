@@ -7,6 +7,13 @@ class ET_Core_API_Email_Providers {
 
 	private static $_instance;
 
+	/**
+	 * @var ET_Core_Data_Utils
+	 */
+	protected static $_;
+
+	protected static $_any_custom_field_type;
+	protected static $_custom_fields_support;
 	protected static $_fields;
 	protected static $_metadata;
 	protected static $_names;
@@ -23,6 +30,7 @@ class ET_Core_API_Email_Providers {
 	}
 
 	protected function _initialize() {
+		self::$_               = ET_Core_Data_Utils::instance();
 		self::$_metadata       = et_core_get_components_metadata();
 		$third_party_providers = et_core_get_third_party_components( 'api/email' );
 
@@ -32,13 +40,15 @@ class ET_Core_API_Email_Providers {
 			'third-party' => array_keys( $third_party_providers ),
 		);
 
-		$_names_by_slug = array();
+		$_names_by_slug         = array();
+		$_custom_fields_support = array( 'dynamic' => array(), 'predefined' => array(), 'none' => array() );
+		$_any_custom_field_type = array();
 
 		foreach ( $all_names as $provider_type => $provider_names ) {
 			$_names_by_slug[ $provider_type ] = array();
 
 			foreach ( $provider_names as $provider_name ) {
-				if ( false !== strpos( $provider_name, 'Provider' ) ) {
+				if ( 'Fields' === $provider_name || self::$_->includes( $provider_name, 'Provider' ) ) {
 					continue;
 				}
 
@@ -59,6 +69,16 @@ class ET_Core_API_Email_Providers {
 
 				if ( $load_fields && is_object( $provider ) ) {
 					self::$_fields[ $provider_slug ] = $provider->get_account_fields();
+
+					if ( $scope = $provider->custom_fields ) {
+						$_custom_fields_support[ $scope ][ $provider_slug ] = $provider_name;
+
+						if ( ! self::$_->array_get( $provider->data_keys, 'custom_field_type' ) ) {
+							$_any_custom_field_type[] = $provider_slug;
+						}
+					} else {
+						$_custom_fields_support['none'][ $provider_slug ] = $provider_name;
+					}
 				}
 			}
 		}
@@ -81,7 +101,9 @@ class ET_Core_API_Email_Providers {
 			self::$_slugs[ $provider_type ] = array_keys( self::$_names_by_slug[ $provider_type ] );
 		}
 
-		self::$_name_field_only = self::$_metadata['groups']['api/email']['name_field_only'];
+		self::$_name_field_only       = self::$_metadata['groups']['api/email']['name_field_only'];
+		self::$_custom_fields_support = $_custom_fields_support;
+		self::$_any_custom_field_type = $_any_custom_field_type;
 	}
 
 	/**
@@ -108,6 +130,36 @@ class ET_Core_API_Email_Providers {
 		return self::$_fields;
 	}
 
+	public function custom_fields_data() {
+		$enabled_providers  = self::slugs();
+		$custom_fields_data = array();
+
+		foreach ( $this->accounts() as $provider_slug => $accounts ) {
+			if ( ! in_array( $provider_slug, $enabled_providers ) ) {
+				continue;
+			}
+
+			foreach ( $accounts as $account_name => $account_details ) {
+				if ( empty( $account_details['lists'] ) ) {
+					continue;
+				}
+
+				if ( ! empty( $account_details['custom_fields'] ) ) {
+					$custom_fields_data[$provider_slug][$account_name]['custom_fields'] = $account_details['custom_fields'];
+					continue;
+				}
+
+				foreach ( (array) $account_details['lists'] as $list_id => $list_details ) {
+					if ( ! empty( $list_details['custom_fields'] ) ) {
+						$custom_fields_data[$provider_slug][$account_name][$list_id] = $list_details['custom_fields'];
+					}
+				}
+			}
+		}
+
+		return $custom_fields_data;
+	}
+
 	/**
 	 * Get class instance for a provider. Instance will be created if necessary.
 	 *
@@ -122,6 +174,10 @@ class ET_Core_API_Email_Providers {
 		$is_official  = isset( self::$_metadata[ $name_or_slug ] );
 
 		if ( ! $is_official && ! $this->is_third_party( $name_or_slug ) ) {
+			return false;
+		}
+
+		if ( ! in_array( $name_or_slug, array_merge( self::names(), self::slugs() ) ) ) {
 			return false;
 		}
 
@@ -181,7 +237,9 @@ class ET_Core_API_Email_Providers {
 	 * Returns an array mapping the slugs of available providers to their names. List can optionally be filtered.
 	 *
 	 * @param string $type   The component type to include ('official'|'third-party'|'all'). Default is 'all'.
-	 * @param string $filter Optionally filter the list by a condition. Accepts 'name_field_only'.
+	 * @param string $filter Optionally filter the list by a condition.
+	 *                       Accepts 'name_field_only', 'predefined_custom_fields', 'dynamic_custom_fields',
+	 *                       'no_custom_fields', 'any_custom_field_type', 'custom_fields'.
 	 *
 	 * @return array
 	 */
@@ -194,6 +252,16 @@ class ET_Core_API_Email_Providers {
 
 		if ( 'name_field_only' === $filter ) {
 			$names_by_slug = self::$_name_field_only;
+		} else if ( 'predefined_custom_fields' === $filter ) {
+			$names_by_slug = self::$_custom_fields_support['predefined'];
+		} else if ( 'dynamic_custom_fields' === $filter ) {
+			$names_by_slug = self::$_custom_fields_support['dynamic'];
+		} else if ( 'no_custom_fields' === $filter ) {
+			$names_by_slug = self::$_custom_fields_support['none'];
+		} else if ( 'any_custom_field_type' === $filter ) {
+			$names_by_slug = self::$_any_custom_field_type;
+		} else if ( 'custom_fields' === $filter ) {
+			$names_by_slug = array_merge( self::$_custom_fields_support['predefined'], self::$_custom_fields_support['dynamic'] );
 		}
 
 		return $names_by_slug;
@@ -204,6 +272,23 @@ class ET_Core_API_Email_Providers {
 	 */
 	public function remove_account( $provider, $account_name ) {
 		ET_Core_API_Email_Provider::remove_account( $provider, $account_name );
+	}
+
+	/**
+	 * Returns the slugs of available providers. List can optionally be filtered.
+	 *
+	 * @param string $type The component type to include ('official'|'third-party'|'all'). Default is 'all'.
+	 *
+	 * @return array
+	 */
+	public function slugs( $type = 'all' ) {
+		if ( 'all' === $type ) {
+			$names = array_merge( self::$_slugs['third-party'], self::$_slugs['official'] );
+		} else {
+			$names = self::$_slugs[ $type ];
+		}
+
+		return $names;
 	}
 
 	/**

@@ -1,7 +1,33 @@
 <?php
 
 if ( ! function_exists( 'et_core_api_email_init' ) ):
-function et_core_api_email_init() {}
+function et_core_api_email_init() {
+	if ( defined( 'ET_CORE_UPDATED' ) ) {
+		et_core_api_email_fetch_all_lists();
+	}
+}
+endif;
+
+
+if ( ! function_exists( 'et_core_api_email_fetch_all_lists' ) ):
+/**
+ * Fetch the latest email lists for all provider accounts and update the database accordingly.
+ *
+ * @since 3.4
+ */
+function et_core_api_email_fetch_all_lists() {
+	$providers    = ET_Core_API_Email_Providers::instance();
+	$all_accounts = $providers->accounts();
+
+	foreach ( $all_accounts as $provider_slug => $accounts ) {
+		$provider = $providers->get( $provider_slug, '' );
+
+		foreach ( $accounts as $account ) {
+			$provider->set_account_name( $account );
+			$provider->fetch_subscriber_lists();
+		}
+	}
+}
 endif;
 
 

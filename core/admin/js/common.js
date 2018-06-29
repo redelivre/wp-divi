@@ -18,7 +18,11 @@
 
 		// use navigator.appName as browser name if we were unable to get it from user_agent
 		if ( '' === browser_name ) {
-			browser_name = '' !== browser[0] ? browser[0] : navigator.appName;
+			if ('standalone' in window.navigator && !window.navigator.standalone) {
+				browser_name = 'uiwebview';
+			} else {
+				browser_name = '' !== browser[0] ? browser[0] : navigator.appName;
+			}
 		}
 
 		browser_name = browser_name.toLowerCase();

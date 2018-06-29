@@ -17,11 +17,21 @@ class ET_Core_API_Email_SendinBlue extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $FIELDS_URL = 'https://api.sendinblue.com/v2.0/attribute/normal';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $LISTS_URL = 'https://api.sendinblue.com/v2.0/list';
 
 	public $SUBSCRIBE_URL = 'https://api.sendinblue.com/v2.0/user/createdituser';
 
 	public $USERS_URL = 'https://api.sendinblue.com/v2.0/user';
+
+	/**
+	 * @inheritDoc
+	 */
+	public $custom_fields_scope = 'account';
 
 	/**
 	 * @inheritDoc
@@ -50,6 +60,33 @@ class ET_Core_API_Email_SendinBlue extends ET_Core_API_Email_Provider {
 		}
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			self::$_->array_set( $args, "attributes.{$field_id}", $value );
+		}
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -64,22 +101,27 @@ class ET_Core_API_Email_SendinBlue extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'       => array(
+			'list'         => array(
 				'list_id'           => 'id',
 				'name'              => 'name',
 				'subscribers_count' => 'total_subscribers',
 			),
-			'subscriber' => array(
-				'email'     => 'email',
-				'name'      => 'attributes.NAME',
-				'last_name' => 'attributes.SURNAME',
-				'list_id'   => '@_listid',
+			'subscriber'   => array(
+				'email'         => 'email',
+				'name'          => 'attributes.NAME',
+				'last_name'     => 'attributes.SURNAME',
+				'list_id'       => '@listid',
+				'custom_fields' => 'custom_fields',
+			),
+			'custom_field' => array(
+				'field_id' => 'name',
+				'name'     => 'name',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	public function get_subscriber( $email ) {

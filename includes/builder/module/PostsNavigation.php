@@ -4,28 +4,12 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 	function init() {
 		$this->name             = esc_html__( 'Post Navigation', 'et_builder' );
 		$this->slug             = 'et_pb_post_nav';
-		$this->fb_support       = true;
+		$this->vb_support       = 'on';
 		$this->main_css_element = '.et_pb_posts_nav%%order_class%%';
 
 		$this->defaults = array();
 
-		$this->fields_defaults = array(
-			'show_prev'          => array( 'on' ),
-			'show_next'          => array( 'on' ),
-		);
-
-		$this->whitelisted_fields = array(
-			'in_same_term',
-			'taxonomy_name',
-			'show_prev',
-			'show_next',
-			'prev_text',
-			'next_text',
-			'module_id',
-			'module_class',
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Text', 'et_builder' ),
@@ -35,8 +19,8 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 			),
 		);
 
-		$this->advanced_options = array(
-			'fonts' => array(
+		$this->advanced_fields = array(
+			'fonts'                 => array(
 				'title' => array(
 					'label'    => esc_html__( 'Links', 'et_builder' ),
 					'css'      => array(
@@ -54,21 +38,40 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 					'hide_text_align' => true,
 				),
 			),
-			'custom_margin_padding' => array(
+			'margin_padding' => array(
 				'css' => array(
 					'main' => "{$this->main_css_element} span.nav-previous a, {$this->main_css_element} span.nav-next a",
 				),
 			),
-			'background' => array(
+			'background'            => array(
 				'css' => array(
 					'main' => "{$this->main_css_element} a",
 				),
 			),
-			'max_width' => array(),
-			'filters' => array(),
+			'borders'               => array(
+				'default' => array(
+					'css' => array(
+						'main' => array(
+							'border_radii'  => "{$this->main_css_element} span.nav-previous a, {$this->main_css_element} span.nav-next a",
+							'border_styles' => "{$this->main_css_element} span.nav-previous a, {$this->main_css_element} span.nav-next a",
+						),
+					),
+				),
+			),
+			'box_shadow'            => array(
+				'default' => array(
+					'css' => array(
+						'main'         => '%%order_class%% .nav-previous, %%order_class%% .nav-next',
+						'custom_style' => true,
+						'important'    => true,
+					),
+				),
+			),
+			'text'                  => false,
+			'button'                => false,
 		);
 
-		$this->custom_css_options = array(
+		$this->custom_css_fields = array(
 			'links' => array(
 				'label'    => esc_html__( 'Links', 'et_builder' ),
 				'selector' => 'span a',
@@ -88,6 +91,13 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 			'next_link_arrow' => array(
 				'label'    => esc_html__( 'Next Link Arrow', 'et_builder' ),
 				'selector' => 'span.nav-next a span',
+			),
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'q7SrK2sh7_o' ),
+				'name' => esc_html__( 'An introduction to the Post Navigation module', 'et_builder' ),
 			),
 		);
 	}
@@ -130,6 +140,7 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front' => 'on',
 				'affects'           => array(
 					'prev_text',
 				),
@@ -144,6 +155,7 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front' => 'on',
 				'affects'           => array(
 					'next_text',
 				),
@@ -172,42 +184,6 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 				'description'     => et_get_safe_localization( __( 'Define custom text for the next link. You can use the <strong>%title</strong> variable to include the post title. Leave blank for default.', 'et_builder' ) ),
 				'toggle_slug'     => 'main_content',
 			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
 			'__posts_navigation' => array(
 				'type' => 'computed',
 				'computed_callback' => array( 'ET_Builder_Module_Posts_Navigation', 'get_posts_navigation' ),
@@ -217,18 +193,6 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 					'prev_text',
 					'next_text'
 				),
-			),
-			'use_border_color' => array(
-				'type' => 'skip',
-			),
-			'border_color'     => array(
-				'type' => 'skip',
-			),
-			'border_width'     => array(
-				'type' => 'skip',
-			),
-			'border_style'     => array(
-				'type' => 'skip',
 			),
 		);
 		return $fields;
@@ -339,22 +303,19 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 		return $posts_navigation;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id     = $this->shortcode_atts['module_id'];
-		$module_class  = $this->shortcode_atts['module_class'];
-		$in_same_term  = $this->shortcode_atts['in_same_term'];
-		$taxonomy_name = $this->shortcode_atts['taxonomy_name'];
-		$show_prev     = $this->shortcode_atts['show_prev'];
-		$show_next     = $this->shortcode_atts['show_next'];
-		$prev_text     = $this->shortcode_atts['prev_text'];
-		$next_text     = $this->shortcode_atts['next_text'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$in_same_term  = $this->props['in_same_term'];
+		$taxonomy_name = $this->props['taxonomy_name'];
+		$show_prev     = $this->props['show_prev'];
+		$show_next     = $this->props['show_next'];
+		$prev_text     = $this->props['prev_text'];
+		$next_text     = $this->props['next_text'];
 
 		// do not output anything if both prev and next links are disabled
 		if ( 'on' !== $show_prev && 'on' !== $show_next ) {
 			return;
 		}
 
-		$module_class              = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
@@ -415,43 +376,31 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 
 		ob_end_clean();
 
+		// Module classname
+		$this->add_classname( array(
+			'et_pb_posts_nav',
+			'nav-single',
+		) );
+
+		// Remove automatically added module classname
+		$this->remove_classname( array(
+			$render_slug,
+			'et_pb_section_video',
+			'et_pb_preload',
+			'et_pb_section_parallax',
+		) );
+
 		$output = sprintf(
-			'<div class="et_pb_posts_nav et_pb_module nav-single%2$s"%1$s>
+			'<div class="%2$s"%1$s>
 				%3$s
 			</div>',
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( ltrim( $module_class ) ) ) : '' ),
+			$this->module_id(),
+			$this->module_classname( $render_slug ),
 			$page_links
 		);
 
 		return $output;
 	}
-
-	public function process_box_shadow( $function_name ) {
-		/**
-		 * @var ET_Builder_Module_Field_BoxShadow $boxShadow
-		 */
-		$boxShadow = ET_Builder_Module_Fields_Factory::get( 'BoxShadow' );
-		$selector = sprintf( '.%1$s .nav-previous, .%1$s .nav-next', self::get_module_order_class( $function_name ) );
-		self::set_style( $function_name, $boxShadow->get_style(
-			$selector,
-			$this->shortcode_atts,
-			array( 'important' => true )
-		) );
-	}
-
-	protected function _add_additional_border_fields() {
-		parent::_add_additional_border_fields();
-
-		$this->advanced_options['border']['css'] = array(
-			'main' => array(
-				'border_radii'  => "{$this->main_css_element} span.nav-previous a, {$this->main_css_element} span.nav-next a",
-				'border_styles' => "{$this->main_css_element} span.nav-previous a, {$this->main_css_element} span.nav-next a",
-			)
-		);
-	}
-
-
 }
 
 new ET_Builder_Module_Posts_Navigation;

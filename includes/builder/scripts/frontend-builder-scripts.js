@@ -472,7 +472,7 @@
 					if ( settings.use_controls )
 						$et_slider_controls.removeClass( settings.control_active_class ).eq( et_active_slide ).addClass( settings.control_active_class );
 
-					if ( settings.use_carousel )
+					if ( settings.use_carousel && $et_slider_carousel_controls )
 						$et_slider_carousel_controls.removeClass( settings.control_active_class ).eq( et_active_slide ).addClass( settings.control_active_class );
 
 					if ( ! settings.tabs_animation ) {
@@ -654,6 +654,10 @@
 				var carousel_items_width = $the_carousel_items.width(),
 					carousel_items_height = $the_carousel_items.height();
 
+				// Account for borders when needed
+				if ($the_carousel.parent().hasClass('et_pb_with_border')) {
+					carousel_items_height = $the_carousel_items.outerHeight();
+				}
 				$carousel_items.css('height', carousel_items_height + 'px' );
 			}
 
@@ -2972,9 +2976,14 @@
 					is_embedded = $video_iframe.length ? true : false,
 					video_iframe_src,
 					video_iframe_src_splitted,
-					video_iframe_src_autoplay;
+					video_iframe_src_autoplay,
+					is_fb_video = typeof FB !== 'undefined';
 
 				if (is_embedded) {
+					if (is_fb_video) {
+						// Facebook uses three http/https/iframe
+						$video_iframe = $($video_iframe[2]);
+					}
 					// Add autoplay parameter to automatically play embedded content when overlay is clicked
 					video_iframe_src = $video_iframe.attr('src');
 					video_iframe_src_splitted = video_iframe_src.split("?");
@@ -3216,7 +3225,7 @@
 			}
 			et_fix_nav_direction();
 
-			et_pb_form_placeholders_init( $( '.et_pb_newsletter_form, .et_pb_comments_module #commentform' ) );
+			et_pb_form_placeholders_init( $( '.et_pb_comments_module #commentform' ) );
 
 			$('.et_pb_fullwidth_menu ul.nav').each(function(i) {
 				i++;
@@ -3235,9 +3244,20 @@
 				et_pb_submit_newsletter( $(this), event );
 			} );
 
+			$et_pb_newsletter_button
+				.closest('.et_pb_newsletter')
+				.find('input[type=checkbox]')
+				.on('change', function() {
+					var $checkbox       = $(this);
+					var $checkbox_field = $checkbox.siblings('input[type=text]:first');
+					var is_checked      = $checkbox.prop('checked');
+
+					$checkbox_field.val(is_checked ? $checkbox_field.data('checked') : $checkbox_field.data('unchecked'));
+			});
+
 			window.et_pb_submit_newsletter = function( $submit, event ) {
-				if ( $submit.closest( '.et_pb_login_form' ).length || $submit.closest( '.et_pb_feedburner_form' ).length ) {
-					et_pb_maybe_log_event( $submit.closest( '.et_pb_newsletter' ), 'con_goal' );
+				if ($submit.closest('.et_pb_login_form').length) {
+					et_pb_maybe_log_event($submit.closest('.et_pb_newsletter'), 'con_goal');
 					return;
 				}
 
@@ -3245,27 +3265,51 @@
 					event.preventDefault();
 				}
 
-				var $newsletter_container = $submit.closest( '.et_pb_newsletter' ),
-					$name = $newsletter_container.find( 'input[name="et_pb_signup_firstname"]' ),
-					$lastname = $newsletter_container.find( 'input[name="et_pb_signup_lastname"]' ),
-					$email = $newsletter_container.find( 'input[name="et_pb_signup_email"]' ),
-					list_id = $newsletter_container.find( 'input[name="et_pb_signup_list_id"]' ).val(),
-					$error_message = $newsletter_container.find( '.et_pb_newsletter_error' ).hide(),
-					provider = $newsletter_container.find( 'input[name="et_pb_signup_provider"]' ).val(),
-					account = $newsletter_container.find( 'input[name="et_pb_signup_account_name"]' ).val();
+				// check if it is a feedburner feed subscription
+				if ($('.et_pb_feedburner_form').length > 0) {
+					$feed_name = $('.et_pb_feedburner_form input[name=uri]').val();
+					window.open('https://feedburner.google.com/fb/a/mailverify?uri=' + $feed_name, 'et-feedburner-subscribe', 'scrollbars=yes,width=550,height=520');
+					return true;
+				} // otherwise keep things moving
 
-				var $success_message = $newsletter_container.find( '.et_pb_newsletter_success' );
-				var redirect_url     = $newsletter_container.data( 'redirect_url' );
-				var redirect_query   = $newsletter_container.data( 'redirect_query' );
+        var $newsletter_container = $submit.closest('.et_pb_newsletter');
+				var $name                 = $newsletter_container.find('input[name="et_pb_signup_firstname"]');
+				var $lastname             = $newsletter_container.find('input[name="et_pb_signup_lastname"]');
+				var $email                = $newsletter_container.find('input[name="et_pb_signup_email"]');
+				var list_id               = $newsletter_container.find('input[name="et_pb_signup_list_id"]').val();
+				var $error_message        = $newsletter_container.find('.et_pb_newsletter_error').hide();
+				var provider              = $newsletter_container.find('input[name="et_pb_signup_provider"]').val();
+				var account               = $newsletter_container.find('input[name="et_pb_signup_account_name"]').val();
+				var ip_address            = $newsletter_container.find('input[name="et_pb_signup_ip_address"]').val();
+
+				var $fields_container = $newsletter_container.find('.et_pb_newsletter_fields');
+
+				var $success_message  = $newsletter_container.find( '.et_pb_newsletter_success' );
+				var redirect_url      = $newsletter_container.data( 'redirect_url' );
+				var redirect_query    = $newsletter_container.data( 'redirect_query' );
+				var custom_fields     = {};
+				var hidden_fields     = [];
+				var et_message        = '<ul>';
+				var et_fields_message = '';
+
+				var $custom_fields = $fields_container
+					.find('input[type=text], .et_pb_checkbox_handle, .et_pb_contact_field[data-type="radio"], textarea, select')
+					.filter('.et_pb_signup_custom_field, .et_pb_signup_custom_field *');
 
 
 				$name.removeClass( 'et_pb_signup_error' );
 				$lastname.removeClass( 'et_pb_signup_error' );
 				$email.removeClass( 'et_pb_signup_error' );
+				$custom_fields.removeClass('et_contact_error');
 				$error_message.html('');
 
 				// Validate user input
 				var is_valid = true;
+				var form = $submit.closest('.et_pb_newsletter_form form');
+				if (form.length > 0 && typeof form[0].reportValidity === 'function') {
+					// Checks HTML5 validation constraints
+					is_valid = form[0].reportValidity();
+				}
 
 				if ( $name.length > 0 && ! $name.val() ) {
 					$name.addClass( 'et_pb_signup_error' );
@@ -3286,6 +3330,181 @@
 					return;
 				}
 
+				$custom_fields.each(function() {
+					var $this_el      = $(this);
+					var $this_wrapper = false;
+
+					if ('checkbox' === $this_el.data('field_type')) {
+						$this_wrapper = $this_el.parents('.et_pb_contact_field');
+						$this_wrapper.removeClass('et_contact_error');
+					}
+
+					if ('radio' === $this_el.data('type')) {
+						$this_el      = $this_el.find('input[type="radio"]');
+						$this_wrapper = $this_el.parents('.et_pb_contact_field');
+					}
+
+					var this_id       = $this_el.data('id');
+					var this_val      = $this_el.val();
+					var this_label    = $this_el.siblings('label:first').text();
+					var field_type    = typeof $this_el.data('field_type') !== 'undefined' ? $this_el.data('field_type') : 'text';
+					var required_mark = typeof $this_el.data('required_mark') !== 'undefined' ? $this_el.data('required_mark') : 'not_required';
+					var original_id   = typeof $this_el.data('original_id') !== 'undefined' ? $this_el.data('original_id') : '';
+					var unchecked     = false;
+					var default_value;
+
+					if (! this_id) {
+						this_id = $this_el.data('original_id');
+					}
+
+					// radio field properties adjustment
+					if ('radio' === field_type) {
+						if (0 !== $this_wrapper.find('input[type="radio"]').length) {
+							var $firstRadio = $this_wrapper.find('input[type="radio"]:first');
+
+							required_mark = typeof $firstRadio.data('required_mark') !== 'undefined' ? $firstRadio.data('required_mark') : 'not_required';
+
+							this_val = '';
+
+							if ($this_wrapper.find('input[type="radio"]:checked')) {
+								this_val = $this_wrapper.find('input[type="radio"]:checked').val();
+							}
+						}
+
+						this_label = $this_wrapper.find('.et_pb_contact_form_label').text();
+						this_id    = $this_el.data('original_id');
+
+						if (! $.isEmptyObject(this_val)) {
+							custom_fields[this_id] = this_val;
+						}
+
+						if (0 === $this_wrapper.find('input[type="radio"]:checked').length) {
+							unchecked = true;
+						}
+
+						if (this_val) {
+							custom_fields[this_id] = this_val;
+						}
+
+					} else if ('checkbox' === field_type) {
+						this_val = {};
+
+						if (0 !== $this_wrapper.find('input[type="checkbox"]').length) {
+							var $checkboxHandle = $this_wrapper.find('.et_pb_checkbox_handle');
+
+							required_mark = typeof $checkboxHandle.data('required_mark') !== 'undefined' ? $checkboxHandle.data('required_mark') : 'not_required';
+
+							if ($this_wrapper.find('input[type="checked"]:checked')) {
+								$this_wrapper.find('input[type="checkbox"]:checked').each(function() {
+									var field_id = $(this).data('id');
+									this_val[field_id] = $(this).val();
+								});
+							}
+						}
+
+						this_label  = $this_wrapper.find('.et_pb_contact_form_label').text();
+						this_id     = $this_wrapper.attr('data-id');
+
+						if (! $.isEmptyObject(this_val)) {
+							custom_fields[this_id] = this_val;
+						}
+
+						if (0 === $this_wrapper.find('input[type="checkbox"]:checked').length) {
+							unchecked = true;
+						}
+					} else if ('ontraport' === provider && 'select' === field_type) {
+						// Need to pass option ID as a value for dropdown menu in Ontraport
+						var $selected_option = $this_el.find(':selected');
+						custom_fields[this_id] = $selected_option.length > 0 ? $selected_option.data('id') : this_val;
+					} else {
+						custom_fields[this_id] = this_val;
+					}
+
+					// Escape double quotes in label
+					this_label = this_label.replace(/"/g, "&quot;");
+
+					// Store the labels of the conditionally hidden fields so that they can be
+					// removed later if a custom message pattern is enabled
+					if (! $this_el.is(':visible') && 'hidden' !== $this_el.attr('type') && 'radio' !== $this_el.attr('type')) {
+						hidden_fields.push(original_id);
+						return;
+					}
+
+					if (('hidden' === $this_el.attr('type') || 'radio' === $this_el.attr('type')) && ! $this_el.parents('.et_pb_contact_field').is(':visible')) {
+						hidden_fields.push(this_id);
+						return;
+					}
+
+					// add error message for the field if it is required and empty
+					if ('required' === required_mark && ('' === this_val || true === unchecked)) {
+
+						if (false === $this_wrapper) {
+							$this_el.addClass('et_contact_error');
+						} else {
+							$this_wrapper.addClass('et_contact_error');
+						}
+
+						is_valid = false;
+
+						default_value = this_label;
+
+						if ('' === default_value) {
+							default_value = et_pb_custom.captcha;
+						}
+
+						et_fields_message += '<li>' + default_value + '</li>';
+					}
+
+					// add error message if email field is not empty and fails the email validation
+					if ('email' === field_type) {
+						// remove trailing/leading spaces and convert email to lowercase
+						var processed_email = this_val.trim().toLowerCase();
+						var is_valid_email  = et_email_reg_html5.test(processed_email);
+
+						if ('' !== processed_email && this_label !== processed_email && ! is_valid_email) {
+							$this_el.addClass('et_contact_error');
+							is_valid = false;
+
+							if (! is_valid_email) {
+								et_message += '<li>' + et_pb_custom.invalid + '</li>';
+							}
+						}
+					}
+				});
+
+				et_message += '</ul>';
+
+				if ('' !== et_fields_message) {
+					if (et_message !== '<ul></ul>') {
+						et_message = '<p class="et_normal_padding">' + et_pb_custom.contact_error_message + '</p>' + et_message;
+					}
+
+					et_fields_message = '<ul>' + et_fields_message + '</ul>';
+
+					et_fields_message = '<p>' + et_pb_custom.fill_message + '</p>' + et_fields_message;
+
+					et_message = et_fields_message + et_message;
+				}
+
+				if (et_message !== '<ul></ul>') {
+					$error_message.html(et_message).show();
+
+					// If parent of this contact form uses parallax
+					if ($newsletter_container.parents('.et_pb_section_parallax').length) {
+						$newsletter_container.parents('.et_pb_section_parallax').each(function() {
+							var $parallax_element = $(this),
+								$parallax         = $parallax_element.children('.et_parallax_bg'),
+								is_true_parallax  = (! $parallax.hasClass('et_pb_parallax_css'));
+
+							if (is_true_parallax) {
+								$et_window.trigger('resize');
+							}
+						});
+					}
+
+					return;
+				}
+
 				function get_redirect_query() {
 					var query = {};
 
@@ -3294,7 +3513,7 @@
 					}
 
 					if ( $name.length > 0 && redirect_query.indexOf( 'name' ) > -1 ) {
-						query.name = $name.val();
+						query.first_name = $name.val();
 					}
 
 					if ( $lastname.length > 0 && redirect_query.indexOf( 'last_name' ) > -1 ) {
@@ -3328,7 +3547,10 @@
 						et_lastname : $lastname.val(),
 						et_email : $email.val(),
 						et_provider : provider,
-						et_account: account
+						et_account: account,
+						et_ip_address: ip_address,
+						et_custom_fields: custom_fields,
+						et_hidden_fields: hidden_fields
 					},
 					beforeSend: function() {
 						$newsletter_container
@@ -3369,7 +3591,7 @@
 								} );
 							} else {
 								et_pb_maybe_log_event( $newsletter_container, 'con_goal' );
-								$newsletter_container.find( '.et_pb_newsletter_form > p' ).hide();
+								$newsletter_container.find( '.et_pb_newsletter_fields' ).hide();
 								$success_message.show();
 							}
 						}
@@ -4450,6 +4672,31 @@
 						$header_image.css('align-self', 'flex-end');
 					}
 
+					// Mobile device and small screen handler
+					if ((et_is_mobile_device && !et_is_ipad) || $et_window.width() < 768){
+						// Detect if section height is lower than the content height
+						var headerContentHeight = 0;
+						if ($header_content.length) {
+							headerContentHeight += $header_content.outerHeight();
+						}
+						if ($header_image.length) {
+							headerContentHeight += $header_image.outerHeight();
+						}
+						if (headerContentHeight > sectionHeight ) {
+							$this_section.css('min-height', headerContentHeight + 'px');
+							$header.css('min-height', headerContentHeight + 'px');
+						}
+
+						// Justify the section content
+						if ( $header_image.hasClass('bottom')) {
+							if (headerContentHeight < sectionHeight ) {
+								$this_section.css('min-height', (headerContentHeight + 80) + 'px');
+								$header.css('min-height', (headerContentHeight + 80) + 'px');
+							}
+							$header.css('justify-content', 'flex-end');
+						}
+					}
+
 				}, timeout );
 			}
 
@@ -4820,7 +5067,9 @@
 				$current_module.fadeTo( 'slow', 1 );
 
 				// reinit ET shortcodes.
-				window.et_shortcodes_init($current_module);
+				if (typeof window.et_shortcodes_init === 'function') {
+					window.et_shortcodes_init($current_module);
+				}
 
 				// scroll to the top of the module
 				$( 'html, body' ).animate({
@@ -4931,13 +5180,17 @@
 
 			window.et_fix_pricing_currency_position();
 
-			$('.et_pb_contact_form_container').each( function() {
+			$('.et_pb_contact_form_container, .et_pb_newsletter_custom_fields').each( function() {
 				var $form = $(this);
+				var subjects_selector = 'input, textarea, select';
+				var condition_check = function() {
+					et_conditional_check( $form );
+				};
+				var debounced_condition_check = et_pb_debounce( condition_check, 250 );
 
 				// Listen for any field change
-				$form.on( 'change', 'input, textarea, select', function() {
-					et_conditional_check( $form );
-				} );
+				$form.on( 'change', subjects_selector, condition_check );
+				$form.on( 'keydown', subjects_selector, debounced_condition_check );
 
 				// Conditions may be satisfied on default form state
 				et_conditional_check( $form );
@@ -4999,7 +5252,8 @@
 										result of the value check.
 									*/
 									var $checkbox   = $wrapper.find(':checkbox:checked');
-									var field_value = false;
+
+									field_value = false;
 
 									$checkbox.each(function() {
 										if ( check_value === $(this).val() ) {
@@ -5224,7 +5478,7 @@
 		window.et_pb_init_modules();
 	}
 
-	$(document).ready(function(){
+	$(document).ready(function() {
 		( et_pb_box_shadow_elements||[] ).map(et_pb_box_shadow_apply_overlay);
 	});
 
@@ -5232,7 +5486,7 @@
 		var $body = $('body');
 		// fix Safari letter-spacing bug when styles applied in `head`
 		// Trigger styles redraw by changing body display property to differentvalue and reverting it back to original.
-		if ($body.hasClass('safari')){
+		if ($body.hasClass('safari')) {
 			var original_display_value = $body.css('display');
 			var different_display_value = 'initial' === original_display_value ? 'block' : 'initial';
 
@@ -5241,6 +5495,29 @@
 			setTimeout(function() {
 				$body.css({ 'display': original_display_value });
 			}, 0);
+
+			// Keep this script here, as it needs to be executed only if the script from above is executed
+			// As the script from above somehow affects WooCommerce single product image rendering.
+			// https://github.com/elegantthemes/Divi/issues/7454
+			if ($body.hasClass('woocommerce-page') && $body.hasClass('single-product')) {
+                var $wc = $('.woocommerce div.product div.images.woocommerce-product-gallery');
+
+                if ($wc.length === 0) {
+                    return;
+                }
+
+                // Don't use jQuery to get element opacity, as it may return an outdated value.
+                var opacity = parseInt($wc[0].style.opacity);
+
+                if (!opacity) {
+                    return;
+                }
+
+                $wc.css({opacity: opacity - .09});
+                setTimeout(function() {
+                    $wc.css({opacity: opacity});
+                }, 0);
+			}
 		}
 	});
 })(jQuery);

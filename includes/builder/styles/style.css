@@ -253,7 +253,7 @@ a.et-pb-clone.et-pb-advanced-setting-clone { left: 44px; font-size: 33px; top: 9
 
 .et-pb-module-title { font-size: 14px; min-width: 65px; margin: 6px 0; display: inline-block; }
 
-.et-pb-option-advanced-module-settings { border-bottom: 1px solid #EAEDF0; padding-bottom: 10px; padding-bottom: 20px; margin-bottom: 10px; }
+.et-pb-option-advanced-module-settings { border-bottom: 1px solid #EAEDF0; padding-bottom: 10px; padding-bottom: 20px; margin-bottom: 40px; }
 .et_pb_modal_selective_sync .et-pb-option-advanced-module-settings { padding-left: 40px; }
 
 .et-pb-add-sortable-option { color: #8294A5; text-decoration: none; position: relative; top: -3px; }
@@ -395,7 +395,7 @@ input#et_pb_new_template_name { max-width: 100%; }
 .et_pb_module_block { background: #4B5966; padding: 8px; color: #f5f5f5; text-align: center; margin: 0 0 9px; min-height: 30px; }
 
 .et-pb-options-tabs { position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: auto; padding: 40px; }
-.et-pb-options-tabs .et-pb-options-tab { display: none; }
+.et-pb-options-tabs .et-pb-options-tab { display: none; margin-bottom: -40px; }
 .et-pb-options-tabs .et-pb-options-tab:first-child { display: block; }
 	.et-pb-options-tab-custom_css .et-pb-option.et-pb-option--custom_css > label { background-color: #F1F5F9; width: 100%; color: #32373c; padding: 15px; margin-top: 0; -webkit-border-top-left-radius: 5px; -webkit-border-top-right-radius: 5px;-moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; border-top-left-radius: 5px;border-top-right-radius: 5px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; position: relative; }
 	.rtl .et-pb-options-tab-custom_css .et-pb-option > label { margin-right: 0; }
@@ -445,7 +445,7 @@ input#et_pb_new_template_name { max-width: 100%; }
 		.et-pb-preview-screensize-switcher li a.active,
 		.et-pb-options-tabs-links li.et-pb-options-tabs-links-active a { color: #fff; background-color: #8F42EC; }
 .et-pb-options-toggle-enabled h3 { font-size: 16px; font-weight: 600; color: #fff; background-color: #32373C; padding: 15px 45px 15px 20px; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; position: relative; cursor: pointer; }
-.et-pb-options-toggle-disabled:nth-child(n+2) { margin-top: 40px; }
+.et-pb-options-toggle-disabled { margin-bottom: 40px; }
 .et-pb-options-toggle-disabled h3 { font-weight: 300; color: #008bdb; font-size: 22px; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
 .et-pb-option-toggle-content-open h3 { cursor: auto; }
 	.et-pb-options-toggle-enabled h3:before { content: '\75'; -moz-transition: all 0.3s; -webkit-transition: all 0.3s; transition: all 0.3s; position: absolute; top: 13px; right: 15px; font-size: 24px; }
@@ -899,13 +899,13 @@ span.et_pb_value_text.et_pb_on_value { color: #FFF; }
 
 .et_custom_margin { width: 102px; margin-left: 4px; }
 .et_custom_margin_label { cursor: auto; }
-.et_custom_margin_padding { display: inline-block; }
-.et_custom_margin_padding label { margin-right: 10px; }
-.et_custom_margin_padding label input { margin-left: 10px; text-align: center; }
-.et_custom_margin_padding label:nth-child(n+4) { margin-right: 0; }
-.et_custom_margin_padding label:last-child { margin-right: 0; }
+.et_margin_padding { display: inline-block; }
+.et_margin_padding label { margin-right: 10px; }
+.et_margin_padding label input { margin-left: 10px; text-align: center; }
+.et_margin_padding label:nth-child(n+4) { margin-right: 0; }
+.et_margin_padding label:last-child { margin-right: 0; }
 
-.et_custom_margin_padding label input {
+.et_margin_padding label input {
 	margin-left: 0;
 	margin-right: 10px;
 }
@@ -1588,7 +1588,7 @@ span.et-pb-reset-setting.et_pb_reset_weight { top: 10px; }
 
 .et-pb-option--has-preview .wp-picker-container {
 	display: none;
-	position: absolute;
+	position: static;
 	top: 0;
 	right: 0;
 	bottom: 0;
@@ -2139,7 +2139,10 @@ span.et-pb-reset-setting.et_pb_reset_weight { top: 10px; }
 }
 /* End Border Style Tabbed control */
 
-
+/* Section Dividers */
+.et-pb-composite-tabbed-option .et-pb-option-container--multiple_buttons .et-pb-reset-setting.et-pb-reset-icon-visible {
+	top: 8px;
+}
 
 .et-pb-option-main-content > label { float: none; width: auto; margin-bottom: 10px; }
 .et-pb-option-main-content .et-pb-option-container { float: none; }

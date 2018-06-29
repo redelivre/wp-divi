@@ -325,14 +325,14 @@ endif;
 
 
 if ( ! function_exists( 'et_debug' ) ):
-function et_debug( $msg ) {
-	ET_Core_Logger::debug( $msg );
+function et_debug( $msg, $bt_index = 4, $log_ajax = true ) {
+	ET_Core_Logger::debug( $msg, $bt_index, $log_ajax );
 }
 endif;
 
 
 if ( ! function_exists( 'et_error' ) ):
-function et_error( $msg ) {
-	ET_Core_Logger::error( $msg );
+function et_error( $msg, $bt_index = 4 ) {
+	ET_Core_Logger::error( $msg, $bt_index );
 }
 endif;

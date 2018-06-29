@@ -270,10 +270,10 @@
 						width: 313,
 						palettes : false,
 						change : function( event, ui ) {
-							var $input     = $(this),
-								data_index = $input.attr( 'data-index'),
-								$preview   = $palette_wrapper.find( '.colorpalette-item-' + data_index ),
-								color      = ui.color.toString();
+							var $input     = $(this);
+							var data_index = $input.attr('data-index');
+							var $preview   = $palette_wrapper.find('.colorpalette-item-' + data_index + ' .color');
+							var color      = ui.color.toString();
 
 							$input.val( color );
 							$preview.css({ 'backgroundColor' : color });

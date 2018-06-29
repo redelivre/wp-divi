@@ -13,6 +13,8 @@ class ET_Core_Data_Utils {
 
 	private static $_instance;
 
+	private $_pick;
+	private $_pick_value = '_undefined_';
 	private $_sort_by;
 
 	/**
@@ -141,6 +143,19 @@ class ET_Core_Data_Utils {
 		return $empty ? @rmdir( $path ) : false;
 	}
 
+	public function _array_pick_callback( $item ) {
+		$pick  = $this->_pick;
+		$value = $this->_pick_value;
+
+		if ( is_array( $item ) && isset( $item[ $pick ] ) ) {
+			return '_undefined_' !== $value ? $value === $item[ $pick ] : $item[ $pick ];
+		} else if ( is_object( $item ) && isset( $item->$pick ) ) {
+			return '_undefined_' !== $value ? $value === $item->$pick : $item->$pick;
+		}
+
+		return false;
+	}
+
 	public function _array_sort_by_callback( $a, $b ) {
 		$sort_by = $this->_sort_by;
 
@@ -191,7 +206,7 @@ class ET_Core_Data_Utils {
 	 */
 	function array_flatten( array $array ) {
 		$iterator = new RecursiveIteratorIterator( new RecursiveArrayIterator( $array ) );
-		$use_keys = false;
+		$use_keys = true;
 
 		return iterator_to_array( $iterator, $use_keys );
 	}
@@ -211,7 +226,7 @@ class ET_Core_Data_Utils {
 
 		while ( $key = array_shift( $keys ) ) {
 			if ( '[' === $key[0] && is_numeric( substr( $key, 1, -1 ) ) ) {
-				$key = (int) $key;
+				$key = (int) substr( $key, 1, -1 );
 			}
 
 			if ( ! isset( $value[ $key ] ) ) {
@@ -225,6 +240,29 @@ class ET_Core_Data_Utils {
 	}
 
 	/**
+	 * Creates a new array containing only the items that have a key or property or only the items that
+	 * have a key or property that is equal to a certain value.
+	 *
+	 * @param array        $array   The array to pick from.
+	 * @param string|array $pick_by The key or property to look for or an array mapping the key or property
+	 *                              to a value to look for.
+	 *
+	 * @return array
+	 */
+	public function array_pick( $array, $pick_by ) {
+		if ( is_string( $pick_by ) || is_int( $pick_by ) ) {
+			$this->_pick = $pick_by;
+		} else if ( is_array( $pick_by ) && 1 === count( $pick_by ) ) {
+			$this->_pick       = key( $pick_by );
+			$this->_pick_value = array_pop( $pick_by );
+		} else {
+			return array();
+		}
+
+		return array_filter( $array, array( $this, '_array_pick_callback' ) );
+	}
+
+	/**
 	 * Sets a value in a nested array using an address string (dot notation)
 	 *
 	 * @see http://stackoverflow.com/a/9628276/419887
@@ -233,7 +271,7 @@ class ET_Core_Data_Utils {
 	 * @param string|array $path  The path in the array
 	 * @param mixed        $value The value to set
 	 */
-	public function array_set( &$array, $path, &$value ) {
+	public function array_set( &$array, $path, $value ) {
 		$path_parts = is_array( $path ) ? $path : explode( '.', $path );
 		$current    = &$array;
 
@@ -431,32 +469,70 @@ class ET_Core_Data_Utils {
 		return false;
 	}
 
+	public function sanitize_text_fields( $fields ) {
+		if ( ! is_array( $fields ) ) {
+			return $fields;
+		}
+
+		$result = array();
+
+		foreach ( $fields as $field_id => $field_value ) {
+			$field_id = sanitize_text_field( $field_id );
+
+			if ( is_array( $field_value ) ) {
+				$field_value = $this->sanitize_text_fields( $field_value );
+			} else {
+				$field_value = sanitize_text_field( $field_value );
+			}
+
+			$result[ $field_id ] = $field_value;
+		}
+
+		return $result;
+	}
+
 	/**
-	 * Transforms an assoc array to/from internal/external data formats.
+	 * Transforms an array of data into a new array based on the provided transformation definition.
 	 *
-	 * @param string $data_format       The format to which the data should be transformed.
-	 * @param array  $from_data         The data to transform.
-	 * @param array  $data_keys_mapping An array mapping internal data keys to external data keys.
-	 * @param array  $exclude_keys      Keys that should be excluded from the result. Optional.
+	 * @since ??     Renamed from `transform_data_to` to `array_transform`.
+	 * @since 3.0.68
+	 *
+	 * @param array  $data         The data to transform.
+	 * @param array  $data_map     Transformation definition. See examples below.
+	 * @param string $direction    The direction in which to transform. Accepts '->', '<-'. Default '->'
+	 * @param array  $exclude_keys Keys that should be excluded from the result. Optional.
 	 *
 	 * @return array
 	 */
-	public function transform_data_to( $data_format, $from_data, $data_keys_mapping, $exclude_keys = array() ) {
-		$want_our_data_format = 'our_data' === $data_format;
-		$to_data              = array();
+	public function array_transform( $data, $data_map, $direction = '->', $exclude_keys = array() ) {
+		$result = array();
 
-		foreach ( $data_keys_mapping as $our_data_address => $their_data_address ) {
-			$from_address = $want_our_data_format ? $their_data_address : $our_data_address;
-			$to_address   = $want_our_data_format ? $our_data_address : $their_data_address;
+		if ( ! in_array( $direction, array( '->', '<-' ) ) ) {
+			return $result;
+		}
 
-			$array_value_required = 0 === strpos( $to_address, '@_' );
-			$to_address           = $array_value_required ? str_replace( '@_', '', $to_address ) : $to_address;
+		foreach ( $data_map as $address_1 => $address_2 ) {
+			$from_address = '->' === $direction ? $address_1 : $address_2;
+			$to_address   = '->' === $direction ? $address_2 : $address_1;
+
+			$array_value_required = $negate_bool_value = false;
+
+			if ( 0 === strpos( $to_address, '@' ) || 0 === strpos( $from_address, '@' ) ) {
+				$array_value_required = true;
+				$to_address           = ltrim( $to_address, '@' );
+				$from_address         = ltrim( $from_address, '@' );
+
+			} else if ( 0 === strpos( $to_address, '!' ) || 0 === strpos( $from_address, '!' ) ) {
+				$negate_bool_value = true;
+				$to_address        = ltrim( $to_address, '!' );
+				$from_address      = ltrim( $from_address, '!' );
+			}
 
 			if ( ! empty( $exclude_keys ) && array_key_exists( $to_address, $exclude_keys ) ) {
 				continue;
 			}
 
-			$value = $this->array_get( $from_data, $from_address, null );
+			$value = $this->array_get( $data, $from_address, null );
 
 			if ( null === $value ) {
 				// Unknown key, skip it.
@@ -465,12 +541,16 @@ class ET_Core_Data_Utils {
 
 			if ( $array_value_required && ! is_array( $value ) ) {
 				$value = array( $value );
+
+			} else if ( $negate_bool_value ) {
+				$value = (bool) $value;
+				$value = ! $value;
 			}
 
-			$this->array_set( $to_data, $to_address, $value );
+			$this->array_set( $result, $to_address, $value );
 		}
 
-		return $to_data;
+		return $result;
 	}
 
 	/**

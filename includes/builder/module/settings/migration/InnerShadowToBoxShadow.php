@@ -53,7 +53,7 @@ class ET_Builder_Module_Settings_Migration_InnerShadowToBoxShadow extends ET_Bui
 		);
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 
 		switch ( $field_name ) {
 			case 'box_shadow_style' :

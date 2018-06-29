@@ -22,6 +22,12 @@ class ET_Global_Settings {
 			'line_height'    => '1em',
 		);
 
+		$font_defaults_h2 = array(
+			'size'           => '26px',
+			'letter_spacing' => '0px',
+			'line_height'    => '1em',
+		);
+
 		$font_defaults = array(
 			'size'           => '14',
 			'color'          => '#666666',
@@ -129,6 +135,9 @@ class ET_Global_Settings {
 			'et_pb_blog-body_font_size'                              => $font_defaults['size'],
 			'et_pb_blog-body_line_height'                            => $font_defaults['line_height'],
 			'et_pb_blog-body_letter_spacing'                         => $font_defaults['letter_spacing'],
+			'et_pb_blog-pagination_font_size'                        => $font_defaults['size'],
+			'et_pb_blog-pagination_line_height'                      => $font_defaults['line_height'],
+			'et_pb_blog-pagination_letter_spacing'                   => $font_defaults['letter_spacing'],
 			'et_pb_blog_masonry-header_font_size'                    => '26',
 			'et_pb_blog_masonry-header_font_style'                   => '',
 			'et_pb_blog_masonry-meta_font_size'                      => '14',
@@ -158,6 +167,9 @@ class ET_Global_Settings {
 			'et_pb_circle_counter-number_line_height'                => '225px',
 			'et_pb_circle_counter-number_letter_spacing'             => $font_defaults['letter_spacing'],
 			'et_pb_circle_counter-circle_color_alpha'                => '0.1',
+			// Module: Comments
+			'et_pb_comments-header_font_size'                        => $font_defaults_h1['size'],
+			'et_pb_comments-header_line_height'                      => $font_defaults_h1['line_height'],
 			// Module: Contact Form
 			'et_pb_contact_form-title_font_size'                     => '26',
 			'et_pb_contact_form-title_font_style'                    => '',
@@ -226,7 +238,6 @@ class ET_Global_Settings {
 			'et_pb_cta-background_repeat'                            => $background_image_defaults['repeat'],
 			'et_pb_cta-background_blend'                             => $background_image_defaults['blend'],
 			// Module: Divider
-			'et_pb_divider-show_divider'                             => 'off',
 			'et_pb_divider-divider_style'                            => 'solid',
 			'et_pb_divider-divider_weight'                           => '1',
 			'et_pb_divider-height'                                   => '1',
@@ -310,6 +321,8 @@ class ET_Global_Settings {
 			'et_pb_gallery-caption_color'                            => '#f3f3f3',
 			'et_pb_gallery-caption_line_height'                      => '18px',
 			'et_pb_gallery-caption_letter_spacing'                   => $font_defaults['letter_spacing'],
+			'et_pb_gallery-pagination_font_size'                     => '16px',
+			'et_pb_gallery-pagination_line_height'                   => '1em',
 			// Module: Image
 			'et_pb_image-animation'                                  => 'left',
 			// Module: Login
@@ -442,6 +455,8 @@ class ET_Global_Settings {
 			'et_pb_signup-body_font_size'                            => $font_defaults['size'],
 			'et_pb_signup-body_letter_spacing'                       => $font_defaults['letter_spacing'],
 			'et_pb_signup-body_line_height'                          => $font_defaults['line_height'],
+			'et_pb_signup-result_message_font_size'                  => $font_defaults_h2['size'],
+			'et_pb_signup-result_message_line_height'                => $font_defaults_h2['line_height'],
 			'et_pb_signup-header_font_style'                         => '',
 			'et_pb_signup-padding'                                   => '20',
 			'et_pb_signup-focus_border_color'                        => '#ffffff',
@@ -449,6 +464,9 @@ class ET_Global_Settings {
 			'et_pb_signup-background_position'                       => $background_image_defaults['position'],
 			'et_pb_signup-background_repeat'                         => $background_image_defaults['repeat'],
 			'et_pb_signup-background_blend'                          => $background_image_defaults['blend'],
+			'et_pb_signup-form_field_font_size'                      => '14',
+			'et_pb_signup-form_field_line_height'                    => $font_defaults['line_height'],
+			'et_pb_signup_form-form_field_letter_spacing'            => $font_defaults['letter_spacing'],
 			// Module: Slider Item (Slide)
 			'et_pb_slide-header_font_size'                           => '26px',
 			'et_pb_slide-header_color'                               => '#ffffff',
@@ -470,7 +488,6 @@ class ET_Global_Settings {
 			'et_pb_slider-body_font_style'                           => '',
 			'et_pb_slider-padding'                                   => '16',
 			'et_pb_slider-header_color'                              => '#ffffff',
-			'et_pb_slider-header_line_height'                        => '1em',
 			'et_pb_slider-body_color'                                => '#ffffff',
 			'et_pb_slider-background_size'                           => $background_image_defaults['size'],
 			'et_pb_slider-background_position'                       => $background_image_defaults['position'],

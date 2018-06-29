@@ -465,7 +465,7 @@ if ( ! function_exists( 'et_build_epanel' ) ) {
 															<div class="et_pb_colorpalette_overview">
 														<?php
 															for ( $colorpalette_index = 1; $colorpalette_index <= $items_amount; $colorpalette_index++ ) { ?>
-																<span class="colorpalette-item colorpalette-item-<?php echo esc_attr( $colorpalette_index ); ?>" data-index="<?php echo esc_attr( $colorpalette_index ); ?>"></span>
+																<span class="colorpalette-item colorpalette-item-<?php echo esc_attr( $colorpalette_index ); ?>" data-index="<?php echo esc_attr( $colorpalette_index ); ?>"><span class="color"></span></span>
 														<?php } ?>
 
 															</div>

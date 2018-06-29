@@ -13,8 +13,8 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 			'sub_toggle_slug'     => null,
 			'depends_show_if_not' => null,
 			'depends_show_if'     => null,
-			'depends_to'          => null,
-			'depends_default'     => null
+			'depends_on'          => null,
+			'default_on_fronts'   => array(),
 		), $args );
 
 		$prefix     = 'box_shadow_';
@@ -31,15 +31,15 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 			'option_category'     => $arguments['option_category'],
 			'tab_slug'            => $arguments['tab_slug'],
 			'toggle_slug'         => $arguments['toggle_slug'],
-			'depends_to'          => array( $style ),
+			'depends_on'          => array( $style ),
 			'depends_show_if_not' => 'none',
 			'default_on_child'    => true,
 		);
 		$range   = array_merge(
 			$option,
 			array(
-				'type'            => 'range',
-				'range_settings'  => array(
+				'type'           => 'range',
+				'range_settings' => array(
 					'min'  => - 80,
 					'max'  => 80,
 					'step' => 1,
@@ -60,9 +60,9 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 		foreach ( $this->get_presets() as $id => $preset ) {
 			if ( 'none' === $id ) {
 				$presets[] = array(
-					'value'   => $id,
-					'icon'    => $id,
-					'fields'  => $this->fetch_preset( $preset, $arguments['suffix'] ),
+					'value'  => $id,
+					'icon'   => $id,
+					'fields' => $this->fetch_preset( $preset, $arguments['suffix'] ),
 				);
 			} else {
 				$presets[] = array(
@@ -82,14 +82,14 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 				'className'           => 'box_shadow',
 				'presets'             => $presets,
 				'affects'             => array( $horizontal, $vertical, $blur, $spread, $color, $position, ),
+				'copy_with'           => array( $horizontal, $vertical, $blur, $spread, $color, $position, ),
 				'depends_show_if'     => $arguments['depends_show_if'],
 				'depends_show_if_not' => $arguments['depends_show_if_not'],
-				'depends_to'          => $arguments['depends_to'],
-				'depends_default'     => $arguments['depends_default'],
+				'depends_on'          => $arguments['depends_on'],
 			)
 		);
-		if ( $options[ $style ]['depends_to'] === null ) {
-			unset( $options[ $style ]['depends_to'] );
+		if ( $options[ $style ]['depends_on'] === null ) {
+			unset( $options[ $style ]['depends_on'] );
 		}
 		if ( $options[ $style ]['depends_show_if'] === null ) {
 			unset( $options[ $style ]['depends_show_if'] );
@@ -97,8 +97,8 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 		if ( $options[ $style ]['depends_show_if_not'] === null ) {
 			unset( $options[ $style ]['depends_show_if_not'] );
 		}
-		if ( $options[ $style ]['depends_default'] === null ) {
-			unset( $options[ $style ]['depends_default'] );
+		if ( isset( $arguments['default_on_fronts']['style'] ) && false !== $arguments['default_on_fronts']['style'] ) {
+			$options[ $style ]['default_on_front'] = $arguments['default_on_fronts']['style'];
 		}
 
 		$options[ $horizontal ] = array_merge(
@@ -133,6 +133,11 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 				'field_template' => 'color',
 			)
 		);
+
+		if ( isset( $arguments['default_on_fronts']['color'] ) && false !== $arguments['default_on_fronts']['color'] ) {
+			$options[ $color ]['default_on_front'] = $arguments['default_on_fronts']['color'];
+		}
+
 		$options[ $position ]   = array_merge(
 			$option,
 			array(
@@ -145,6 +150,10 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 				),
 			)
 		);
+
+		if ( isset( $arguments['default_on_fronts']['position'] ) && false !== $arguments['default_on_fronts']['position'] ) {
+			$options[ $position ]['default_on_front'] = $arguments['default_on_fronts']['position'];
+		}
 
 		$list = array(
 			'vertical'   => $vertical,
@@ -164,12 +173,14 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 		return $options;
 	}
 
-	public function get_value( array $atts, array $args = array() ) {
+	public function get_value( $atts, array $args = array() ) {
 		$args      = shortcode_atts( array( 'suffix' => '', 'important' => false, ), $args );
 		$suffix    = $args['suffix'];
 		$important = $args['important'] ? '!important' : '';
 
 		if (
+			! is_array( $atts )
+			||  
 			! isset( $atts["box_shadow_style{$suffix}"] )
 			||
 			empty( $atts["box_shadow_style{$suffix}"] )
@@ -194,7 +205,7 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 		$vertical   = rtrim( $atts["box_shadow_vertical{$suffix}"], 'px' ) . 'px';
 		$blur       = rtrim( $atts["box_shadow_blur{$suffix}"], 'px' ) . 'px';
 		$strength   = rtrim( $atts["box_shadow_spread{$suffix}"], 'px' ) . 'px';
-		$color     = $atts["box_shadow_color{$suffix}"];
+		$color      = $atts["box_shadow_color{$suffix}"];
 
 		return sprintf(
 			'box-shadow: %1$s %2$s %3$s %4$s %5$s %6$s %7$s;',
@@ -210,7 +221,7 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 
 	public function get_presets() {
 		return array(
-			'none' => array(
+			'none'    => array(
 				"horizontal" => '',
 				"vertical"   => '',
 				"blur"       => '',
@@ -286,7 +297,9 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 	public function get_style( $selector, array $atts = array(), array $args = array() ) {
 		$selectors      = array_map( 'trim', explode( ',', $selector ) );
 		$always_overlay = isset( $args['always_overlay'] ) && $args['always_overlay'] === true;
+		$no_overlay     = isset( $args['no_overlay'] ) && $args['no_overlay'] === true;
 		$value          = $this->get_value( $atts, $args );
+		$has_video_bg   = ! empty( $atts['background_video_mp4'] ) || ! empty( $atts['background_video_webm'] );
 
 		if ( empty( $value ) ) {
 			return array(
@@ -295,7 +308,7 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 			);
 		}
 
-		if ( $this->is_inset( $value ) || $always_overlay ) {
+		if ( ! $no_overlay && ( $this->is_inset( $value ) || $always_overlay ) || $has_video_bg ) {
 			foreach ( $selectors as &$selector ) {
 				self::register_element( $selector );
 				$selector = $selector . '>.box-shadow-overlay, ' . $selector . '.et-box-shadow-no-overlay';

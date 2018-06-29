@@ -50,7 +50,7 @@ class ET_Builder_Post_Type_Layout extends ET_Core_Post_Type {
 		 *
 		 * @deprecated Use {@see 'et_core_cpt_et_pb_layout_args'} instead.
 		 *
-		 * @since ??  Deprecated. See {@see 'et_core_cpt_et_pb_layout_args'}.
+		 * @since 3.1  Deprecated. See {@see 'et_core_cpt_et_pb_layout_args'}.
 		 * @since 1.0
 		 *
 		 * @param $args
@@ -189,7 +189,7 @@ class ET_Builder_Post_Type_Layout extends ET_Core_Post_Type {
 	 * Adds custom columns to the Divi Library admin page.
 	 * {@see 'manage_{$post_type}_posts_columns'}
 	 *
-	 * @since ??    Relocated from `builder/layouts.php`.
+	 * @since 3.1    Relocated from `builder/layouts.php`.
 	 * @since 2.5.7
 	 */
 	public function wp_hook_manage_posts_columns( $columns ) {
@@ -210,7 +210,7 @@ class ET_Builder_Post_Type_Layout extends ET_Core_Post_Type {
 	 * Sets the content of our custom columns for each row on the Divi Library admin page.
 	 * {@see 'manage_posts_custom_column'}
 	 *
-	 * @since ??    Relocated from `builder/layouts.php`.
+	 * @since 3.1    Relocated from `builder/layouts.php`.
 	 * @since 2.5.7
 	 */
 	public function wp_hook_manage_posts_custom_column( $column_key, $post_id ) {

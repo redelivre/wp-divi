@@ -940,7 +940,7 @@ input.et-checkbox.yes_no_button {
 
 #epanel-content .et-epanel-box .et-upload-image-button,
 #epanel-content .et-epanel-box .et-upload-image-reset,
-#epanel-content .et-epanel-box .et-button{
+#epanel-content .et-epanel-box .et-button {
 	float: left;
 	box-sizing: border-box;
 	color: #FFF;
@@ -966,6 +966,10 @@ input.et-checkbox.yes_no_button {
 	-webkit-transition: background .5s;
 	-moz-transition: background .5s;
 	transition: background .5s;
+}
+
+#epanel-content .et-epanel-box .et-button--simple:first-child {
+	margin-left: 0;
 }
 
 .rtl #epanel-content .et-panel-box .et-upload-image-button,
@@ -1434,7 +1438,36 @@ left: 0px;
 
 /* wp color picker option */
 .et-box-content .et_pb_colorpalette_overview { display: block; margin-bottom: 10px; }
-.et-box-content .colorpalette-item { display: inline-block; width: 32px; height: 32px; -moz-box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.2); -webkit-box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.2); box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.2); margin-right: 8px; content: ''; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; cursor: pointer; }
+
+.et-box-content .colorpalette-item {
+	display: inline-block;
+	content: '';
+	-moz-border-radius: 100%;
+	-webkit-border-radius: 100%;
+	border-radius: 100%;
+	cursor: pointer;
+	position: relative;
+	width: 26px;
+	height: 26px;
+	margin-right: 5px;
+	vertical-align: middle;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAAHnlligAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHJJREFUeNpi+P///4EDBxiAGMgCCCAGFB5AADGCRBgYDh48CCRZIJS9vT2QBAggFBkmBiSAogxFBiCAoHogAKIKAlBUYTELAiAmEtABEECk20G6BOmuIl0CIMBQ/IEMkO0myiSSraaaBhZcbkUOs0HuBwDplz5uFJ3Z4gAAAABJRU5ErkJggg==");
+	background-size: 40%;
+}
+.et-box-content .colorpalette-item .color {
+	position: absolute;
+	-moz-border-radius: 100%;
+	-webkit-border-radius: 100%;
+	border-radius: 100%;
+	-moz-box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.2);
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	transition: background-color 200ms ease;
+}
 .et-box-content .wp-color-result { display: none; }
 .et-box-content .iris-picker { display: block !important; }
 .et-box-content .colorpalette-item:last-child { margin-right: 0; }

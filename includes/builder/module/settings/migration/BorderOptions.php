@@ -218,7 +218,7 @@ class ET_Builder_Module_Settings_Migration_BorderOptions extends ET_Builder_Modu
 		);
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 		// Border Radius setting migration setting
 		if ( in_array( $module_slug, $this->get_modules( 'border_radius' ) ) ) {
 			if ( 'border_radius' === $saved_field_name ) {

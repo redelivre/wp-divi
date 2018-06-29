@@ -14,7 +14,6 @@
  *                  'label'          => esc_html__( 'Border Width', 'et_builder' ),
  *                  'type'           => 'range',
  *                  'default'           => '0',
- *                  'shortcode_default' => '0',
  *                  'range_settings' => array(
  *                      'min'  => 0,
  *                      'max'  => 50,
@@ -22,10 +21,9 @@
  *                  ),
  *              ),
  *              'border_color_all' => array(
- *                  'label'          => esc_html__( 'Border Color', 'et_builder' ),
- *                  'type'              => $color_type,
- *                  'default'           => '#333333',
- *                  'shortcode_default' => '#333333',
+ *                  'label'   => esc_html__( 'Border Color', 'et_builder' ),
+ *                  'type'    => $color_type,
+ *                  'default' => '#333333',
  *              ),
  *          ),
  *      ),

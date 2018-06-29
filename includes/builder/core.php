@@ -38,7 +38,9 @@ function et_builder_should_load_framework() {
 	 *
 	 * @param bool $should_load
 	 */
-	return apply_filters( 'et_builder_should_load_framework', $should_load );
+	$should_load = apply_filters( 'et_builder_should_load_framework', $should_load );
+
+	return $should_load;
 }
 endif;
 
@@ -466,6 +468,8 @@ function et_pb_retrieve_templates( $layout_type = 'layout', $module_width = '', 
 	$templates_data         = array();
 	$suppress_filters       = false;
 	$extra_layout_post_type = 'layout';
+	$module_icons           = ET_Builder_Element::get_module_icons();
+	$utils                  = ET_Core_Data_Utils::instance();
 
 	// need specific query for the layouts
 	if ( 'layout' === $layout_type ) {
@@ -498,7 +502,7 @@ function et_pb_retrieve_templates( $layout_type = 'layout', $module_width = '', 
 				'operator' => 'NOT IN',
 			),
 		);
-		$suppress_filters = 'predefined' === $layouts_type;
+		$suppress_filters = 'predefined' === $layout_type;
 	} else {
 		$additional_condition = '' !== $module_width ?
 			array(
@@ -604,7 +608,7 @@ function et_pb_retrieve_templates( $layout_type = 'layout', $module_width = '', 
 					$unsynced_options = get_post_meta( $single_post->ID, '_et_pb_excluded_global_options' );
 				}
 
-				$templates_data[] = array(
+				$templates_datum = array(
 					'ID'               => $single_post->ID,
 					'title'            => esc_html( $single_post->post_title ),
 					'shortcode'        => $single_post->post_content,
@@ -617,6 +621,18 @@ function et_pb_retrieve_templates( $layout_type = 'layout', $module_width = '', 
 					'row_layout'       => $row_layout,
 					'unsynced_options' => ! empty( $unsynced_options ) ? json_decode( $unsynced_options[0], true ) : array(),
 				);
+
+				// Append icon if there's any
+				if ( $module_type && $template_icon = $utils->array_get( $module_icons, "{$module_type}.icon", false ) ) {
+					$templates_datum['icon'] = $template_icon;
+				}
+
+				// Append svg icon if there's any
+				if ( $module_type && $template_icon_svg = $utils->array_get( $module_icons, "{$module_type}.icon_svg", false ) ) {
+					$templates_datum['icon_svg'] = $template_icon_svg;
+				}
+
+				$templates_data[] = $templates_datum;
 			}
 		}
 	}
@@ -1055,24 +1071,36 @@ function et_pb_get_backbone_templates() {
 }
 add_action( 'wp_ajax_et_pb_get_backbone_templates', 'et_pb_get_backbone_templates' );
 
-function et_builder_is_builder_built( $post_id = 0, $builder = '' ) {
-	$post_id = $post_id ? $post_id : get_the_ID();
-
+/**
+ * Determine if a post is built by a certain builder.
+ *
+ * @param int    $post_id          The post_id to check.
+ * @param string $built_by_builder The builder to check if the post is built by. Allowed values: fb, bb.
+ *
+ * @return bool
+ */
+function et_builder_is_builder_built( $post_id, $built_by_builder ) {
 	$post = get_post( $post_id );
 
-	if ( ! $post_id || ! $post || ! is_object( $post ) ) {
+	// a autosave could be passed as $post_id, and an autosave will not have post_meta and then et_pb_is_pagebuilder_used() will always return false.
+	$parent_post = wp_is_post_autosave( $post_id ) ? get_post( $post->post_parent ) : $post;
+
+	if ( ! $post_id || ! $post || ! is_object( $post ) || ! et_pb_is_pagebuilder_used( $parent_post->ID ) ) {
 		return false;
 	}
 
-	// if no specific builder is passed, just check generically
-	if ( empty( $builder ) ) {
-		return et_pb_is_pagebuilder_used( $post->ID );
-	// if a specific builder has been passed, see if its been used, this can also be used when passed a revision/autosave post
-	} else if ( false !== strpos( $post->post_content, $builder .'_built="1"' ) ) {
-		return true;
-	} else {
+	// ensure this is an allowed builder post_type
+	if ( ! in_array( $parent_post->post_type, et_builder_get_builder_post_types() ) ) {
 		return false;
 	}
+
+	// whitelist the builder slug
+	$built_by_builder = in_array( $built_by_builder, array( 'fb', 'bb' ) ) ? $built_by_builder : '';
+
+	// the built by slug prepended to the first section automatically, in this format: fb_built="1"
+	$pattern = '/^\[et_pb_section ' . $built_by_builder . '_built="1"/s';
+
+	return preg_match( $pattern, $post->post_content );
 }
 
 /**
@@ -1103,6 +1131,10 @@ function et_builder_heartbeat_interval() {
 }
 
 function et_builder_ensure_heartbeat_interval( $response, $screen_id ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return $response;
+	}
+
 	if ( ! isset( $response['heartbeat_interval'] ) ) {
 		return $response;
 	}
@@ -1122,6 +1154,10 @@ function et_builder_ensure_heartbeat_interval( $response, $screen_id ) {
 add_filter( 'heartbeat_send', 'et_builder_ensure_heartbeat_interval', 100, 2 );
 
 function et_pb_heartbeat_post_modified( $response ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return $response;
+	}
+
 	if ( empty( $_POST['data'] ) ) {
 		return $response;
 	}
@@ -1132,6 +1168,11 @@ function et_pb_heartbeat_post_modified( $response ) {
 
 	if ( ! empty( $heartbeat_data_et ) ) {
 		$post_id = absint( $heartbeat_data_et['post_id'] );
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return $response;
+		}
+
 		$last_post_modified = sanitize_text_field( $heartbeat_data_et['last_post_modified'] );
 		$built_by = sanitize_text_field( $heartbeat_data_et['built_by'] );
 		$force_check = isset( $heartbeat_data_et['force_check'] ) && 'true' == $heartbeat_data_et['force_check'] ? true : false;
@@ -1180,7 +1221,6 @@ function et_pb_heartbeat_post_modified( $response ) {
 		$post_post_modified = date( 'U', strtotime( $post_modified ) );
 		$response['et']['post_post_modified'] = $post->post_modified;
 
-
 		if ( !empty( $autosave ) ) {
 			$response['et']['autosave_exists'] = true;
 			$autosave_post_modified = date( 'U', strtotime( $autosave->post_modified ) );
@@ -1201,6 +1241,17 @@ function et_pb_heartbeat_post_modified( $response ) {
 		$response['et']['post_id'] = $post_id;
 		$response['et']['last_post_modified'] = $last_post_modified;
 		$response['et']['post_modified'] = $post_modified;
+
+		// security short circuit
+		$post = get_post( $post_id );
+
+		// $post_id could be an autosave
+		$parent_post = wp_is_post_autosave( $post_id ) ? get_post( $post->post_parent ) : $post;
+
+		if ( ! et_pb_is_pagebuilder_used( $parent_post->ID ) || ! in_array( $parent_post->post_type, et_builder_get_builder_post_types() ) ) {
+			return $response;
+		}
+		// end security short circuit
 
 		if ( $last_post_modified != $post_modified ) {
 
@@ -1414,9 +1465,17 @@ function et_pb_autosave_builder_settings( $post_id, $builder_settings ) {
  */
 
 function et_fb_heartbeat_autosave( $response, $data ) {
-	if ( ! empty( $data['et_fb_autosave'] ) ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return $response;
+	}
 
+	if ( ! empty( $data['et_fb_autosave'] ) ) {
 		$post_id = (int) $data['et_fb_autosave']['post_id'];
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return $response;
+		}
+
 		$has_focus = !empty( $_POST['has_focus'] ) && 'true' === $_POST['has_focus'];
 		$force_autosave = !empty( $data['et'] ) && !empty( $data['et']['force_autosave'] ) && 'true' === $data['et']['force_autosave'];
 
@@ -1433,7 +1492,7 @@ function et_fb_heartbeat_autosave( $response, $data ) {
 
 		$saved = et_fb_autosave( $data['et_fb_autosave'] );
 
-		if ( !empty( $data['et_fb_autosave']['builder_settings'] ) ) {
+		if ( ! is_wp_error( $saved ) && ! empty( $data['et_fb_autosave']['builder_settings'] ) ) {
 			$builder_settings_autosaved = et_pb_autosave_builder_settings( $post_id, $data['et_fb_autosave']['builder_settings'] );
 			$response['et_pb_autosave_builder_settings'] = array( 'success' => $builder_settings_autosaved, 'message' => __( 'Builder settings synced', 'et_builder' ) );
 		}
@@ -1455,6 +1514,10 @@ function et_fb_heartbeat_autosave( $response, $data ) {
 add_filter( 'heartbeat_received', 'et_fb_heartbeat_autosave', 499, 2 );
 
 function et_bb_heartbeat_autosave( $response, $data ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return $response;
+	}
+
 	if ( ! empty( $data['wp_autosave'] ) ) {
 		$has_focus = !empty( $_POST['has_focus'] ) && 'true' === $_POST['has_focus'];
 		$force_autosave = !empty( $data['et'] ) && !empty( $data['et']['force_autosave'] ) && 'true' === $data['et']['force_autosave'];
@@ -1472,8 +1535,16 @@ function et_bb_heartbeat_autosave( $response, $data ) {
 add_filter( 'heartbeat_received', 'et_bb_heartbeat_autosave', 498, 2 );
 
 function et_bb_heartbeat_builder_settings_autosave( $response, $data ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return $response;
+	}
+
 	if ( ! empty( $data['wp_autosave'] ) ) {
 		$post_id = (int) $data['wp_autosave']['post_id'];
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return $response;
+		}
 
 		if ( !empty( $data['wp_autosave']['builder_settings'] ) ) {
 			$builder_settings_autosaved = et_pb_autosave_builder_settings( $post_id, $data['wp_autosave']['builder_settings'] );
@@ -1486,6 +1557,10 @@ function et_bb_heartbeat_builder_settings_autosave( $response, $data ) {
 add_filter( 'heartbeat_received', 'et_bb_heartbeat_builder_settings_autosave', 500, 2 );
 
 function et_fb_wp_refresh_nonces( $response, $data, $screen_id ) {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return $response;
+	}
+
 	if ( ! isset( $data['et']['built_by'] ) || 'fb' !== $data['et']['built_by'] ) {
 		return $response;
 	}
@@ -1535,6 +1610,7 @@ function et_fb_get_nonces() {
 		'libraryLayoutsData'            => wp_create_nonce( 'et_builder_library_get_layouts_data' ),
 		'libraryGetLayout'              => wp_create_nonce( 'et_builder_library_get_layout' ),
 		'libraryUpdateAccount'          => wp_create_nonce( 'et_builder_library_update_account' ),
+		'fetchAttachments'              => wp_create_nonce( 'et_fb_fetch_attachments' ),
 	);
 
 	return array_merge( $nonces, $fb_nonces );
@@ -1621,20 +1697,25 @@ function et_builder_email_add_account() {
 	}
 
 	$result = et_core_api_email_fetch_lists( $provider_slug, $account_name, $fields );
+	$_      = ET_Core_Data_Utils::instance();
 
 	// Get data in builder format
-	$accounts_list = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
+	$list_data = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
 
 	if ( 'success' === $result ) {
 		$result = array(
-			'error'         => false,
-			'accounts_list' => $accounts_list,
+			'error'                    => false,
+			'accounts_list'            => $_->array_get( $list_data, 'accounts_list', $list_data ),
+			'custom_fields'            => $_->array_get( $list_data, 'custom_fields', array() ),
+			'predefined_custom_fields' => ET_Core_API_Email_Providers::instance()->custom_fields_data(),
 		);
 	} else {
 		$result = array(
-			'error'         => true,
-			'message'       => esc_html__( 'Error: ', 'et_core' ) . esc_html( $result ),
-			'accounts_list' => $accounts_list,
+			'error'                    => true,
+			'message'                  => esc_html__( 'Error: ', 'et_builder' ) . esc_html( $result ),
+			'accounts_list'            => $_->array_get( $list_data, 'accounts_list', $list_data ),
+			'custom_fields'            => $_->array_get( $list_data, 'custom_fields', array() ),
+			'predefined_custom_fields' => ET_Core_API_Email_Providers::instance()->custom_fields_data(),
 		);
 	}
 
@@ -1657,7 +1738,7 @@ function et_builder_email_get_fields_from_post_data( $provider_slug ) {
 	foreach ( $fields as $field_name => $field_info ) {
 		$key = "et_{$provider_slug}_{$field_name}";
 
-		if ( empty( $_POST[$key] ) && ! isset( $field_info['optional'] ) ) {
+		if ( empty( $_POST[$key] ) && ! isset( $field_info['not_required'] ) ) {
 			return false;
 		}
 
@@ -1689,7 +1770,11 @@ function et_builder_email_get_lists_field_data( $provider_slug, $is_BB = false )
 		$field['name']         = $field_name;
 		$field_data            = $signup->render_field( $field );
 	} else {
-		$field_data = $field['options'];
+		$signup_field  = new ET_Builder_Module_Signup_Item;
+		$field_data    = array(
+			'accounts_list' => $field['options'],
+			'custom_fields' => $signup_field->get_fields(),
+		);
 	}
 
 	// Make sure the BB updates its cached templates
@@ -1718,15 +1803,19 @@ function et_builder_email_get_lists() {
 	// Make sure email component group is loaded;
 	new ET_Core_API_Email_Providers();
 
+	$_ = ET_Core_Data_Utils::instance();
+
 	// Fetch lists from provider
 	$message = et_core_api_email_fetch_lists( $provider_slug, $account_name );
 
 	// Get data in builder format
-	$accounts_list = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
+	$list_data = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
 
 	$result = array(
-		'error'         => false,
-		'accounts_list' => $accounts_list,
+		'error'                    => false,
+		'accounts_list'            => $_->array_get( $list_data, 'accounts_list', $list_data ),
+		'custom_fields'            => $_->array_get( $list_data, 'custom_fields', array() ),
+		'predefined_custom_fields' => ET_Core_API_Email_Providers::instance()->custom_fields_data(),
 	);
 
 	if ( 'success' !== $message ) {
@@ -1835,12 +1924,16 @@ function et_builder_email_remove_account() {
 
 	et_core_api_email_remove_account( $provider_slug, $account_name );
 
+	$_ = ET_Core_Data_Utils::instance();
+
 	// Get data in builder format
-	$accounts_list = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
+	$list_data = et_builder_email_get_lists_field_data( $provider_slug, $is_BB );
 
 	$result = array(
-		'error'         => false,
-		'accounts_list' => $accounts_list,
+		'error'                    => false,
+		'accounts_list'            => $_->array_get( $list_data, 'accounts_list', $list_data ),
+		'custom_fields'            => $_->array_get( $list_data, 'custom_fields', array() ),
+		'predefined_custom_fields' => ET_Core_API_Email_Providers::instance()->custom_fields_data(),
 	);
 
 	die( json_encode( $result ) );
@@ -1861,16 +1954,19 @@ function et_pb_submit_subscribe_form() {
 
 	$provider_slug = sanitize_text_field( $utils->array_get( $_POST, 'et_provider' ) );
 	$account_name  = sanitize_text_field( $utils->array_get( $_POST, 'et_account' ) );
+	$custom_fields = $utils->array_get( $_POST, 'et_custom_fields', array() );
 
 	if ( ! $provider = $providers->get( $provider_slug, $account_name, 'builder' ) ) {
 		et_core_die( esc_html__( 'Configuration Error: Invalid data.', 'et_builder' ) );
 	}
 
 	$args = array(
-		'list_id'   => sanitize_text_field( $utils->array_get( $_POST, 'et_list_id' ) ),
-		'email'     => sanitize_text_field( $utils->array_get( $_POST, 'et_email' ) ),
-		'name'      => sanitize_text_field( $utils->array_get( $_POST, 'et_firstname' ) ),
-		'last_name' => sanitize_text_field( $utils->array_get( $_POST, 'et_lastname' ) ),
+		'list_id'       => sanitize_text_field( $utils->array_get( $_POST, 'et_list_id' ) ),
+		'email'         => sanitize_text_field( $utils->array_get( $_POST, 'et_email' ) ),
+		'name'          => sanitize_text_field( $utils->array_get( $_POST, 'et_firstname' ) ),
+		'last_name'     => sanitize_text_field( $utils->array_get( $_POST, 'et_lastname' ) ),
+		'ip_address'    => sanitize_text_field( $utils->array_get( $_POST, 'et_ip_address' ) ),
+		'custom_fields' => $utils->sanitize_text_fields( $custom_fields ),
 	);
 
 	if ( ! is_email( $args['email'] ) ) {
@@ -1941,8 +2037,14 @@ function et_pb_save_role_settings() {
 
 	// convert settings string for each role into array and save it into et_pb_role_settings option
 	if ( ! empty( $data ) ) {
+		$role_capabilities = array();
 		foreach( $data as $role => $settings ) {
-			parse_str( $data[ $role ], $processed_options[ $role ] );
+			parse_str( $data[ $role ], $role_capabilities );
+			foreach ( $role_capabilities as $capability => $value ) {
+				if ( $value !== 'on' ) {
+					$processed_options[ $role ][ $capability ] = $value;
+				}
+			}
 		}
 	}
 
@@ -2022,6 +2124,7 @@ function et_pb_register_posttypes() {
 		'add_new_item'      => esc_html__( 'Add New Category', 'et_builder' ),
 		'new_item_name'     => esc_html__( 'New Category Name', 'et_builder' ),
 		'menu_name'         => esc_html__( 'Categories', 'et_builder' ),
+		'not_found'         => esc_html__( "You currently don't have any project categories.", 'et_builder' ),
 	);
 
 	register_taxonomy( 'project_category', array( 'project' ), array(
@@ -2362,6 +2465,21 @@ function et_builder_get_unsaved_notification_modal() {
 }
 endif;
 
+if ( ! function_exists( 'et_builder_page_creation_modal' ) ) :
+	function et_builder_page_creation_modal() {
+		return '<div class="et-pb-page-creation-card <%= option.className %>" data-action="<%= id %>">
+			<div class="et-pb-page-creation-content">
+				<img src="<%= option.images_uri %>/<%= option.imgSrc %>" data-src="<%= option.images_uri %>/<%= option.imgSrc %>" data-hover="<%= option.images_uri %>/<%= option.imgHover %>" alt="<%= option.titleText %>" />
+				<div class="et-pb-page-creation-text">
+					<h3><%= option.titleText %></h3>
+					<p><%= option.descriptionText %></p>
+				</div>
+			</div>
+			<a href="#" class="et-pb-page-creation-link"><%= option.buttonText %></a>
+		</div>';
+	}
+endif;
+
 if ( ! function_exists( 'et_builder_get_warnings' ) ) :
 function et_builder_get_warnings() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -2679,62 +2797,23 @@ function et_pb_ab_get_current_ab_module_id( $test_id, $subject_index = false ) {
 	return $all_subjects[ $current_subject_index ];
 }
 
-function et_pb_ab_get_saved_ab_module_id( $test_id, $client_id ) {
+/**
+ * Increment current subject index value on post meta
+ *
+ * @param int post ID
+ */
+function et_pb_ab_increment_current_ab_module_id( $test_id ) {
 	global $wpdb;
 
-	$table_name = $wpdb->prefix . 'et_divi_ab_testing_clients';
-	$saved_module_id = false;
-
-	if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
-		// construct sql query to get saved module ID from db for current client
-		$sql = "SELECT subject_id FROM $table_name WHERE test_id = %d AND client_id = %s";
-		$sql_args = array(
-			intval( $test_id ),
-			sanitize_text_field( $client_id ),
-		);
-
-		$saved_module_data = $wpdb->get_results( $wpdb->prepare( $sql, $sql_args ), ARRAY_A );
-
-		if ( empty( $saved_module_data ) ) {
-			return false;
-		}
-
-		$saved_module_id = $saved_module_data[0]['subject_id'];
-	}
-
-	return $saved_module_id;
-}
-
-function et_pb_ab_increment_current_ab_module_id( $test_id, $user_unique_id ) {
-	global $wpdb;
-
-	$table_name = $wpdb->prefix . 'et_divi_ab_testing_clients';
-	$all_subjects = false !== ( $all_subjects_raw = get_post_meta( $test_id, '_et_pb_ab_subjects' , true ) ) ? explode( ',', $all_subjects_raw ) : array();
-	$current_subject_index = false !== ( $saved_next_subject = get_post_meta( $test_id, '_et_pb_ab_next_subject' , true ) ) ? (int) $saved_next_subject : 0;
+	// Get subjects and current subject index
+	$all_subjects_raw      = get_post_meta( $test_id, '_et_pb_ab_subjects' , true );
+	$all_subjects          = false !== $all_subjects_raw ? explode( ',', $all_subjects_raw ) : array();
+	$saved_next_subject    = get_post_meta( $test_id, '_et_pb_ab_next_subject' , true );
+	$current_subject_index = false !== $saved_next_subject ? (int) $saved_next_subject : 0;
 
 	if ( empty( $all_subjects ) ) {
 		return;
 	}
-
-	// sanitize and set vars
-	$test_id = intval( $test_id );
-	$current_subject_index = intval( $current_subject_index );
-	$user_unique_id = sanitize_text_field( $user_unique_id );
-
-	// update the subject id in db for the current client and current test
-	$wpdb->insert(
-		$table_name,
-		array(
-			'test_id'    => $test_id,
-			'subject_id' => $current_subject_index,
-			'client_id'  => $user_unique_id,
-		),
-		array(
-			'%d', // test_id
-			'%d', // subject_id
-			'%s', // client_id
-		)
-	);
 
 	// increment the index of next subject, set to 0 if it's a last subject in the list
 	$next_subject_index = ( count( $all_subjects ) - 1 ) < ( $current_subject_index + 1 ) ? 0 : $current_subject_index + 1;
@@ -2753,7 +2832,6 @@ function et_pb_add_stats_record( $stats_data_array ) {
 	$table_name = $wpdb->prefix . 'et_divi_ab_testing_stats';
 
 	$record_date = current_time( 'mysql' );
-	$client_unique_id = et_pb_get_visitor_id();
 
 	// sanitize and set vars
 	$test_id = intval( $stats_data_array['test_id'] );
@@ -2761,17 +2839,8 @@ function et_pb_add_stats_record( $stats_data_array ) {
 	$record_type = sanitize_text_field( $stats_data_array['record_type'] );
 	$record_date = sanitize_text_field( $record_date );
 
-	// construct sql query to find out whether or not event logged for current visitor
-	$sql = "SELECT COUNT(*) FROM $table_name WHERE test_id = %d AND subject_id = %d AND event = %s AND client_id = %s";
-	$sql_args = array(
-		$test_id,
-		$subject_id,
-		$record_type,
-		$client_unique_id
-	);
-
-	// do not proceed if event already logged for current visitor
-	if ( 0 < $wpdb->get_var( $wpdb->prepare( $sql, $sql_args ) ) ) {
+	// Check visitor cookie and do not proceed if event already logged for current visitor
+	if ( et_pb_ab_get_visitor_cookie( $test_id, $record_date ) ) {
 		return;
 	}
 
@@ -2782,44 +2851,130 @@ function et_pb_add_stats_record( $stats_data_array ) {
 			'test_id'     => $test_id,
 			'subject_id'  => $subject_id,
 			'event'       => $record_type,
-			'client_id'   => $client_unique_id,
 		),
 		array(
 			'%s', // record_date
 			'%d', // test_id
 			'%d', // subject_id
 			'%s', // event
-			'%s', // client_id
 		)
 	);
 }
 
+/**
+ * Set AB Testing formatted cookie
+ *
+ * @param int    post ID
+ * @param string record type
+ * @param mixed  cookie value
+ *
+ * @return bool|mixed
+ */
+function et_pb_ab_set_visitor_cookie( $post_id, $record_type, $value = true ) {
+	$unique_test_id = get_post_meta( $post_id, '_et_pb_ab_testing_id', true );
+	$cookie_name    = sanitize_text_field( "et_pb_ab_{$record_type}_{$post_id}{$unique_test_id}" );
+
+	return setcookie( $cookie_name, $value );
+}
+
+/**
+ * Get AB Testing formatted cookie
+ *
+ * @param int    post ID
+ * @param string record type
+ *
+ * @return bool|mixed
+ */
+function et_pb_ab_get_visitor_cookie( $post_id, $record_type ) {
+	$unique_test_id = get_post_meta( $post_id, '_et_pb_ab_testing_id', true );
+	$cookie_name    = "et_pb_ab_{$record_type}_{$post_id}{$unique_test_id}";
+
+	return isset( $_COOKIE[ $cookie_name ] ) ? $_COOKIE[ $cookie_name ] : false;
+}
+
+/**
+ * Get subjects of particular post / AB Testing
+ *
+ * @param int    post id
+ * @param string array|string type of output
+ * @param mixed  string|bool  prefix that should be prepended
+ */
+function et_pb_ab_get_subjects( $post_id, $type = 'array', $prefix = false, $is_cron_task = false ) {
+	$subjects_data = get_post_meta( $post_id, '_et_pb_ab_subjects', true );
+	$fb_enabled = function_exists( 'et_fb_enabled' ) ? et_fb_enabled() : false;
+
+	// Get autosave/draft subjects if post hasn't been published
+	if ( ! $is_cron_task && ! $subjects_data && $fb_enabled && 'publish' !== get_post_status() ) {
+		$subjects_data = get_post_meta( $post_id, '_et_pb_ab_subjects_draft', true );
+	}
+
+	// If user wants string
+	if ( 'string' === $type ) {
+		return $subjects_data;
+	}
+
+	// Convert into array
+	$subjects = explode(',', $subjects_data );
+
+	if ( ! empty( $subjects ) && $prefix ) {
+
+		$prefixed_subjects = array();
+
+		// Loop subject, add prefix
+		foreach ( $subjects as $subject ) {
+			$prefixed_subjects[] = $prefix . (string) $subject;
+		}
+
+		return $prefixed_subjects;
+	}
+
+	return $subjects;
+}
+
+/**
+ * Unhashed hashed subject id
+ *
+ * @param int    post ID
+ * @param string hashed subject id
+ *
+ * @return string subject ID
+ */
+function et_pb_ab_unhashed_subject_id( $post_id, $hashed_subject_id ) {
+	if ( ! $post_id || ! $hashed_subject_id ) {
+		return false;
+	}
+
+	$ab_subjects = et_pb_ab_get_subjects( $post_id );
+	$ab_hash_key = defined( 'NONCE_SALT' ) ? NONCE_SALT : 'default-divi-hash-key';
+	$subject_id  = false;
+
+	// Compare subjects against hashed subject id found on cookie to verify whether cookie value is valid or not
+	foreach ( $ab_subjects as $ab_subject ) {
+		// Valid subject_id is found
+		if ( hash_hmac( 'md5', $ab_subject, $ab_hash_key ) === $hashed_subject_id ) {
+			$subject_id = $ab_subject;
+
+			// no need to continue
+			break;
+		}
+	}
+
+	// If no valid subject found, get the first one
+	if ( ! $subject_id && isset( $ab_subjects[0] ) ) {
+		$subject_id = $ab_subjects[0];
+	}
+
+	return $subject_id;
+}
 
 function et_pb_ab_get_subject_id() {
 	if ( ! isset( $_POST['et_frontend_nonce'] ) || ! wp_verify_nonce( $_POST['et_frontend_nonce'], 'et_frontend_nonce' ) ) {
 		die( -1 );
 	}
 
-	$test_id = intval( $_POST['et_pb_ab_test_id'] );
-
-	$user_unique_id = et_pb_get_visitor_id();
-	$saved_module_id = et_pb_ab_get_saved_ab_module_id( $test_id, $user_unique_id );
-
-	$current_ab_module_id = et_pb_ab_get_current_ab_module_id( $test_id, $saved_module_id );
-	$current_ab_module_id = intval( $current_ab_module_id );
-
-	if ( false === $saved_module_id ) {
-		// log the view_page event
-		et_pb_add_stats_record( array(
-				'test_id'     => $test_id,
-				'subject_id'  => $current_ab_module_id,
-				'record_type' => 'view_page',
-			)
-		);
-
-		// increment the module id for the next time
-		et_pb_ab_increment_current_ab_module_id( $test_id, $user_unique_id );
-	}
+	$test_id              = intval( $_POST['et_pb_ab_test_id'] );
+	$hashed_subject_id    = et_pb_ab_get_visitor_cookie( $test_id, 'view_page' );
+	$current_ab_module_id = et_pb_ab_unhashed_subject_id( $test_id, $hashed_subject_id );
 
 	// retrieve the cached subjects HTML
 	$subjects_cache = get_post_meta( $test_id, 'et_pb_subjects_cache', true );
@@ -2833,36 +2988,6 @@ function et_pb_ab_get_subject_id() {
 }
 add_action( 'wp_ajax_et_pb_ab_get_subject_id', 'et_pb_ab_get_subject_id' );
 add_action( 'wp_ajax_nopriv_et_pb_ab_get_subject_id', 'et_pb_ab_get_subject_id' );
-
-/**
- * Generate the user id which is md5 hash from IP Address
- * @return string
- */
-function et_pb_get_visitor_id() {
-	$user_ip_addr = $_SERVER['REMOTE_ADDR'];
-
-	/**
-	 * Properly determine the user ID if proxy is used.
-	 * Check whether the $_SERVER['HTTP_X_FORWARDED_FOR'] or $_SERVER['X_FORWARDED_FOR'] exist and use it
-	 * Otherwise use $_SERVER['REMOTE_ADDR']
-	 */
-	if ( ! empty( $_SERVER['X_FORWARDED_FOR'] ) ) {
-		$x_forwarded_array = explode( ',', $_SERVER['X_FORWARDED_FOR'] );
-
-		if ( ! empty( $x_forwarded_array ) ) {
-			$user_ip_addr = trim( $x_forwarded_array[0] );
-		}
-	} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-		$http_x_forwarded_array = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-
-		if ( ! empty( $http_x_forwarded_array ) ) {
-			$user_ip_addr = trim( $http_x_forwarded_array[0] );
-		}
-	}
-
-	// return the md5 hash from user IP address
-	return md5( sanitize_text_field( $user_ip_addr ) );
-}
 
 /**
  * Register Builder Portability.
@@ -3029,6 +3154,9 @@ function et_builder_set_content_activation( $post_id = false ) {
 		return false;
 	}
 
+	// Set page creation flow flag to on.
+	update_post_meta( $post_id, '_et_pb_show_page_creation', 'on' );
+
 	// If content already has a section, it means builder is active and activation has to be
 	// skipped to avoid nested and unwanted builder structure
 	if ( has_shortcode( $post->post_content, 'et_pb_section' ) ) {
@@ -3100,6 +3228,11 @@ endif;
 
 if ( ! function_exists( 'et_builder_get_fonts' ) ) :
 function et_builder_get_fonts( $settings = array() ) {
+	// Only return websafe fonts if google fonts disabled
+	if ( ! et_core_use_google_fonts() ) {
+		return et_builder_get_websafe_fonts();
+	}
+
 	$defaults = array(
 		'prepend_standard_fonts' => true,
 	);
@@ -3233,7 +3366,7 @@ if ( ! function_exists( 'et_builder_google_fonts_sync' ) ) :
 function et_builder_google_fonts_sync() {
 	$google_api_key = et_pb_get_google_api_key();
 
-	if ( '' === $google_api_key ) {
+	if ( '' === $google_api_key || ! et_core_use_google_fonts() ) {
 		return;
 	}
 
@@ -3275,6 +3408,11 @@ endif;
 
 if ( ! function_exists( 'et_builder_get_google_fonts' ) ) :
 function et_builder_get_google_fonts() {
+	// Google Fonts disabled
+	if ( ! et_core_use_google_fonts() ) {
+		return array();
+	}
+
 	$google_fonts_cache = get_option( 'et_google_fonts_cache', array() );
 
 	if ( ! empty( $google_fonts_cache ) ) {
@@ -3575,7 +3713,7 @@ function et_pb_get_unsynced_legacy_options( $post_type, $shortcode_data ) {
 	$saved_fields = array_keys( $shortcode_data['attrs'] );
 
 	// content fields should never be included into unsynced options. We use different key for the content options.
-	$saved_fields[] = 'content_new';
+	$saved_fields[] = 'content';
 	$saved_fields[] = 'raw_content';
 
 	$all_fields = array_merge( array_keys( $general_fields ), array_keys( $advanced_fields ), array_keys( $css_fields ) );

@@ -68,7 +68,7 @@ class ET_Builder_Module_Settings_Migration_BackgroundUI extends ET_Builder_Modul
 		return $modules;
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 		if ( '' !== $current_value || 'background_image' === $field_name ) {
 			return $current_value;
 		}

@@ -4,31 +4,11 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Search', 'et_builder' );
 		$this->slug       = 'et_pb_search';
-		$this->fb_support = true;
-
-		$this->whitelisted_fields = array(
-			'background_layout',
-			'admin_label',
-			'module_id',
-			'module_class',
-			'include_categories',
-			'exclude_posts',
-			'exclude_pages',
-			'button_color',
-			'show_button',
-			'placeholder',
-			'placeholder_color',
-		);
-
-		$this->fields_defaults = array(
-			'background_layout' => array( 'light' ),
-			'text_orientation'  => array( 'left' ),
-			'show_button'       => array( 'on' ),
-		);
+		$this->vb_support = 'on';
 
 		$this->main_css_element = '%%order_class%%';
 
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Text', 'et_builder' ),
@@ -51,8 +31,8 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 				),
 			),
 		);
-		$this->advanced_options = array(
-			'fonts' => array(
+		$this->advanced_fields = array(
+			'fonts'                 => array(
 				'input' => array(
 					'label'    => esc_html__( 'Input', 'et_builder' ),
 					'css'      => array(
@@ -88,46 +68,56 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 					'hide_text_align' => true,
 				),
 			),
-			'custom_margin_padding' => array(
+			'margin_padding' => array(
 				'css' => array(
 					'main'      => "{$this->main_css_element} input.et_pb_s",
 					'important' => 'all',
 				),
 			),
-			'background' => array(
+			'background'            => array(
 				'css' => array(
 					'main' => "{$this->main_css_element} input.et_pb_s",
 				),
 			),
-			'border' => array(
-				'css' => array(
-					'main' => array(
-						'border_radii' => "{$this->main_css_element}.et_pb_search, {$this->main_css_element} input.et_pb_s",
-						'border_styles' => "{$this->main_css_element}.et_pb_search",
+			'borders'               => array(
+				'default' => array(
+					'css' => array(
+						'main' => array(
+							'border_radii' => "{$this->main_css_element}.et_pb_search, {$this->main_css_element} input.et_pb_s",
+							'border_styles' => "{$this->main_css_element}.et_pb_search",
+						),
 					),
-				),
-				'defaults' => array(
-					'border_radii' => 'on|3px|3px|3px|3px',
-					'border_styles' => array(
-						'width' => '1px',
-						'color' => '#dddddd',
-						'style' => 'solid',
+					'defaults' => array(
+						'border_radii' => 'on|3px|3px|3px|3px',
+						'border_styles' => array(
+							'width' => '1px',
+							'color' => '#dddddd',
+							'style' => 'solid',
+						),
 					),
 				),
 			),
-			'max_width'  => array(),
-			'text'       => array(
+			'text'                  => array(
+				'use_background_layout' => true,
 				'css'              => array(
 					'text_shadow' => "{$this->main_css_element} input.et_pb_searchsubmit, {$this->main_css_element} input.et_pb_s",
 				),
 				'text_orientation' => array(
 					'exclude_options' => array( 'justified' ),
 				),
+				'options' => array(
+					'text_orientation'  => array(
+						'default'          => 'left',
+					),
+					'background_layout' => array(
+						'default' => 'light',
+					),
+				),
 			),
-			'filters' => array(),
+			'button'                => false,
 		);
 
-		$this->custom_css_options = array(
+		$this->custom_css_fields = array(
 			'input_field' => array(
 				'label'    => esc_html__( 'Input Field', 'et_builder' ),
 				'selector' => 'input.et_pb_s',
@@ -137,22 +127,17 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 				'selector' => 'input.et_pb_searchsubmit',
 			),
 		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'HNmb20Mdvno' ),
+				'name' => esc_html__( 'An introduction to the Search module', 'et_builder' ),
+			),
+		);
 	}
 
 	function get_fields() {
 		$fields = array(
-			'background_layout' => array(
-				'label'           => esc_html__( 'Text Color', 'et_builder' ),
-				'type'            => 'select',
-				'option_category' => 'configuration',
-				'options'         => array(
-					'light' => esc_html__( 'Dark', 'et_builder' ),
-					'dark'  => esc_html__( 'Light', 'et_builder' ),
-				),
-				'tab_slug'        => 'advanced',
-				'toggle_slug'     => 'text',
-				'description'     => esc_html__( 'Here you can choose the value of your text. If you are working with a dark background, then your text should be set to light. If you are working with a light background, then your text should be dark.', 'et_builder' ),
-			),
 			'exclude_pages' => array(
 				'label'           => esc_html__( 'Exclude Pages', 'et_builder' ),
 				'type'            => 'yes_no_button',
@@ -180,7 +165,7 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 			),
 			'include_categories' => array(
 				'label'            => esc_html__( 'Exclude Categories', 'et_builder' ),
-				'renderer'         => 'et_builder_include_categories_option',
+				'type'             => 'categories',
 				'option_category'  => 'basic_option',
 				'renderer_options' => array(
 					'use_terms' => false,
@@ -197,9 +182,9 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default'         => 'on',
 				'toggle_slug'     => 'elements',
 				'description'     => esc_html__( 'Turn this on to show the Search button', 'et_builder' ),
-				'default'         => 'on',
 			),
 			'placeholder' => array(
 				'label'       => esc_html__( 'Placeholder Text', 'et_builder' ),
@@ -221,68 +206,29 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'field',
 			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
 		);
 
 		return $fields;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id          = $this->shortcode_atts['module_id'];
-		$module_class       = $this->shortcode_atts['module_class'];
-		$background_layout  = $this->shortcode_atts['background_layout'];
-		$exclude_categories = $this->shortcode_atts['include_categories'];
-		$exclude_posts      = $this->shortcode_atts['exclude_posts'];
-		$exclude_pages      = $this->shortcode_atts['exclude_pages'];
-		$button_color       = $this->shortcode_atts['button_color'];
-		$show_button        = $this->shortcode_atts['show_button'];
-		$placeholder        = $this->shortcode_atts['placeholder'];
-		$placeholder_color  = $this->shortcode_atts['placeholder_color'];
-		$input_line_height  = $this->shortcode_atts['input_line_height'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$background_layout  = $this->props['background_layout'];
+		$exclude_categories = $this->props['include_categories'];
+		$exclude_posts      = $this->props['exclude_posts'];
+		$exclude_pages      = $this->props['exclude_pages'];
+		$button_color       = $this->props['button_color'];
+		$show_button        = $this->props['show_button'];
+		$placeholder        = $this->props['placeholder'];
+		$placeholder_color  = $this->props['placeholder_color'];
+		$input_line_height  = $this->props['input_line_height'];
 
-		$module_class              = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
-		$this->shortcode_content = et_builder_replace_code_content_entities( $this->shortcode_content );
+		$this->content = et_builder_replace_code_content_entities( $this->content );
 
 		if ( '' !== $button_color ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% input.et_pb_searchsubmit',
 				'declaration' => sprintf(
 					'background: %1$s !important;border-color:%1$s !important;',
@@ -290,7 +236,7 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 				),
 			) );
 
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% input.et_pb_s',
 				'declaration' => sprintf(
 					'border-color:%1$s !important;',
@@ -307,7 +253,7 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 			);
 
 			foreach ( $placeholder_selectors as $single_selector ) {
-				ET_Builder_Element::set_style( $function_name, array(
+				ET_Builder_Element::set_style( $render_slug, array(
 					'selector'    => $single_selector,
 					'declaration' => sprintf(
 						'color: %1$s !important;',
@@ -318,13 +264,13 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 		}
 
 		if ( '' !== $input_line_height ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% input.et_pb_s',
 				'declaration' => 'height: auto; min-height: 0;',
 			) );
 		}
 
-		$custom_margin = explode('|', $this->shortcode_atts['custom_margin']);
+		$custom_margin = explode('|', $this->props['custom_margin']);
 		$has_custom_margin = isset( $custom_margin[0], $custom_margin[1], $custom_margin[2],  $custom_margin[3] );
 		$custom_margin_units = array();
 
@@ -341,7 +287,7 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 				$custom_margin_left_unit,
 			);
 
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_search input.et_pb_searchsubmit',
 				'declaration' => sprintf(
 					'min-height: 0 !important; top: %1$s; right: %2$s; bottom: %3$s;',
@@ -352,42 +298,46 @@ class ET_Builder_Module_Search extends ET_Builder_Module {
 			) );
 		}
 
-		$class = " et_pb_module et_pb_bg_layout_{$background_layout}{$this->get_text_orientation_classname(true)}";
-		$class .= 'on' !== $show_button ? ' et_pb_hide_search_button' : '';
+		// Module classnames
+		$this->add_classname( array(
+			"et_pb_bg_layout_{$background_layout}",
+			$this->get_text_orientation_classname(true),
+		) );
+
+		if ( 'on' !== $show_button ) {
+			$this->add_classname( 'et_pb_hide_search_button' );
+		}
 
 		if ( ! empty( $custom_margin_units ) && in_array( '%', $custom_margin_units ) ) {
-			$class .= " et_pb_search_percentage_custom_margin";
+			$this->add_classname( 'et_pb_search_percentage_custom_margin' );
 		}
 
 		$output = sprintf(
-			'<div%3$s class="et_pb_search%2$s%4$s%11$s%13$s">
-				%14$s
-				%12$s
+			'<div%3$s class="%2$s">
+				%11$s
+				%10$s
 				<form role="search" method="get" class="et_pb_searchform" action="%1$s">
 					<div>
-						<label class="screen-reader-text" for="s">%9$s</label>
-						<input type="text" value="" name="s" class="et_pb_s"%8$s>
+						<label class="screen-reader-text" for="s">%8$s</label>
+						<input type="text" value="" name="s" class="et_pb_s"%7$s>
 						<input type="hidden" name="et_pb_searchform_submit" value="et_search_proccess" />
+						%4$s
 						%5$s
 						%6$s
-						%7$s
-						<input type="submit" value="%10$s" class="et_pb_searchsubmit">
+						<input type="submit" value="%9$s" class="et_pb_searchsubmit">
 					</div>
 				</form>
 			</div> <!-- .et_pb_text -->',
 			esc_url( home_url( '/' ) ),
-			esc_attr( $class ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
+			$this->module_classname( $render_slug ),
+			$this->module_id(),
 			'' !== $exclude_categories ? sprintf( '<input type="hidden" name="et_pb_search_cat" value="%1$s" />', esc_attr( $exclude_categories ) ) : '',
 			'on' !== $exclude_posts ? '<input type="hidden" name="et_pb_include_posts" value="yes" />' : '',
 			'on' !== $exclude_pages ? '<input type="hidden" name="et_pb_include_pages" value="yes" />' : '',
 			'' !== $placeholder ? sprintf( ' placeholder="%1$s"', esc_attr( $placeholder ) ) : '',
 			esc_html__( 'Search for:', 'et_builder' ),
 			esc_attr__( 'Search', 'et_builder' ),
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background
 		);
 

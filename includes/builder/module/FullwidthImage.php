@@ -4,35 +4,13 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Fullwidth Image', 'et_builder' );
 		$this->slug       = 'et_pb_fullwidth_image';
-		$this->fb_support = true;
+		$this->vb_support = 'on';
 		$this->fullwidth  = true;
 		$this->defaults   = array(
 			'align' => 'left',
 		);
 
-		$this->whitelisted_fields = array(
-			'src',
-			'alt',
-			'title_text',
-			'show_in_lightbox',
-			'url',
-			'url_new_window',
-			'admin_label',
-			'module_id',
-			'module_class',
-			'use_overlay',
-			'overlay_icon_color',
-			'hover_overlay_color',
-			'hover_icon',
-		);
-
-		$this->fields_defaults = array(
-			'show_in_lightbox' => array( 'off' ),
-			'url_new_window'   => array( 'off' ),
-			'use_overlay'      => array( 'off' ),
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Image', 'et_builder' ),
@@ -58,15 +36,29 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 			),
 		);
 
-		$this->advanced_options = array(
-			'custom_margin_padding' => array(
+		$this->advanced_fields = array(
+			'margin_padding' => array(
 				'css' => array(
 					'important' => 'all',
 				),
 			),
-			'background' => array(),
-			'max_width' => array(),
-			'filters' => array(),
+			'box_shadow'            => array(
+				'default' => array(
+					'css' => array(
+						'custom_style' => true,
+					),
+				),
+			),
+			'fonts'                 => false,
+			'text'                  => false,
+			'button'                => false,
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'cYwqxoHnjNA' ),
+				'name' => esc_html__( 'An introduction to the Fullwidth Image module', 'et_builder' ),
+			),
 		);
 	}
 
@@ -90,8 +82,8 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 				'label'           => esc_html__( 'Image Alternative Text', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'basic_option',
-				'depends_default' => true,
-				'depends_to'      => array(
+				'depends_show_if' => 'on',
+				'depends_on'      => array(
 					'src',
 				),
 				'description'     => esc_html__( 'This defines the HTML ALT text. A short description of your image can be placed here.', 'et_builder' ),
@@ -102,8 +94,8 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 				'label'           => esc_html__( 'Image Title Text', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'basic_option',
-				'depends_default' => true,
-				'depends_to'      => array(
+				'depends_show_if' => 'on',
+				'depends_on'      => array(
 					'src',
 				),
 				'description'     => esc_html__( 'This defines the HTML Title text.', 'et_builder' ),
@@ -118,6 +110,7 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 					'off' => esc_html__( 'No', 'et_builder' ),
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 				),
+				'default_on_front'  => 'off',
 				'affects'           => array(
 					'url',
 					'url_new_window',
@@ -145,6 +138,7 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 					'off' => esc_html__( 'In The Same Window', 'et_builder' ),
 					'on'  => esc_html__( 'In The New Tab', 'et_builder' ),
 				),
+				'default_on_front'  => 'off',
 				'depends_show_if'   => 'off',
 				'toggle_slug'       => 'link',
 				'description'       => esc_html__( 'Here you can choose whether or not your link opens in a new window', 'et_builder' ),
@@ -157,12 +151,13 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 					'off' => esc_html__( 'Off', 'et_builder' ),
 					'on'  => esc_html__( 'On', 'et_builder' ),
 				),
+				'default_on_front'  => 'off',
 				'affects'           => array(
 					'overlay_icon_color',
 					'hover_overlay_color',
 					'hover_icon',
 				),
-				'depends_default'   => true,
+				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
 				'description'       => esc_html__( 'If enabled, an overlay color and icon will be displayed when a visitors hovers over the image', 'et_builder' ),
@@ -187,73 +182,32 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 			),
 			'hover_icon' => array(
 				'label'               => esc_html__( 'Hover Icon Picker', 'et_builder' ),
-				'type'                => 'text',
+				'type'                => 'select_icon',
 				'option_category'     => 'configuration',
 				'class'               => array( 'et-pb-font-icon' ),
-				'renderer'            => 'et_pb_get_font_icon_list',
-				'renderer_with_field' => true,
 				'depends_show_if'     => 'on',
 				'tab_slug'            => 'advanced',
 				'toggle_slug'         => 'overlay',
 				'description'         => esc_html__( 'Here you can define a custom icon for the overlay', 'et_builder' ),
-			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
 			),
 		);
 
 		return $fields;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id           = $this->shortcode_atts['module_id'];
-		$module_class        = $this->shortcode_atts['module_class'];
-		$src                 = $this->shortcode_atts['src'];
-		$alt                 = $this->shortcode_atts['alt'];
-		$title_text          = $this->shortcode_atts['title_text'];
-		$url                 = $this->shortcode_atts['url'];
-		$url_new_window      = $this->shortcode_atts['url_new_window'];
-		$show_in_lightbox    = $this->shortcode_atts['show_in_lightbox'];
-		$overlay_icon_color  = $this->shortcode_atts['overlay_icon_color'];
-		$hover_overlay_color = $this->shortcode_atts['hover_overlay_color'];
-		$hover_icon          = $this->shortcode_atts['hover_icon'];
-		$use_overlay         = $this->shortcode_atts['use_overlay'];
-		$animation_style     = $this->shortcode_atts['animation_style'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$src                 = $this->props['src'];
+		$alt                 = $this->props['alt'];
+		$title_text          = $this->props['title_text'];
+		$url                 = $this->props['url'];
+		$url_new_window      = $this->props['url_new_window'];
+		$show_in_lightbox    = $this->props['show_in_lightbox'];
+		$overlay_icon_color  = $this->props['overlay_icon_color'];
+		$hover_overlay_color = $this->props['hover_overlay_color'];
+		$hover_icon          = $this->props['hover_icon'];
+		$use_overlay         = $this->props['use_overlay'];
+		$animation_style     = $this->props['animation_style'];
 
-		$module_class              = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
@@ -262,7 +216,7 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 
 		if ( 'on' === $is_overlay_applied ) {
 			if ( '' !== $overlay_icon_color ) {
-				ET_Builder_Element::set_style( $function_name, array(
+				ET_Builder_Element::set_style( $render_slug, array(
 					'selector'    => '%%order_class%% .et_overlay:before',
 					'declaration' => sprintf(
 						'color: %1$s !important;',
@@ -272,7 +226,7 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 			}
 
 			if ( '' !== $hover_overlay_color ) {
-				ET_Builder_Element::set_style( $function_name, array(
+				ET_Builder_Element::set_style( $render_slug, array(
 					'selector'    => '%%order_class%% .et_overlay',
 					'declaration' => sprintf(
 						'background-color: %1$s;',
@@ -298,7 +252,7 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 		$output = sprintf(
 			'<img src="%1$s" alt="%2$s"%3$s />
 			%4$s',
-			esc_url( $src ),
+			esc_attr( $src ),
 			esc_attr( $alt ),
 			( '' !== $title_text ? sprintf( ' title="%1$s"', esc_attr( $title_text ) ) : '' ),
 			'on' === $is_overlay_applied ? $overlay_output : ''
@@ -306,7 +260,7 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 
 		if ( 'on' === $show_in_lightbox ) {
 			$output = sprintf( '<a href="%1$s" class="et_pb_lightbox_image" title="%3$s">%2$s</a>',
-				esc_url( $src ),
+				esc_attr( $src ),
 				$output,
 				esc_attr( $alt )
 			);
@@ -318,33 +272,29 @@ class ET_Builder_Module_Fullwidth_Image extends ET_Builder_Module {
 			);
 		}
 
+		// Module classnames
+		if ( ! in_array( $animation_style, array( '', 'none' ) ) ) {
+			$this->add_classname( 'et-waypoint' );
+		}
+
+		if ( 'on' === $is_overlay_applied ) {
+			$this->add_classname( 'et_pb_has_overlay' );
+		}
+
 		$output = sprintf(
-			'<div%4$s class="et_pb_module et_pb_fullwidth_image%2$s%3$s%5$s%6$s%8$s">
-				%9$s
-				%7$s
+			'<div%3$s class="%2$s">
+				%5$s
+				%4$s
 				%1$s
 			</div>',
 			$output,
-			in_array( $animation_style, array( '', 'none' ) ) ? '' : ' et-waypoint',
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			'on' === $is_overlay_applied ? ' et_pb_has_overlay' : '',
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
+			$this->module_classname( $render_slug ),
+			$this->module_id(),
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background
 		);
 
 		return $output;
-	}
-
-	public function process_box_shadow( $function_name ) {
-		$boxShadow = ET_Builder_Module_Fields_Factory::get( 'BoxShadow' );
-
-		self::set_style( $function_name, $boxShadow->get_style(
-			'.' . self::get_module_order_class( $function_name ),
-			$this->shortcode_atts
-		) );
 	}
 }
 

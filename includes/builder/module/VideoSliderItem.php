@@ -4,22 +4,14 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 	function init() {
 		$this->name                        = esc_html__( 'Video', 'et_builder' );
 		$this->slug                        = 'et_pb_video_slider_item';
-		$this->fb_support 				   = true;
+		$this->vb_support 				   = 'on';
 		$this->type                        = 'child';
 		$this->custom_css_tab              = false;
 		$this->child_title_var             = 'admin_title';
 		$this->advanced_setting_title_text = esc_html__( 'New Video', 'et_builder' );
 		$this->settings_text               = esc_html__( 'Video Settings', 'et_builder' );
 
-		$this->whitelisted_fields = array(
-			'admin_title',
-			'src',
-			'src_webm',
-			'image_src',
-			'background_layout',
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Video', 'et_builder' ),
@@ -34,12 +26,35 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 			),
 		);
 
-		$this->advanced_options = array(
-			'filters' => array(),
-		);
-
-		$this->fields_defaults = array(
-			'background_layout' => array( 'dark' ),
+		$this->advanced_fields = array(
+			'text'                  => array(
+				'use_text_orientation'  => false,
+				'use_background_layout' => true,
+				'options' => array(
+					'background_layout' => array(
+						'label'           => esc_html__( 'Slider Arrows Color', 'et_builder' ),
+						'option_category' => 'color_option',
+						'toggle_slug' => 'arrows_color',
+						'description' => esc_html__( 'This setting will make your slider arrows either light or dark in color.', 'et_builder' ),
+						'default' => 'dark',
+						'default_on_child' => true,
+					),
+				),
+			),
+			'box_shadow'            => array(
+				'default' => false,
+			),
+			'borders'               => array(
+				'default' => false,
+			),
+			'text_shadow'           => array(
+				'default' => false,
+			),
+			'background'            => false,
+			'fonts'                 => false,
+			'max_width'             => false,
+			'margin_padding' => false,
+			'button'                => false,
 		);
 	}
 
@@ -96,18 +111,6 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 				'classes'            => 'et_pb_video_overlay',
 				'description'        => esc_html__( 'Upload your desired image, or type in the URL to the image you would like to display over your video. You can also generate a still image from your video.', 'et_builder' ),
 				'toggle_slug'        => 'overlay',
-			),
-			'background_layout' => array(
-				'label'           => esc_html__( 'Slider Arrows Color', 'et_builder' ),
-				'type'            => 'select',
-				'option_category' => 'color_option',
-				'options'         => array(
-					'dark'  => esc_html__( 'Light', 'et_builder' ),
-					'light' => esc_html__( 'Dark', 'et_builder' ),
-				),
-				'tab_slug'    => 'advanced',
-				'toggle_slug' => 'arrows_color',
-				'description' => esc_html__( 'This setting will make your slider arrows either light or dark in color.', 'et_builder' ),
 			),
 			'__oembed_thumbnail' => array(
 				'type' => 'computed',
@@ -191,17 +194,14 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 		return $thumbnail_track_output;
  	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$src               = $this->shortcode_atts['src'];
-		$src_webm          = $this->shortcode_atts['src_webm'];
-		$image_src         = $this->shortcode_atts['image_src'];
-		$background_layout = $this->shortcode_atts['background_layout'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$src               = $this->props['src'];
+		$src_webm          = $this->props['src_webm'];
+		$image_src         = $this->props['image_src'];
+		$background_layout = $this->props['background_layout'];
 		$video_src         = '';
 
 		global $et_pb_slider_image_overlay;
-
-		$class  = ET_Builder_Element::add_module_order_class( '', $function_name );
-		$class .= " et_pb_bg_layout_{$background_layout}";
 
 		if ( '' !== $image_src ) {
 			$image_overlay_output = et_pb_set_video_oembed_thumbnail_resolution( $image_src, 'high' );
@@ -259,32 +259,30 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 			)
 		);
 
+		// Module classnames
+		$this->add_classname( array(
+			'et_pb_slide',
+			"et_pb_bg_layout_{$background_layout}",
+		) );
+
+		// Remove automatically added classnames
+		$this->remove_classname( array(
+			'et_pb_module',
+			$render_slug,
+		) );
+
 		$output = sprintf(
-			'<div class="et_pb_slide%1$s"%3$s>
+			'<div class="%1$s"%3$s>
 				%2$s
 			</div> <!-- .et_pb_slide -->
 			',
-			esc_attr( $class ),
+			$this->module_classname( $render_slug ),
 			( '' !== $video_output ? $video_output : '' ),
 			( '' !== $thumbnail_track_output ? sprintf( ' data-image="%1$s"', esc_attr( $thumbnail_track_output ) ) : '' )
 		);
 
 		return $output;
 	}
-
-	public function _add_additional_shadow_fields() {
-
-	}
-
-	protected function _add_additional_border_fields() {
-		return false;
-	}
-
-	function process_advanced_border_options( $function_name ) {
-		return false;
-	}
-
-
 }
 
 new ET_Builder_Module_Video_Slider_Item;

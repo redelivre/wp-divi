@@ -22,7 +22,7 @@ class ET_Builder_Module_Settings_Migration_Fullwidth_Header2 extends ET_Builder_
 		return $modules;
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 		// Migrate Fullwidth Header's text orientation justified to center
 		if ( 'et_pb_fullwidth_header' === $module_slug && 'text_orientation' === $field_name && isset( $this->fields['text_orientation']['map'][ $current_value ] ) ) {
 			return $this->fields['text_orientation']['map'][ $current_value ];

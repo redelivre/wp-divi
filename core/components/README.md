@@ -13,6 +13,7 @@ This directory contains all of Core's PHP Components. Components are organized i
 |Logger.php|ET_Core_Logger|Write to the debug log.
 |PageResource.php|ET_Core_PageResource|Cache inline styles & scripts as static files.|
 |Portability.php|ET_Core_Portability|Portability import/export|
+|Rollback.php|ET_Core_VersionRollback|Theme & plugin version rollback|
 |Updates.php|ET_Core_Updates|Theme & plugin updates|
 
 > ***Note:*** Component groups are in **bold**.

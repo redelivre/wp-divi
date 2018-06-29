@@ -17,6 +17,11 @@ class ET_Core_API_Email_ConvertKit extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $custom_fields_scope = 'account';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $name = 'ConvertKit';
 
 	/**
@@ -44,6 +49,14 @@ class ET_Core_API_Email_ConvertKit extends ET_Core_API_Email_Provider {
 
 		// ConvertKit doesn't have "lists". They have "forms" so we use "forms" as if they were "lists".
 		$this->LISTS_URL = "{$this->BASE_URL}/forms";
+	}
+
+	protected function _fetch_custom_fields( $list_id = '', $list = array() ) {
+		$this->response_data_key = 'custom_fields';
+
+		$this->prepare_request( $this->_generate_url_for_request( "{$this->BASE_URL}/custom_fields" ) );
+
+		return parent::_fetch_custom_fields( $list_id, $list );
 	}
 
 	/**
@@ -97,6 +110,33 @@ class ET_Core_API_Email_ConvertKit extends ET_Core_API_Email_Provider {
 		return esc_url_raw( add_query_arg( $key_type, $key, $url ) );
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			self::$_->array_set( $args, "fields.{$field_id}", $value );
+		}
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -114,25 +154,28 @@ class ET_Core_API_Email_ConvertKit extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$custom_fields_key = 'fields';
-
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'       => array(
+			'list'         => array(
 				'list_id'           => 'id',
 				'name'              => 'name',
 				'subscribers_count' => 'total_subscriptions',
 			),
-			'subscriber' => array(
-				'email' => 'email',
-				'name'  => 'first_name',
+			'subscriber'   => array(
+				'email'         => 'email',
+				'name'          => 'first_name',
+				'custom_fields' => 'custom_fields',
 			),
-			'error'      => array(
+			'error'        => array(
 				'error_message' => 'message',
-			)
+			),
+			'custom_field' => array(
+				'field_id' => 'key',
+				'name'     => 'label',
+			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -155,6 +198,7 @@ class ET_Core_API_Email_ConvertKit extends ET_Core_API_Email_Provider {
 			$with_subscriber_counts      = $this->_get_subscriber_counts( $this->response->DATA['forms'] );
 			$this->data['lists']         = $this->_process_subscriber_lists( $with_subscriber_counts );
 			$this->data['is_authorized'] = 'true';
+			$this->data['custom_fields'] = $this->_fetch_custom_fields( '', array_shift( $this->response->DATA['forms'] ) );
 
 			$this->save_data();
 		} else if ( $this->response->ERROR ) {
@@ -170,6 +214,7 @@ class ET_Core_API_Email_ConvertKit extends ET_Core_API_Email_Provider {
 	public function subscribe( $args, $url = '' ) {
 		$url = $this->_generate_url_for_request( $this->_get_subscribe_url( $args['list_id'] ) );
 		$params = $this->transform_data_to_provider_format( $args, 'subscriber' );
+		$params = $this->_process_custom_fields( $params );
 		$params['fields']['notes'] = $this->SUBSCRIBED_VIA;
 
 		$this->prepare_request( $url, 'POST', false, $params );

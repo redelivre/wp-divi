@@ -10,6 +10,27 @@
 abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 
 	/**
+	 * The URL from which custom fields for a list on this account can be retrieved.
+	 *
+	 * @var string
+	 */
+	public $FIELDS_URL;
+
+	/**
+	 * The URL from which groups/tags for a list on this account can be retrieved.
+	 *
+	 * @var string
+	 */
+	public $GROUPS_URL;
+
+	/**
+	 * The number of records to return from API (per request).
+	 *
+	 * @var int
+	 */
+	public $COUNT;
+
+	/**
 	 * The URL from which subscriber lists for this account can be retrieved.
 	 *
 	 * @var string
@@ -38,6 +59,24 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 	public $SUBSCRIBED_VIA;
 
 	/**
+	 * Type of support for custom fields offered by provider.
+	 *
+	 * @since ??
+	 *
+	 * @var bool|string Accepts `dynamic`, `predefined`, `false`. Default `predefined`.
+	 */
+	public $custom_fields = 'predefined';
+
+	/**
+	 * Type of support for custom fields offered by provider.
+	 *
+	 * @since ??
+	 *
+	 * @var string Accepts `list`, `account`.
+	 */
+	public $custom_fields_scope = 'list';
+
+	/**
 	 * Whether or not only a single name field is supported instead of first/last name fields.
 	 *
 	 * @var string
@@ -54,7 +93,89 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 
 		parent::__construct( $owner, $account_name, $api_key );
 
-		$this->SUBSCRIBED_VIA = sprintf( '%1$s %2$s.', esc_html__( 'Subscribed via', 'et_core' ), ucfirst( $this->owner ) );
+		if ( 'builder' === $this->owner ) {
+			$owner = 'Divi Builder';
+		} else {
+			$owner = ucfirst( $this->owner );
+		}
+
+		$this->SUBSCRIBED_VIA = sprintf( '%1$s %2$s.', esc_html__( 'Subscribed via', 'et_core' ), $owner );
+
+		/**
+		 * Filters the max number of results returned from email API provider per request.
+		 *
+		 * @since ??
+		 *
+		 * @param int $max_results_count
+		 */
+		$this->COUNT = apply_filters( 'et_core_api_email_max_results_count', 250 );
+	}
+
+	/**
+	 * Get custom fields for a subscriber list.
+	 *
+	 * @param int|string $list_id
+	 * @param array      $list
+	 *
+	 * @return array
+	 */
+	protected function _fetch_custom_fields( $list_id = '', $list = array() ) {
+		if ( 'dynamic' === $this->custom_fields ) {
+			return array();
+		}
+
+		if ( null === $this->request || $this->request->COMPLETE ) {
+			$this->prepare_request( $this->FIELDS_URL );
+		}
+
+		$this->make_remote_request();
+
+		$result = array();
+
+		if ( false !== $this->response_data_key && empty( $this->response_data_key ) ) {
+			// Let child class handle parsing the response data themselves.
+			return $result;
+		}
+
+		if ( $this->response->ERROR ) {
+			et_debug( $this->get_error_message() );
+			return $result;
+		}
+
+		if ( false === $this->response_data_key ) {
+			// The data returned by the service is not nested.
+			$data = $this->response->DATA;
+		} else {
+			// The data returned by the service is nested under a single key.
+			$data = $this->response->DATA[ $this->response_data_key ];
+		}
+
+		foreach ( $data as &$custom_field ) {
+			$custom_field = $this->transform_data_to_our_format( $custom_field, 'custom_field' );
+		}
+
+		$fields      = array();
+		$field_types = self::$_->array_get( $this->data_keys, 'custom_field_type' );
+
+		foreach ( $data as $field ) {
+			$field_id = $field['field_id'];
+			$type     = self::$_->array_get( $field, 'type', 'any' );
+
+			if ( $field_types && ! isset( $field_types[ $type ] ) ) {
+				// Unsupported field type. Make it 'text' instead.
+				$type = 'text';
+			}
+
+			if ( isset( $field['hidden'] ) && is_string( $field['hidden'] ) ) {
+				$field['hidden'] = 'false' === $field['hidden'] ? false : true;
+			}
+
+			$field['type'] = self::$_->array_get( $this->data_keys, "custom_field_type.{$type}", 'any' );
+
+			$fields[ $field_id ] = $field;
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -64,7 +185,7 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 		$options = parent::_get_data();
 
 		// return empty array in case of empty name
-		if ( '' === $this->account_name ) {
+		if ( '' === $this->account_name || ! is_string( $this->account_name ) ) {
 			return array();
 		}
 
@@ -77,6 +198,10 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 		}
 
 		return $options['accounts'][ $provider ][ $account ];
+	}
+
+	protected function _process_custom_fields( $args ) {
+		return $args;
 	}
 
 	/**
@@ -106,6 +231,12 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 
 			if ( ! array_key_exists( 'subscribers_count', $result[ $id ] ) ) {
 				$result[ $id ]['subscribers_count'] = 0;
+			}
+
+			$get_custom_fields = $this->custom_fields && 'list' === $this->custom_fields_scope;
+
+			if ( $get_custom_fields && $custom_fields = $this->_fetch_custom_fields( $id, $list ) ) {
+				$result[ $id ]['custom_fields'] = $custom_fields;
 			}
 		}
 
@@ -151,9 +282,7 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$keymap['custom_fields']     = $this->_get_custom_fields();
-		$keymap['custom_fields_key'] = $custom_fields_key;
+	public function get_data_keymap( $keymap = array() ) {
 		return $keymap;
 	}
 
@@ -188,8 +317,15 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 		}
 
 		if ( ! empty( $data ) ) {
-			$this->data['lists'] = $this->_process_subscriber_lists( $data );
+			$this->data['lists']         = $this->_process_subscriber_lists( $data );
 			$this->data['is_authorized'] = true;
+
+			$list = is_array( $data ) ? array_shift( $data ) : array();
+
+			if ( $this->custom_fields && 'account' === $this->custom_fields_scope ) {
+				$this->data['custom_fields'] = $this->_fetch_custom_fields( '', $list );
+			}
+
 			$this->save_data();
 		}
 
@@ -235,11 +371,17 @@ abstract class ET_Core_API_Email_Provider extends ET_Core_API_Service  {
 	 */
 	public function subscribe( $args, $url = '' ) {
 		if ( null === $this->request || $this->request->COMPLETE ) {
-			if ( ! in_array( 'ip_address', $args ) ) {
+			if ( ! in_array( 'ip_address', $args ) || 'true' === $args['ip_address'] ) {
 				$args['ip_address'] = et_core_get_ip_address();
+			} else if ( 'false' === $args['ip_address'] ) {
+				$args['ip_address'] = '0.0.0.0';
 			}
 
 			$args = $this->transform_data_to_provider_format( $args, 'subscriber' );
+
+			if ( $this->custom_fields ) {
+				$args = $this->_process_custom_fields( $args );
+			}
 
 			$this->prepare_request( $url, 'POST', false, $args );
 		} else if ( $this->request->JSON_BODY && ! is_string( $this->request->BODY ) && ! $this->uses_oauth ) {

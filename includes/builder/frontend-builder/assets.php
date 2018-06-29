@@ -29,7 +29,15 @@ function et_fb_enqueue_main_assets() {
 
 	// Load Divi Builder style.css file with hardcore CSS resets and Full Open Sans font if the Divi Builder plugin is active
 	if ( et_is_builder_plugin_active() ) {
-		wp_enqueue_style( 'et-builder-divi-builder-styles', "{$assets}/css/divi-builder-style.css", array( 'et-core-admin' ), $ver );
+		wp_enqueue_style(
+			'et-builder-divi-builder-styles',
+			"{$assets}/css/divi-builder-style.css",
+			array( 'et-core-admin', 'wp-color-picker' ),
+			$ver
+		);
+	}
+
+	if ( ! et_core_use_google_fonts() || et_is_builder_plugin_active() ) {
 		et_fb_enqueue_open_sans();
 	}
 
@@ -142,6 +150,8 @@ function et_fb_enqueue_assets() {
 		'wp-mediaelement',
 		'jquery-tablesorter',
 		'chart',
+		'react',
+		'react-dom',
 	);
 
 	// Add dependency on et-shortcode-js only if Divi Theme is used or ET Shortcodes plugin activated
@@ -164,11 +174,24 @@ function et_fb_enqueue_assets() {
 		wp_enqueue_script( 'avada' );
 	}
 
+	$DEBUG        = defined( 'ET_DEBUG' ) && ET_DEBUG;
+	$core_scripts = ET_CORE_URL . '/admin/js';
+
+	if ( $DEBUG || DiviExtensions::is_debugging_extension() ) {
+		wp_enqueue_script( 'react', 'https://cdn.jsdelivr.net/npm/react@16.2/umd/react.development.js', array(), '16.2', true );
+		wp_enqueue_script( 'react-dom', 'https://cdn.jsdelivr.net/npm/react-dom@16.2/umd/react-dom.development.js', array( 'react' ), '16.2', true );
+		add_filter( 'script_loader_tag', 'et_core_add_crossorigin_attribute', 10, 3 );
+	} else {
+		wp_enqueue_script( 'react', "{$core_scripts}/react.production.min.js", array(), '16.2', true );
+		wp_enqueue_script( 'react-dom', "{$core_scripts}/react-dom.production.min.js", array( 'react' ), '16.2', true );
+	}
+
 	// Enqueue scripts.
 	$bundle = "{$app}/bundle.js";
-	if ( defined( 'ET_DEBUG' ) && ET_DEBUG ) {
+	if ( $DEBUG ) {
 		$site_url       = wp_parse_url( get_site_url() );
 		$hot_bundle_url = "{$site_url['scheme']}://{$site_url['host']}:31495/bundle.js";
+
 		wp_enqueue_script( 'et-frontend-builder', $hot_bundle_url, $fb_bundle_dependencies, $ver, true );
 
 		// Add the bundle as fallback in case webpack-dev-server is not running

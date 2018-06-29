@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'ET_PB_AB_DB_VERSION' ) ) {
-	define( 'ET_PB_AB_DB_VERSION', 1.0 );
+	define( 'ET_PB_AB_DB_VERSION', '1.1' );
 }
 
 /**
@@ -760,45 +760,6 @@ function et_pb_ab_get_stats_data_duration() {
 }
 
 /**
- * Get subjects of particular post / AB Testing
- *
- * @param int    post id
- * @param string array|string type of output
- * @param mixed  string|bool  prefix that should be prepended
- */
-function et_pb_ab_get_subjects( $post_id, $type = 'array', $prefix = false, $is_cron_task = false ) {
-	$subjects_data = get_post_meta( $post_id, '_et_pb_ab_subjects', true );
-	$fb_enabled = function_exists( 'et_fb_enabled' ) ? et_fb_enabled() : false;
-
-	// Get autosave/draft subjects if post hasn't been published
-	if ( ! $is_cron_task && ! $subjects_data && $fb_enabled && 'publish' !== get_post_status() ) {
-		$subjects_data = get_post_meta( $post_id, '_et_pb_ab_subjects_draft', true );
-	}
-
-	// If user wants string
-	if ( 'string' === $type ) {
-		return $subjects_data;
-	}
-
-	// Convert into array
-	$subjects = explode(',', $subjects_data );
-
-	if ( ! empty( $subjects ) && $prefix ) {
-
-		$prefixed_subjects = array();
-
-		// Loop subject, add prefix
-		foreach ( $subjects as $subject ) {
-			$prefixed_subjects[] = $prefix . (string) $subject;
-		}
-
-		return $prefixed_subjects;
-	}
-
-	return $subjects;
-}
-
-/**
  * Get list of AB Testing event type
  *
  * @return array of event types
@@ -1057,27 +1018,30 @@ function et_pb_create_ab_tables() {
 		);
 	}
 
-	$sql_stats = "CREATE TABLE $stats_table_name (
+	$ab_tables_queries = array();
+
+	// Remove client_id column from stats table
+	if ( 0 < $wpdb->query( "SHOW COLUMNS FROM $stats_table_name LIKE 'client_id'" ) ) {
+		$wpdb->query( "ALTER TABLE $stats_table_name DROP COLUMN client_id" );
+	}
+
+	// Remove client subject table
+	if ( 0 <  $wpdb->query( $wpdb->prepare( "SHOW TABLES LIKE %s", $client_subject_table_name ) ) ) {
+		$wpdb->query( "DROP TABLE $client_subject_table_name" );
+	}
+
+	$ab_tables_queries[] = "CREATE TABLE $stats_table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		test_id varchar(20) NOT NULL,
 		subject_id varchar(20) NOT NULL,
 		record_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		event varchar(10) NOT NULL,
-		client_id varchar(32) NOT NULL,
-		UNIQUE KEY id (id)
-	) $charset_collate;";
-
-	$sql_client_subject = "CREATE TABLE $client_subject_table_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		test_id varchar(20) NOT NULL,
-		subject_id varchar(20) NOT NULL,
-		client_id varchar(32) NOT NULL,
 		UNIQUE KEY id (id)
 	) $charset_collate;";
 
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-	dbDelta( array( $sql_stats, $sql_client_subject ) );
+	dbDelta( $ab_tables_queries );
 
 	$db_settings = array(
 		'db_version' => ET_PB_AB_DB_VERSION,
@@ -1312,18 +1276,16 @@ function et_pb_ab_remove_stats( $test_id ) {
 		$test_id,
 	);
 
-	foreach ( array( 'stats', 'clients' ) as $table_suffix ) {
-		$table_name = $wpdb->prefix . 'et_divi_ab_testing_' . $table_suffix;
+	$table_name = $wpdb->prefix . 'et_divi_ab_testing_stats';
 
-		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
-			continue;
-		}
-
-		// construct sql query to remove value from DB table
-		$sql = "DELETE FROM $table_name WHERE test_id = %d";
-
-		$wpdb->query( $wpdb->prepare( $sql, $sql_args ) );
+	if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+		return;
 	}
+
+	// construct sql query to remove value from DB table
+	$sql = "DELETE FROM $table_name WHERE test_id = %d";
+
+	$wpdb->query( $wpdb->prepare( $sql, $sql_args ) );
 }
 
 /**
@@ -1353,3 +1315,73 @@ function et_pb_split_track( $atts ) {
 	return $output;
 }
 add_shortcode( 'et_pb_split_track', 'et_pb_split_track' );
+
+/**
+ * Initialize AB Testing. Check whether the user has visited the page or not by checking its cookie
+ *
+ * @since
+ *
+ * @return void
+ */
+function et_pb_ab_init() {
+	global $et_pb_ab_subject;
+
+	// Get post ID
+	$post_id = get_the_ID();
+
+	// Initialize AB Testing if builder and AB Testing is active
+	if ( is_singular() && et_pb_is_pagebuilder_used( $post_id ) && et_is_ab_testing_active() ) {
+		$ab_subjects        = et_pb_ab_get_subjects( $post_id );
+		$ab_hash_key        = defined( 'NONCE_SALT' ) ? NONCE_SALT : 'default-divi-hash-key';
+		$hashed_subject_id  = et_pb_ab_get_visitor_cookie( $post_id, 'view_page' );
+
+		if ( $hashed_subject_id ) {
+			// Compare subjects against hashed subject id found on cookie to verify whether cookie value is valid or not
+			foreach ( $ab_subjects as $ab_subject ) {
+				// Valid subject_id is found
+				if ( hash_hmac( 'md5', $ab_subject, $ab_hash_key ) === $hashed_subject_id ) {
+					$et_pb_ab_subject = $ab_subject;
+
+					// no need to continue
+					break;
+				}
+			}
+
+			// If no valid subject found, get the first one
+			if ( ! $et_pb_ab_subject && isset( $ab_subjects[0] ) ) {
+				$et_pb_ab_subject = $ab_subjects[0];
+			}
+		} else {
+			// First visit. Get next subject on queue
+			$next_subject_index  = get_post_meta( $post_id, '_et_pb_ab_next_subject' , true );
+
+			// Get current subject index based on `_et_pb_ab_next_subject` post meta value
+			$subject_index = false !== $next_subject_index && isset( $ab_subjects[ $next_subject_index ] ) ? (int) $next_subject_index : 0;
+
+			// Get current subject index
+			$et_pb_ab_subject = $ab_subjects[ $subject_index ];
+
+			// Hash the subject
+			$hashed_subject_id = hash_hmac( 'md5', $et_pb_ab_subject, $ab_hash_key );
+
+			// Set cookie for returning visit
+			et_pb_ab_set_visitor_cookie( $post_id, 'view_page', $hashed_subject_id );
+
+			// Bump subject index and save on post meta for next visitor
+			et_pb_ab_increment_current_ab_module_id( $post_id );
+
+			// log the view_page event right away
+			$is_et_fb_enabled = function_exists( 'et_fb_enabled' ) && et_fb_enabled();
+
+			if ( ! is_admin() && ! $is_et_fb_enabled ) {
+				et_pb_add_stats_record( array(
+						'test_id'     => $post_id,
+						'subject_id'  => $et_pb_ab_subject,
+						'record_type' => 'view_page',
+					)
+				);
+			}
+		}
+	}
+}
+add_action( 'wp', 'et_pb_ab_init' );

@@ -1,4 +1,4 @@
-( function( $ ) {
+(function($) {
 
 	"use strict";
 
@@ -163,4 +163,4 @@
 		etCore.applyMaxHeight();
 	} );
 
-} )( jQuery );
+})(jQuery);

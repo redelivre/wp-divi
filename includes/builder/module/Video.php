@@ -4,19 +4,9 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 	function init() {
 		$this->name = esc_html__( 'Video', 'et_builder' );
 		$this->slug = 'et_pb_video';
-		$this->fb_support = true;
+		$this->vb_support = 'on';
 
-		$this->whitelisted_fields = array(
-			'src',
-			'src_webm',
-			'image_src',
-			'play_icon_color',
-			'admin_label',
-			'module_id',
-			'module_class',
-		);
-
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Video', 'et_builder' ),
@@ -30,21 +20,21 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 			),
 		);
 
-		$this->custom_css_options = array(
+		$this->custom_css_fields = array(
 			'video_icon' => array(
 				'label'    => esc_html__( 'Video Icon', 'et_builder' ),
 				'selector' => '.et_pb_video_play',
 			),
 		);
 
-		$this->advanced_options = array(
-			'background' => array(
+		$this->advanced_fields = array(
+			'background'            => array(
 				'options' => array(
 					'background_color' => array(
-						'depends_to'      => array(
+						'depends_on'      => array(
 							'custom_padding',
 						),
-						'depends_to_responsive' => array(
+						'depends_on_responsive' => array(
 							'custom_padding',
 						),
 						'depends_show_if_not' => array(
@@ -55,7 +45,14 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 					),
 				),
 			),
-			'custom_margin_padding' => array(
+			'box_shadow'            => array(
+				'default' => array(
+					'css' => array(
+						'custom_style' => true,
+					),
+				),
+			),
+			'margin_padding' => array(
 				'css' => array(
 					'important' => array( 'custom_margin' ), // needed to overwrite last module margin-bottom styling
 				),
@@ -65,8 +62,16 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 					),
 				),
 			),
-			'max_width' => array(),
-			'filters' => array(),
+			'fonts'                 => false,
+			'text'                  => false,
+			'button'                => false,
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( '3jXN8CBz0TU' ),
+				'name' => esc_html__( 'An introduction to the Video module', 'et_builder' ),
+			),
 		);
 	}
 
@@ -128,42 +133,6 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'play_icon',
-			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
 			),
 			'__video' => array(
 				'type'                => 'computed',
@@ -237,13 +206,11 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 		return $image_output;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id       = $this->shortcode_atts['module_id'];
-		$module_class    = $this->shortcode_atts['module_class'];
-		$src             = $this->shortcode_atts['src'];
-		$src_webm        = $this->shortcode_atts['src_webm'];
-		$image_src       = $this->shortcode_atts['image_src'];
-		$play_icon_color = $this->shortcode_atts['play_icon_color'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$src             = $this->props['src'];
+		$src_webm        = $this->props['src_webm'];
+		$image_src       = $this->props['image_src'];
+		$play_icon_color = $this->props['play_icon_color'];
 
 		$video_src       = self::get_video( array(
 			'src'      => $src,
@@ -254,12 +221,11 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 			'image_src' => $image_src,
 		) );
 
-		$module_class              = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
 		if ( '' !== $play_icon_color ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector' => '%%order_class%% .et_pb_video_overlay .et_pb_video_play',
 				'declaration' => sprintf(
 					'color: %1$s;',
@@ -269,17 +235,17 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 		}
 
 		$output = sprintf(
-			'<div%2$s class="et_pb_module et_pb_video%3$s%5$s%7$s">
-				%8$s
+			'<div%2$s class="%3$s">
 				%6$s
+				%5$s
 				<div class="et_pb_video_box">
 					%1$s
 				</div>
 				%4$s
 			</div>',
 			( '' !== $video_src ? $video_src : '' ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
+			$this->module_id(),
+			$this->module_classname( $render_slug ),
 			( '' !== $image_output
 				? sprintf(
 					'<div class="et_pb_video_overlay" style="background-image: url(%1$s);">
@@ -291,22 +257,11 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 				)
 				: ''
 			),
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
 			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
 			$parallax_image_background
 		);
 
 		return $output;
-	}
-
-	public function process_box_shadow( $function_name ) {
-		$boxShadow = ET_Builder_Module_Fields_Factory::get( 'BoxShadow' );
-
-		self::set_style( $function_name, $boxShadow->get_style(
-			'.' . self::get_module_order_class( $function_name ),
-			$this->shortcode_atts
-		) );
 	}
 }
 

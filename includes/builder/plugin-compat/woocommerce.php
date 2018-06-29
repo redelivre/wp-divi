@@ -34,6 +34,12 @@ class ET_Builder_Plugin_Compat_WooCommerce extends ET_Builder_Plugin_Compat_Base
 
 		// Up to: latest theme version
 		add_filter( 'et_grab_image_setting', array( $this, 'disable_et_grab_image_setting' ), 1 );
+
+		// Hook before calling comments_template function in module.
+		add_action( 'et_fb_before_comments_template', array( $this, 'remove_filter_comments_number_by_woo' ) );
+
+		// Hook afer calling comments_template function in module.
+		add_action( 'et_fb_after_comments_template', array( $this, 'restore_filter_comments_number_by_woo' ) );
 	}
 
 	/**
@@ -47,6 +53,29 @@ class ET_Builder_Plugin_Compat_WooCommerce extends ET_Builder_Plugin_Compat_Base
 	 */
 	function disable_et_grab_image_setting( $settings ) {
 		return ( is_cart() || is_account_page() ) ? false : $settings;
+	}
+
+	/**
+	 * Remove comments_number filter added by Woo that caused missing comment
+	 * count in Comment module
+	 *
+	 * @return void
+	 */
+	public function remove_filter_comments_number_by_woo() {
+		if ( ! current_theme_supports( 'woocommerce' ) || ( function_exists( 'wc_get_page_id' ) && wc_get_page_id( 'shop' ) < 0 ) ) {
+			remove_filter( 'comments_number', '__return_empty_string' );
+		}
+	}
+
+	/**
+	 * Restore comments_number that removed by remove_filter_comments_number_by_woo
+	 *
+	 * @return void
+	 */
+	public function restore_filter_comments_number_by_woo() {
+		if ( ! current_theme_supports( 'woocommerce' ) || ( function_exists( 'wc_get_page_id' ) && wc_get_page_id( 'shop' ) < 0 ) ) {
+			add_filter( 'comments_number', '__return_empty_string' );
+		}
 	}
 }
 new ET_Builder_Plugin_Compat_WooCommerce;

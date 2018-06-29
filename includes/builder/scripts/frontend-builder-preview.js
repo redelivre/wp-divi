@@ -1,11 +1,11 @@
 (function($){
 	// Turn of all hrefs which point to another page
-	$('body').on( 'click', 'a', function( event ){
-		var href  = $(this).attr( 'href'),
-			start = href.substr( 0, 1 );
+	$('body').on('click', 'a', function(event) {
+		var href  = $(this).attr('href');
+		var start = typeof href !== 'undefined' ? href.substr(0, 1) : '';
 
 		// Stop the link if it points to another URL
-		if ( start !== '#' && start !== '' ) {
+		if (start !== '#' && start !== '') {
 			event.preventDefault();
 
 			// Display notification

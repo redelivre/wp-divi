@@ -1,6 +1,7 @@
 <?php
 
-require_once( ET_BUILDER_DIR . 'core.php' );
+require_once ET_BUILDER_DIR . 'core.php';
+require_once ET_BUILDER_DIR . 'api/DiviExtensions.php';
 
 if ( wp_doing_ajax() && ! is_customize_preview() ) {
 	define( 'WPE_HEARTBEAT_INTERVAL', et_builder_heartbeat_interval() );
@@ -35,6 +36,8 @@ if ( wp_doing_ajax() && ! is_customize_preview() ) {
 			'save_epanel',                      // ePanel (global builder settings)
 			'et_builder_library_get_layout',
 			'et_builder_library_get_layouts_data',
+			'et_fb_fetch_attachments',
+			'et_pb_get_saved_templates',
 		),
 	);
 
@@ -110,7 +113,7 @@ function et_builder_load_modules_styles() {
 	$is_fb_enabled = function_exists( 'et_fb_enabled' ) ? et_fb_enabled() : false;
 	$is_ab_testing = function_exists( 'et_is_ab_testing_active' ) ? et_is_ab_testing_active() : false;
 
-	wp_register_script( 'google-maps-api', esc_url( add_query_arg( array( 'key' => et_pb_get_google_api_key(), 'callback' => 'initMap' ), is_ssl() ? 'https://maps.googleapis.com/maps/api/js' : 'http://maps.googleapis.com/maps/api/js' ) ), array(), ET_BUILDER_VERSION, true );
+	wp_register_script( 'google-maps-api', esc_url_raw( add_query_arg( array( 'v' => 3, 'key' => et_pb_get_google_api_key() ), is_ssl() ? 'https://maps.googleapis.com/maps/api/js' : 'http://maps.googleapis.com/maps/api/js' ) ), array(), ET_BUILDER_VERSION, true );
 	wp_register_script( 'hashchange', ET_BUILDER_URI . '/scripts/jquery.hashchange.js', array( 'jquery' ), ET_BUILDER_VERSION, true );
 	wp_register_script( 'salvattore', ET_BUILDER_URI . '/scripts/salvattore.min.js', array(), ET_BUILDER_VERSION, true );
 	wp_register_script( 'easypiechart', ET_BUILDER_URI . '/scripts/jquery.easypiechart.js', array( 'jquery' ), ET_BUILDER_VERSION, true );
@@ -296,7 +299,7 @@ function et_builder_get_minified_styles() {
 /**
  * Re-enqueue listed concatenated & minified scripts (and their possible alternative name) used empty string
  * to keep its dependency in order but avoiding WordPress to print the script to avoid the same file printed twice
- * Case in point: salvattore that is being called via builder module's shortcode_callback() method
+ * Case in point: salvattore that is being called via builder module's render() method
  * @return void
  */
 function et_builder_dequeue_minified_scripts() {
@@ -504,8 +507,14 @@ function et_builder_load_framework() {
 		}
 	}
 
-	// load builder files on front-end and on specific admin pages only.
-	$action_hook = is_admin() ? 'wp_loaded' : 'wp';
+	/**
+	 * Filters builder modules loading hook. Load builder files on front-end and on specific admin pages only by default.
+	 *
+	 * @since 3.1
+	 *
+	 * @param string Hook name.
+	 */
+	$action_hook = apply_filters( 'et_builder_modules_load_hook', is_admin() ? 'wp_loaded' : 'wp' );
 
 	if ( et_builder_should_load_framework() ) {
 		require ET_BUILDER_DIR . 'class-et-builder-element.php';
@@ -518,7 +527,7 @@ function et_builder_load_framework() {
 
 		do_action( 'et_builder_framework_loaded' );
 
-		add_action( $action_hook, 'et_builder_init_global_settings', apply_filters( 'et_pb_load_global_settings_priority', 9 )  );
+		add_action( $action_hook, 'et_builder_init_global_settings', apply_filters( 'et_pb_load_global_settings_priority', 9 ) );
 		add_action( $action_hook, 'et_builder_add_main_elements', apply_filters( 'et_pb_load_main_elements_priority', 10 ) );
 	} else if ( is_admin() ) {
 		require ET_BUILDER_DIR . 'class-et-builder-plugin-compat-base.php';

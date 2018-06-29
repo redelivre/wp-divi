@@ -31,7 +31,7 @@ class ET_Builder_Module_Settings_Migration_Fullwidth_Header extends ET_Builder_M
 		return $modules;
 	}
 
-	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs ) {
+	public function migrate( $field_name, $current_value, $module_slug, $saved_value, $saved_field_name, $attrs, $content ) {
 		if ( '' !== $current_value ) {
 			return $current_value;
 		}

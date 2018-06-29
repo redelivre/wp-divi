@@ -4,50 +4,13 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 	function init() {
 		$this->name             = esc_html__( 'Fullwidth Post Title', 'et_builder' );
 		$this->slug             = 'et_pb_fullwidth_post_title';
-		$this->fb_support       = true;
+		$this->vb_support       = 'on';
 		$this->fullwidth        = true;
 		$this->defaults         = array();
 		$this->featured_image_background = true;
-
-		$this->whitelisted_fields = array(
-			'title',
-			'meta',
-			'author',
-			'date',
-			'date_format',
-			'categories',
-			'comments',
-			'featured_image',
-			'featured_placement',
-			'text_color',
-			'text_background',
-			'text_bg_color',
-			'admin_label',
-			'module_id',
-			'module_class',
-		);
-
-		$this->fields_defaults = array(
-			'title'              => array( 'on' ),
-			'meta'               => array( 'on' ),
-			'author'             => array( 'on' ),
-			'date'               => array( 'on' ),
-			'date_format'        => array( 'M j, Y' ),
-			'categories'         => array( 'on' ),
-			'comments'           => array( 'on' ),
-			'featured_image'     => array( 'on' ),
-			'featured_placement' => array( 'below' ),
-			'parallax'           => array( 'off' ),
-			'parallax_method'    => array( 'on' ),
-			'text_orientation'   => array( 'left' ),
-			'text_color'         => array( 'dark' ),
-			'text_background'    => array( 'off' ),
-			'text_bg_color'      => array( 'rgba(255,255,255,0.9)', 'only_default_setting' ),
-		);
-
 		$this->main_css_element = '%%order_class%%';
 
-		$this->options_toggles = array(
+		$this->settings_modal_toggles = array(
 			'general'  => array(
 				'toggles' => array(
 					'elements'    => esc_html__( 'Elements', 'et_builder' ),
@@ -64,22 +27,24 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 			),
 		);
 
-		$this->advanced_options = array(
-			'border' => array(
-				'css' => array(
-					'main' => array(
-						'border_radii'  => "{$this->main_css_element}.et_pb_featured_bg, {$this->main_css_element}",
-						'border_styles' => "{$this->main_css_element}.et_pb_featured_bg, {$this->main_css_element}",
+		$this->advanced_fields = array(
+			'borders'               => array(
+				'default' => array(
+					'css' => array(
+						'main' => array(
+							'border_radii'  => "{$this->main_css_element}.et_pb_featured_bg, {$this->main_css_element}",
+							'border_styles' => "{$this->main_css_element}.et_pb_featured_bg, {$this->main_css_element}",
+						),
 					),
 				),
 			),
-			'custom_margin_padding' => array(
+			'margin_padding' => array(
 				'css' => array(
 					'main' => ".et_pb_fullwidth_section {$this->main_css_element}.et_pb_post_title",
 					'important' => 'all',
 				),
 			),
-			'fonts' => array(
+			'fonts'                 => array(
 				'title' => array(
 					'label'    => esc_html__( 'Title', 'et_builder' ),
 					'use_all_caps' => true,
@@ -98,21 +63,27 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					),
 				),
 			),
-			'background' => array(
+			'background'            => array(
 				'css' => array(
 					'main' => "{$this->main_css_element}, {$this->main_css_element}.et_pb_featured_bg",
 				),
 			),
-			'max_width' => array(
+			'max_width'             => array(
 				'css' => array(
 					'module_alignment' => '.et_pb_fullwidth_section %%order_class%%.et_pb_post_title.et_pb_module',
 				),
 			),
-			'text'      => array(),
-			'filters'   => array(),
+			'text'                  => array(
+				'options' => array(
+					'text_orientation' => array(
+						'default'          => 'left',
+					),
+				),
+			),
+			'button'                => false,
 		);
 
-		$this->custom_css_options = array(
+		$this->custom_css_fields = array(
 			'post_title' => array(
 				'label'    => esc_html__( 'Title', 'et_builder' ),
 				'selector' => 'h1',
@@ -124,6 +95,13 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 			'post_image' => array(
 				'label'    => esc_html__( 'Featured Image', 'et_builder' ),
 				'selector' => '.et_pb_title_featured_container',
+			),
+		);
+
+		$this->help_videos = array(
+			array(
+				'id'   => esc_html( 'wb8c06U0uCU' ),
+				'name' => esc_html__( 'An introduction to the Fullwidth Post Title module', 'et_builder' ),
 			),
 		);
 	}
@@ -138,6 +116,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front'  => 'on',
 				'toggle_slug'       => 'elements',
 				'description'       => esc_html__( 'Here you can choose whether or not display the Post Title', 'et_builder' ),
 			),
@@ -149,6 +128,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front'  => 'on',
 				'affects'           => array(
 					'author',
 					'date',
@@ -166,6 +146,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front'  => 'on',
 				'depends_show_if'   => 'on',
 				'toggle_slug'       => 'elements',
 				'description'       => esc_html__( 'Here you can choose whether or not display the Author Name in Post Meta', 'et_builder' ),
@@ -178,6 +159,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front'  => 'on',
 				'depends_show_if'   => 'on',
 				'affects'           => array(
 					'date_format',
@@ -189,6 +171,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 				'label'             => esc_html__( 'Date Format', 'et_builder' ),
 				'type'              => 'text',
 				'option_category'   => 'configuration',
+				'default_on_front'  => 'M j, Y',
 				'depends_show_if'   => 'on',
 				'toggle_slug'       => 'elements',
 				'description'       => esc_html__( 'Here you can define the Date Format in Post Meta. Default is \'M j, Y\'', 'et_builder' ),
@@ -204,6 +187,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 				'depends_show_if'   => 'on',
 				'toggle_slug'       => 'elements',
 				'description'       => esc_html__( 'Here you can choose whether or not display the Categories in Post Meta. Note: This option doesn\'t work with custom post types.', 'et_builder' ),
+				'default_on_front'  => 'on',
 			),
 			'comments' => array(
 				'label'             => esc_html__( 'Show Comments Count', 'et_builder' ),
@@ -213,6 +197,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front'  => 'on',
 				'depends_show_if'   => 'on',
 				'toggle_slug'       => 'elements',
 				'description'       => esc_html__( 'Here you can choose whether or not display the Comments Count in Post Meta.', 'et_builder' ),
@@ -225,6 +210,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
+				'default_on_front'  => 'on',
 				'affects'           => array(
 					'featured_placement',
 				),
@@ -240,6 +226,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'above'      => esc_html__( 'Above Title', 'et_builder' ),
 					'background' => esc_html__( 'Title/Meta Background Image', 'et_builder' ),
 				),
+				'default_on_front'  => 'below',
 				'depends_show_if'   => 'on',
 				'toggle_slug'       => 'elements',
 				'description'       => esc_html__( 'Here you can choose where to place the Featured Image', 'et_builder' ),
@@ -252,6 +239,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'dark'  => esc_html__( 'Dark', 'et_builder' ),
 					'light' => esc_html__( 'Light', 'et_builder' ),
 				),
+				'default_on_front'  => 'dark',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 				'description'       => esc_html__( 'Here you can choose the color for the Title/Meta text', 'et_builder' ),
@@ -264,6 +252,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 					'off' => esc_html__( 'No', 'et_builder' ),
 					'on'  => esc_html__( 'Yes', 'et_builder' ),
 				),
+				'default_on_front'  => 'off',
 				'affects'           => array(
 					'text_bg_color',
 				),
@@ -272,76 +261,37 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 				'description'       => esc_html__( 'Here you can choose whether or not use the background color for the Title/Meta text', 'et_builder' ),
 			),
 			'text_bg_color' => array(
+				'default'           => 'rgba(255,255,255,0.9)',
 				'label'             => esc_html__( 'Text Background Color', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 			),
-			'disabled_on' => array(
-				'label'           => esc_html__( 'Disable on', 'et_builder' ),
-				'type'            => 'multiple_checkboxes',
-				'options'         => array(
-					'phone'   => esc_html__( 'Phone', 'et_builder' ),
-					'tablet'  => esc_html__( 'Tablet', 'et_builder' ),
-					'desktop' => esc_html__( 'Desktop', 'et_builder' ),
-				),
-				'additional_att'  => 'disable_on',
-				'option_category' => 'configuration',
-				'description'     => esc_html__( 'This will disable the module on selected devices', 'et_builder' ),
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'visibility',
-			),
-			'admin_label' => array(
-				'label'       => esc_html__( 'Admin Label', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'This will change the label of the module in the builder for easy identification.', 'et_builder' ),
-				'toggle_slug' => 'admin_label',
-			),
-			'module_id' => array(
-				'label'           => esc_html__( 'CSS ID', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
-			'module_class' => array(
-				'label'           => esc_html__( 'CSS Class', 'et_builder' ),
-				'type'            => 'text',
-				'option_category' => 'configuration',
-				'tab_slug'        => 'custom_css',
-				'toggle_slug'     => 'classes',
-				'option_class'    => 'et_pb_custom_css_regular',
-			),
 		);
 
 		return $fields;
 	}
 
-	function shortcode_callback( $atts, $content = null, $function_name ) {
-		$module_id          = $this->shortcode_atts['module_id'];
-		$module_class       = $this->shortcode_atts['module_class'];
-		$title              = $this->shortcode_atts['title'];
-		$meta               = $this->shortcode_atts['meta'];
-		$author             = $this->shortcode_atts['author'];
-		$date               = $this->shortcode_atts['date'];
-		$date_format        = $this->shortcode_atts['date_format'];
-		$categories         = $this->shortcode_atts['categories'];
-		$comments           = $this->shortcode_atts['comments'];
-		$featured_image     = $this->shortcode_atts['featured_image'];
-		$featured_placement = $this->shortcode_atts['featured_placement'];
-		$text_color         = $this->shortcode_atts['text_color'];
-		$text_background    = $this->shortcode_atts['text_background'];
-		$text_bg_color      = $this->shortcode_atts['text_bg_color'];
-		$header_level       = $this->shortcode_atts['title_level'];
+	function render( $attrs, $content = null, $render_slug ) {
+		$title              = $this->props['title'];
+		$meta               = $this->props['meta'];
+		$author             = $this->props['author'];
+		$date               = $this->props['date'];
+		$date_format        = $this->props['date_format'];
+		$categories         = $this->props['categories'];
+		$comments           = $this->props['comments'];
+		$featured_image     = $this->props['featured_image'];
+		$featured_placement = $this->props['featured_placement'];
+		$text_color         = $this->props['text_color'];
+		$text_background    = $this->props['text_background'];
+		$text_bg_color      = $this->props['text_bg_color'];
+		$header_level       = $this->props['title_level'];
 
 		// display the shortcode only on singlular pages
 		if ( ! is_singular() ) {
 			return;
 		}
-
-		$module_class = ET_Builder_Element::add_module_order_class( $module_class, $function_name );
 
 		$output = '';
 		$featured_image_output = '';
@@ -382,7 +332,7 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 		}
 
 		if ( 'on' === $text_background ) {
-			ET_Builder_Element::set_style( $function_name, array(
+			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%% .et_pb_title_container',
 				'declaration' => sprintf(
 					'background-color: %1$s; padding: 1em 1.5em;',
@@ -391,49 +341,53 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 			) );
 		}
 
-		$video_background = $this->video_background();
-
+		$video_background  = $this->video_background();
 		$background_layout = 'dark' === $text_color ? 'light' : 'dark';
-		$module_class .= ' et_pb_bg_layout_' . $background_layout;
 
-		$module_class .= 'above' === $featured_placement ? ' et_pb_image_above' : '';
-		$module_class .= 'below' === $featured_placement ? ' et_pb_image_below' : '';
+		// Module classnames
+		$this->add_classname( array(
+			'et_pb_post_title',
+			$this->get_text_orientation_classname(),
+			"et_pb_bg_layout_{$background_layout}",
+		) );
+
+		if ( 'on' === $featured_image && 'background' === $featured_placement ) {
+			$this->add_classname( 'et_pb_featured_bg' );
+		}
+
+		if ( 'above' === $featured_placement ) {
+			$this->add_classname( 'et_pb_image_above' );
+		}
+
+		if ( 'below' === $featured_placement ) {
+			$this->add_classname( 'et_pb_image_below' );
+		}
+
+		// Remove automatically added classnames
+		$this->remove_classname( array(
+			'et_pb_fullwidth_post_title',
+		) );
 
 		$output = sprintf(
-			'<div%3$s class="et_pb_module et_pb_post_title %2$s%4$s%8$s%10$s%11$s">
+			'<div%3$s class="%2$s">
+				%4$s
+				%7$s
 				%5$s
-				%9$s
-				%6$s
 				<div class="et_pb_title_container">
 					%1$s
 				</div>
-				%7$s
+				%6$s
 			</div>',
 			$output,
-			( '' !== $module_class ? sprintf( ' %1$s', esc_attr( $module_class ) ) : '' ),
-			( '' !== $module_id ? sprintf( ' id="%1$s"', esc_attr( $module_id ) ) : '' ),
-			'on' === $featured_image && 'background' === $featured_placement ? ' et_pb_featured_bg' : '',
+			$this->module_classname( $render_slug ),
+			$this->module_id(),
 			$parallax_image_background,
 			'on' === $featured_image && 'above' === $featured_placement ? $featured_image_output : '',
 			'on' === $featured_image && 'below' === $featured_placement ? $featured_image_output : '',
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
-			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
-			$this->get_text_orientation_classname()
+			$video_background
 		);
 
 		return $output;
-	}
-
-	protected function _add_additional_border_fields() {
-		parent::_add_additional_border_fields();
-
-		$this->advanced_options["border"]['css'] = array(
-			'main' => array(
-				'border_radii'  => "{$this->main_css_element}.et_pb_featured_bg, {$this->main_css_element}",
-				'border_styles' => "{$this->main_css_element}.et_pb_featured_bg, {$this->main_css_element}",
-			)
-		);
 	}
 }
 

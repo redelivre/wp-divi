@@ -27,6 +27,11 @@ class ET_Core_API_Email_MadMimi extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $custom_fields = 'dynamic';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $name = 'MadMimi';
 
 	/**
@@ -56,6 +61,33 @@ class ET_Core_API_Email_MadMimi extends ET_Core_API_Email_Provider {
 		}
 	}
 
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			self::$_->array_set( $args, $field_id, $value );
+		}
+
+		return $args;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -73,7 +105,7 @@ class ET_Core_API_Email_MadMimi extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
 			'list'       => array(
 				'list_id'           => 'id',
@@ -81,13 +113,14 @@ class ET_Core_API_Email_MadMimi extends ET_Core_API_Email_Provider {
 				'subscribers_count' => 'list_size',
 			),
 			'subscriber' => array(
-				'name'      => 'first_name',
-				'last_name' => 'last_name',
-				'email'     => 'email',
+				'name'          => 'first_name',
+				'last_name'     => 'last_name',
+				'email'         => 'email',
+				'custom_fields' => 'custom_fields',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -115,8 +148,11 @@ class ET_Core_API_Email_MadMimi extends ET_Core_API_Email_Provider {
 
 		$this->_maybe_set_urls( $args['list_id'] );
 
+		$ip_address = 'true' === self::$_->array_get( $args, 'ip_address', 'true' ) ? et_core_get_ip_address() : '0.0.0.0';
+
 		$args                   = $this->transform_data_to_provider_format( $args, 'subscriber' );
-		$args['ip_address']     = et_core_get_ip_address();
+		$args                   = $this->_process_custom_fields( $args );
+		$args['ip_address']     = $ip_address;
 		$args['subscribed_via'] = $this->SUBSCRIBED_VIA;
 
 		$this->SUBSCRIBE_URL = add_query_arg( $args, $this->SUBSCRIBE_URL );

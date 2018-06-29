@@ -15,7 +15,6 @@ class ET_Core_API_Email_MailChimp extends ET_Core_API_Email_Provider {
 	public $BASE_URL = '';
 
 	/**
-	 * @inheritDoc
 	 * Use this variable to hold the pattern and update $BASE_URL dynamically when needed
 	 */
 	public $BASE_URL_PATTERN = 'https://@datacenter@.api.mailchimp.com/3.0';
@@ -58,31 +57,112 @@ class ET_Core_API_Email_MailChimp extends ET_Core_API_Email_Provider {
 		$this->make_remote_request();
 	}
 
-	protected function _fetch_subscriber_groups() {
-		$query = array( 'count' => 500, 'fields' => 'segments.id,segments.name,segments.member_count' );
+	protected function _fetch_custom_fields( $list_id = '', $list = array() ) {
+		$this->response_data_key = 'merge_fields';
 
-		foreach ( array_keys( $this->data['lists'] ) as $list_id ) {
-			$url = "{$this->BASE_URL}/lists/{$list_id}/segments";
+		$this->prepare_request( "{$this->BASE_URL}/lists/{$list_id}/merge-fields?count={$this->COUNT}" );
 
-			$this->prepare_request( $url, 'GET', false, $query );
-			$this->make_remote_request();
+		$fields = parent::_fetch_custom_fields( $list_id, $list );
 
-			if ( ! $this->response->ERROR && ! empty( $this->response->DATA['segments'] ) ) {
-				$groups = $this->response->DATA['segments'];
-				$this->_process_subscriber_groups( $list_id, $groups );
+		foreach ( $fields as $id => $field ) {
+			if ( in_array( $id, array( 1, 2 ) ) ) {
+				unset( $fields[ $id ] );
 			}
 		}
+
+		// MailChimp is weird in that they treat checkbox fields as an entirely different concept in their API (Groups)
+		// We'll grab the groups and treat them as checkbox fields in our UI.
+		$groups = $this->_fetch_subscriber_list_groups( $list_id );
+
+		return $fields + $groups;
 	}
 
-	protected function _process_subscriber_groups( $list_id, $groups ) {
-		$subscriber_groups = array();
+	protected function _fetch_subscriber_list_group_options( $list_id, $group_id ) {
+		$this->prepare_request( "{$this->BASE_URL}/lists/{$list_id}/interest-categories/{$group_id}/interests?count={$this->COUNT}" );
 
-		foreach ( $groups as $group ) {
-			$group_id                       = $group['id'];
-			$subscriber_groups[ $group_id ] = $this->transform_data_to_our_format( $group, 'subscriber_group' );
+		$this->make_remote_request();
+
+		if ( $this->response->ERROR ) {
+			et_debug( $this->get_error_message() );
+
+			return array();
 		}
 
-		$this->data['lists'][ $list_id ]['subscriber_groups'] = $subscriber_groups;
+		$data    = $this->response->DATA['interests'];
+		$options = array();
+
+		foreach ( $data as $option ) {
+			$option = $this->transform_data_to_our_format( $option, 'group_option' );
+			$id     = $option['id'];
+
+			$options[ $id ] = $option['name'];
+		}
+
+		return $options;
+	}
+
+	protected function _fetch_subscriber_list_groups( $list_id ) {
+		$this->response_data_key = 'categories';
+
+		$this->prepare_request( "{$this->BASE_URL}/lists/{$list_id}/interest-categories?count={$this->COUNT}" );
+		$this->make_remote_request();
+
+		$groups = array();
+
+		if ( false !== $this->response_data_key && empty( $this->response_data_key ) ) {
+			// Let child class handle parsing the response data themselves.
+			return $groups;
+		}
+
+		if ( $this->response->ERROR ) {
+			et_debug( $this->get_error_message() );
+
+			return $groups;
+		}
+
+		$data = $this->response->DATA[ $this->response_data_key ];
+
+		foreach ( $data as $group ) {
+			$group    = $this->transform_data_to_our_format( $group, 'group' );
+			$field_id = $group['field_id'];
+			$type     = $group['type'];
+
+			if ( 'hidden' === $type ) {
+				// MailChimp only allows groups of type: 'checkbox' to be hidden.
+				$group['type']   = 'checkbox';
+				$group['hidden'] = true;
+			}
+
+			$group['is_group'] = true;
+			$group['options']  = $this->_fetch_subscriber_list_group_options( $list_id, $field_id );
+			$group['type']     = self::$_->array_get( $this->data_keys, "custom_field_type.{$type}", 'text' );
+
+			$groups[ $field_id ] = $group;
+		}
+
+		return $groups;
+	}
+
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				foreach ( $value as $id => $field_value ) {
+					self::$_->array_set( $args, "interests.{$id}", true );
+				}
+			} else {
+				self::$_->array_set( $args, "merge_fields.MMERGE{$field_id}", $value );
+			}
+		}
+
+		return $args;
 	}
 
 	protected function _set_base_url() {
@@ -102,7 +182,7 @@ class ET_Core_API_Email_MailChimp extends ET_Core_API_Email_Provider {
 		$this->_set_base_url();
 
 		/**
-		 * The maximum number of subscriber lists to request from Mailchimp's API.
+		 * The maximum number of subscriber lists to request from MailChimp's API.
 		 *
 		 * @since 2.0.0
 		 *
@@ -110,7 +190,7 @@ class ET_Core_API_Email_MailChimp extends ET_Core_API_Email_Provider {
 		 */
 		$max_lists = (int) apply_filters( 'et_core_api_email_mailchimp_max_lists', 250 );
 
-		$url = "{$this->BASE_URL}/lists?count={$max_lists}&fields=lists.name,lists.id,lists.stats";
+		$url = "{$this->BASE_URL}/lists?count={$max_lists}&fields=lists.name,lists.id,lists.stats,lists.double_optin";
 
 		$this->prepare_request( $url );
 
@@ -135,31 +215,54 @@ class ET_Core_API_Email_MailChimp extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$custom_fields_key = 'merge_fields';
-
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
-			'list'             => array(
+			'list'              => array(
 				'list_id'           => 'id',
 				'name'              => 'name',
+				'double_optin'      => 'double_optin',
 				'subscribers_count' => 'stats.member_count',
 			),
-			'subscriber'       => array(
-				'email'     => 'email_address',
-				'name'      => 'merge_fields.FNAME',
-				'last_name' => 'merge_fields.LNAME',
+			'subscriber'        => array(
+				'email'         => 'email_address',
+				'name'          => 'merge_fields.FNAME',
+				'last_name'     => 'merge_fields.LNAME',
+				'custom_fields' => 'custom_fields',
 			),
-			'subscriber_group' => array(
-				'group_id'          => 'id',
-				'name'              => 'name',
-				'subscribers_count' => 'member_count'
-			),
-			'error' => array(
+			'error'             => array(
 				'error_message' => 'detail',
+			),
+			'custom_field'      => array(
+				'field_id' => 'merge_id',
+				'name'     => 'name',
+				'type'     => 'type',
+				'hidden'   => '!public',
+				'options'  => 'options.choices',
+			),
+			'custom_field_type' => array(
+				// Us <=> Them
+				'radio'      => 'radio',
+				// Us => Them
+				'input'      => 'text',
+				'select'     => 'dropdown',
+				'checkbox'   => 'checkboxes',
+				// Them => Us
+				'text'       => 'input',
+				'dropdown'   => 'select',
+				'checkboxes' => 'checkbox',
+			),
+			'group'             => array(
+				'field_id' => 'id',
+				'name'     => 'title',
+				'type'     => 'type',
+			),
+			'group_option'      => array(
+				'id'   => 'id',
+				'name' => 'name',
 			),
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	public function get_subscriber( $list_id, $email ) {
@@ -174,25 +277,31 @@ class ET_Core_API_Email_MailChimp extends ET_Core_API_Email_Provider {
 	 * @inheritDoc
 	 */
 	public function subscribe( $args, $url = '' ) {
-		$dbl_optin = empty( $args['dbl_optin'] );
 		$list_id   = $args['list_id'];
 		$args      = $this->transform_data_to_provider_format( $args, 'subscriber' );
 		$url       = "{$this->BASE_URL}/lists/{$list_id}/members";
 		$email     = $args['email_address'];
 		$err       = esc_html__( 'An error occurred, please try later.', 'et_core' );
+		$dbl_optin = self::$_->array_get( $this->data, "lists.{$list_id}.double_optin", true );
 
-		$args['ip_signup'] = et_core_get_ip_address();
+		$ip_address = 'true' === self::$_->array_get( $args, 'ip_address', 'true' ) ? et_core_get_ip_address() : '0.0.0.0';
+
+		$args['ip_signup'] = $ip_address;
 		$args['status']    = $dbl_optin ? 'pending' : 'subscribed';
+
+		$args = $this->_process_custom_fields( $args );
 
 		$this->prepare_request( $url, 'POST', false, $args, true );
 		$result = parent::subscribe( $args, $url );
 
 		if ( false !== stripos( $result, 'already a list member' ) ) {
-			$user   = $this->get_subscriber( $list_id, $email );
-			$result = $user ? 'success' : $err;
+			$result = $err;
 
-			if ( $user && $user['status'] !== 'subscribed' ) {
+			if ( $user = $this->get_subscriber( $list_id, $email ) ) {
+				$args['status'] = $user['status'];
+
 				$this->prepare_request( implode( '/', array( $url, $user['id'] ) ), 'PUT', false, $args, true );
+
 				$result = parent::subscribe( $args, $url );
 			}
 		}

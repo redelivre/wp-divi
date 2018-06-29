@@ -166,13 +166,14 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 
 		$config = shortcode_atts(
 			array(
-				'label'           => '',
-				'prefix'          => '',
-				'tab_slug'        => 'advanced',
-				'toggle_slug'     => 'text',
-				'sub_toggle'      => false,
-				'depends_default' => null,
-				'option_category' => 'configuration',
+				'label'               => '',
+				'prefix'              => '',
+				'tab_slug'            => 'advanced',
+				'toggle_slug'         => 'text',
+				'sub_toggle'          => false,
+				'option_category'     => 'configuration',
+				'depends_show_if'     => '',
+				'depends_show_if_not' => '',
 			),
 			$args
 		);
@@ -190,7 +191,6 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 		$tab_slug        = $config['tab_slug'];
 		$toggle_slug     = $config['toggle_slug'];
 		$sub_toggle      = $config['sub_toggle'];
-		$depends_default = $config['depends_default'];
 		$option_category = $config['option_category'];
 		// Some option categories (like font) have custom logic that involves changing default values and we don't want that to interfere with conditional defaults. This might change in future so, for now, I'm just overriding the value while leaving the possibility to remove this line afterwards and provide custom option_category via $config.
 		$option_category = 'configuration';
@@ -225,7 +225,6 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 				'type'             => 'presets_shadow',
 				'option_category'  => $option_category,
 				'default'          => 'none',
-				'depends_default'  => $depends_default,
 				'default_on_child' => true,
 				'presets'          => $this->get_presets( $prefix ),
 				'tab_slug'         => $tab_slug,
@@ -237,6 +236,12 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 					$text_shadow_color,
 				),
 				'affects' => array(
+					$text_shadow_horizontal_length,
+					$text_shadow_vertical_length,
+					$text_shadow_blur_strength,
+					$text_shadow_color,
+				),
+				'copy_with' => array(
 					$text_shadow_horizontal_length,
 					$text_shadow_vertical_length,
 					$text_shadow_blur_strength,
@@ -325,6 +330,16 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 			$fields[ $text_shadow_blur_strength ]['sub_toggle']     = $sub_toggle;
 			$fields[ $text_shadow_color ]['sub_toggle']             = $sub_toggle;
 		}
+
+		// add conditional settings if defined
+		if ( '' !== $config['depends_show_if'] ) {
+			$fields[ $text_shadow_style ]['depends_show_if'] = $config['depends_show_if'];
+		}
+
+		if ( '' !== $config['depends_show_if_not'] ) {
+			$fields[ $text_shadow_style ]['depends_show_if_not'] = $config['depends_show_if_not'];
+		}
+
 		return $fields;
 	}//end get_fields()
 
@@ -394,7 +409,7 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 	 */
 	public function update_styles( $module, $label, $font, $function_name ) {
 		$utils                 = ET_Core_Data_Utils::instance();
-		$all_values            = $module->shortcode_atts;
+		$all_values            = $module->props;
 		$main_element_selector = $module->main_css_element;
 		// Use a different selector for plugin
 		$css_element = $this->is_plugin_active && isset( $font['css']['plugin_main'] ) ? 'css.plugin_main' : 'css.main';
@@ -439,13 +454,18 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 	 */
 	public function process_advanced_css( $module, $function_name ) {
 		$utils            = ET_Core_Data_Utils::instance();
-		$all_values       = $module->shortcode_atts;
-		$advanced_options = $module->advanced_options;
+		$all_values       = $module->props;
+		$advanced_fields = $module->advanced_fields;
+
+		// Disable if module doesn't set advanced_fields property and has no VB support
+		if ( ! $module->has_vb_support() && ! $module->has_advanced_fields ) {
+			return;
+		}
 
 		// Check for text shadow settings in font-options
-		if ( ! empty( $advanced_options['fonts'] ) ) {
+		if ( ! empty( $advanced_fields['fonts'] ) ) {
 			// We have a 'fonts' section, fetch its values
-			foreach ( $advanced_options['fonts'] as $label => $font ) {
+			foreach ( $advanced_fields['fonts'] as $label => $font ) {
 				// label can be header / body / toggle / etc
 				$shadow_style = "{$label}_text_shadow_style";
 				if ( 'none' !== $utils->array_get( $all_values, $shadow_style, 'none' ) ) {
@@ -456,23 +476,23 @@ class ET_Builder_Module_Field_TextShadow extends ET_Builder_Module_Field_Base {
 		}
 
 		// Check for text shadow settings in Advanced/Text toggle
-		if ( isset( $advanced_options['text'] ) && 'none' !== $utils->array_get( $all_values, 'text_shadow_style', 'none' ) ) {
+		if ( isset( $advanced_fields['text'] ) && 'none' !== $utils->array_get( $all_values, 'text_shadow_style', 'none' ) ) {
 			// We have a preset selected which isn't none, need to add text-shadow style
-			$text = $advanced_options['text'];
+			$text = $advanced_fields['text'];
 			$this->update_styles( $module, '', $text, $function_name );
 		}
 
 		// Check for text shadow settings in Advanced/Fields toggle
-		if ( isset( $advanced_options['fields'] ) && 'none' !== $utils->array_get( $all_values, 'fields_text_shadow_style', 'none' ) ) {
+		if ( isset( $advanced_fields['fields'] ) && 'none' !== $utils->array_get( $all_values, 'fields_text_shadow_style', 'none' ) ) {
 			// We have a preset selected which isn't none, need to add text-shadow style
-			$fields = $advanced_options['fields'];
+			$fields = $advanced_fields['fields'];
 			$this->update_styles( $module, 'fields', $fields, $function_name );
 		}
 
 		// Check for text shadow settings in Advanced/Button toggle
-		if ( ! empty( $advanced_options['button'] ) ) {
+		if ( ! empty( $advanced_fields['button'] ) ) {
 			// We have a 'button' section, fetch its values
-			foreach ( $advanced_options['button'] as $label => $button ) {
+			foreach ( $advanced_fields['button'] as $label => $button ) {
 				// label can be header / body / toggle / etc
 				$shadow_style = "{$label}_text_shadow_style";
 				if ( 'none' !== $utils->array_get( $all_values, $shadow_style, 'none' ) ) {

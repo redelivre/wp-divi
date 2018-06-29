@@ -27,12 +27,49 @@ class ET_Core_API_Email_Feedblitz extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
+	public $custom_fields = 'dynamic';
+
+	/**
+	 * @inheritDoc
+	 */
+	public $custom_fields_scope = 'account';
+
+	/**
+	 * @inheritDoc
+	 */
 	public $name = 'Feedblitz';
 
 	/**
 	 * @inheritDoc
 	 */
 	public $slug = 'feedblitz';
+
+	protected function _process_custom_fields( $args ) {
+		if ( ! isset( $args['custom_fields'] ) ) {
+			return $args;
+		}
+
+		$fields = $args['custom_fields'];
+
+		unset( $args['custom_fields'] );
+
+		foreach ( $fields as $field_id => $value ) {
+			if ( is_array( $value ) && $value ) {
+				// This is a multiple choice field (eg. checkbox, radio, select)
+				$value = array_values( $value );
+
+				if ( count( $value ) > 1 ) {
+					$value = implode( ',', $value );
+				} else {
+					$value = array_pop( $value );
+				}
+			}
+
+			self::$_->array_set( $args, $field_id, rawurlencode( $value ) );
+		}
+
+		return $args;
+	}
 
 	/**
 	 * @inheritDoc
@@ -48,9 +85,7 @@ class ET_Core_API_Email_Feedblitz extends ET_Core_API_Email_Provider {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data_keymap( $keymap = array(), $custom_fields_key = '' ) {
-		$custom_fields_key = '';
-
+	public function get_data_keymap( $keymap = array() ) {
 		$keymap = array(
 			'list'       => array(
 				'list_id'           => 'id',
@@ -58,17 +93,18 @@ class ET_Core_API_Email_Feedblitz extends ET_Core_API_Email_Provider {
 				'subscribers_count' => 'subscribersummary.subscribers',
 			),
 			'subscriber' => array(
-				'list_id'   => 'listid',
-				'email'     => 'email',
-				'name'      => 'FirstName',
-				'last_name' => 'LastName',
+				'list_id'       => 'listid',
+				'email'         => 'email',
+				'name'          => 'FirstName',
+				'last_name'     => 'LastName',
+				'custom_fields' => 'custom_fields',
 			),
 			'error'      => array(
 				'error_message' => 'rsp.err.@attributes.msg',
 			)
 		);
 
-		return parent::get_data_keymap( $keymap, $custom_fields_key );
+		return parent::get_data_keymap( $keymap );
 	}
 
 	/**
@@ -105,13 +141,16 @@ class ET_Core_API_Email_Feedblitz extends ET_Core_API_Email_Provider {
 	 */
 	public function subscribe( $args, $url = '' ) {
 		$query_args = array(
-			'email'      => rawurlencode( $args['email'] ),
-			'first_name' => empty( $args['name'] ) ? '' : rawurlencode( $args['name'] ),
-			'last_name'  => empty( $args['last_name'] ) ? '' : rawurlencode( $args['last_name'] ),
+			'email'         => rawurlencode( $args['email'] ),
+			'name'          => empty( $args['name'] ) ? '' : rawurlencode( $args['name'] ),
+			'last_name'     => empty( $args['last_name'] ) ? '' : rawurlencode( $args['last_name'] ),
+			'custom_fields' => $args['custom_fields'],
+			'list_id'       => $args['list_id'],
 		);
 
 		$query        = $this->transform_data_to_provider_format( $query_args, 'subscriber' );
-		$query['key'] = $this->data['api_key'];
+		$query        = $this->_process_custom_fields( $query );
+		$query['key'] = rawurlencode( $this->data['api_key'] );
 		$url          = add_query_arg( $query, "{$this->SUBSCRIBE_URL}?SimpleApiSubscribe" );
 
 		$this->prepare_request( $url, 'GET', false, null, false, false );
