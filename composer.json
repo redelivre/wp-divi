@@ -1,7 +1,7 @@
 {
     "name": "redelivre/wp-divi",
     "description": "Divi",
-    "type": "wordpress-plugin",
+    "type": "wordpress-theme",
     "require": {
         "composer/installers": "~1.0"
     }
