@@ -2,6 +2,49 @@
 	var clearpath = ePanelSettings.clearpath;
 
 	jQuery(document).ready(function($){
+		var editors = [];
+
+		function addEditorInstance(codeEditor, $element, config) {
+			if (!$element || $element.length === 0) {
+				return;
+			}
+			var instance = codeEditor.initialize( $element , {
+				codemirror: config,
+			} );
+			if (instance && instance.codemirror) {
+				editors.push(instance.codemirror);
+			}
+		}
+
+		// Use WP 4.9 CodeMirror Editor for Custom CSS
+		var codeEditor = window.wp && window.wp.codeEditor;
+		if (codeEditor && codeEditor.initialize && codeEditor.defaultSettings && codeEditor.defaultSettings.codemirror) {
+
+			// User ET CodeMirror theme
+			var configCSS = $.extend({}, codeEditor.defaultSettings.codemirror, {
+				theme: 'et',
+			});
+			var configHTML = $.extend({}, configCSS, {
+				mode: 'htmlmixed',
+			});
+
+			if ($('#divi_custom_css').length > 0) {
+				// Divi Theme
+				addEditorInstance(codeEditor, $('#divi_custom_css'), configCSS);
+				addEditorInstance(codeEditor, $('#divi_integration_head'), configHTML);
+				addEditorInstance(codeEditor, $('#divi_integration_body'), configHTML);
+				addEditorInstance(codeEditor, $('#divi_integration_single_top'), configHTML);
+				addEditorInstance(codeEditor, $('#divi_integration_single_bottom'), configHTML);
+			} else if ($('#extra_custom_css').length > 0) {
+				// Extra Theme
+				addEditorInstance(codeEditor, $('#extra_custom_css'), configCSS);
+				addEditorInstance(codeEditor, $('#extra_integration_head'), configHTML);
+				addEditorInstance(codeEditor, $('#extra_integration_body'), configHTML);
+				addEditorInstance(codeEditor, $('#extra_integration_single_top'), configHTML);
+				addEditorInstance(codeEditor, $('#extra_integration_single_bottom'), configHTML);
+			}
+		}
+
 		var $palette_inputs = $( '.et_color_palette_main_input' );
 
 		$('#epanel-content,#epanel-content > div').tabs({
@@ -19,20 +62,20 @@
 			}
 		});
 
-		$(".box-description").click(function(){
-			var descheading = $(this).parent('.epanel-box').find(".box-title h3").html();
-			var desctext = $(this).parent('.epanel-box').find(".box-title .box-descr").html();
+		$(".et-box-description").click(function(){
+			var descheading = $(this).parent('.et-epanel-box').find(".et-box-title h3").html();
+			var desctext = $(this).parent('.et-epanel-box').find(".et-box-title .et-box-descr").html();
 
-			$('body').append("<div id='custom-lbox'><div class='box-desc'><div class='box-desc-top'>"+ ePanelSettings.help_label +"</div><div class='box-desc-content'><h3>"+descheading+"</h3>"+desctext+"<div class='lightboxclose'></div> </div> <div class='box-desc-bottom'></div>	</div></div>");
+			$('body').append("<div id='custom-lbox'><div class='et-box-desc'><div class='et-box-desc-top'>"+ ePanelSettings.help_label +"</div><div class='et-box-desc-content'><h3>"+descheading+"</h3>"+desctext+"<div class='et-lightbox-close'></div> </div> <div class='et-box-desc-bottom'></div>	</div></div>");
 
-			et_pb_center_modal( $( '.box-desc' ) );
+			et_pb_center_modal( $( '.et-box-desc' ) );
 
-			$( '.lightboxclose' ).click( function() {
+			$( '.et-lightbox-close' ).click( function() {
 				et_pb_close_modal( $( '#custom-lbox' ) );
 			});
 		});
 
-		$(".defaults-button.epanel-reset").click(function(e) {
+		$(".et-defaults-button.epanel-reset").click(function(e) {
 			e.preventDefault();
 			$(".reset-popup-overlay, .defaults-hover").addClass('active');
 
@@ -56,21 +99,46 @@
 
 		// Yes - No button UI
 		$('.yes_no_button').each(function() {
-			$checkbox = $(this),
-			value     = $checkbox.is(':checked'),
-			state     = value ? 'et_pb_on_state' : 'et_pb_off_state',
-			$template = $($('#epanel-yes-no-button-template').html()).find('.et_pb_yes_no_button').addClass(state);
+			var $checkbox = $(this);
+			var value     = $checkbox.is(':checked');
+			var state     = value ? 'et_pb_on_state' : 'et_pb_off_state';
+			var $template = $($('#epanel-yes-no-button-template').html()).find('.et_pb_yes_no_button').addClass(state);
 
 			$checkbox.hide().after($template);
+
+			if ( 'et_pb_static_css_file' === $checkbox.attr( 'id' ) ) {
+				$checkbox
+					.parent()
+					.addClass( state )
+					.next()
+					.addClass( 'et_pb_clear_static_css' )
+					.on( 'click', function() {
+						epanel_clear_static_css( false, true );
+					});
+
+				if ( ! value ) {
+					$checkbox.parents('.et-epanel-box').next().hide();
+				}
+			}
 		});
 
-		$('.box-content').on( 'click', '.et_pb_yes_no_button', function(e){
+		$('.et-box-content').on( 'click', '.et_pb_yes_no_button', function(e){
 			e.preventDefault();
 
 			var $click_area = $(this),
-				$box_content = $click_area.parents('.box-content'),
+				$box_content = $click_area.parents('.et-box-content'),
 				$checkbox    = $box_content.find('input[type="checkbox"]'),
 				$state       = $box_content.find('.et_pb_yes_no_button');
+
+			if ( $state.parent().next().hasClass( 'et_pb_clear_static_css' ) ) {
+				$state = $state.add( $state.parent() );
+
+				if ( $checkbox.is( ':checked' ) ) {
+					$box_content.parent().next().hide();
+				} else {
+					$box_content.parent().next().show();
+				}
+			}
 
 			$state.toggleClass('et_pb_on_state et_pb_off_state');
 
@@ -96,6 +164,17 @@
 		});
 
 		function epanel_save( callback, message ) {
+
+			// If CodeMirror is used
+			if (editors.length > 0) {
+				$.each(editors, function(i, editor) {
+					if (editor.save) {
+						// Make sure we store changes into original textarea
+						editor.save();
+					}
+				})
+			}
+
 			var options_fromform = $('#main_options_form').formSerialize(),
 				add_nonce = '&_ajax_nonce='+ePanelSettings.epanel_nonce;
 
@@ -126,6 +205,39 @@
 			});
 		}
 
+		function epanel_clear_static_css( callback, message ) {
+			var data = {
+				action: 'et_core_page_resource_clear',
+				et_owner: 'all',
+				et_post_id: 'all',
+				clear_page_resources_nonce: ePanelSettings.et_core_nonces.clear_page_resources_nonce,
+			};
+
+			$.ajax( {
+				type: "POST",
+				url: ajaxurl,
+				data: data,
+				beforeSend: function ( xhr ) {
+					if ( message ) {
+						$save_message.removeAttr( 'class' ).fadeIn( 'fast' );
+					}
+				},
+				success: function ( response ) {
+					if ( message ) {
+						$save_message.addClass( 'success-animation' );
+
+						setTimeout( function () {
+							$save_message.fadeOut();
+						}, 500 );
+					}
+
+					if ( $.isFunction( callback ) ) {
+						callback();
+					}
+				}
+			} );
+		}
+
 		function et_pb_close_modal( $overlay, no_overlay_remove ) {
 			var $modal_container = $overlay;
 
@@ -143,7 +255,7 @@
 		if ( $palette_inputs.length ) {
 			$palette_inputs.each( function() {
 				var	$this_input                    = $( this ),
-					$palette_wrapper               = $this_input.closest( '.box-content' ),
+					$palette_wrapper               = $this_input.closest( '.et-box-content' ),
 					$colorpalette_colorpickers     = $palette_wrapper.find( '.input-colorpalette-colorpicker' ),
 					colorpalette_colorpicker_index = 0,
 					saved_palette                  = $this_input.val().split('|');
@@ -158,10 +270,10 @@
 						width: 313,
 						palettes : false,
 						change : function( event, ui ) {
-							var $input     = $(this),
-								data_index = $input.attr( 'data-index'),
-								$preview   = $palette_wrapper.find( '.colorpalette-item-' + data_index ),
-								color      = ui.color.toString();
+							var $input     = $(this);
+							var data_index = $input.attr('data-index');
+							var $preview   = $palette_wrapper.find('.colorpalette-item-' + data_index + ' .color');
+							var color      = ui.color.toString();
 
 							$input.val( color );
 							$preview.css({ 'backgroundColor' : color });
@@ -207,5 +319,6 @@
 				marginTop : modal_height_adjustment
 			});
 		}
+
 	});
 /* ]]> */

@@ -42,10 +42,10 @@ function et_sanitize_font_style( $styles ) {
  * @param array
  * @return string|bool
  */
-function et_sanitize_key_based_option( $choosen, $options ) {
+function et_sanitize_key_based_option( $choosen, $options, $default = false ) {
 	// Validate choosen option based on available options
 	if ( ! isset( $options[ $choosen ] ) ) {
-		return false;
+		return $default;
 	}
 
 	return $choosen;
@@ -57,7 +57,13 @@ function et_sanitize_key_based_option( $choosen, $options ) {
  * @return string|bool
  */
 function et_sanitize_font_choices( $choosen ) {
-	return et_sanitize_key_based_option( $choosen, et_builder_get_fonts() );
+	$google_fonts = et_builder_get_fonts();
+	$user_fonts = et_builder_get_custom_fonts();
+
+	// combine google fonts with custom user fonts
+	$all_fonts = array_merge( $user_fonts, $google_fonts );
+	
+	return et_sanitize_key_based_option( $choosen, $all_fonts );
 }
 
 /**
@@ -184,20 +190,26 @@ function et_sanitize_alpha_color( $color ) {
 }
 
 /**
- * Sanitize font icon picker
+ * Sanitize font icon
  * @param string
- * @return string|bool
+ * @param string
+ * @return string
  */
-function et_sanitize_font_icon( $choosen ) {
+function et_sanitize_font_icon( $font_icon, $symbols_function = 'default' ) {
 	// Convert symbols into strings
-	$symbols = array_map( 'et_sanitize_font_icon_convert_icon_to_string', et_pb_get_font_icon_symbols() );
+	$font_icon = trim( $font_icon );
+	$icon_symbols = is_callable( $symbols_function ) ? call_user_func( $symbols_function ) : et_pb_get_font_icon_symbols();
+	$icon_symbols = array_map( 'et_sanitize_font_icon_convert_icon_to_string', $icon_symbols );
 
-	// If choosen icon isn't found in symbol set, return false
-	if ( ! in_array( $choosen, $symbols ) ) {
-		return false;
+	// the exact font icon value is saved
+	if ( 1 !== preg_match( "/^%%/", $font_icon ) ) {
+		return in_array( $font_icon, $icon_symbols ) ? $font_icon : '';
 	}
 
-	return $choosen;
+	// the font icon value is saved in the following format: %%index_number%%
+	// strip the %'s to get to end result: index_number
+	$icon_index = (int) str_replace( '%', '', $font_icon );
+	return isset( $icon_symbols[ $icon_index ] ) ? $icon_symbols[ $icon_index ] : '';
 }
 
 /**
@@ -247,7 +259,9 @@ function et_allowed_html_tags_short_block() {
 			'href'  => array(),
 			'class' => array(),
 			'id'    => array(),
+			'rel'   => array(),
 			'title'    => array(),
+			'target'   => array(),
 		),
 		'br' => array(),
 		'em' => array(),
@@ -263,4 +277,28 @@ function et_allowed_html_tags_short_block() {
  */
 function et_sanitize_html_input_text( $string ) {
 	return wp_kses( $string, et_allowed_html_tags_short_block() );
+}
+
+/**
+ * Sanitize background repeat value
+ * @return string
+ */
+function et_sanitize_background_repeat( $choosen ) {
+	return et_sanitize_key_based_option(
+		$choosen,
+		et_divi_background_repeat_choices(),
+		apply_filters( 'et_divi_background_repeat_default', 'repeat' )
+	);
+}
+
+/**
+ * Sanitize background attachment value
+ * @return string
+ */
+function et_sanitize_background_attachment( $choosen ) {
+	return et_sanitize_key_based_option(
+		$choosen,
+		et_divi_background_attachment_choices(),
+		apply_filters( 'et_sanitize_background_attachment_default', 'scroll' )
+	);
 }

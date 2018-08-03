@@ -33,7 +33,7 @@
 								$first_video
 							);
 						elseif ( ! in_array( $post_format, array( 'gallery' ) ) && 'on' === et_get_option( 'divi_thumbnails_index', 'on' ) && '' !== $thumb ) : ?>
-							<a href="<?php the_permalink(); ?>">
+							<a class="entry-featured-image-url" href="<?php the_permalink(); ?>">
 								<?php print_thumbnail( $thumb, $thumbnail["use_timthumb"], $titletext, $width, $height ); ?>
 							</a>
 					<?php
@@ -77,4 +77,6 @@
 	</div> <!-- .container -->
 </div> <!-- #main-content -->
 
-<?php get_footer(); ?>
+<?php
+
+get_footer();

@@ -93,4 +93,6 @@ $show_navigation = get_post_meta( get_the_ID(), '_et_pb_project_nav', true );
 
 </div> <!-- #main-content -->
 
-<?php get_footer(); ?>
+<?php
+
+get_footer();

@@ -101,7 +101,7 @@
 				$this_option.siblings().removeClass( 'et_select_image_active' );
 
 				$main_text.removeClass(function(index, css){
-					return (css.match(/\bet_si_\S+/g) || []).join(' ')
+					return (css.match(/\bet_si_\S+/g) || []).join(' ');
 				});
 
 				$main_text.addClass( $this_option.attr( 'class' ) ).attr( 'data-si-class', $this_option.attr( 'class' ) );
@@ -143,10 +143,10 @@
 			esc_classname: function( option_value ) {
 				return 'et_si_' + option_value.replace(/[ +\/\[\]]/g,'_').toLowerCase();
 			}
-		}
+		};
 
 		$.fn.et_select_image = function(options){
-			new ET_Select_Image(this, options)
+			new ET_Select_Image(this, options);
 			return this;
 		};
 
@@ -201,13 +201,13 @@
 		var et_range_input_number_timeout;
 
 		function et_autocorrect_range_input_number( input_number, timeout ) {
-			$range_input = input_number,
-			$range       = $range_input.parent().find('input[type="range"]'),
-			value        = parseFloat( $range_input.val() ),
-			reset        = parseFloat( $range.attr('data-reset_value') ),
-			step         = parseFloat( $range_input.attr('step') ),
-			min          = parseFloat( $range_input.attr('min') ),
-			max          = parseFloat( $range_input.attr('max') );
+			var $range_input = input_number,
+				$range       = $range_input.parent().find('input[type="range"]'),
+				value        = parseFloat( $range_input.val() ),
+				reset        = parseFloat( $range.attr('data-reset_value') ),
+				step         = parseFloat( $range_input.attr('step') ),
+				min          = parseFloat( $range_input.attr('min') ),
+				max          = parseFloat( $range_input.attr('max') );
 
 			clearTimeout( et_range_input_number_timeout );
 
@@ -244,7 +244,7 @@
 			et_autocorrect_range_input_number( $(this), 0 );
 		});
 
-		$('input.et_font_style_checkbox[type=checkbox]').live('change', function(){
+		$('input.et_font_style_checkbox[type=checkbox]').on('change', function(){
 			var $this_el      = $(this),
 				$main_option  = $this_el.closest( 'span' ).siblings( 'input.et_font_styles' ),
 				value         = $this_el.val(),
@@ -253,7 +253,7 @@
 				query         = $.inArray( value, values ),
 				result        = '';
 
-			if ( $this_el.prop('checked' ) == true ) {
+			if ( $this_el.prop('checked' ) === true ) {
 
 				if ( current_value.length ) {
 
@@ -296,7 +296,7 @@
 			style_checkbox.change();
 		});
 
-		var $vertical_nav_option                  = $( '#customize-control-et_divi-vertical_nav' )
+		var $vertical_nav_option                  = $( '#customize-control-et_divi-vertical_nav' ),
 			$vertical_nav_input                   = $vertical_nav_option.find( 'input[type=checkbox]' ),
 			$nav_fullwidth_control                = $( '#customize-control-et_divi-nav_fullwidth' ),
 			$hide_navigation_until_scroll_control = $('#customize-control-et_divi-hide_nav'),
@@ -310,7 +310,7 @@
 			$fullscreen_only_options              = $( '#customize-control-et_divi-fullscreen_nav_font_size, #customize-control-et_divi-fullscreen_nav_top_font_size' ),
 			$vertical_orientation                 = $( '#customize-control-et_divi-vertical_nav_orientation' ),
 			$menu_height                          = $( '#customize-control-et_divi-menu_height' ),
-			$menu_margin_top                        = $( '#customize-control-et_divi-menu_margin_top' );
+			$menu_margin_top                      = $( '#customize-control-et_divi-menu_margin_top' );
 
 		if ( $vertical_nav_input.is( ':checked') ) {
 			$nav_fullwidth_control.hide();
@@ -417,7 +417,7 @@
 		});
 
 		function toggle_sidebar_width_control() {
-			$checkbox              = $('#customize-control-et_divi-use_sidebar_width input[type="checkbox"]'),
+			var $checkbox          = $('#customize-control-et_divi-use_sidebar_width input[type="checkbox"]'),
 			$sidebar_width_control = $( '#customize-control-et_divi-sidebar_width' );
 
 			if ( $checkbox.is( ':checked' ) ) {
@@ -443,8 +443,26 @@
 				picker = control.container.find('.color-picker-hex');
 
 			picker.val( control.setting() ).wpColorPicker({
+				palettes: et_divi_customizer_data.color_palette.split( '|' ),
 				change: function() {
-					control.setting.set( picker.wpColorPicker('color') );
+					var et_color_picker_value = picker.wpColorPicker('color');
+
+					if ( '' === et_color_picker_value || 'string' !== typeof et_color_picker_value ) {
+						return;
+					}
+
+					try {
+						control.setting.set( et_color_picker_value.toLowerCase() );
+					} catch( err ) {
+						// Value is not a properly formatted color, let's see if we can fix it.
+
+						if ( /^[\da-z]{3}([\da-z]{3})?$/i.test(et_color_picker_value) ) {
+							// Value looks like a hex color but is missing hash character.
+							et_color_picker_value = '#' + et_color_picker_value.toLowerCase();
+
+							control.setting.set( et_color_picker_value );
+						}
+					}
 				},
 				clear: function() {
 					control.setting.set( false );
@@ -491,9 +509,114 @@
 		}
 	});
 
-	api.controlConstructor['et_coloralpha'] = api.ET_ColorAlphaControl;
+	api.controlConstructor.et_coloralpha = api.ET_ColorAlphaControl;
+
+	wp.customize.bind('ready', function() {
+		// Unbind built-in & sanitized control and replaced it with straightforward control
+		// to ensure compatibility with Divi option's data type
+		var normalizedBackgroundImageOptions = ['background_repeat', 'background_attachment'];
+
+		_.each(normalizedBackgroundImageOptions, function(option) {
+			// Unbind WordPress' built-in option js control
+			var defaultControl = api.control(option);
+
+			if ( _.isUndefined( defaultControl ) ) {
+				return;
+			}
+
+			defaultControl.container.find('input').unbind();
+
+			// Re-bind background_repeat option which is compatible with Divi's option
+			var	defaultControlNewInputs = new api.Element( defaultControl.container.find('input') );
+
+			defaultControlNewInputs.bind(function( to ) {
+				defaultControl.setting.set( to );
+			} );
+
+			defaultControl.setting.bind( function( to ) {
+				defaultControlNewInputs.set( to );
+			} );
+		});
+
+		// Toggle customizer control visibility based on other control's value
+		function et_toggle_control_visibility( controls, visibility ) {
+			_.each( controls, function( controlId ) {
+				api.control( controlId, function( controlChild ) {
+					// Use inline CSS + !important styling combo to overwrite WordPress'
+					// built-in customizer appearance dependency
+					if ( visibility ) {
+						$( controlChild.container ).show().removeClass('et_hidden_section');
+					} else {
+						$( controlChild.container ).hide().addClass('et_hidden_section');
+					}
+				});
+			});
+		}
+
+		// Stretch Background Image
+		api.control( 'et_divi[cover_background]', function( control ) {
+			var coverBackgroundValue = control.setting.get(),
+				backgroundImageValue = api.control( 'background_image' ).setting.get() !== '',
+				affectedControls     = ['background_repeat', 'background_position_x' ],
+				affectedControlsVisibility = ! coverBackgroundValue && backgroundImageValue;
+
+			// Toggle visibility on page load
+			et_toggle_control_visibility( affectedControls, affectedControlsVisibility );
+
+			// Toggle visibility on checkbox change
+			control.setting.bind( 'change', function( coverBackgroundValueChanged ) {
+				var backgroundImageValueChanged = api.control( 'background_image' ).setting.get() !== '',
+					affectedControlsVisibilityChanged = ! coverBackgroundValueChanged && backgroundImageValueChanged;
+
+				et_toggle_control_visibility( affectedControls, affectedControlsVisibilityChanged );
+			});
+		});
+
+		// Get background image's dynamic affected controls
+		function et_background_image_affected_controls() {
+			var coverBackgroundValue = api.control( 'et_divi[cover_background]' ).setting.get(),
+				affectedControls = [ 'et_divi[cover_background]' ];
+
+			if ( ! coverBackgroundValue ) {
+				affectedControls = $.merge( affectedControls, [ 'background_repeat', 'background_position_x' ] );
+			}
+
+			return affectedControls;
+		}
+
+		// Background Image
+		api.control('background_image', function( control ) {
+			var backgroundImageValue = control.setting.get(),
+				hasBackgroundImage = backgroundImageValue !== '';
+
+			// Toggle visibility on page load
+			et_toggle_control_visibility( et_background_image_affected_controls(), hasBackgroundImage );
+
+			// Toggle visibility on background image change
+			control.setting.bind( 'change', function( changedBackgroundImageValue ) {
+				var hasChangedBackgroundImage = changedBackgroundImageValue !== '';
+
+				et_toggle_control_visibility( et_background_image_affected_controls(), hasChangedBackgroundImage );
+			});
+		});
+	});
 
 	$( window ).load( function() {
+		var $et_custom_footer_credits_disable_control = $('#customize-control-et_divi-disable_custom_footer_credits input'),
+			$et_custom_footer_credits_control         = $('#customize-control-et_divi-custom_footer_credits');
+
+		if ( $et_custom_footer_credits_disable_control.is(':checked') ) {
+			$et_custom_footer_credits_control.hide();
+		}
+
+		$et_custom_footer_credits_disable_control.change( function() {
+			if ( $(this).is(':checked') ) {
+				$et_custom_footer_credits_control.hide();
+			} else {
+				$et_custom_footer_credits_control.show();
+			}
+		} );
+
 		if ( $( '#accordion-section-et_divi_buttons' ).length ) {
 			var $icon_options_trigger = $( '#customize-control-et_divi-all_buttons_icon select' ),
 				icon_options_trigger_val = $icon_options_trigger.val();
@@ -528,4 +651,4 @@
 
 	} );
 
-})(jQuery)
+})(jQuery);

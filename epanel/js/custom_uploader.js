@@ -1,12 +1,12 @@
 jQuery(document).ready(function() {
 	var et_file_frame;
 
-	jQuery( '.upload_image_button' ).click(function( event ) {
+	jQuery( '.et-upload-image-button' ).click(function( event ) {
 		var this_el = jQuery( this ),
-			use_for = this_el.parents( '.epanel-box' ).find( '.box-title > h3' ).text(),
+			use_for = this_el.parents( '.et-epanel-box' ).find( '.et-box-title > h3' ).text(),
 			button_text = this_el.data( 'button_text' ),
 			window_title = epanel_uploader.media_window_title,
-			fileInput = this_el.parent().prev('input.uploadfield');
+			fileInput = this_el.parent().prev('input.et-upload-field');
 
 			event.preventDefault();
 
@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 		return false;
 	});
 
-	jQuery( '.upload_image_reset' ).click( function() {
-		jQuery(this).parent().prev( 'input.uploadfield' ).val( '' );
+	jQuery( '.et-upload-image-reset' ).click( function() {
+		jQuery(this).parent().prev( 'input.et-upload-field' ).val( '' );
 	});
 });

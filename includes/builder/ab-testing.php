@@ -5,7 +5,280 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'ET_PB_AB_DB_VERSION' ) ) {
-	define( 'ET_PB_AB_DB_VERSION', 1.0 );
+	define( 'ET_PB_AB_DB_VERSION', '1.1' );
+}
+
+/**
+ * AB Testing related data
+ * @return {array} AB Testing related data
+ */
+function et_builder_ab_options( $post_id ) {
+	return apply_filters( 'et_builder_ab_options', array(
+		'db_status'                  => true === et_pb_db_status_up_to_date() ? 'on' : 'off',
+		'test_id'                    => $post_id,
+		'has_report'                 => et_pb_ab_has_report( $post_id ),
+		'has_permission'             => et_pb_is_allowed( 'ab_testing' ),
+		'refresh_interval_duration'  => et_pb_ab_get_refresh_interval_duration( $post_id ),
+		'refresh_interval_durations' => et_pb_ab_refresh_interval_durations(),
+		'analysis_formula'           => et_pb_ab_get_analysis_formulas(),
+		'have_conversions'           => et_pb_ab_get_modules_have_conversions(),
+		'sales_title'                => esc_html__( 'Sales', 'et_builder' ),
+		'total_title'                => esc_html__( 'Total', 'et_builder' ),
+
+		// Saved data
+		'subjects_rank' => ( 'on' === get_post_meta( $post_id, '_et_pb_use_builder', true ) ) ? et_pb_ab_get_saved_subjects_ranks( $post_id ) : false,
+
+		// Rank color
+		'subjects_rank_color' => et_pb_ab_get_subject_rank_colors(),
+	) );
+}
+
+/**
+ * Filterable AB Testing labels
+ * @return {array} AB Testing labels
+ */
+function et_builder_ab_labels() {
+	return apply_filters( 'et_builder_ab_settings', array(
+		'alert_modal_defaults' => array(
+			'proceed_label' => esc_html__( 'Ok', 'et_builder' ),
+		),
+		'select_subject' => array(
+			'title' => esc_html__( 'Select Split Testing Subject', 'et_builder' ),
+			'desc'  => esc_html__( 'You have activated the Divi Leads Split Testing System. Using split testing, you can create different element variations on your page to find out which variation most positively affects the conversion rate of your desired goal. After closing this window, please click on the section, row or module that you would like to split test.', 'et_builder' ),
+		),
+		'select_goal' => array(
+			'title'         => esc_html__( 'Select Your Goal', 'et_builder' ),
+			'desc'          => esc_html__( 'Congratulations, you have selected a split testing subject! Next you need to select your goal. After closing this window, please click the section, row or module that you want to use as your goal. Depending on the element you choose, Divi will track relevant conversion rates for clicks, reads or sales. For example, if you select a Call To Action module as your goal, then Divi will track how variations in your test subjects affect how often visitors read and click the button in your Call To Action module. The test subject itself can also be selected as your goal.', 'et_builder' ),
+			'proceed_label' => esc_html__( 'Ok', 'et_builder' ),
+		),
+		'configure_alternative' => array(
+			'title'         => esc_html__( 'Configure Subject Variations', 'et_builder' ),
+			'desc'          => esc_html__( 'Congratulations, your split test is ready to go! You will notice that your split testing subject has been duplicated. Each split testing variation will be displayed to your visitors and statistics will be collected to figure out which variation results in the highest goal conversion rate. Your test will begin when you save this page.', 'et_builder' ),
+			'proceed_label' => esc_html__( 'Ok', 'et_builder' ),
+		),
+		'select_winner_first' => array(
+			'title' => esc_html__( 'Select Split Testing Winner', 'et_builder' ),
+			'desc'  => esc_html__( 'Before ending your split test, you must choose which split testing variation to keep. Please select your favorite or highest converting subject. Alternative split testing subjects will be removed and stats will be cleared.', 'et_builder' ),
+		),
+		'select_subject_first' => array(
+			'title' => esc_html__( 'Select Split Testing Subject', 'et_builder' ),
+			'desc'  => esc_html__( 'You need to select a split testing subject first.', 'et_builder' ),
+		),
+		'select_goal_first' => array(
+			'title' => esc_html__( 'Select Split Testing Goal', 'et_builder' ),
+			'desc'  => esc_html__( 'You need to select a split testing goal first. ', 'et_builder' ),
+		),
+		'cannot_select_subject_parent_as_goal' => array(
+			'title'         => esc_html__( 'Select A Different Goal', 'et_builder' ),
+			'desc'          => esc_html__( 'This element cannot be used as a your split testing goal. Please select a different module, or section.', 'et_builder' ),
+			'proceed_label' => esc_html__( 'Ok', 'et_builder' ),
+		),
+		'cannot_select_global_children_as_subject' => array(
+			'title'         => esc_html__( 'Select a Different Subject', 'et_builder' ),
+			'desc'          => esc_html__( 'This element cannot be used as split testing subject because it is part of global module. Please select different module, row, or section', 'et_builder' )
+		),
+		'cannot_select_global_children_as_goal' => array(
+			'title'         => esc_html__( 'Select a Different Goal', 'et_builder' ),
+			'desc'          => esc_html__( 'This element cannot be used as split testing goal because it is part of global module. Please select different module, row, or section', 'et_builder' )
+		),
+		'cannot_publish_finish_configuration_first' => array(
+			'title' => esc_html__( 'Setup Split Test First', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot publish the layout right now because you have incomplete split test configuration. Please finish the split test configuration first, then try saving again.','et_builder' ),
+			'proceed_label' => esc_html__( 'Ok', 'et_builder' )
+		),
+		'cannot_save_draft_finish_configuration_first' => array(
+			'title' => esc_html__( 'Setup Split Test First', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot save the layout right now because you have incomplete split test configuration. Please finish the split test configuration first, then try save draft again.','et_builder' ),
+			'proceed_label' => esc_html__( 'Ok', 'et_builder' )
+		),
+		'view_stats_thead_titles' => array(
+			'clicks' => array(
+				esc_html__( 'ID', 'et_builder' ),
+				esc_html__( 'Subject', 'et_builder' ),
+				esc_html__( 'Impressions', 'et_builder' ),
+				esc_html__( 'Clicks', 'et_builder' ),
+				esc_html__( 'Clickthrough Rate', 'et_builder' ),
+			),
+			'reads' => array(
+				esc_html__( 'ID', 'et_builder' ),
+				esc_html__( 'Subject', 'et_builder' ),
+				esc_html__( 'Impressions', 'et_builder' ),
+				esc_html__( 'Reads', 'et_builder' ),
+				esc_html__( 'Reading Rate', 'et_builder' ),
+			),
+			'bounces' => array(
+				esc_html__( 'ID', 'et_builder' ),
+				esc_html__( 'Subject', 'et_builder' ),
+				esc_html__( 'Impressions', 'et_builder' ),
+				esc_html__( 'Stays', 'et_builder' ),
+				esc_html__( 'Bounce Rate', 'et_builder' ),
+			),
+			'engagements' => array(
+				esc_html__( 'ID', 'et_builder' ),
+				esc_html__( 'Subject', 'et_builder' ),
+				esc_html__( 'Goal Views', 'et_builder' ),
+				esc_html__( 'Goal Reads', 'et_builder' ),
+				esc_html__( 'Engagement Rate', 'et_builder' ),
+			),
+			'conversions' => array(
+				esc_html__( 'ID', 'et_builder' ),
+				esc_html__( 'Subject', 'et_builder' ),
+				esc_html__( 'Impressions', 'et_builder' ),
+				esc_html__( 'Conversion Goals', 'et_builder' ),
+				esc_html__( 'Conversion Rate', 'et_builder' ),
+			),
+			'shortcode_conversions' => array(
+				esc_html__( 'ID', 'et_builder' ),
+				esc_html__( 'Subject', 'et_builder' ),
+				esc_html__( 'Impressions', 'et_builder' ),
+				esc_html__( 'Shortcode Conversions', 'et_builder' ),
+				esc_html__( 'Conversion Rate', 'et_builder' ),
+			),
+		),
+
+		// Save to Library
+		'cannot_save_app_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Save Layout', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot save layout while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+
+		'cannot_save_section_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Save Section', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot save this section while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+
+		'cannot_save_row_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Save Row', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot save this row while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+
+		'cannot_save_row_inner_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Save Row', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot save this row while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+
+		'cannot_save_module_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Save Module', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot save this module while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+
+		// Load / Clear Layout
+		'cannot_load_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Load Layout', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot load a new layout while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+		'cannot_clear_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Clear Layout', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot clear your layout while a split testing is running. Please end your split test before clearing your layout.', 'et_builder' ),
+		),
+
+		// Cannot Import / Export Layout (Portability)
+		'cannot_import_export_layout_has_ab_testing' => array(
+			'title' => esc_html__( 'Can\'t Import/Export Layout', 'et_builder' ),
+			'desc'  => esc_html__( 'You cannot import or export a layout while a split test is running. Please end your split test and then try again.', 'et_builder' ),
+		),
+
+		// Moving Goal / Subject
+		'cannot_move_module_goal_out_from_subject' => array(
+			'title' => esc_html__( 'Can\'t Move Goal', 'et_builder' ),
+			'desc'  => esc_html__( 'Once set, a goal that has been placed inside a split testing subject cannot be moved outside the split testing subject. You can end your split test and start a new one if you would like to make this change.', 'et_builder' ),
+		),
+		'cannot_move_row_goal_out_from_subject' => array(
+			'title' => esc_html__( 'Can\'t Move Goal', 'et_builder' ),
+			'desc'  => esc_html__( 'Once set, a goal that has been placed inside a split testing subject cannot be moved outside the split testing subject. You can end your split test and start a new one if you would like to make this change.', 'et_builder' ),
+		),
+		'cannot_move_goal_into_subject' => array(
+			'title' => esc_html__( 'Can\'t Move Goal', 'et_builder' ),
+			'desc'  => esc_html__( 'A split testing goal cannot be moved inside of a split testing subject. To perform this action you must first end your split test.', 'et_builder' ),
+		),
+		'cannot_move_subject_into_goal' => array(
+			'title' => esc_html__( 'Can\'t Move Subject', 'et_builder' ),
+			'desc'  => esc_html__( 'A split testing subject cannot be moved inside of a split testing goal. To perform this action you must first end your split test.', 'et_builder' ),
+		),
+
+		// Cannot Paste Goal / Subject
+		'cannot_paste_goal' => array(
+			'title' => esc_html__( 'Can\'t Paste Goal', 'et_builder' ),
+			'desc'  => esc_html__( 'A split testing goal cannot be copied, cut, and pasted. To perform this action you must first end your split test.', 'et_builder' ),
+		),
+		'cannot_paste_row_has_subject_into_goal' => array(
+			'title' => esc_html__( 'Can\'t Paste Row', 'et_builder' ),
+			'desc'  => esc_html__( 'Row that has split testing subject cannot be pasted inside a split testing goal. To perform this action you must first end your split test.', 'et_builder' ),
+		),
+		'cannot_paste_subject_into_goal' => array(
+			'title' => esc_html__( 'Can\'t Paste Subject', 'et_builder' ),
+			'desc'  => esc_html__( 'A split testing subject cannot be pasted inside a split testing goal. To perform this action you must first end your split test.', 'et_builder' ),
+		),
+
+		// Removing + Has Goal
+		'cannot_remove_section_has_goal' => array(
+			'title' => esc_html__( 'Can\'t Remove Section', 'et_builder' ),
+			'desc'  => esc_html__( 'This section cannot be removed because it contains a split testing goal. Goals cannot be deleted. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+		'cannot_remove_row_has_goal' => array(
+			'title' => esc_html__( 'Can\'t Remove Row', 'et_builder' ),
+			'desc'  => esc_html__( 'This row cannot be removed because it contains a split testing goal. Goals cannot be deleted. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+
+		// Removing + Has Unremovable Subjects
+		'cannot_remove_section_has_unremovable_subject' => array(
+			'title' => esc_html__( 'Can\'t Remove Section', 'et_builder' ),
+			'desc'  => esc_html__( 'Split testing requires at least 2 subject variations. This variation cannot be removed until additional variations have been added.', 'et_builder' ),
+		),
+		'cannot_remove_row_has_unremovable_subject' => array(
+			'title' => esc_html__( 'Can\'t Remove Row', 'et_builder' ),
+			'desc'  => esc_html__( 'Split testing requires at least 2 subject variations. This variation cannot be removed until additional variations have been added', 'et_builder' ),
+		),
+
+		// Cloning + Has Goal
+		'cannot_clone_section_has_goal' => array(
+			'title' => esc_html__( 'Can\'t Clone Section', 'et_builder' ),
+			'desc'  => esc_html__( 'This section cannot be duplicated because it contains a split testing goal. Goals cannot be duplicated. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+		'cannot_clone_row_has_goal' => array(
+			'title' => esc_html__( 'Can\'t Clone Row', 'et_builder' ),
+			'desc'  => esc_html__( 'This row cannot be duplicated because it contains a split testing goal. Goals cannot be duplicated. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+
+		// Copy + Has Goal
+		'cannot_copy_section_has_goal' => array(
+			'title' => esc_html__( 'Can\'t Copy Section', 'et_builder' ),
+			'desc'  => esc_html__( 'This section cannot be copied because it contains a split testing goal. Goals cannot be duplicated. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+		'cannot_copy_row_has_goal' => array(
+			'title' => esc_html__( 'Can\'t Copy Row', 'et_builder' ),
+			'desc'  => esc_html__( 'This row cannot be copied because it contains a split testing goal. Goals cannot be duplicated. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+
+		// Copy Goal
+		'cannot_copy_goal' => array(
+			'title' => esc_html__( 'Can\'t Copy Goal', 'et_builder' ),
+			'desc'  => esc_html__( 'Goal cannot be copied. You must first end your split test before performing this action.', 'et_builder' ),
+		),
+
+		// No AB Testing Permission
+		'has_no_ab_permission' => array(
+			'title' => esc_html__( 'Can\'t Edit Split Test', $domain = 'default' ),
+			'desc'  => esc_html__( 'You do not have permission to edit the module, row or section in this split test.', 'et_builder' ),
+		),
+
+		// No AB Testing Report Yet
+		'no_report' => array(
+			'title' => esc_html__( 'Statistics are being collected', 'et_builder' ),
+			'desc'  => esc_html__( 'Stats will be displayed upon sufficient data collection', 'et_builder' ), // 10
+		),
+
+		// Set Global Winner Status
+		'set_global_winner_status' => array(
+			'title'    => esc_html__( 'Set Winner Status', 'et_builder' ),
+			'desc'     => esc_html__( 'You were using global item as split testing winner. Consequently, you have to choose between:', 'et_builder' ),
+			'option_1' => esc_html__( 'Save winner as global item (selected subject will be synced and your global item will be updated in the Divi Library)', 'et_builder' ),
+			'option_2' => esc_html__( 'Save winner as non-global item (selected subject will no longer be a global item and your changes will not modify the global item)', 'et_builder' ),
+			'cancel'   => esc_html__( 'Save as Global Item', 'et_builder' ),
+			'proceed'  => esc_html__( 'Save', 'et_builder' ),
+		),
+
+	) );
 }
 
 /**
@@ -43,7 +316,7 @@ function et_pb_ab_builder_data() {
 add_action( 'wp_ajax_et_pb_ab_builder_data', 'et_pb_ab_builder_data' );
 
 /**
- * Get Split testing subject ranking data
+ * Get AB Testing subject ranking data
  * @return array
  */
 function et_pb_ab_get_saved_subjects_ranks( $post_id ) {
@@ -109,7 +382,7 @@ function et_pb_ab_get_subject_rank_colors() {
 }
 
 /**
- * Print Split testing subject-ranking color scheme
+ * Print AB Testing subject-ranking color scheme
  *
  * @return string inline CSS styling for subject rank
  */
@@ -169,14 +442,14 @@ function et_pb_ab_get_subjects_ranks( $post_id, $ranking_basis = 'engagements', 
 }
 
 /**
- * Get formatted stats data that is used by builder's Split testing stats
+ * Get formatted stats data that is used by builder's AB Testing stats
  *
  * @param int    post ID
  * @param string day|week|month|all duration of stats
  * @param string has to be in Y-m-d H:i:s format
  * @return array stats data
  */
-function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $force_update = false ) {
+function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $force_update = false, $is_cron_task = false ) {
 	global $wpdb;
 
 	$post_id = intval( $post_id );
@@ -184,8 +457,8 @@ function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $
 	$rank_metrics = in_array( $goal_slug, et_pb_ab_get_modules_have_conversions() ) ? 'conversions' : 'clicks';
 
 	// Get subjects
-	$subjects    = et_pb_ab_get_subjects( $post_id, 'array', 'subject_' );
-	$subjects_id = et_pb_ab_get_subjects( $post_id, 'array' );
+	$subjects    = et_pb_ab_get_subjects( $post_id, 'array', 'subject_', $is_cron_task );
+	$subjects_id = et_pb_ab_get_subjects( $post_id, 'array', false, $is_cron_task );
 
 	// Get cached data
 	$cached_data = get_transient( 'et_pb_ab_' . $post_id . '_stats_' . $duration );
@@ -238,7 +511,15 @@ function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $
 
 			// Push color data
 			foreach ( $cached_subjects_ranks as $subject_rank_id => $subject_rank_value ) {
-				$cached_data['subjects_totals'][ $subject_rank_id ]['color'] = isset( $subject_rank_colors[ $cached_subjects_ranks_index ] ) ? $subject_rank_colors[ $cached_subjects_ranks_index ] : '#7E0000';
+				$is_empty_rank_value    = 0 === $subject_rank_value;
+				$has_subject_rank_color = isset( $subject_rank_colors[ $cached_subjects_ranks_index ] );
+
+				// If the rank value (derived from engagement) is empty, display default subject color
+				if ( $is_empty_rank_value ) {
+					$cached_data['subjects_totals'][ $subject_rank_id ]['color'] = '#F3CB57';
+				} else {
+					$cached_data['subjects_totals'][ $subject_rank_id ]['color'] = $has_subject_rank_color ? $subject_rank_colors[ $cached_subjects_ranks_index ] : '#7E0000';
+				}
 
 				$cached_subjects_ranks_index++;
 			}
@@ -324,7 +605,23 @@ function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $
 		// Format YYYYWW format on all-time stats into human-readable format (M jS)
 		foreach ( $stats['dates'] as $date_key => $date_time ) {
 			if ( 'all' === $duration ) {
-				$stats['dates'][ $date_key ] = date( 'M jS', strtotime( substr( $date_time, 0, 4 ) . 'W' . substr( $date_time, 4, 2 ) ) );
+				// Format weekly label
+				$week_in_seconds = 60 * 60 * 24 * 7;
+				$current_time    = current_time( 'timestamp' );
+				$week_start_time = strtotime( substr( $date_time, 0, 4 ) . 'W' . substr( $date_time, 4, 2 ) );
+				$week_end_time   = $week_start_time + $week_in_seconds;
+
+				// Don't let the end time pass current time
+				if ( $week_end_time > $current_time ) {
+					$week_end_time = $current_time;
+				}
+
+				// Simplify the label by removing the end month when the start and end month are identical
+				if ( date( 'M', $week_start_time ) === date( 'M', $week_end_time ) ) {
+					$stats['dates'][ $date_key ] = date( 'M jS', $week_start_time ) . ' - ' . date( 'jS', $week_end_time );
+				} else {
+					$stats['dates'][ $date_key ] = date( 'M jS', $week_start_time ) . ' - ' . date( 'M jS', $week_end_time );
+				}
 			} else if ( 'day' === $duration ) {
 				$stats['dates'][ $date_key ] = date( 'H:i', strtotime( $date_time ) );
 			} else {
@@ -350,7 +647,15 @@ function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $
 				continue;
 			}
 
-			$stats['subjects_logs'][ "subject_{$log->subject_id}" ][ $log->event ][ $log->date ] = $log->count;
+			$log_date = $log->date;
+
+			// Format year-week to ensure the given date is equal to the expected format. MySQl YEARWEEK() seems to output
+			// the date in ISO-8601 format (first week of the year becomes 201753 instead of the expected 201801)
+			if ( 'all' === $duration ) {
+				$log_date = date( 'YW', strtotime( substr( $log_date, 0, 4 ) . 'W' . substr( $log_date, 4, 2 ) ) );
+			}
+
+			$stats['subjects_logs'][ "subject_{$log->subject_id}" ][ $log->event ][ $log_date] = $log->count;
 		}
 
 		// Determine logs' totals and run analysis
@@ -369,7 +674,7 @@ function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $
 				$denominator       = isset( $stats['subjects_totals'][ $subject_log_id ][ $denominator_event ] ) ? $stats['subjects_totals'][ $subject_log_id ][ $denominator_event ] : 0;
 				$analysis          = $denominator === 0 ? 0 : floatval( number_format( ( $numerator / $denominator ) * 100, 2 ) );
 
-				if ( $analysis_formulas[ $analysis_type ]['inverse'] ) {
+				if ( $analysis_formulas[ $analysis_type ]['inverse'] && 0 !== $numerator && 0 !== $denominator_event ) {
 					$analysis = 100 - $analysis;
 				}
 
@@ -416,7 +721,15 @@ function et_pb_ab_get_stats_data( $post_id, $duration = 'week', $time = false, $
 
 		// Push color data
 		foreach ( $subjects_ranks as $subject_rank_id => $subject_rank_value ) {
-			$stats['subjects_totals'][ $subject_rank_id ]['color'] = isset( $subject_rank_colors[ $subjects_ranks_index ] ) ? $subject_rank_colors[ $subjects_ranks_index ] : '#7E0000';
+			$is_empty_rank_value    = 0 === $subject_rank_value;
+			$has_subject_rank_color = isset( $subject_rank_colors[ $subjects_ranks_index ] );
+
+			// If the rank value (derived from engagement) is empty, display default subject color
+			if ( $is_empty_rank_value ) {
+				$stats['subjects_totals'][ $subject_rank_id ]['color'] = '#F3CB57';
+			} else {
+				$stats['subjects_totals'][ $subject_rank_id ]['color'] = $has_subject_rank_color ? $subject_rank_colors[ $subjects_ranks_index ] : '#7E0000';
+			}
 
 			$subjects_ranks_index++;
 		}
@@ -447,40 +760,7 @@ function et_pb_ab_get_stats_data_duration() {
 }
 
 /**
- * Get subjects of particular post / Split test
- *
- * @param int    post id
- * @param string array|string type of output
- * @param mixed  string|bool  prefix that should be prepended
- */
-function et_pb_ab_get_subjects( $post_id, $type = 'array', $prefix = false ) {
-	$subjects_data = get_post_meta( $post_id, '_et_pb_ab_subjects', true );
-
-	// If user wants string
-	if ( 'string' === $type ) {
-		return $subjects_data;
-	}
-
-	// Convert into array
-	$subjects = explode(',', $subjects_data );
-
-	if ( ! empty( $subjects ) && $prefix ) {
-
-		$prefixed_subjects = array();
-
-		// Loop subject, add prefix
-		foreach ( $subjects as $subject ) {
-			$prefixed_subjects[] = $prefix . (string) $subject;
-		}
-
-		return $prefixed_subjects;
-	}
-
-	return $subjects;
-}
-
-/**
- * Get list of Split testing event type
+ * Get list of AB Testing event type
  *
  * @return array of event types
  */
@@ -642,18 +922,26 @@ function et_pb_ab_get_modules_have_conversions() {
 }
 
 /**
- * Check whether Split testing active on current page
+ * Check whether AB Testing active on current page
  *
  * @return bool
  */
 function et_is_ab_testing_active() {
 	$post_id = apply_filters( 'et_is_ab_testing_active_post_id', get_the_ID() );
 
-	return 'on' === get_post_meta( $post_id, '_et_pb_use_ab_testing', true ) ? true : false;
+	$ab_testing_status = 'on' === get_post_meta( $post_id, '_et_pb_use_ab_testing', true );
+
+	$fb_enabled = function_exists( 'et_fb_enabled' ) ? et_fb_enabled() : false;
+
+	if ( ! $ab_testing_status && $fb_enabled && 'publish' !== get_post_status() ) {
+		$ab_testing_status = 'on' === get_post_meta( $post_id, '_et_pb_use_ab_testing_draft', true );
+	}
+
+	return $ab_testing_status;
 }
 
 /**
- * Check whether split test has report
+ * Check whether AB Testing has report
  *
  * @return bool
  */
@@ -685,7 +973,7 @@ function et_pb_db_status_up_to_date() {
 }
 
 /**
- * Create Split testing table needed for Split testing feature
+ * Create AB Testing table needed for AB Testing feature
  *
  * @return void
  */
@@ -730,27 +1018,30 @@ function et_pb_create_ab_tables() {
 		);
 	}
 
-	$sql_stats = "CREATE TABLE $stats_table_name (
+	$ab_tables_queries = array();
+
+	// Remove client_id column from stats table
+	if ( 0 < $wpdb->query( "SHOW COLUMNS FROM $stats_table_name LIKE 'client_id'" ) ) {
+		$wpdb->query( "ALTER TABLE $stats_table_name DROP COLUMN client_id" );
+	}
+
+	// Remove client subject table
+	if ( 0 <  $wpdb->query( $wpdb->prepare( "SHOW TABLES LIKE %s", $client_subject_table_name ) ) ) {
+		$wpdb->query( "DROP TABLE $client_subject_table_name" );
+	}
+
+	$ab_tables_queries[] = "CREATE TABLE $stats_table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		test_id varchar(20) NOT NULL,
 		subject_id varchar(20) NOT NULL,
 		record_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		event varchar(10) NOT NULL,
-		client_id varchar(32) NOT NULL,
-		UNIQUE KEY id (id)
-	) $charset_collate;";
-
-	$sql_client_subject = "CREATE TABLE $client_subject_table_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		test_id varchar(20) NOT NULL,
-		subject_id varchar(20) NOT NULL,
-		client_id varchar(32) NOT NULL,
 		UNIQUE KEY id (id)
 	) $charset_collate;";
 
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-	dbDelta( array( $sql_stats, $sql_client_subject ) );
+	dbDelta( $ab_tables_queries );
 
 	$db_settings = array(
 		'db_version' => ET_PB_AB_DB_VERSION,
@@ -758,7 +1049,7 @@ function et_pb_create_ab_tables() {
 
 	update_option( 'et_pb_ab_test_settings', $db_settings );
 
-	// Register Split Testing cron
+	// Register AB Testing cron
 	et_pb_create_ab_cron();
 
 	die( 'success' );
@@ -766,12 +1057,12 @@ function et_pb_create_ab_tables() {
 add_action( 'wp_ajax_et_pb_create_ab_tables', 'et_pb_create_ab_tables' );
 
 /**
- * Handle adding the Split testing log record via ajax
+ * Handle adding the AB testing log record via ajax
  *
  * @return void
  */
 function et_pb_update_stats_table() {
-	if ( isset( $_POST['et_ab_log_nonce'] ) && ! wp_verify_nonce( $_POST['et_ab_log_nonce'], 'et_ab_testing_log_nonce' ) ) {
+	if ( ! isset( $_POST['et_ab_log_nonce'] ) || ! wp_verify_nonce( $_POST['et_ab_log_nonce'], 'et_ab_testing_log_nonce' ) ) {
 		die( -1 );
 	}
 
@@ -786,7 +1077,7 @@ add_action( 'wp_ajax_et_pb_update_stats_table', 'et_pb_update_stats_table' );
 add_action( 'wp_ajax_nopriv_et_pb_update_stats_table', 'et_pb_update_stats_table' );
 
 /**
- * List of valid split testing refresh interval duration
+ * List of valid AB Testing refresh interval duration
  *
  * @return array
  */
@@ -798,11 +1089,11 @@ function et_pb_ab_refresh_interval_durations() {
 }
 
 /**
- * Get refresh interval of particular split test
+ * Get refresh interval of particular AB Testing
  *
  * @param int     post ID
  * @param string  default interval
- * @return string interval used in particular split test
+ * @return string interval used in particular AB Testing
  */
 function et_pb_ab_get_refresh_interval( $post_id, $default = 'hourly' ) {
 	$interval = get_post_meta( $post_id, '_et_pb_ab_stats_refresh_interval', true );
@@ -815,7 +1106,7 @@ function et_pb_ab_get_refresh_interval( $post_id, $default = 'hourly' ) {
 }
 
 /**
- * Get refresh interval duration of particular split test
+ * Get refresh interval duration of particular AB Testing
  *
  * @param int     post ID
  * @param string  default interval duration
@@ -832,7 +1123,7 @@ function et_pb_ab_get_refresh_interval_duration( $post_id, $default = 'day' ) {
 }
 
 /**
- * Get goal module slug of particular split test
+ * Get goal module slug of particular AB Testing
  *
  * @param int     post ID
  * @return string test's goal module slug
@@ -842,7 +1133,7 @@ function et_pb_ab_get_goal_module( $post_id ) {
 }
 
 /**
- * Register Divi's Split testing cron
+ * Register Divi's AB Testing cron
  * There are 2 options - daily and hourly, so schedule 2 events
  * @return void
  */
@@ -859,7 +1150,7 @@ function et_pb_create_ab_cron() {
 }
 
 /**
- * Perform Divi's Split testing cron
+ * Perform Divi's AB Testing cron
  *
  * @return void
  */
@@ -881,7 +1172,7 @@ function et_pb_ab_cron( $args ) {
 		}
 
 		foreach ( et_pb_ab_get_stats_data_duration() as $duration ) {
-			et_pb_ab_get_stats_data( $test['test_id'], $duration, false, true );
+			et_pb_ab_get_stats_data( $test['test_id'], $duration, false, true, true );
 		}
 	}
 }
@@ -899,7 +1190,7 @@ function et_pb_ab_clear_cache_handler( $test_id ) {
 
 function et_pb_ab_clear_cache() {
 	// Verify nonce
-	if ( isset( $_POST['et_pb_ab_nonce'] ) && ! wp_verify_nonce( $_POST['et_pb_ab_nonce'], 'ab_testing_builder_nonce' ) ) {
+	if ( ! isset( $_POST['et_pb_ab_nonce'] ) || ! wp_verify_nonce( $_POST['et_pb_ab_nonce'], 'ab_testing_builder_nonce' ) ) {
 		die( -1 );
 	}
 
@@ -911,6 +1202,18 @@ function et_pb_ab_clear_cache() {
 	$test_id = intval( $_POST['et_pb_test_id'] );
 
 	et_pb_ab_clear_cache_handler( $test_id );
+
+	// VB ask to load data to save request
+	if ( isset( $_POST['et_pb_ab_load_data'] ) && isset( $_POST['et_pb_test_id'] ) && isset( $_POST['et_pb_ab_duration'] ) ) {
+		// Whitelist the duration value
+		$duration = in_array( $_POST['et_pb_ab_duration'], et_pb_ab_get_stats_data_duration() ) ? $_POST['et_pb_ab_duration'] : 'day';
+
+		// Get data
+		$output = et_pb_ab_get_stats_data( intval( $_POST['et_pb_test_id'] ), $duration );
+
+		// Print output
+		die( json_encode( $output ) );
+	}
 
 	die( 1 );
 }
@@ -937,7 +1240,7 @@ function et_pb_ab_get_all_tests() {
 
 function et_pb_ab_clear_stats() {
 	// Verify nonce
-	if ( isset( $_POST['et_pb_ab_nonce'] ) && ! wp_verify_nonce( $_POST['et_pb_ab_nonce'], 'ab_testing_builder_nonce' ) ) {
+	if ( ! isset( $_POST['et_pb_ab_nonce'] ) || ! wp_verify_nonce( $_POST['et_pb_ab_nonce'], 'ab_testing_builder_nonce' ) ) {
 		die( -1 );
 	}
 
@@ -957,7 +1260,7 @@ function et_pb_ab_clear_stats() {
 add_action( 'wp_ajax_et_pb_ab_clear_stats', 'et_pb_ab_clear_stats' );
 
 /**
- * Remove Split testing log and clear stats cache
+ * Remove AB Testing log and clear stats cache
  *
  * @param int post ID
  * @return void
@@ -973,14 +1276,16 @@ function et_pb_ab_remove_stats( $test_id ) {
 		$test_id,
 	);
 
-	foreach ( array( 'stats', 'clients' ) as $table_suffix ) {
-		$table_name = $wpdb->prefix . 'et_divi_ab_testing_' . $table_suffix;
+	$table_name = $wpdb->prefix . 'et_divi_ab_testing_stats';
 
-		// construct sql query to remove value from DB table
-		$sql = "DELETE FROM $table_name WHERE test_id = %d";
-
-		$wpdb->query( $wpdb->prepare( $sql, $sql_args ) );
+	if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name ) {
+		return;
 	}
+
+	// construct sql query to remove value from DB table
+	$sql = "DELETE FROM $table_name WHERE test_id = %d";
+
+	$wpdb->query( $wpdb->prepare( $sql, $sql_args ) );
 }
 
 /**
@@ -1010,3 +1315,73 @@ function et_pb_split_track( $atts ) {
 	return $output;
 }
 add_shortcode( 'et_pb_split_track', 'et_pb_split_track' );
+
+/**
+ * Initialize AB Testing. Check whether the user has visited the page or not by checking its cookie
+ *
+ * @since
+ *
+ * @return void
+ */
+function et_pb_ab_init() {
+	global $et_pb_ab_subject;
+
+	// Get post ID
+	$post_id = get_the_ID();
+
+	// Initialize AB Testing if builder and AB Testing is active
+	if ( is_singular() && et_pb_is_pagebuilder_used( $post_id ) && et_is_ab_testing_active() ) {
+		$ab_subjects        = et_pb_ab_get_subjects( $post_id );
+		$ab_hash_key        = defined( 'NONCE_SALT' ) ? NONCE_SALT : 'default-divi-hash-key';
+		$hashed_subject_id  = et_pb_ab_get_visitor_cookie( $post_id, 'view_page' );
+
+		if ( $hashed_subject_id ) {
+			// Compare subjects against hashed subject id found on cookie to verify whether cookie value is valid or not
+			foreach ( $ab_subjects as $ab_subject ) {
+				// Valid subject_id is found
+				if ( hash_hmac( 'md5', $ab_subject, $ab_hash_key ) === $hashed_subject_id ) {
+					$et_pb_ab_subject = $ab_subject;
+
+					// no need to continue
+					break;
+				}
+			}
+
+			// If no valid subject found, get the first one
+			if ( ! $et_pb_ab_subject && isset( $ab_subjects[0] ) ) {
+				$et_pb_ab_subject = $ab_subjects[0];
+			}
+		} else {
+			// First visit. Get next subject on queue
+			$next_subject_index  = get_post_meta( $post_id, '_et_pb_ab_next_subject' , true );
+
+			// Get current subject index based on `_et_pb_ab_next_subject` post meta value
+			$subject_index = false !== $next_subject_index && isset( $ab_subjects[ $next_subject_index ] ) ? (int) $next_subject_index : 0;
+
+			// Get current subject index
+			$et_pb_ab_subject = $ab_subjects[ $subject_index ];
+
+			// Hash the subject
+			$hashed_subject_id = hash_hmac( 'md5', $et_pb_ab_subject, $ab_hash_key );
+
+			// Set cookie for returning visit
+			et_pb_ab_set_visitor_cookie( $post_id, 'view_page', $hashed_subject_id );
+
+			// Bump subject index and save on post meta for next visitor
+			et_pb_ab_increment_current_ab_module_id( $post_id );
+
+			// log the view_page event right away
+			$is_et_fb_enabled = function_exists( 'et_fb_enabled' ) && et_fb_enabled();
+
+			if ( ! is_admin() && ! $is_et_fb_enabled ) {
+				et_pb_add_stats_record( array(
+						'test_id'     => $post_id,
+						'subject_id'  => $et_pb_ab_subject,
+						'record_type' => 'view_page',
+					)
+				);
+			}
+		}
+	}
+}
+add_action( 'wp', 'et_pb_ab_init' );

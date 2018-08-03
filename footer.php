@@ -1,4 +1,12 @@
-<?php if ( 'on' == et_get_option( 'divi_back_to_top', 'false' ) ) : ?>
+<?php
+/**
+ * Fires after the main content, before the footer is output.
+ *
+ * @since ??
+ */
+do_action( 'et_after_main_content' );
+
+if ( 'on' == et_get_option( 'divi_back_to_top', 'false' ) ) : ?>
 
 	<span class="et_pb_scroll_top et-pb-icon"></span>
 
@@ -35,9 +43,9 @@ if ( ! is_page_template( 'page-template-blank.php' ) ) : ?>
 					if ( false !== et_get_option( 'show_footer_social_icons', true ) ) {
 						get_template_part( 'includes/social_icons', 'footer' );
 					}
-				?>
 
-						<p id="footer-info"><?php printf( et_get_safe_localization( __( 'Designed by %1$s | Powered by %2$s', 'Divi' ) ), '<a href="http://www.elegantthemes.com" title="Premium WordPress Themes">Elegant Themes</a>', '<a href="http://www.wordpress.org">WordPress</a>' ); ?></p>
+					echo et_get_footer_credits();
+				?>
 					</div>	<!-- .container -->
 				</div>
 			</footer> <!-- #main-footer -->

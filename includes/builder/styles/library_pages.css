@@ -14,9 +14,11 @@ div#misc-publishing-actions, div#minor-publishing-actions { display: none; }
 a.et-pb-modal-save-template { display: none !important; }
 .alignleft.actions.bulkactions { display: block; }
 
-a.et-pb-modal-save { width: 920px; }
+a.et-pb-modal-save { width: 920px !important; }
 
 .clearfix { clear: both; }
+
+.et-builder-library__icon--global:before { content: url('../images/library-global.svg'); display: inline-block; width: 28px; height: 28px; }
 
 @-webkit-keyframes et_pb_fade_in_small { 0% { opacity: 0; } 100% { opacity: 1; } }
 @-moz-keyframes et_pb_fade_in_small { 0% { opacity: 0; } 100% { opacity: 1; } }

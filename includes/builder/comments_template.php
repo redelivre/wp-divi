@@ -5,11 +5,15 @@
 <?php
 		return;
 	endif;
+
+	global $et_comments_header_level;
+
+	$et_comments_header_level_processed = isset( $et_comments_header_level ) && '' !== $et_comments_header_level ? et_pb_process_header_level( $et_comments_header_level, 'h1' ) : 'h1';
 ?>
 <!-- You can start editing here. -->
 
 <section id="comment-wrap">
-	<h1 id="comments" class="page_title"><?php comments_number( esc_html__( '0 Comments', 'et_builder' ), esc_html__( '1 Comment', 'et_builder' ), '% ' . esc_html__( 'Comments', 'et_builder' ) ); ?></h1>
+	<<?php echo $et_comments_header_level_processed ?> id="comments" class="page_title"><?php comments_number( esc_html__( '0 Comments', 'et_builder' ), esc_html__( '1 Comment', 'et_builder' ), '% ' . esc_html__( 'Comments', 'et_builder' ) ); ?></<?php echo $et_comments_header_level_processed ?>>
 	<?php if ( have_comments() ) : ?>
 		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
 			<div class="comment_navigation_top clearfix">
@@ -51,7 +55,7 @@
 	   </div>
 	<?php endif; ?>
 	<?php if ('open' == $post->comment_status) : ?>
-		<?php comment_form( array('label_submit' => esc_attr__( 'Submit Comment', 'et_builder' ), 'title_reply' => '<span>' . esc_attr__( 'Submit a Comment', 'et_builder' ) . '</span>', 'title_reply_to' => esc_attr__( 'Leave a Reply to %s', 'et_builder' ), 'class_submit' => 'submit et_pb_button' ) ); ?>
+		<?php comment_form( array('label_submit' => esc_attr__( 'Submit Comment', 'et_builder' ), 'title_reply' => '<span>' . esc_attr__( 'Submit a Comment', 'et_builder' ) . '</span>', 'title_reply_to' => esc_attr__( 'Leave a Reply to %s', 'et_builder' ), 'class_submit' => 'submit et_pb_button', 'comment_notes_after' => '', 'id_submit' => 'et_pb_submit' ) ); ?>
 	<?php else: ?>
 
 	<?php endif; // if you delete this the sky will fall on your head ?>

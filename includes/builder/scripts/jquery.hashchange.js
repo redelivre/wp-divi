@@ -1,11 +1,11 @@
 /*!
- * jQuery hashchange event - v1.3 - 7/21/2010
- * http://benalman.com/projects/jquery-hashchange-plugin/
- *
- * Copyright (c) 2010 "Cowboy" Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
- */
+* jQuery hashchange event - v1.3 - 7/21/2010
+* http://benalman.com/projects/jquery-hashchange-plugin/
+*
+* Copyright (c) 2010 "Cowboy" Ben Alman
+* Dual licensed under the MIT and GPL licenses.
+* http://benalman.com/about/license/
+*/
 
 // Script: jQuery hashchange event
 //
@@ -297,7 +297,7 @@
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvv REMOVE IF NOT SUPPORTING IE6/7/8 vvvvvvvvvvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    $.browser.msie && !supports_onhashchange && (function(){
+    typeof $.browser !== 'undefined' && $.browser.msie && !supports_onhashchange && (function(){
       // Not only do IE6/7 need the "magical" Iframe treatment, but so does IE8
       // when running in "IE7 compatibility" mode.
 

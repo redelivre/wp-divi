@@ -55,6 +55,127 @@ if ( ! function_exists( 'et_options_stored_in_one_row' ) ) {
 
 }
 
+/* sync custom CSS from ePanel with WP custom CSS option introduced in WP 4.7 */
+if ( ! function_exists( 'et_sync_custom_css_options' ) ) {
+	function et_sync_custom_css_options() {
+		global $shortname;
+
+		$legacy_custom_css = wp_unslash( et_get_option( "{$shortname}_custom_css" ) );
+
+		// nothing to sync if no custom css saved in ePanel
+		if ( '' === $legacy_custom_css || ! $legacy_custom_css || empty( $legacy_custom_css ) ) {
+			set_theme_mod( 'et_pb_css_synced', 'yes' );
+			return;
+		}
+
+		// don't proceed with the sync logic if the custom CSS option does not exist
+		if ( ! function_exists( 'wp_get_custom_css' ) ) {
+			return;
+		}
+
+		$css_synced = get_theme_mod( 'et_pb_css_synced', 'no' );
+
+		// get custom css string from WP customizer
+		$wp_custom_css = wp_get_custom_css();
+
+		// force sync if the current custom CSS is empty
+		if ( 'yes' === $css_synced && '' !== $wp_custom_css ) {
+			return;
+		}
+
+		// ePanel is completely synced with Customizer
+		if ( $wp_custom_css === $legacy_custom_css || false !== strpos( $wp_custom_css, $legacy_custom_css ) ) {
+			set_theme_mod( 'et_pb_css_synced', 'yes' );
+			return;
+		}
+
+		// merge custom css from WP customizer with ePanel custom css
+		$updated_custom_css = $legacy_custom_css . ' ' . $wp_custom_css;
+
+		$updated_status = wp_update_custom_css_post( $updated_custom_css );
+
+		// set theme mod in case of success
+		if ( is_object( $updated_status ) && ! empty( $updated_status ) ) {
+			set_theme_mod( 'et_pb_css_synced', 'yes' );
+		}
+	}
+}
+add_action( 'init', 'et_sync_custom_css_options' );
+
+/**
+ * sync custom CSS from WP custom CSS option introduced in WP 4.7 with theme options for backward compatibility
+ * it should be removed after a few WP major updates when we fully migrate to WP custom CSS system
+ */
+if ( ! function_exists( 'et_back_sync_custom_css_options' ) ) {
+	function et_back_sync_custom_css_options( $data ) {
+		global $shortname;
+
+		if ( ! empty( $data ) && isset( $data['css'] ) ) {
+			et_update_option( "{$shortname}_custom_css", $data['css'] );
+		}
+
+		return $data;
+	}
+}
+
+add_filter( 'update_custom_css_data', 'et_back_sync_custom_css_options' );
+
+if ( ! function_exists( 'et_update_custom_css_data_cb' ) ):
+function et_update_custom_css_data_cb( $data ) {
+
+	ET_Core_PageResource::remove_static_resources( 'all', 'all' );
+
+	return $data;
+}
+add_filter( 'update_custom_css_data', 'et_update_custom_css_data_cb' );
+endif;
+
+if ( ! function_exists( 'et_epanel_handle_custom_css_output' ) ):
+function et_epanel_handle_custom_css_output( $css, $stylesheet ) {
+	global $wp_current_filter, $shortname;
+
+	if ( ! $css || ! in_array( 'wp_head', $wp_current_filter ) || is_admin() && ! is_customize_preview() ) {
+		return $css;
+	}
+
+	$post_id        = et_core_page_resource_get_the_ID();
+	$is_preview     = is_preview() || isset( $_GET['et_pb_preview_nonce'] ) || is_customize_preview();
+	$is_singular    = et_core_page_resource_is_singular();
+
+	$disabled_global = 'off' === et_get_option( 'et_pb_static_css_file', 'on' );
+	$disabled_post   = $disabled_global || ( $is_singular && 'off' === get_post_meta( $post_id, '_et_pb_static_css_file', true ) );
+
+	$forced_inline     = $is_preview || $disabled_global || $disabled_post;
+	$builder_in_footer = 'on' === et_get_option( 'et_pb_css_in_footer', 'off' );
+
+	$unified_styles = $is_singular && ! $forced_inline && ! $builder_in_footer && et_core_is_builder_used_on_current_request();
+	$resource_owner = $unified_styles ? 'core' : $shortname;
+	$resource_slug  = $unified_styles ? 'unified' : 'customizer';
+
+	if ( $is_preview ) {
+		// Don't let previews cause existing saved static css files to be modified.
+		$resource_slug .= '-preview';
+	}
+
+	if ( function_exists( 'et_fb_is_enabled' ) && et_fb_is_enabled() ) {
+		$resource_slug .= '-vb';
+	}
+
+	if ( ! $unified_styles ) {
+		$post_id = 'global';
+	}
+
+	$styles_manager = et_core_page_resource_get( $resource_owner, $resource_slug, $post_id, 30 );
+
+	if ( $styles_manager->forced_inline || ! $styles_manager->has_file() ) {
+		$styles_manager->set_data( $css, 30 );
+	}
+
+	return ''; // We're handling the custom CSS output ourselves.
+}
+add_filter( 'wp_get_custom_css', 'et_epanel_handle_custom_css_output', 999, 2 );
+endif;
+
 /**
  * Gets option value from the single theme option, stored as an array in the database
  * if all options stored in one row.
@@ -72,6 +193,8 @@ if ( ! function_exists( 'et_get_option' ) ) {
 	function et_get_option( $option_name, $default_value = '', $used_for_object = '', $force_default_value = false, $is_global_setting = false, $global_setting_main_name = '', $global_setting_sub_name = '' ){
 		global $et_theme_options, $shortname;
 
+		$et_one_row_option_name = '';
+
 		if ( $is_global_setting ) {
 			$option_value = '';
 
@@ -83,10 +206,12 @@ if ( ! function_exists( 'et_get_option' ) ) {
 		} else if ( et_options_stored_in_one_row() ) {
 			$et_theme_options_name = 'et_' . $shortname;
 
-			if ( ! isset( $et_theme_options ) || isset( $_POST['wp_customize'] ) ) {
+			if ( ! isset( $et_theme_options ) || is_customize_preview() ) {
 				$et_theme_options = get_option( $et_theme_options_name );
 			}
 			$option_value = isset( $et_theme_options[$option_name] ) ? $et_theme_options[$option_name] : false;
+
+			$et_one_row_option_name = $et_theme_options_name . '_' . $option_name;
 		} else {
 			$option_value = get_option( $option_name );
 		}
@@ -99,6 +224,10 @@ if ( ! function_exists( 'et_get_option' ) ) {
 		if ( '' != $used_for_object && in_array( $used_for_object, array( 'page', 'category' ) ) && is_array( $option_value ) )
 			$option_value = et_generate_wpml_ids( $option_value, $used_for_object );
 
+		if ( ! empty( $et_one_row_option_name ) ) {
+			$option_value = apply_filters( 'et_get_option_' . $et_one_row_option_name, $option_value, $et_one_row_option_name );
+		}
+
 		return $option_value;
 	}
 
@@ -110,27 +239,25 @@ if ( ! function_exists( 'et_update_option' ) ) {
 		global $et_theme_options, $shortname;
 
 		if ( $is_new_global_setting && '' !== $global_setting_main_name && '' !== $global_setting_sub_name ) {
-			$global_setting = get_option( $global_setting_main_name );
-
-			if ( ! $global_setting ) {
-				$global_setting = array();
-			}
+			$global_setting = get_option( $global_setting_main_name, array() );
 
 			$global_setting[ $global_setting_sub_name ] = $new_value;
 
-			$option_name = $global_setting_main_name;
-			$new_value   = $global_setting;
+			update_option( $global_setting_main_name, $global_setting );
+
 		} else if ( et_options_stored_in_one_row() ) {
 			$et_theme_options_name = 'et_' . $shortname;
 
-			if ( ! isset( $et_theme_options ) ) $et_theme_options = get_option( $et_theme_options_name );
+			if ( ! isset( $et_theme_options ) || is_customize_preview() ) {
+				$et_theme_options = get_option( $et_theme_options_name );
+			}
 			$et_theme_options[$option_name] = $new_value;
 
-			$option_name = $et_theme_options_name;
-			$new_value = $et_theme_options;
-		}
+			update_option( $et_theme_options_name, $et_theme_options );
 
-		update_option( $option_name, $new_value );
+		} else {
+			update_option( $option_name, $new_value );
+		}
 	}
 
 }
@@ -154,33 +281,25 @@ if ( ! function_exists( 'et_delete_option' ) ) {
 
 }
 
-add_filter( 'body_class', 'et_browser_body_class' );
-
-function et_browser_body_class($classes) {
-	global $is_lynx, $is_gecko, $is_IE, $is_opera, $is_NS4, $is_safari, $is_chrome, $is_iphone;
-
-	if($is_lynx) $classes[] = 'lynx';
-	elseif($is_gecko) $classes[] = 'gecko';
-	elseif($is_opera) $classes[] = 'opera';
-	elseif($is_NS4) $classes[] = 'ns4';
-	elseif($is_safari) $classes[] = 'safari';
-	elseif($is_chrome) $classes[] = 'chrome';
-	elseif($is_IE) $classes[] = 'ie';
-	else $classes[] = 'unknown';
-
-	if($is_iphone) $classes[] = 'iphone';
-	return $classes;
-}
-
 /*this function allows for the auto-creation of post excerpts*/
 if ( ! function_exists( 'truncate_post' ) ) {
 
-	function truncate_post( $amount, $echo = true, $post = '' ) {
+	function truncate_post( $amount, $echo = true, $post = '', $strip_shortcodes = false ) {
 		global $shortname;
 
 		if ( '' == $post ) global $post;
 
-		$post_excerpt = '';
+		if ( post_password_required( $post ) ) {
+			$post_excerpt = get_the_password_form();
+
+			if ( $echo ) {
+				echo $post_excerpt;
+				return;
+			}
+
+			return $post_excerpt;
+		}
+
 		$post_excerpt = apply_filters( 'the_excerpt', $post->post_excerpt );
 
 		if ( 'on' == et_get_option( $shortname . '_use_excerpt' ) && '' != $post_excerpt ) {
@@ -200,8 +319,18 @@ if ( ! function_exists( 'truncate_post' ) ) {
 			// due to unparsed audio shortcode
 			$truncate = preg_replace( '@\[audio[^\]]*?\].*?\[\/audio]@si', '', $truncate );
 
-			// apply content filters
-			$truncate = apply_filters( 'the_content', $truncate );
+			// Remove embed shortcode from post content
+			$truncate = preg_replace( '@\[embed[^\]]*?\].*?\[\/embed]@si', '', $truncate );
+
+			// Remove scripts from the post content
+			$truncate = preg_replace( '@\<script(.*?)>(.*?)</script>@si', '', html_entity_decode( $truncate ) );
+
+			if ( $strip_shortcodes ) {
+				$truncate = et_strip_shortcodes( $truncate );
+			} else {
+				// apply content filters
+				$truncate = apply_filters( 'the_content', $truncate );
+			}
 
 			// decide if we need to append dots at the end of the string
 			if ( strlen( $truncate ) <= $amount ) {
@@ -237,7 +366,8 @@ if ( ! function_exists( 'et_wp_trim_words' ) ) {
 	function et_wp_trim_words( $text, $num_words = 55, $more = null ) {
 		if ( null === $more )
 			$more = esc_html__( '&hellip;' );
-		$original_text = $text;
+		// Completely remove icons so that unicode hex entities representing the icons do not get included in words.
+		$text = preg_replace( '/<span class="et-pb-icon .*<\/span>/', '', $text );
 		$text = wp_strip_all_tags( $text );
 
 		$text = trim( preg_replace( "/[\n\r\t ]+/", ' ', $text ), ' ' );
@@ -287,7 +417,22 @@ if ( ! function_exists( 'et_first_image' ) ) {
 	function et_first_image() {
 		global $post;
 		$img = '';
-		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
+
+		if ( empty( $post->ID ) ) {
+			return $img;
+		}
+
+		$unprocessed_content = $post->post_content;
+
+		// truncate Post based shortcodes if Divi Builder enabled to avoid infinite loops
+		if ( function_exists( 'et_strip_shortcodes' ) ) {
+			$unprocessed_content = et_strip_shortcodes( $post->post_content, true );
+		}
+
+		// apply the_content filter to execute all shortcodes and get the correct image from the processed content
+		$processed_content = apply_filters( 'the_content', $unprocessed_content );
+
+		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $processed_content, $matches );
 		if ( isset( $matches[1][0] ) ) $img = $matches[1][0];
 
 		return trim( $img );
@@ -324,7 +469,7 @@ if ( ! function_exists( 'get_thumbnail' ) ) {
 				if ($thumb_array['thumb'] == '') $thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) );
 			}
 
-			if (($thumb_array['thumb'] == '') && ((et_get_option( $shortname.'_grab_image' )) == 'on')) {
+			if ( '' === $thumb_array['thumb'] && et_grab_image_setting() ) {
 				$thumb_array['thumb'] = esc_attr( et_first_image() );
 				if ( $fullpath ) $thumb_array['fullpath'] = $thumb_array['thumb'];
 			}
@@ -341,6 +486,26 @@ if ( ! function_exists( 'get_thumbnail' ) ) {
 	}
 
 }
+
+if ( ! function_exists( 'et_grab_image_setting' ) ) :
+/**
+ * Filterable "Grab the first post image" setting.
+ * "Grab the first post image" needs to be filterable so it can be disabled forcefully.
+ * It uses et_first_image() which uses apply_filters( 'the_content' ) which could cause
+ * a conflict with third party plugin which extensively uses 'the_content' filter (ie. BuddyPress)
+ * @return bool
+ */
+function et_grab_image_setting() {
+	global $shortname;
+
+	// Force disable "Grab the first post image" in BuddyPress component page
+	$is_buddypress_component = function_exists( 'bp_current_component' ) && bp_current_component();
+
+	$setting = 'on' === et_get_option( "{$shortname}_grab_image" ) && ! $is_buddypress_component;
+
+	return apply_filters( 'et_grab_image_setting', $setting );
+}
+endif;
 
 /* this function prints thumbnail from Post Thumbnail or Custom field or First post image */
 if ( ! function_exists( 'print_thumbnail' ) ) {
@@ -1382,6 +1547,12 @@ if ( ! function_exists( 'et_load_core_options' ) ) {
  *
  */
 function et_add_custom_css() {
+	// use default wp custom css system starting from WP 4.7
+	// fallback to our legacy custom css system otherwise
+	if ( function_exists( 'wp_get_custom_css_post' ) ) {
+		return;
+	}
+
 	global $shortname;
 
 	$custom_css = et_get_option( "{$shortname}_custom_css" );
@@ -1399,12 +1570,42 @@ add_action( 'wp_head', 'et_add_custom_css', 100 );
 
 if ( ! function_exists( 'et_get_google_fonts' ) ) :
 
-	/**
- * Returns the list of popular google fonts
- *
- */
+ /**
+  * Returns the list of popular google fonts
+  * Fallback to websafe fonts if disabled
+  */
+
 	function et_get_google_fonts() {
-		$google_fonts = array(
+		$websafe_fonts = array(
+			'Georgia' => array(
+				'styles' 		=> '300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
+				'character_set' => 'cyrillic,greek,latin',
+				'type'			=> 'serif',
+			),
+			'Times New Roman' => array(
+				'styles' 		=> '300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
+				'character_set' => 'arabic,cyrillic,greek,hebrew,latin',
+				'type'			=> 'serif',
+			),
+			'Arial' => array(
+				'styles' 		=> '300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
+				'character_set' => 'arabic,cyrillic,greek,hebrew,latin',
+				'type'			=> 'sans-serif',
+			),
+			'Trebuchet' => array(
+				'styles' 		=> '300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
+				'character_set' => 'cyrillic,latin',
+				'type'			=> 'sans-serif',
+				'add_ms_version'=> true,
+			),
+			'Verdana' => array(
+				'styles' 		=> '300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
+				'character_set' => 'cyrillic,latin',
+				'type'			=> 'sans-serif',
+			),
+		);
+
+		$google_fonts = et_core_use_google_fonts() ? array(
 			'Open Sans'             => array(
 				'styles' 		=> '300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
 				'character_set' => 'latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic',
@@ -1805,7 +2006,7 @@ if ( ! function_exists( 'et_get_google_fonts' ) ) :
 				'character_set' => 'latin',
 				'type'			=> 'cursive',
 			),
-		);
+		) : $websafe_fonts;
 
 		return apply_filters( 'et_google_fonts', $google_fonts );
 	}
@@ -1865,7 +2066,9 @@ if ( ! function_exists( 'et_gf_enqueue_fonts' ) ) :
 	function et_gf_enqueue_fonts( $et_gf_font_names ) {
 		global $shortname;
 
-		if ( ! is_array( $et_gf_font_names ) || empty( $et_gf_font_names ) ) return;
+		if ( ! is_array( $et_gf_font_names ) || empty( $et_gf_font_names ) || ! et_core_use_google_fonts() ) {
+			return;
+		}
 
 		$google_fonts = et_get_google_fonts();
 		$protocol = is_ssl() ? 'https' : 'http';
@@ -1903,5 +2106,44 @@ function et_pb_get_google_api_key() {
 	$google_api_key = isset( $google_api_option['api_key'] ) ? $google_api_option['api_key'] : '';
 
 	return $google_api_key;
+}
+endif;
+
+if ( ! function_exists( 'et_uc_theme_name' ) ) :
+
+/**
+ * Fixes the bug with lowercase theme name, preventing a theme to update correctly,
+ * when an update is being performed via Themes page
+ */
+function et_uc_theme_name( $key, $raw_key ) {
+	if ( ! ( is_admin() && isset( $_REQUEST['action'] ) && 'update-theme' === $_REQUEST['action'] ) ) {
+		return $key;
+	}
+
+	$theme_info = wp_get_theme();
+
+	if ( is_child_theme() ) {
+		$theme_info = wp_get_theme( $theme_info->parent_theme );
+	}
+
+	$theme_name = $theme_info->display( 'Name' );
+
+	if ( $raw_key !== $theme_name ) {
+		return $key;
+	}
+
+	return $theme_name;
+}
+add_filter( 'sanitize_key', 'et_uc_theme_name', 10, 2 );
+
+endif;
+
+if ( ! function_exists( 'et_core_exists_in_active_plugins' ) ) :
+function et_core_exists_in_active_plugins() {
+	$result = defined( 'ET_BUILDER_PLUGIN_DIR' )
+			  || defined( 'ET_BLOOM_PLUGIN_DIR' )
+			  || defined( 'ET_MONARCH_PLUGIN_DIR' );
+
+	return $result;
 }
 endif;

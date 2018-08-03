@@ -157,3 +157,31 @@ function et_divi_divider_position_choices() {
 	) );
 }
 endif;
+
+if ( ! function_exists( 'et_divi_background_repeat_choices' ) ) :
+/**
+ * Returns background repeat choices
+ * @return array
+ */
+function et_divi_background_repeat_choices() {
+	return apply_filters( 'et_divi_background_repeat_choices', array(
+		'no-repeat'  => esc_html__( 'No Repeat', 'Divi' ),
+		'repeat'     => esc_html__( 'Tile', 'Divi' ),
+		'repeat-x'   => esc_html__( 'Tile Horizontally', 'Divi' ),
+		'repeat-y'   => esc_html__( 'Tile Vertically', 'Divi' ),
+	) );
+}
+endif;
+
+if ( ! function_exists( 'et_divi_background_attachment_choices' ) ) :
+/**
+ * Returns background attachment choices
+ * @return array
+ */
+function et_divi_background_attachment_choices() {
+	return apply_filters( 'et_divi_background_attachment_choices', array(
+		'scroll' => esc_html__( 'Scroll', 'Divi' ),
+		'fixed'  => esc_html__( 'Fixed', 'Divi' ),
+	) );
+}
+endif;

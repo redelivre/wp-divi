@@ -24,4 +24,4 @@
 
 		$post_format.filter(':checked').trigger( 'change' );
 	});
-})(jQuery)
+})(jQuery);

@@ -5,9 +5,16 @@
  */
 
 ( function( $ ) {
-	var $et_pb_section 		= $( '.et_pb_section' ),
-		$et_transparent_nav = $( '.et_transparent_nav' ),
-		$et_vertical_nav 	= $( '.et_vertical_nav' );
+	var $et_pb_section 		         = $( '.et_pb_section' ),
+		$et_transparent_nav          = $( '.et_transparent_nav' ),
+		$et_footer_info              = $('#footer-info'),
+		et_footer_info_original_html = et_main_customizer_data.original_footer_credits;
+
+	if ( ! $et_footer_info.length ) {
+		$( '#footer-bottom .container' ).prepend( '<p id="footer-info"></p>' );
+
+		$et_footer_info = $('#footer-info');
+	}
 
 	function et_remove_element_class( prefix, el ) {
 		var $element = typeof el === 'undefined' ? $( 'body' ) : $( el ),
@@ -29,10 +36,10 @@
 				$main_header = $( '#main-header' ),
 				secondary_nav_height = $top_header.length && $top_header.is(':visible') ? $top_header.innerHeight() : 0;
 
-			if ( !$body.hasClass('et_hide_nav') && !$body.hasClass('et_vertical_nav') && $body.hasClass( 'et_fixed_nav' ) ) {
+			if ( !$body.hasClass('et_hide_nav') && ! window.et_is_vertical_nav && $body.hasClass( 'et_fixed_nav' ) ) {
 				$pagecontainer.css( 'paddingTop', $main_header.innerHeight() + secondary_nav_height );
 				$main_header.css( 'top', secondary_nav_height );
-			} else if ( $body.hasClass('et_vertical_nav') ) {
+			} else if ( window.et_is_vertical_nav ) {
 				$pagecontainer.css( 'paddingTop', 0 );
 				$main_header.css( 'top', 0 );
 			} else {
@@ -52,7 +59,6 @@
 			logo_height        = typeof wp.customize.value( 'et_divi[logo_height]' )() === 'undefined' ? 54 : parseInt( wp.customize.value( 'et_divi[logo_height]' )() ),
 			$body              = $('body'),
 			is_rtl             = $body.hasClass( 'rtl' ),
-			is_vertical_nav    = $body.hasClass( 'et_vertical_nav' ),
 			$et_top_navigation = $('#et-top-navigation'),
 			et_top_nav_padding = is_rtl ? 'paddingRight' : 'paddingLeft',
 			logo_width         = 30;
@@ -80,7 +86,7 @@
 				$( '.et_header_style_split .centered-inline-logo-wrap' ).css({ 'width' : '' });
 			}
 
-			if ( is_vertical_nav ) {
+			if ( window.et_is_vertical_nav ) {
 				style_content += "#main-header .logo_container { width: " + logo_height + "%; }\ ";
 				style_content += ".et_header_style_centered #main-header .logo_container, .et_header_style_split #main-header .logo_container { margin: 0 auto; }\ ";
 			}
@@ -92,7 +98,7 @@
 
 			setTimeout( function() {
 				// Update inline styling
-				if ( header_style === 'left' && ! is_vertical_nav || header_style === 'slide' || header_style === 'fullscreen' ) {
+				if ( header_style === 'left' && ! window.et_is_vertical_nav || header_style === 'slide' || header_style === 'fullscreen' ) {
 					// Update logo height
 					logo_width += $( '#logo' ).width();
 
@@ -101,6 +107,55 @@
 
 				$et_top_navigation.css( et_top_nav_padding, top_nav_padding_value );
 			}, 700 );
+	}
+
+	// Retrieving padding/margin value based on formatted saved padding/margin strings
+	function et_get_saved_padding_margin_value( saved_value, order ) {
+		if ( typeof saved_value === 'undefined' ) {
+			return false;
+		}
+
+		var values = saved_value.split('|');
+
+		return typeof values[order] !== 'undefined' ? values[order] : false;
+	}
+
+	// Calculate fixed header height by cloning, emulating, and calculating its height
+	function et_fix_saved_main_header_height( state ) {
+		var is_desktop_view = $(window).width() > 980,
+			main_header_height = 0,
+			$main_header = $('#main-header'),
+			data_attribute = state === 'fixed' ? 'data-fixed-height-onload' : 'data-height-onload',
+			main_header_clone_classname = state === 'fixed' ? 'main-header-clone et-fixed-header' : 'main-header-clone',
+			$main_header_clone = $main_header.clone().addClass( main_header_clone_classname );
+
+		if ( is_desktop_view ) {
+			if ( state === 'fixed' ) {
+				$main_header_clone.css({
+					opacity: 0,
+					position: 'fixed',
+					top: 'auto',
+					right: 0,
+					bottom: 0,
+					left: 0
+				}).appendTo( $('body') );
+			} else {
+				$main_header_clone.css({
+					opacity: 0,
+					position: 'absolute',
+					top: 0,
+					right: 0,
+					bottom: 'auto',
+					left: 0
+				}).prependTo( $('body') );
+			}
+
+			main_header_height = $main_header_clone.height();
+
+			$main_header_clone.remove();
+
+			$main_header.attr( data_attribute, main_header_height );
+		}
 	}
 
 	// Fixing main header's alpha to fixed background color transition
@@ -123,8 +178,6 @@
 			$et_single_post 				= $( 'body.single-post' ),
 			$et_window 						= $(window),
 			et_window_width 				= $et_window.width(),
-			$et_vertical_nav 				= $('.et_vertical_nav'),
-			$et_vertical_nav_length 		= $et_vertical_nav.length,
 			secondary_nav_height 			= $top_header.length && $top_header.is( ':visible' ) ? $top_header.innerHeight() : 0,
 			inline_style 					= "<style id='et_fix_page_container_position'>",
 			$inline_style 					= $('#et_fix_page_container_position'),
@@ -158,7 +211,7 @@
 			header_height += secondary_nav_height;
 
 			// Non page builder page needs to be added by #main-content .container's fixed height
-			if ( $et_transparent_nav_length && ! $et_vertical_nav_length && $et_main_content_first_row_length ) {
+			if ( $et_transparent_nav_length && ! window.et_is_vertical_nav && $et_main_content_first_row_length ) {
 				header_height += 58;
 			}
 
@@ -166,10 +219,15 @@
 			if ( is_nav_vertical_to_horizontal ) {
 				$main_header.attr({ 'data-height-onload' : $main_header.height() });
 			}
+
+			// Calculate fixed header height by cloning, emulating, and calculating its height
 		}
 
+		// Calculate fixed header height by cloning, emulating, and calculating its height
+		et_fix_saved_main_header_height( 'fixed' );
+
 		// Specific adjustment required for transparent nav + not vertical nav
-		if ( $et_transparent_nav_length && ! $et_vertical_nav_length ) {
+		if ( $et_transparent_nav_length && ! window.et_is_vertical_nav ) {
 
 			// Add class for first row for custom section padding purpose
 			$et_pb_first_row.addClass( 'et_pb_section_first' );
@@ -378,14 +436,50 @@
 				// Remove first row's inline padding top styling to prevent looping padding-top calculation
 				$et_pb_first_row.css({ 'paddingTop' : '' });
 
-				// Pagebuilder ignores #main-content .container's fixed height and uses its row's padding
-				// Anticipate the use of custom section padding.
-				et_pb_first_row_padding_top = header_height + parseInt( $et_pb_first_row.css( 'paddingBottom' ) );
+				// Get saved custom padding from data-* attributes. Builder automatically adds
+				// saved custom paddings to data-* attributes on first section
+				var et_window_width                 = $et_window.width(),
+					saved_custom_padding            = $et_pb_first_row.attr('data-padding'),
+					saved_custom_padding_top        = et_get_saved_padding_margin_value( saved_custom_padding, 0 ),
+					saved_custom_padding_tablet     = $et_pb_first_row.attr('data-padding-tablet'),
+					saved_custom_padding_tablet_top = et_get_saved_padding_margin_value( saved_custom_padding_tablet, 0 ),
+					saved_custom_padding_phone      = $et_pb_first_row.attr('data-padding-phone'),
+					saved_custom_padding_phone_top  = et_get_saved_padding_margin_value( saved_custom_padding_phone, 0 ),
+					applied_saved_custom_padding;
 
-				// Implementing padding-top + header_height
-				$et_pb_first_row.css({
-					'paddingTop' : et_pb_first_row_padding_top
-				});
+				if ( saved_custom_padding_top || saved_custom_padding_tablet_top || saved_custom_padding_phone_top ) {
+					// Applies padding top to first section to automatically convert saved unit into px
+					if ( et_window_width > 980 && saved_custom_padding_top ) {
+						$et_pb_first_row.css({
+							paddingTop: saved_custom_padding_top
+						});
+					} else if ( et_window_width > 767 && saved_custom_padding_tablet_top ) {
+						$et_pb_first_row.css({
+							paddingTop: saved_custom_padding_tablet_top
+						});
+					} else if ( saved_custom_padding_phone_top ) {
+						$et_pb_first_row.css({
+							paddingTop: saved_custom_padding_phone_top
+						});
+					}
+
+					// Get converted custom padding top value
+					applied_saved_custom_padding = parseInt( $et_pb_first_row.css( 'paddingTop' ) );
+
+					// Implemented saved & converted padding top + header height
+					$et_pb_first_row.css({
+						paddingTop: ( header_height + applied_saved_custom_padding )
+					});
+				} else {
+					// Pagebuilder ignores #main-content .container's fixed height and uses its row's padding
+					// Anticipate the use of custom section padding.
+					et_pb_first_row_padding_top = header_height + parseInt( $et_pb_first_row.css( 'paddingBottom' ) );
+
+					// Implementing padding-top + header_height
+					$et_pb_first_row.css({
+						'paddingTop' : et_pb_first_row_padding_top
+					});
+				}
 
 			} else if ( is_no_pb_mobile ) {
 
@@ -657,8 +751,6 @@
 			$et_window_width 			= $et_window.width(),
 			$main_header 				= $('#main-header'),
 			$main_header_height 		= $main_header.height(),
-			$et_vertical_nav 			= $('.et_vertical_nav'),
-			$et_vertical_nav_length 	= $et_vertical_nav.length,
 			$et_top_navigation 			= $('#et-top-navigation'),
 			$logo_container 			= $('#main-header > .container > .logo_container'),
 			$logo_container_length 		= $logo_container.length,
@@ -666,7 +758,7 @@
 			et_top_navigation_li_size 	= $et_top_navigation.children('nav').children('ul').children('li').size(),
 			et_top_navigation_li_break_index = Math.round( et_top_navigation_li_size / 2 ) - 1;
 
-		if ( $et_window_width > 980 && $logo_container_length && mode == 'split' && $et_vertical_nav_length < 1 ) {
+		if ( $et_window_width > 980 && $logo_container_length && mode == 'split' && ! window.et_is_vertical_nav ) {
 			$('<li class="centered-inline-logo-wrap"></li>').insertAfter($et_top_navigation.find('nav > ul >li:nth('+et_top_navigation_li_break_index+')') );
 			$logo_container.appendTo( $et_top_navigation.find('.centered-inline-logo-wrap') );
 		}
@@ -741,7 +833,6 @@
 	}
 	function add_menu_styles( to, style_id, is_fixed ) {
 		var $full_style_id = $( 'style#et_menu_preview_' + style_id ),
-			is_vertical_nav = $('body').hasClass( 'et_vertical_nav' ),
 			fixed_class = 'fixed' === is_fixed ? '.et-fixed-header' : '',
 			menu_styles = "<style id='et_menu_preview_" + style_id + "'>\  @media all and ( min-width: 981px ) {\ ";
 
@@ -768,7 +859,13 @@
 	function et_slide_to_top() {
 		$('html, body').animate({
 			scrollTop : 0
-		}, 100);
+		}, 100, function() {
+			setTimeout( function() {
+				et_fix_saved_main_header_height( 'initial' );
+
+				$(window).trigger('resize');
+			}, 300 );
+		});
 	}
 
 	function add_content_sidebar_style( sidebar_width ) {
@@ -1027,108 +1124,29 @@
 		}
 	}
 
-	function et_calc_fullscreen_section() {
-		var $et_window = $(window),
-			$body = $( 'body' ),
-			$this_section = $(this),
-			this_section_index = $this_section.index('.et_pb_fullwidth_header'),
-			$header = $this_section.children('.et_pb_fullwidth_header_container'),
-			$header_content = $header.children('.header-content-container'),
-			$header_image = $header.children('.header-image-container'),
-			sectionHeight = $et_window.height(),
-			$wpadminbar = $('#wpadminbar'),
-			$top_header = $('#top-header'),
-			$main_header = $('#main-header');
-
-		et_calculate_header_values();
-
-		var calc_header_offset = ( $( '#wpadminbar' ).length ) ? et_header_height + $( '#wpadminbar' ).innerHeight() - 1 : et_header_height - 1;
-
-		// Section height adjustment differs in vertical and horizontal nav
-		if ( $body.hasClass('et_vertical_nav') ) {
-			if ( $et_window.width() >= 980 && $top_header.length ) {
-				sectionHeight -= $top_header.height();
-			} else {
-				sectionHeight -= $main_header.height();
-			}
-
-			if ( $wpadminbar.length ) {
-				sectionHeight -= $wpadminbar.height();
-			}
-		} else {
-			if ( $body.hasClass('et_hide_nav' ) ) {
-				// If user is logged in and hide navigation is in use, adjust the section height
-				if ( $wpadminbar.length ) {
-					sectionHeight -= $wpadminbar.height();
-				}
-
-				// In mobile, header always appears. Adjust the section height
-				if ( $et_window.width() < 981 && ! $body.hasClass('et_transparent_nav') ) {
-					sectionHeight -= $('#main-header').height();
-				}
-			} else {
-				if ( $this_section.offset().top <= calc_header_offset + 3 ) {
-					sectionHeight -= calc_header_offset;
-				}
-			}
-		}
-
-		// If the transparent primary nav + hide nav until scroll is being used,
-		// cancel automatic padding-top added by transparent nav mechanism
-		if ( $body.hasClass('et_transparent_nav') && $body.hasClass( 'et_hide_nav' ) &&  0 === this_section_index ) {
-			$this_section.css( 'padding-top', '' );
-		}
-
-		$this_section.css('min-height', sectionHeight + 'px' );
-		$header.css('min-height', sectionHeight + 'px' );
-
-		if ( $header.hasClass('center') && $header_content.hasClass('bottom') && $header_image.hasClass('bottom') ) {
-			$header.addClass('bottom-bottom');
-		}
-
-		if ( $header.hasClass('center') && $header_content.hasClass('center') && $header_image.hasClass('center') ) {
-			$header.addClass('center-center');
-		}
-
-		if ( $header.hasClass('center') && $header_content.hasClass('center') && $header_image.hasClass('bottom') ) {
-			$header.addClass('center-bottom');
-
-			var contentHeight = sectionHeight - $header_image.outerHeight( true );
-
-			if ( contentHeight > 0 ) {
-				$header_content.css('min-height', contentHeight + 'px' );
-			}
-		}
-
-		if ( $header.hasClass('center') && $header_content.hasClass('bottom') && $header_image.hasClass('center') ) {
-			$header.addClass('bottom-center');
-		}
-
-		if ( ( $header.hasClass('left') || $header.hasClass('right') ) && !$header_content.length && $header_image.length ) {
-			$header.css('justify-content', 'flex-end');
-		}
-
-		if ( $header.hasClass('center') && $header_content.hasClass('bottom') && !$header_image.length ) {
-			$header_content.find('.header-content').css( 'margin-bottom', 80 + 'px' );
-		}
-
-		if ( $header_content.hasClass('bottom') && $header_image.hasClass('center') ) {
-			$header_image.find('.header-image').css( 'margin-bottom', 80 + 'px' );
-			$header_image.css('align-self', 'flex-end');
-		}
-	}
-
 	function et_fix_fullscreen_section() {
 		var $et_window = $(window);
 
 		$( 'section.et_pb_fullscreen' ).each( function(){
 			var $this_section = $( this );
 
-			$.proxy( et_calc_fullscreen_section, $this_section )();
+			$.proxy( window.et_calc_fullscreen_section, $this_section )();
 
-			$et_window.on( 'resize', $.proxy( et_calc_fullscreen_section, $this_section ) );
+			$et_window.on( 'resize', $.proxy( window.et_calc_fullscreen_section, $this_section ) );
 
 		});
+	}
+
+	function et_set_right_vertical_menu() {
+		var $body = $( 'body' );
+		if ( $body.hasClass( 'et_boxed_layout' ) && $body.hasClass( 'et_vertical_fixed' ) && $body.hasClass( 'et_vertical_right' ) ) {
+			var header_offset = parseFloat( $( '#page-container' ).css( 'margin-right' ) );
+			header_offset += ( parseFloat( $( '#et-main-area' ).css( 'margin-right' ) ) - 225 );
+			header_offset = 0 > header_offset ? 0 : header_offset;
+
+			$( '#main-header' ).css( 'left', '' );
+			$( '#main-header' ).css( 'right', header_offset );
+		}
 	}
 
 	function et_fix_slide_in_top_bar() {
@@ -1196,12 +1214,10 @@
 		value.bind( function( to ) {
 
 		// Don't use cache selector as it might be modified by other controls
-		var $et_transparent_nav = $( '.et_transparent_nav' ),
-			$et_vertical_nav 	= $( '.et_vertical_nav' );
+		var $et_transparent_nav = $( '.et_transparent_nav' );
 
 			// Detect transparent nav & non vertical nav
-
-			if ( $et_transparent_nav.length && ! $et_vertical_nav.length ) {
+			if ( $et_transparent_nav.length && ! window.et_is_vertical_nav ) {
 				$( '.et_pb_section:nth-child(1)' ).css({
 					'paddingBottom' : to + '%'
 				});
@@ -1368,6 +1384,8 @@
 									#main-content h4, .et_pb_column_1_3 .et_pb_post h2, .et_pb_column_1_4 .et_pb_post h2, .et_pb_blog_grid h2, .et_pb_column_1_3 .et_quote_content blockquote p, .et_pb_column_3_8 .et_quote_content blockquote p, .et_pb_column_1_4 .et_quote_content blockquote p, .et_pb_blog_grid .et_quote_content blockquote p, .et_pb_column_1_3 .et_link_content h2, .et_pb_column_3_8 .et_link_content h2, .et_pb_column_1_4 .et_link_content h2, .et_pb_blog_grid .et_link_content h2, .et_pb_column_1_3 .et_audio_content h2, .et_pb_column_3_8 .et_audio_content h2, .et_pb_column_1_4 .et_audio_content h2, .et_pb_blog_grid .et_audio_content h2, .et_pb_column_3_8 .et_pb_audio_module_content h2, .et_pb_column_1_3 .et_pb_audio_module_content h2, .et_pb_gallery_grid .et_pb_gallery_item h3, .et_pb_portfolio_grid .et_pb_portfolio_item h2, .et_pb_filterable_portfolio_grid .et_pb_portfolio_item h2, .et_pb_circle_counter h3, .et_pb_number_counter h3 { font-size: " + to * 0.6 + "px !important; }\
 									.et_pb_slide_description .et_pb_slide_title { font-size: " + to * 1.53 + "px !important; }\
 									.footer-widget h4 { font-size: " + to * 0.6 + "px !important; }\
+									h5 { font-size: " + to * 0.53 + "px !important; }\
+									h6 { font-size: " + to * 0.47 + "px !important; }\
 								}\
 							</style>",
 			$( 'head' ).append( custom_style );
@@ -1386,6 +1404,8 @@
 									#main-content h4, .et_pb_column_1_3 .et_pb_post h2, .et_pb_column_1_4 .et_pb_post h2, .et_pb_blog_grid h2, .et_pb_column_1_3 .et_quote_content blockquote p, .et_pb_column_3_8 .et_quote_content blockquote p, .et_pb_column_1_4 .et_quote_content blockquote p, .et_pb_blog_grid .et_quote_content blockquote p, .et_pb_column_1_3 .et_link_content h2, .et_pb_column_3_8 .et_link_content h2, .et_pb_column_1_4 .et_link_content h2, .et_pb_blog_grid .et_link_content h2, .et_pb_column_1_3 .et_audio_content h2, .et_pb_column_3_8 .et_audio_content h2, .et_pb_column_1_4 .et_audio_content h2, .et_pb_blog_grid .et_audio_content h2, .et_pb_column_3_8 .et_pb_audio_module_content h2, .et_pb_column_1_3 .et_pb_audio_module_content h2, .et_pb_gallery_grid .et_pb_gallery_item h3, .et_pb_portfolio_grid .et_pb_portfolio_item h2, .et_pb_filterable_portfolio_grid .et_pb_portfolio_item h2, .et_pb_circle_counter h3, .et_pb_number_counter h3 { font-size: " + to * 0.6 + "px !important; }\
 									.et_pb_slide_description .et_pb_slide_title { font-size: " + to * 1.53 + "px !important; }\
 									.footer-widget h4 { font-size: " + to * 0.6 + "px !important; }\
+									h5 { font-size: " + to * 0.53 + "px !important; }\
+									h6 { font-size: " + to * 0.47 + "px !important; }\
 								}\
 							</style>",
 			$( 'head' ).append( custom_style );
@@ -1400,9 +1420,9 @@
 
 	wp.customize( 'et_divi[accent_color]', function( value ) {
 		value.bind( function( to ) {
-			var	$accent_style = "<style id='accent_color'>.et_pb_counter_amount, .et_pb_featured_table .et_pb_pricing_heading, .et_pb_pricing_table_button, .comment-reply-link, .form-submit input, .et_quote_content, .et_link_content, .et_audio_content, .et_pb_post_slider.et_pb_bg_layout_dark, #page-container .et_slide_in_menu_container { background-color: " + to + "; }\
-								#et_search_icon:hover, .mobile_menu_bar:before, .footer-widget h4, .et-social-icon a:hover, .et_pb_sum, .et_pb_pricing li a, .et_overlay:before, .et_pb_member_social_links a:hover, .et_pb_widget li a:hover, .et_pb_bg_layout_light .et_pb_promo_button, .et_pb_bg_layout_light .et_pb_more_button, .et_pb_filterable_portfolio .et_pb_portfolio_filters li a.active, .et_pb_filterable_portfolio .et_pb_portofolio_pagination ul li a.active, .et_pb_gallery .et_pb_gallery_pagination ul li a.active, .wp-pagenavi span.current, .wp-pagenavi a:hover, .et_pb_contact_submit, .et_password_protected_form .et_submit_button, .et_pb_bg_layout_light .et_pb_newsletter_button, .nav-single a, .posted_in a { color:" + to + "; }\
-								.et-search-form, .nav li ul, .et_mobile_menu, .footer-widget li:before, .et_pb_pricing li:before { border-color " + to + "; }\
+			var	$accent_style = "<style id='accent_color'>.et_pb_counter_amount, .et_pb_featured_table .et_pb_pricing_heading, .et_pb_pricing_table_button, .comment-reply-link, .form-submit .et_pb_button, .et_quote_content, .et_link_content, .et_audio_content, .et_pb_post_slider.et_pb_bg_layout_dark, #page-container .et_slide_in_menu_container, .et_pb_contact p input[type='radio']:checked + label i:before, #top-header, .et-fixed-header#top-header, .et-fixed-header#top-header #et-secondary-nav li ul { background-color: " + to + "; }\
+								#et_search_icon:hover, .mobile_menu_bar:before, .footer-widget h4, #main-footer .footer-widget h4, .et-social-icon a:hover, .et_pb_sum, .et_pb_pricing li a, .et_overlay:before, .et_pb_member_social_links a:hover, .et_pb_widget li a:hover, .et_pb_bg_layout_light .et_pb_promo_button, .et_pb_bg_layout_light .et_pb_more_button, .et_pb_filterable_portfolio .et_pb_portfolio_filters li a.active, .et_pb_filterable_portfolio .et_pb_portofolio_pagination ul li a.active, .et_pb_gallery .et_pb_gallery_pagination ul li a.active, .wp-pagenavi span.current, .wp-pagenavi a:hover, .et_pb_contact_submit, .et_password_protected_form .et_submit_button, .et_pb_bg_layout_light .et_pb_newsletter_button, .nav-single a, .posted_in a, .et_pb_contact p input[type='checkbox']:checked + label i:before, .woocommerce .star-rating span::before { color:" + to + "; }\
+								.et-search-form, .nav li ul, .et_mobile_menu, .footer-widget li:before, .et_pb_pricing li:before { border-color: " + to + "; }\
 								</style>",
 				style_id = 'style#accent_color';
 
@@ -1424,6 +1444,7 @@
 										body #page-container { margin-top: 0 !important; }\
 									</style>" );
 				et_fix_page_container_position();
+				window.et_is_transparent_nav = true;
 			}
 
 			// Transition from transparent to fixed color
@@ -1431,6 +1452,7 @@
 				$body.removeClass( 'et_transparent_nav' );
 				et_fix_page_container_position();
 				$( '#remove_transparent_margin' ).remove();
+				window.et_is_transparent_nav = false;
 			}
 
 			// Always fix main header's background and box-shadow on change
@@ -1574,6 +1596,30 @@
 		} );
 	} );
 
+	wp.customize( 'et_divi[disable_custom_footer_credits]', function( value ) {
+		value.bind( function( to ) {
+			var footer_info_html = '';
+
+			if ( to === false ) {
+				var custom_footer_credits = wp.customize.value('et_divi[custom_footer_credits]')();
+
+				footer_info_html = $.trim( custom_footer_credits ) !== '' ? custom_footer_credits : et_footer_info_original_html;
+			}
+
+			$et_footer_info.html( footer_info_html );
+		} );
+	} );
+
+	wp.customize( 'et_divi[custom_footer_credits]', function( value ) {
+		value.bind( function( to ) {
+			if ( $.trim( to ) === '' ) {
+				to = et_footer_info_original_html;
+			}
+
+			$et_footer_info.html( to );
+		} );
+	} );
+
 	wp.customize( 'et_divi[footer_bg]', function( value ) {
 		value.bind( function( to ) {
 			$( '#main-footer' ).css( 'background-color', to );
@@ -1594,7 +1640,7 @@
 
 	wp.customize( 'et_divi[footer_widget_link_color]', function( value ) {
 		value.bind( function( to ) {
-			$( '#footer-widgets .footer-widget li a' ).css( 'color', to );
+			$( '#footer-widgets .footer-widget a' ).css( 'color', to );
 		} );
 	} );
 
@@ -1809,7 +1855,8 @@
 		value.bind( function( to ) {
 			$( 'head style#menu_link' ).remove(),
 			custom_style = "<style id='menu_link'>\
-								.et_nav_text_color_light #top-menu > li > a, .et_nav_text_color_dark #top-menu > li > a, #top-menu a, #et_search_icon:before, #et_top_search .et-search-form input, .et_search_form_container input, span.et_close_search_field:after, #et-top-navigation .et-cart-info { color: " + to + " !important; }\
+								#et_search_icon:before, #et_top_search .et-search-form input, .et_search_form_container input, span.et_close_search_field:after, #et-top-navigation .et-cart-info { color: " + to + " !important; }\
+								.et_nav_text_color_light #top-menu > li > a, .et_nav_text_color_dark #top-menu > li > a, #top-menu a { color: " + to + "; }\
 								.et_search_form_container input::-moz-placeholder { color: " + to + "; }\
 								.et_search_form_container input::-webkit-input-placeholder { color: " + to + "; }\
 								.et_search_form_container input:-ms-input-placeholder { color: " + to + "; }\
@@ -1845,7 +1892,11 @@
 
 	wp.customize( 'et_divi[menu_link_active]', function( value ) {
 		value.bind( function( to ) {
-			$( '#top-menu li.current-menu-ancestor > a, #top-menu li.current-menu-item > a, .bottom-nav li.current-menu-item > a' ).css( 'color', to );
+			$( 'head style#menu_link_active' ).remove(),
+			custom_style = "<style id='menu_link_active'>\
+								#top-menu li.current-menu-ancestor > a, #top-menu li.current-menu-item > a, .bottom-nav li.current-menu-item > a { color: " + to + " !important; }\
+							</style>",
+			$( 'head' ).append( custom_style );
 		} );
 	} );
 
@@ -2011,7 +2062,11 @@
 
 			et_fix_logo_height();
 
+			et_fix_page_container_position();
+
 			et_fix_page_top_padding();
+
+			et_fix_fullscreen_section();
 
 			// Display the logo back
 			$('#logo').fadeIn();
@@ -2141,8 +2196,18 @@
 			if ( to ) {
 				$body.addClass( 'et_vertical_nav' );
 
+				window.et_is_vertical_nav = true;
+
+				if ( 'left' === wp.customize.value( 'et_divi[vertical_nav_orientation]' )() ) {
+					$body.removeClass( 'et_vertical_right' );
+				} else {
+					$body.addClass( 'et_vertical_right' );
+				}
+
 				if ( $body.hasClass( 'et_fixed_nav' ) ) {
 					$body.removeClass( 'et_fixed_nav' ).addClass( 'et_fixed_nav_temp' );
+					window.et_is_fixed_nav = false;
+
 					$('#main-header').css( { 'transform': 'translateY(0)', 'top': '0' } );
 					$('#top-header').css( { 'transform': 'translateY(0)', 'top': '0' } );
 				}
@@ -2151,15 +2216,21 @@
 
 				$body.removeClass( 'et_vertical_nav' );
 
+				window.et_is_vertical_nav = false;
+
 				if ( $body.hasClass( 'et_fixed_nav_temp' ) || $body.hasClass( 'et_vertical_fixed' ) ) {
 					$body.removeClass( 'et_fixed_nav_temp et_vertical_fixed' ).addClass( 'et_fixed_nav' );
+
+					window.et_is_fixed_nav = true;
+				} else {
+					window.et_is_fixed_nav = false;
 				}
 
 				et_fix_page_top_padding();
 			}
 
 			// .et_transparent_nav should only be present at <body> on this condition: horizontal nav + transparent #main-header background
-			if ( ! $body.hasClass( 'et_vertical_nav' ) && 'rgba' === main_header_bg.substr( 0, 4 ) ) {
+			if ( ! window.et_is_vertical_nav && 'rgba' === main_header_bg.substr( 0, 4 ) ) {
 				$body.addClass( 'et_transparent_nav' );
 			} else {
 				$body.removeClass( 'et_transparent_nav' );
@@ -2194,6 +2265,8 @@
 			et_fix_page_container_position();
 
 			et_fix_fullscreen_section();
+
+			et_set_right_vertical_menu();
 		} );
 	} );
 
@@ -2203,8 +2276,15 @@
 
 			if ( 'right' === to ) {
 				$body.addClass( 'et_vertical_right' );
+
+				et_set_right_vertical_menu();
 			} else {
 				$body.removeClass( 'et_vertical_right' );
+				if ( $body.hasClass( 'et_boxed_layout' ) && $body.hasClass( 'et_vertical_fixed' ) ) {
+					var header_offset = $( '#page-container' ).css( 'margin-left' );
+					$( '#main-header' ).css( 'right', '' );
+					$( '#main-header' ).css( 'left', header_offset );
+				}
 			}
 		} );
 	} );
@@ -2310,7 +2390,7 @@
 			$('#et-top-navigation').attr( 'data-height', to );
 
 			// Update main-header data-height-onload: it's critical for page et_fix_page_top_padding()
-			$('#main-header').attr({ 'data-height-onload' : parseInt( to ) + 15 });
+			et_fix_saved_main_header_height( 'initial' );
 
 			add_menu_styles( to, 'full_menu', 'not-fixed' );
 
@@ -2360,6 +2440,12 @@
 			add_menu_styles( to, 'fixed_menu', 'fixed' );
 
 			et_fix_logo_height();
+
+			et_fix_page_container_position();
+
+			et_fix_fullscreen_section();
+
+			$(window).trigger('resize');
 		} );
 	} );
 
@@ -4048,7 +4134,7 @@
 
 	wp.customize( 'et_divi[all_buttons_text_color_hover]', function( value ) {
 		value.bind( function( to ) {
-			var	$button_style = '<style id="buttons_text_color_hover">body #page-container .et_pb_button:hover, .woocommerce a.button.alt:hover, .woocommerce-page a.button.alt:hover, .woocommerce button.button.alt:hover, .woocommerce-page button.button.alt:hover, .woocommerce input.button.alt:hover, .woocommerce-page input.button.alt:hover, .woocommerce #respond input#submit.alt:hover, .woocommerce-page #respond input#submit.alt:hover, .woocommerce #content input.button.alt:hover, .woocommerce-page #content input.button.alt:hover, .woocommerce a.button:hover, .woocommerce-page a.button:hover, .woocommerce button.button, .woocommerce-page button.button:hover, .woocommerce input.button:hover, .woocommerce-page input.button:hover, .woocommerce #respond input#submit:hover, .woocommerce-page #respond input#submit:hover, .woocommerce #content input.button:hover, .woocommerce-page #content input.button:hover { color: ' + to + ' !important; } </style>',
+			var	$button_style = '<style id="buttons_text_color_hover">body #page-container .et_pb_button:hover, .woocommerce a.button.alt:hover, .woocommerce-page a.button.alt:hover, .woocommerce button.button.alt:hover, .woocommerce-page button.button.alt:hover, .woocommerce input.button.alt:hover, .woocommerce-page input.button.alt:hover, .woocommerce #respond input#submit.alt:hover, .woocommerce-page #respond input#submit.alt:hover, .woocommerce #content input.button.alt:hover, .woocommerce-page #content input.button.alt:hover, .woocommerce a.button:hover, .woocommerce-page a.button:hover, .woocommerce button.button:hover, .woocommerce-page button.button:hover, .woocommerce input.button:hover, .woocommerce-page input.button:hover, .woocommerce #respond input#submit:hover, .woocommerce-page #respond input#submit:hover, .woocommerce #content input.button:hover, .woocommerce-page #content input.button:hover { color: ' + to + ' !important; } </style>',
 				style_id = 'style#buttons_text_color_hover';
 
 			et_customizer_update_styles( style_id, $button_style );

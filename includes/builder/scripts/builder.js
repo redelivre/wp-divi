@@ -2,12 +2,84 @@ var ET_PageBuilder = ET_PageBuilder || {};
 
 window.wp = window.wp || {};
 
-window.et_builder_version = '2.7.10';
+/**
+ * The builder version and product name will be updated by grunt release task. Do not edit!
+ */
+window.et_builder_version = '3.9';
+window.et_builder_product_name = 'Divi';
 
 ( function($) {
 	var et_error_modal_shown = window.et_error_modal_shown,
 		et_is_loading_missing_modules = false,
-		et_pb_bulder_loading_attempts = 0;
+		et_pb_bulder_loading_attempts = 0,
+		et_ls_prefix = 'et_pb_templates_',
+		et_pb_hovered_item_buffer = {},
+		et_pb_all_unsynced_options = {},
+		et_pb_all_legacy_synced_options = [],
+		et_pb_key_pressed = {
+			's' : false,
+			'r' : false,
+			'c' : false
+		};
+
+	// Rebuild BB template
+	function et_pb_template_rebuild(template, map) {
+		// If we don't have a map, do nothing
+		if (_.isUndefined(map)) {
+			return template;
+		}
+		var placeholder = /<!-- (\d+) -->/g;
+		function unique(match, key) {
+			return map[key];
+		}
+		return template.replace(placeholder, unique);
+	}
+
+	function et_builder_library_get_layouts_data() {
+		return new Promise( function ( resolve, reject ) {
+			$.ajax( {
+				type:     'POST',
+				url:      et_pb_options.ajaxurl,
+				dataType: 'json',
+				data:     {
+					action: 'et_builder_library_get_layouts_data',
+					postId: et_pb_options.postId,
+					nonce:  et_pb_options.library_get_layouts_data_nonce
+				}
+			} ).then( function( response ) {
+				resolve( get( response, 'data', '' ) );
+			} );
+		} );
+	}
+
+	var et_builder_layouts_loaded = et_builder_library_get_layouts_data();
+
+	function et_builder_maybe_clear_localstorage() {
+		var settings_product_version = et_pb_options.product_version,
+			forced_clear_setting_name,
+			forced_clear;
+
+		forced_clear_setting_name = 'et_forced_localstorage_clear';
+
+		forced_clear = localStorage.getItem( forced_clear_setting_name );
+
+		if ( ! forced_clear ) {
+			forced_clear = wpCookies.get( forced_clear_setting_name );
+		}
+
+		// attempt to clear localStorage only once
+		if ( forced_clear !== settings_product_version ) {
+			localStorage.clear();
+
+			wpCookies.set( forced_clear_setting_name, settings_product_version );
+
+			localStorage.setItem( forced_clear_setting_name, settings_product_version );
+
+			setTimeout( function() {
+				window.location.reload();
+			}, 100 );
+		}
+	}
 
 	function et_builder_load_backbone_templates( reload_template ) {
 
@@ -15,16 +87,17 @@ window.et_builder_version = '2.7.10';
 		var et_pb_templates_count = 0,
 			date_now              = new Date(),
 			today_date            = date_now.getYear() + '_' + date_now.getMonth() + '_' + date_now.getDate(),
-			et_ls_prefix          = 'et_pb_templates_',
 			et_ls_all_modules     = ( et_pb_options['et_builder_module_parent_shortcodes'] + '|' + et_pb_options['et_builder_module_child_shortcodes'] ).split( '|' ),
 			product_version       = et_pb_options.product_version,
+			active_plugins        = et_pb_options.active_plugins.join('|'),
 			local_storage_buffer  = '',
 			processed_modules_count = 0,
-			reload_template = _.isUndefined( reload_template ) ? false : reload_template,
 			missing_modules = {
 				missing_modules_array: []
 			},
 			et_pb_templates_interval;
+
+		reload_template = _.isUndefined( reload_template ) ? false : reload_template;
 
 		if ( ! reload_template ) {
 			if ( ! $( 'script[src="' + et_pb_options.builder_js_src + '"]' ).length ) {
@@ -63,18 +136,18 @@ window.et_builder_version = '2.7.10';
 		}
 
 		if ( et_should_load_from_local_storage() ) {
-			for ( et_ls_module_index in et_ls_all_modules ) {
+			for ( var et_ls_module_index in et_ls_all_modules ) {
 				var et_ls_module_slug      = et_ls_all_modules[ et_ls_module_index ],
 					et_ls_template_slug    = et_ls_prefix + et_ls_module_slug,
-					et_ls_template_content = localStorage.getItem( et_ls_template_slug );
+					et_ls_template_content = LZString.decompressFromUTF16( localStorage.getItem( et_ls_template_slug ) );
 
 				// count the processed modules
 				processed_modules_count++;
 
-				if ( _.isUndefined( et_ls_template_content ) || _.isNull( et_ls_template_content ) ) {
+				if ( _.isUndefined( et_ls_template_content ) || _.isNull( et_ls_template_content ) || '' === et_ls_template_content ) {
 					missing_modules['missing_modules_array'].push( et_ls_module_slug );
 				} else {
-					local_storage_buffer += localStorage.getItem( et_ls_template_slug );
+					local_storage_buffer += LZString.decompressFromUTF16( localStorage.getItem( et_ls_template_slug ) );
 				}
 
 				// perform ajax request if missing_modules_array length equals to the templates amount setting or if all the modules processed and we need to retrieve something
@@ -93,22 +166,20 @@ window.et_builder_version = '2.7.10';
 						success: function( data ) {
 							et_is_loading_missing_modules = false;
 
-							try {
-								localStorage.setItem( et_ls_prefix + data['slug'], data['template'] );
-							} catch(e) {
-								// do not use localStorage if it full or any other error occurs
-							}
-
-							$( 'body' ).append( data.template );
-							if ( data.length ) {
-								_.each( data, function( single_module ) {
+							var template;
+							// Backend always returns an array of templates, even for a single module.
+							if ( !_.isUndefined(data.templates) && data.templates.length ) {
+								_.each( data.templates, function( single_module ) {
+									template = et_pb_template_rebuild(single_module['template'], data.unique);
 									try {
-										localStorage.setItem( et_ls_prefix + single_module['slug'], single_module['template'] );
+										localStorage.setItem( et_ls_prefix + single_module['slug'], LZString.compressToUTF16( template ) );
 									} catch(e) {
 										// do not use localStorage if it full or any other error occurs
+
+										et_builder_maybe_clear_localstorage();
 									}
 
-									$( 'body' ).append( single_module['template'] );
+									$( 'body' ).append( template );
 								} );
 							}
 						}
@@ -157,6 +228,8 @@ window.et_builder_version = '2.7.10';
 				localStorage.setItem( et_ls_prefix + 'settings_date', today_date );
 
 				localStorage.setItem( et_ls_prefix + 'settings_product_version', product_version );
+
+				localStorage.setItem( et_ls_prefix + 'settings_active_plugins', active_plugins );
 			} catch(e) {
 				// do not use localStorage if it full or any other error occurs
 			}
@@ -167,18 +240,23 @@ window.et_builder_version = '2.7.10';
 				return false;
 			}
 
-			if ( ! _.isUndefined( et_pb_options.force_cache_purge ) && '1' == et_pb_options.force_cache_purge ) {
+			if ( ! _.isUndefined( et_pb_options.force_cache_purge ) && 'true' === et_pb_options.force_cache_purge ) {
 				return false;
 			}
 
 			var et_ls_settings_date = localStorage.getItem( et_ls_prefix + 'settings_date' ),
-				et_ls_settings_product_version = localStorage.getItem( et_ls_prefix + 'settings_product_version' );
+				et_ls_settings_product_version = localStorage.getItem( et_ls_prefix + 'settings_product_version' ),
+				et_ls_settings_active_plugins = localStorage.getItem( et_ls_prefix + 'settings_active_plugins' );
 
 			if ( _.isUndefined( et_ls_settings_date ) || _.isNull( et_ls_settings_date ) ) {
 				return false;
 			}
 
 			if ( _.isUndefined( et_ls_settings_product_version ) || _.isNull( et_ls_settings_product_version ) ) {
+				return false;
+			}
+
+			if ( et_ls_settings_active_plugins !== active_plugins ) {
 				return false;
 			}
 
@@ -196,13 +274,11 @@ window.et_builder_version = '2.7.10';
 				return false;
 			}
 
-			var templates_prefix_re = /et_pb_templates_*/i
-
-			for ( var prop in localStorage ) {
-				if ( found = prop.match( templates_prefix_re ) ) {
-					localStorage.removeItem( prop );
+			_.forEach( _.keys( localStorage ), function( key ) {
+				if ( startsWith( key, 'et_pb_templates_' ) ) {
+					localStorage.removeItem( key );
 				}
-			}
+			} );
 		}
 
 		function et_pb_append_templates( start_from ) {
@@ -234,22 +310,27 @@ window.et_builder_version = '2.7.10';
 					if ( et_builder_has_storage_support() ) {
 						localStorage.removeItem( et_ls_prefix + 'settings_date' );
 						localStorage.removeItem( et_ls_prefix + 'settings_product_version' );
+						localStorage.removeItem( et_ls_prefix + 'settings_active_plugins' );
 					}
 
 					$( 'body' ).addClass( 'et_pb_stop_scroll' ).append( $failure_notice_template.html() );
 				},
 				success: function( data ) {
 					//append retrieved templates to body
+					var template;
 					for ( var name in data.templates ) {
+						template = et_pb_template_rebuild(data.templates[name], data.unique);
 						if ( et_builder_has_storage_support() ) {
 							try {
-								localStorage.setItem( 'et_pb_templates_' + name, data.templates[name] );
+								localStorage.setItem( 'et_pb_templates_' + name, LZString.compressToUTF16( template ) );
 							} catch(e) {
 								// do not use localStorage if it full or any other error occurs
+
+								et_builder_maybe_clear_localstorage();
 							}
 						}
 
-						$( 'body' ).append( data.templates[name] );
+						$( 'body' ).append( template );
 					}
 				}
 			});
@@ -257,6 +338,71 @@ window.et_builder_version = '2.7.10';
 
 	}
 	et_builder_load_backbone_templates();
+
+	/**
+	 * Get value from object located at path.
+	 *
+	 * @see https://stackoverflow.com/a/15643385/2639936
+	 *
+	 * @param {object} obj
+	 * @param {string} path
+	 * @param {*}      default_value
+	 *
+	 * @return {*}
+	 */
+	function get( obj, path, default_value ) {
+		if ( ! _.isObject( obj ) ) {
+			return default_value;
+		}
+
+		var value = _.reduce( path.split( '.' ), function ( prev, curr ) {
+			return prev ? prev[curr] : undefined;
+		}, obj );
+
+		return _.isUndefined( value ) ? default_value : value;
+	}
+
+	/**
+	 * Check if path exists in object.
+	 *
+	 * @see https://stackoverflow.com/a/42042678/2639936
+	 *
+	 * @param obj
+	 * @param path
+	 * @return {boolean}
+	 */
+	function has( obj, path ) {
+		if ( ! path ) {
+			return true;
+		}
+
+		var path_parts = path.split( '.' );
+		var first_part = _.first( path_parts );
+
+		return _.has( obj, first_part ) && has( obj[first_part], _.rest( path_parts ).join( '.' ) );
+	}
+
+	/**
+	 * Determine whether or not a string ends with another string.
+	 *
+	 * @param string
+	 * @param substring
+	 * @return {boolean}
+	 */
+	function endsWith( string, substring ) {
+		return string.substr( string.length - substring.length, string.length ) === substring;
+	}
+
+	/**
+	 * Determine whether or not a string starts with another string.
+	 *
+	 * @param string
+	 * @param substring
+	 * @return {boolean}
+	 */
+	function startsWith( string, substring ) {
+		return string.substr( 0, substring.length ) === substring;
+	}
 
 
 	$( document ).ready( function() {
@@ -269,12 +415,127 @@ window.et_builder_version = '2.7.10';
 			escape     : /<%-([\s\S]+?)%>/g
 		};
 
+		//Helpers
+		ET_PageBuilder.Helpers = {};
+		ET_PageBuilder.Helpers.getSettingValue = function($setting) {
+			var	setting_value;
+			var checked_values = [];
+			var custom_css_option_value;
+			var name = $setting.is('#et_pb_content_main') ? 'et_pb_content' : $setting.attr('id');
+
+			// Process all checkboxex for the current setting at once
+			if ($setting.is(':checkbox')) {
+				// name attribute is used in normal html checkboxes, use it instead of ID
+				name = $setting.attr('name');
+
+				$setting.closest('.et-pb-option-container').find('[name="' + name + '"]:checked').each(function () {
+					checked_values.push($(this).val());
+				});
+
+				setting_value = checked_values.join(",");
+			} else if ($setting.is('#et_pb_content_main')) {
+
+				// Process main content
+				setting_value = $setting.html();
+
+				// Replace temporary ^^ signs with double quotes
+				setting_value = setting_value.replace( /\^\^/g, '%22' );
+
+			} else if ( $setting.closest( '.et-pb-custom-css-option' ).length ) {
+				// Custom CSS settings content should be modified before it is added to the shortcode attribute
+
+				custom_css_option_value = $setting.val();
+
+				// replace new lines with || and backlash \ with %92 in Custom CSS settings
+				setting_value = '' !== custom_css_option_value ? custom_css_option_value.replace( /(?:\r\n|\r|\n)/g, '\|\|' ).replace( /\\/g, '%92' ) : '';
+			} else if ( $setting.hasClass( 'et-pb-range-input' ) ) {
+				// Get range input value
+				setting_value = et_pb_get_range_input_value($setting);
+
+				if ($setting.hasClass('et-pb-validate-unit')) {
+					setting_value = et_pb_sanitize_input_unit_value(setting_value.toString(), false, 'no_default_unit');
+				}
+			} else if ($setting.hasClass('et-pb-range')) {
+				var $real_setting = $setting.siblings('.et-pb-range-input');
+				setting_value = et_pb_get_range_input_value($real_setting);
+
+				if ($real_setting.hasClass('et-pb-validate-unit')) {
+					setting_value = et_pb_sanitize_input_unit_value(setting_value.toString(), false, 'no_default_unit');
+				}
+			} else if ( $setting.hasClass( 'et-pb-validate-unit' ) ) {
+				// Process validated unit
+				setting_value = et_pb_sanitize_input_unit_value( $setting.val(), false, '' );
+			} else if ( $setting.hasClass( 'et-pb-text-align-select') ) {
+				// Process text alignment option. Check for button's et_text_align_active class name to ensure that an option is selected.
+				// This prevents the builder unwantedly treats first option as selected option
+				if ( $setting.closest( '.et-pb-option-container' ).find( '.et_text_align_active' ).length ) {
+					setting_value = $setting.val();
+				}
+			} else if ( ! $setting.is( ':checkbox' ) ) {
+				// Process all other settings: inputs, textarea#wp-editor-area, range sliders etc.
+				setting_value = $setting.is('textarea.wp-editor-area')
+					? et_pb_get_content(name)
+					: $setting.val();
+
+				if ( $setting.hasClass( 'et-pb-range-input' ) && setting_value === 'px' ) {
+					setting_value = '';
+				}
+			}
+			if (_.isNull(setting_value)) {
+				setting_value = '';
+			}
+			return setting_value;
+		};
+		ET_PageBuilder.Helpers.hasValue = function(value) {
+			return ! _.isUndefined(value) && '' !== value;
+		};
+		ET_PageBuilder.Helpers.isOn = function(value) {
+			return ! _.isUndefined(value) && 'on' === value;
+		};
+		ET_PageBuilder.Helpers.moduleHasBackground = function(moduleAttrs, backgroundTypes) {
+			var thisClass = this;
+			var allBackgroundTypes = ['color', 'gradient', 'image', 'video'];
+			var types = _.isUndefined(backgroundTypes) ? allBackgroundTypes : backgroundTypes;
+			var hasBackground = false;
+
+			_.forEach(types, function(type) {
+				var checkBackground = false;
+
+				switch(type) {
+					case 'color':
+						checkBackground = thisClass.hasValue(moduleAttrs.et_pb_background_color);
+						break;
+					case 'gradient':
+						checkBackground = thisClass.isOn(moduleAttrs.et_pb_use_background_color_gradient);
+						break;
+					case 'image':
+						checkBackground = thisClass.hasValue(moduleAttrs.et_pb_background_image);
+						break;
+					case 'video':
+						var hasBackgroundVideoMp4 = thisClass.hasValue(moduleAttrs.et_pb_background_video_mp4);
+						var hasBackgroundVideoWebm = thisClass.hasValue(moduleAttrs.et_pb_background_video_webm);
+
+						checkBackground = hasBackgroundVideoMp4 || hasBackgroundVideoWebm;
+						break;
+				}
+
+				// Underscore's forEach loop can't be stopped so make the check evaluates checkBackground
+				// variable and update hasBackground if checkBackground returns true
+				if (checkBackground) {
+					hasBackground = true;
+				}
+			});
+
+			return hasBackground;
+		},
+
 		// Models
 
 		ET_PageBuilder.Module = Backbone.Model.extend( {
 
 			defaults: {
-				type : 'element'
+				type : 'element',
+				_builder_version : et_pb_options.product_version
 			}
 
 		} );
@@ -288,7 +549,8 @@ window.et_builder_version = '2.7.10';
 				is_global : 'false',
 				layout_type : '',
 				module_type : '',
-				categories : []
+				categories : [],
+				unsynced_options : []
 			}
 
 		} );
@@ -509,10 +771,21 @@ window.et_builder_version = '2.7.10';
 				return num;
 			},
 
-			getTitleByShortcodeTag : function ( tag ) {
+			getTitleByShortcodeTag : function(tag) {
 				var modules = this.get('modules');
+				var module = _.findWhere(modules, { label : tag });
 
-				return _.findWhere( modules, { label : tag } )['title'];
+				return !_.isUndefined(module) ? module['title'] : tag;
+			},
+
+			getDefaultAdminLabel : function( module_type ) {
+				var is_structure_element = $.inArray( module_type, [ 'section', 'row', 'column', 'row_inner', 'column_inner' ] ) > -1;
+
+				if ( is_structure_element ) {
+					return typeof et_pb_options.noun[ module_type ] !== 'undefined' ? et_pb_options.noun[ module_type ] : module_type;
+				}
+
+				return this.getTitleByShortcodeTag( module_type );
 			},
 
 			isModuleFullwidth : function ( module_type ) {
@@ -656,6 +929,128 @@ window.et_builder_version = '2.7.10';
 				return model.has( 'et_pb_temp_global_parent_cid' ) && model.get( 'et_pb_temp_global_parent_cid' ) !== '' ? true : false;
 			},
 
+			changeColumnStructure: function( that, options, skip_reinit, skip_history ) {
+				var layout = options.layout.split(','),
+					specialty_columns = options.specialty_columns,
+					layout_specialty = options.layout_specialty,
+					layout_elements_num = _.size( layout ),
+					this_view = that.options.view;
+					global_module_cid = et_pb_get_global_parent_cid( that );
+
+				if ( options.is_structure_change ) {
+					var row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) ),
+						columns_structure_old = [],
+						index_count = 0;
+
+					_.each( row_columns, function( row_column ) {
+						columns_structure_old[index_count] = row_column.model.get( 'cid' );
+						index_count = index_count + 1;
+					} );
+				}
+
+				_.each( layout, function( element, index ) {
+					var update_content = layout_elements_num == ( index + 1 )
+						? 'true'
+						: 'false',
+						column_attributes = {
+							type : 'column',
+							cid : ET_PageBuilder_Layout.generateNewId(),
+							parent : that.model.get( 'cid' ),
+							layout : element,
+							view : this_view
+						};
+
+					if ( typeof that.model.get( 'et_pb_global_parent' ) !== 'undefined' && '' !== that.model.get( 'et_pb_global_parent' ) ) {
+						column_attributes.et_pb_global_parent = that.model.get( 'et_pb_global_parent' );
+						column_attributes.global_parent_cid = that.model.get( 'global_parent_cid' );
+					}
+
+					if ( typeof layout_specialty[index] !== 'undefined' && layout_specialty[index] === '1' ) {
+						column_attributes.layout_specialty = layout_specialty[index];
+						column_attributes.specialty_columns = parseInt( specialty_columns );
+					}
+
+					if ( typeof that.model.get( 'specialty_row' ) !== 'undefined' ) {
+						that.model.set( 'module_type', 'row_inner', { silent : true } );
+						that.model.set( 'type', 'row_inner', { silent : true } );
+					}
+
+					that.collection.add( [ column_attributes ], { update_shortcodes : update_content } );
+				} );
+
+				if ( options.is_structure_change ) {
+					var columns_structure_new = [];
+
+					row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) );
+					index_count = 0;
+
+					_.each( row_columns, function( row_column ) {
+						columns_structure_new[index_count] = row_column.model.get( 'cid' );
+						index_count = index_count + 1;
+					} );
+
+					// delete old columns IDs
+					columns_structure_new.splice( 0, columns_structure_old.length );
+
+					for ( index = 0; index < columns_structure_old.length; index++ ) {
+						var is_extra_column = ( columns_structure_old.length > columns_structure_new.length ) && ( index > ( columns_structure_new.length - 1 ) ) ? true : false,
+							old_column_cid = columns_structure_old[index],
+							new_column_cid = is_extra_column ? columns_structure_new[columns_structure_new.length-1] : columns_structure_new[index],
+							column_html = ET_PageBuilder_Layout.getView( old_column_cid ).$el.html(),
+							modules = ET_PageBuilder_Layout.getChildViews( old_column_cid ),
+							$updated_column,
+							column_html_old = '';
+
+						ET_PageBuilder_Layout.getView( old_column_cid ).model.destroy();
+
+						ET_PageBuilder_Layout.getView( old_column_cid ).remove();
+
+						ET_PageBuilder_Layout.removeView( old_column_cid );
+
+						$updated_column = $('.et-pb-column[data-cid="' + new_column_cid + '"]');
+
+						if ( ! is_extra_column ) {
+							$updated_column.html( column_html );
+						} else {
+							$updated_column.find( '.et-pb-insert-module' ).remove();
+
+							column_html_old = $updated_column.html();
+
+							$updated_column.html( column_html_old + column_html );
+						}
+
+						_.each( modules, function( module ) {
+							module.model.set( 'parent', new_column_cid, { silent : true } );
+						} );
+					}
+
+					// Enable history saving and set meta for history
+					ET_PageBuilder_App.allowHistorySaving( 'edited', 'column' );
+
+					if ( ! skip_reinit ) {
+						et_reinitialize_builder_layout();
+					}
+				}
+
+				if ( typeof that.model.get( 'template_type' ) !== 'undefined' && 'section' === that.model.get( 'template_type' ) && 'on' === that.model.get( 'et_pb_specialty' ) ) {
+					et_reinitialize_builder_layout();
+				}
+
+				if ( typeof that.model.get( 'et_pb_template_type' ) !== 'undefined' && 'row' === that.model.get( 'et_pb_template_type' ) ) {
+					et_add_template_meta( '_et_pb_row_layout', options.layout );
+				}
+
+				if ( typeof global_module_cid !== 'undefined' && '' !== global_module_cid ) {
+					et_pb_update_global_template( global_module_cid );
+				}
+
+				if ( ! skip_history ) {
+					// Enable history saving and set meta for history
+					ET_PageBuilder_App.allowHistorySaving( 'added', 'column' );
+				}
+
+				ET_PageBuilder_Events.trigger( 'et-add:columns' );
+			},
 		} );
 
 		// Collections
@@ -734,31 +1129,44 @@ window.et_builder_version = '2.7.10';
 					global_id          = 'global' === this.model.get( 'is_global' ) ? this.model.get( 'ID' ) : '',
 					specialty_row      = typeof $( '.et-pb-saved-modules-switcher' ).data( 'specialty_columns' ) !== 'undefined' ? 'on' : 'off',
 					shortcode          = this.model.get( 'shortcode' ),
+					unsynced_options   = this.model.get( 'unsynced_options' ),
 					update_global      = false,
 					global_holder_id   = 'row' === this.model.get( 'layout_type' ) ? current_row : parent_id,
 					global_holder_view = ET_PageBuilder_Layout.getView( global_holder_id ),
-					history_noun       = this.options.model.get( 'layout_type' ) === 'row_inner' ? 'saved_row' : 'saved_' + this.options.model.get( 'layout_type' );
+					history_noun       = this.options.model.get( 'layout_type' ) === 'row_inner' ? 'saved_row' : 'saved_' + this.options.model.get( 'layout_type' ),
+					$modal_container   = clicked_button.closest( '.et_pb_modal_settings_container' ),
+					global_parent_cid  = et_pb_get_global_parent_cid( global_holder_view );
 
 					if ( 'on' === specialty_row ) {
 						global_holder_id = global_holder_view.model.get( 'parent' );
 						global_holder_view = ET_PageBuilder_Layout.getView( global_holder_id );
 					}
 
-					if ( 'section' !== this.model.get( 'layout_type' ) && ( ( typeof global_holder_view.model.get( 'global_parent_cid' ) !== 'undefined' && '' !== global_holder_view.model.get( 'global_parent_cid' ) ) || ( typeof global_holder_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== global_holder_view.model.get( 'et_pb_global_module' ) ) ) ) {
+					if ( 'section' !== this.model.get( 'layout_type' ) && ( '' !== global_parent_cid ) ) {
 						update_global = true;
+						// reset global id when adding global module into global section or row.
+						global_id = '';
 					}
 
 				// Enable history saving and set meta for history
 				ET_PageBuilder_App.allowHistorySaving( 'added', history_noun );
 
 				event.preventDefault();
-				ET_PageBuilder_App.createLayoutFromContent( shortcode , parent_id, '', { ignore_template_tag : 'ignore_template', current_row_cid : current_row, global_id : global_id, after_section : parent_id, is_reinit : 'reinit' } );
+
+				// apply wpautop to the shortcode to make sure all the line breaks inserted correctly
+				if ( typeof window.switchEditors !== 'undefined' ) {
+					shortcode = et_pb_fix_shortcodes( window.switchEditors.wpautop( shortcode ) );
+				}
+
+				ET_PageBuilder_App.createLayoutFromContent( shortcode , parent_id, '', { ignore_template_tag : 'ignore_template', current_row_cid : current_row, global_id : global_id, after_section : parent_id, is_reinit : 'reinit', 'unsynced_options' : unsynced_options } );
 				et_reinitialize_builder_layout();
 
 				if ( true === update_global ) {
-						global_module_cid = typeof global_holder_view.model.get( 'global_parent_cid' ) !== 'undefined' ? global_holder_view.model.get( 'global_parent_cid' ) : global_holder_id;
+					et_pb_update_global_template( global_parent_cid );
+				}
 
-					et_pb_update_global_template( global_module_cid );
+				if ( $modal_container.length ) {
+					$modal_container.find( '.et-pb-modal-close' ).click();
 				}
 			}
 		} );
@@ -805,6 +1213,7 @@ window.et_builder_version = '2.7.10';
 				'click .et-pb-section-add-specialty' : 'addSpecialtySection',
 				'click .et-pb-section-add-saved' : 'addSavedSection',
 				'click .et-pb-expand' : 'expandSection',
+				'click .et-pb-insert-row' : 'addFirstRow',
 				'contextmenu .et-pb-section-add' : 'showRightClickOptions',
 				'click.et_pb_section > .et-pb-controls .et-pb-unlock' : 'unlockSection',
 				'contextmenu.et_pb_section > .et-pb-controls' : 'showRightClickOptions',
@@ -833,6 +1242,10 @@ window.et_builder_version = '2.7.10';
 					}
 				}
 
+				if ( this.model.get( 'et_pb_specialty' ) === 'on' || this.model.get( 'et_pb_fullwidth' ) === 'on' ) {
+					this.$el.find( '.et-pb-insert-row' ).remove();
+				}
+
 				if ( typeof this.model.get( 'et_pb_global_module' ) !== 'undefined' || ( typeof this.model.get( 'et_pb_template_type' ) !== 'undefined' && 'section' === this.model.get( 'et_pb_template_type' ) && 'global' === et_pb_options.is_global_template ) ) {
 					this.$el.addClass( 'et_pb_global' );
 				}
@@ -857,7 +1270,7 @@ window.et_builder_version = '2.7.10';
 					this.$el.addClass( 'et_pb_global_temp' );
 				}
 
-				// Split Testing related class
+				// AB Testing related class
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 					if ( ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
 						this.$el.addClass( 'et_pb_ab_subject' );
@@ -903,11 +1316,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -953,15 +1370,10 @@ window.et_builder_version = '2.7.10';
 
 				if ( ( typeof modal_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== modal_view.model.get( 'et_pb_global_module' ) ) || ( typeof this.model.get( 'et_pb_template_type' ) !== 'undefined' && 'section' === this.model.get( 'et_pb_template_type' ) && 'global' === et_pb_options.is_global_template ) ) {
 					$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_saved_global_modal' );
-
-					var saved_tabs = [ 'general', 'advanced', 'custom_css' ];
-					_.each( saved_tabs, function( tab_name ) {
-						$( '.et_pb_options_tab_' + tab_name ).addClass( 'et_pb_saved_global_tab' );
-					});
 				}
 
-				if ( typeof this.model.get( 'et_pb_specialty' ) === 'undefined' || 'on' !== this.model.get( 'et_pb_specialty' ) ) {
-					$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_hide_advanced_tab' );
+				if ( typeof this.model.get( 'et_pb_specialty' ) !== 'undefined' && 'on' === this.model.get( 'et_pb_specialty' ) ) {
+					$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_specialty_section_settings' );
 				}
 
 				et_pb_open_current_tab();
@@ -973,6 +1385,10 @@ window.et_builder_version = '2.7.10';
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -999,6 +1415,10 @@ window.et_builder_version = '2.7.10';
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -1027,6 +1447,10 @@ window.et_builder_version = '2.7.10';
 				event.preventDefault();
 
 				et_pb_close_all_right_click_options();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -1061,6 +1485,10 @@ window.et_builder_version = '2.7.10';
 
 				et_pb_close_all_right_click_options();
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
@@ -1082,7 +1510,7 @@ window.et_builder_version = '2.7.10';
 				// Add attribute to shortcode
 				this.options.model.attributes.et_pb_collapsed = 'off';
 
-				// Carousel effect for split testing subject
+				// Carousel effect for AB Testing subject
 				if ( ET_PageBuilder_AB_Testing.is_active() && this.model.get( 'et_pb_ab_subject' ) === 'on' ) {
 					ET_PageBuilder_AB_Testing.subject_carousel( this.model.get( 'cid' ) );
 				}
@@ -1096,6 +1524,10 @@ window.et_builder_version = '2.7.10';
 
 			unlockSection : function( event ) {
 				event.preventDefault();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -1131,7 +1563,35 @@ window.et_builder_version = '2.7.10';
 				});
 			},
 
+			addFirstRow: function() {
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
+				var module_id = ET_PageBuilder_Layout.generateNewId(),
+					global_parent = typeof this.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== this.model.get( 'et_pb_global_module' ) ? this.model.get( 'et_pb_global_module' ) : '',
+					global_parent_cid = '' !== global_parent ? this.model.get( 'cid' ) : '',
+					new_row_view;
+
+				this.collection.add( [ {
+					type : 'row',
+					module_type : 'row',
+					cid : module_id,
+					parent : this.model.get( 'cid' ),
+					view : this,
+					et_pb_global_parent : global_parent,
+					global_parent_cid : global_parent_cid,
+					admin_label : et_pb_options.noun['row']
+				} ] );
+				new_row_view = ET_PageBuilder_Layout.getView( module_id );
+				new_row_view.displayColumnsOptions();
+			},
+
 			addRow : function( appendAfter ) {
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				var module_id = ET_PageBuilder_Layout.generateNewId(),
 					global_parent = typeof this.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== this.model.get( 'et_pb_global_module' ) ? this.model.get( 'et_pb_global_module' ) : '',
 					global_parent_cid = '' !== global_parent ? this.model.get( 'cid' ) : '',
@@ -1159,11 +1619,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1208,10 +1672,10 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
-				// Split Testing adjustment
+				// AB Testing adjustment
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
-					// Disable sortable of Split testing item for user with no ab_testing permission
+					// Disable sortable of AB Testing item for user with no ab_testing permission
 					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'section' ) ) {
 						return;
 					}
@@ -1220,12 +1684,18 @@ window.et_builder_version = '2.7.10';
 				this_el.$el.find( sortable_el ).sortable( {
 					connectWith: connectWith,
 					delay: 100,
-					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
+					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et-pb-insert-row, .et_pb_locked, .et-pb-disable-sort',
 					update : function( event, ui ) {
-						// Split Testing adjustment
-						if ( ET_PageBuilder_AB_Testing.is_active() ) {
-							var $sortable_el = this_el.$el.find( sortable_el );
+						var $sortable_el = this_el.$el.find( sortable_el );
 
+						// Loading process occurs. Dragging is temporarily disabled
+						if ( ET_PageBuilder_App.isLoading ) {
+							$sortable_el.sortable('cancel');
+							return;
+						}
+
+						// AB Testing adjustment
+						if ( ET_PageBuilder_AB_Testing.is_active() ) {
 							// Check for permission user first
 							if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( $( ui.item ).children('.et-pb-row-content').attr( 'data-cid' ), 'row' ) ) {
 								ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
@@ -1305,31 +1775,38 @@ window.et_builder_version = '2.7.10';
 
 						}
 
+						var module_cid = $( ui.item ).find( '.et-pb-row-content' ).data( 'cid' );
+						var model = this_el.collection.find( function( model ) {
+							return model.get('cid') == module_cid;
+						} );
+
 						if ( $( ui.item ).closest( '.et_pb_section.et_pb_global' ).length && $( ui.item ).hasClass( 'et_pb_global' ) ) {
 							$( ui.sender ).sortable( 'cancel' );
 							alert( et_pb_options.global_row_alert );
 						} else if ( ( $( ui.item ).closest( '.et_pb_section.et_pb_global' ).length || $( ui.sender ).closest( '.et_pb_section.et_pb_global' ).length ) && '' === et_pb_options.template_post_id ) {
-							var module_cid = ui.item.data( 'cid' ),
-									model,
-									global_module_cid,
-									$moving_from,
-									$moving_to;
+							var	global_module_cid,
+								$moving_from,
+								$moving_to;
 
 							$moving_from = $( ui.sender ).closest( '.et_pb_section.et_pb_global' );
 							$moving_to = $( ui.item ).closest( '.et_pb_section.et_pb_global' );
 
-
 							if ( $moving_from === $moving_to ) {
-								model = this_el.collection.find( function( model ) {
-									return model.get('cid') == module_cid;
-								} );
-
 								global_module_cid = model.get( 'global_parent_cid' );
 
 								et_pb_update_global_template( global_module_cid );
 								et_reinitialize_builder_layout();
 							} else {
 								var $global_element = $moving_from;
+
+								// remove global parent attributes if moved not to global parent.
+								if ( $moving_to.length === 0 && ( ( ! _.isUndefined( model.get( 'et_pb_global_parent' ) ) && '' !== model.get( 'et_pb_global_parent' ) ) || ! _.isUndefined( model.get( 'global_parent_cid' ) ) ) ) {
+									model.unset( 'et_pb_global_parent' );
+									model.unset( 'global_parent_cid' );
+									// remove global attributes from all the child components
+									ET_PageBuilder_Layout.removeGlobalAttributes( ET_PageBuilder_Layout.getView( model.get( 'cid' ) ) );
+								}
+
 								for ( var i = 1; i <= 2; i++ ) {
 									global_module_cid = $global_element.find( '.et-pb-section-content' ).data( 'cid' );
 
@@ -1340,11 +1817,12 @@ window.et_builder_version = '2.7.10';
 									}
 
 									$global_element = $moving_to;
-								};
+								}
 							}
 						}
 
 						ET_PageBuilder_Layout.setNewParentID( ui.item.find( '.et-pb-row-content' ).data( 'cid' ), this_el.model.attributes.cid );
+
 
 						// Enable history saving and set meta for history
 						ET_PageBuilder_App.allowHistorySaving( 'moved', 'row' );
@@ -1373,6 +1851,24 @@ window.et_builder_version = '2.7.10';
 					},
 					start : function( event, ui ) {
 						et_pb_close_all_right_click_options();
+
+						// copy row if Alt key pressed
+						if ( event.altKey ) {
+							var movedRow = ET_PageBuilder_Layout.getView( $( ui.item ).children('.et-pb-row-content').data( 'cid' ) );
+							var view_settings = {
+								model      : movedRow.model,
+								view       : movedRow.$el,
+								view_event : event
+							};
+							var clone_row = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+							clone_row.copy( event, true );
+
+							clone_row.pasteAfter( event, undefined, undefined, undefined, true, true );
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'cloned', 'row' );
+						}
 					}
 				} );
 			},
@@ -1402,11 +1898,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading && _.isUndefined( remove_all ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() && _.isUndefined( remove_all ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1480,7 +1980,7 @@ window.et_builder_version = '2.7.10';
 					ET_PageBuilder_Events.trigger( 'et-module:removed' );
 				}
 
-				// Run Split Testing updater
+				// Run AB Testing updater
 				ET_PageBuilder_AB_Testing.update();
 			},
 
@@ -1603,7 +2103,7 @@ window.et_builder_version = '2.7.10';
 					this.$el.addClass( 'et_pb_global_temp' );
 				}
 
-				// Split Testing related class
+				// AB Testing related class
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 					if ( ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
 						this.$el.addClass( 'et_pb_ab_subject' );
@@ -1645,11 +2145,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1682,11 +2186,6 @@ window.et_builder_version = '2.7.10';
 
 				if ( ( typeof modal_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== modal_view.model.get( 'et_pb_global_module' ) ) || ( ET_PageBuilder_Layout.getView( modal_view.model.get('cid') ).$el.closest( '.et_pb_global' ).length ) || ( typeof this.model.get( 'et_pb_template_type' ) !== 'undefined' && 'row' === this.model.get( 'et_pb_template_type' ) && 'global' === et_pb_options.is_global_template ) ) {
 					$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_saved_global_modal' );
-
-					var saved_tabs = [ 'general', 'advanced', 'custom_css' ];
-					_.each( saved_tabs, function( tab_name ) {
-						$( '.et_pb_options_tab_' + tab_name ).addClass( 'et_pb_saved_global_tab' );
-					});
 				}
 			},
 
@@ -1696,6 +2195,10 @@ window.et_builder_version = '2.7.10';
 				}
 
 				if ( this.isRowLocked() ) {
+					return;
+				}
+
+				if ( ET_PageBuilder_App.isLoading ) {
 					return;
 				}
 
@@ -1732,11 +2235,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1773,7 +2280,7 @@ window.et_builder_version = '2.7.10';
 				// Add attribute to shortcode
 				this.options.model.attributes.et_pb_collapsed = 'off';
 
-				// Carousel effect for split testing subject
+				// Carousel effect for AB Testing subject
 				if ( ET_PageBuilder_AB_Testing.is_active() && this.model.get( 'et_pb_ab_subject' ) === 'on' ) {
 					ET_PageBuilder_AB_Testing.subject_carousel( this.model.get( 'cid' ) );
 				}
@@ -1787,6 +2294,10 @@ window.et_builder_version = '2.7.10';
 
 			unlockRow : function( event ) {
 				event.preventDefault();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -1832,6 +2343,11 @@ window.et_builder_version = '2.7.10';
 			},
 
 			toggleInsertColumnButton : function() {
+				// Manually added row inner (ie empty specialty section's specialty column) has no model
+				if (typeof this.model === 'undefined') {
+					return;
+				}
+
 				var model_id = this.model.get( 'cid' ),
 					columnsInRow;
 
@@ -1852,9 +2368,14 @@ window.et_builder_version = '2.7.10';
 				var $parent_section = this.$el.closest( '.et-pb-section-content' ),
 					$current_target = $( event.currentTarget ),
 					parent_view_cid = $current_target.closest( '.et-pb-column-specialty' ).length ? $current_target.closest( '.et-pb-column-specialty' ).data( 'cid' ) : $parent_section.data( 'cid' ),
-					parent_view = ET_PageBuilder_Layout.getView( parent_view_cid );
+					parent_view = ET_PageBuilder_Layout.getView( parent_view_cid ),
+					global_module_cid = '';
 
 				event.preventDefault();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				et_pb_close_all_right_click_options();
 
@@ -1862,7 +2383,11 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
-				// Split Testing-related action
+				if ( this.$el.closest( '.et_pb_section.et_pb_global' ).length && typeof parent_view.model.get( 'et_pb_template_type' ) === 'undefined' ) {
+					global_module_cid = et_pb_get_global_parent_cid( this );
+				}
+
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1877,6 +2402,9 @@ window.et_builder_version = '2.7.10';
 
 				parent_view.addRow( this.$el );
 
+				if ( '' !== global_module_cid ) {
+					et_pb_update_global_template( global_module_cid );
+				}
 			},
 
 			cloneRow : function( event ) {
@@ -1895,11 +2423,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1916,7 +2448,7 @@ window.et_builder_version = '2.7.10';
 				}
 
 				if ( this.$el.closest( '.et_pb_section.et_pb_global' ).length && typeof parent_view.model.get( 'et_pb_template_type' ) === 'undefined' ) {
-					global_module_cid = this.model.get( 'global_parent_cid' );
+					global_module_cid = et_pb_get_global_parent_cid( this );
 				}
 
 				clone_row = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
@@ -1942,11 +2474,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() && _.isUndefined( force ) && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -1979,7 +2515,7 @@ window.et_builder_version = '2.7.10';
 					}
 
 					if ( this.$el.closest( '.et_pb_section.et_pb_global' ).length && typeof parent_view.model.get( 'et_pb_template_type' ) === 'undefined' ) {
-						global_module_cid = this.model.get( 'global_parent_cid' );
+						global_module_cid = et_pb_get_global_parent_cid( this );
 					}
 				}
 
@@ -2015,7 +2551,7 @@ window.et_builder_version = '2.7.10';
 					et_pb_update_global_template( global_module_cid );
 				}
 
-				// Run Split Testing updater
+				// Run AB Testing updater
 				ET_PageBuilder_AB_Testing.update();
 			},
 
@@ -2034,7 +2570,7 @@ window.et_builder_version = '2.7.10';
 					view_settings;
 
 				// Do nothing if Module or "Insert Module" clicked
-				if ( $event_target.closest( '.et-pb-insert-module' ).length || $event_target.hasClass( 'et_pb_module_block' ) || $event_target.closest( '.et_pb_module_block' ).length ) {
+				if ( $event_target.closest( '.et-pb-insert-module' ).length || $event_target.closest('.et-pb-insert-row').length || $event_target.hasClass( 'et_pb_module_block' ) || $event_target.closest( '.et_pb_module_block' ).length ) {
 					return;
 				}
 
@@ -2124,9 +2660,7 @@ window.et_builder_version = '2.7.10';
 				}
 
 				if ( typeof this.model !== 'undefined' ) {
-					var this_parent_view = ET_PageBuilder_Layout.getView( this.model.get( 'parent' ) ),
-						this_template_type = typeof this.model.get( 'et_pb_template_type' ) !== 'undefined' && 'module' === this.model.get( 'et_pb_template_type' ) || typeof this.model.get( 'template_type' ) !== 'undefined' && 'module' === this.model.get( 'template_type' ),
-						saved_tabs = typeof this.model.get( 'et_pb_saved_tabs' ) !== 'undefined' && 'all' !== this.model.get( 'et_pb_saved_tabs' ) || typeof this_parent_view !== 'undefined' && typeof this_parent_view.model.get( 'et_pb_saved_tabs' ) !== 'undefined' && 'all' !== this_parent_view.model.get( 'et_pb_saved_tabs' )
+					var this_parent_view = ET_PageBuilder_Layout.getView( this.model.get( 'parent' ) );
 
 					if ( this.attributes['data-open_view'] === 'column_specialty_settings' ) {
 						this.model.set( 'open_view', 'column_specialty_settings', { silent : true } );
@@ -2136,33 +2670,6 @@ window.et_builder_version = '2.7.10';
 
 					if ( this.attributes['data-open_view'] === 'column_specialty_settings' ) {
 						this.model.unset( 'open_view', 'column_specialty_settings', { silent : true } );
-					}
-
-					if ( this_template_type && saved_tabs ) {
-						var selected_tabs = typeof this.model.get( 'et_pb_saved_tabs' ) !== 'undefined' ? this.model.get( 'et_pb_saved_tabs' ) : this_parent_view.model.get( 'et_pb_saved_tabs' ) ,
-							selected_tabs_array = selected_tabs.split( ',' ),
-							possible_tabs_array = [ 'general', 'advanced', 'css' ],
-							css_class = '',
-							start_from_tab = '';
-
-						if ( selected_tabs_array[0] !== 'all' ) {
-							_.each( possible_tabs_array, function ( tab ) {
-								if ( -1 === $.inArray( tab, selected_tabs_array ) ) {
-									css_class += ' et_pb_hide_' + tab + '_tab';
-								} else {
-									start_from_tab = '' === start_from_tab ? tab : start_from_tab;
-								}
-							} );
-
-							start_from_tab = 'css' === start_from_tab ? 'custom_css' : start_from_tab;
-
-						}
-
-						this.$el.addClass( css_class );
-
-						if ( typeof this.model.get( 'et_pb_saved_tabs' ) === 'undefined' ) {
-							this.model.set( 'et_pb_saved_tabs', selected_tabs, { silent : true } );
-						}
 					}
 				}
 				else
@@ -2182,9 +2689,16 @@ window.et_builder_version = '2.7.10';
 
 					view = new ET_PageBuilder.ModulesView( view_settings );
 				} else if ( this.attributes['data-open_view'] === 'module_settings' ) {
-					view_settings['attributes'] = {
-						'data-module_type' : this.model.get( 'module_type' )
+					var this_module_type = this.model.get( 'module_type' );
+
+					// check the Row parent and if it's inside the column then change the type Row to Row Inner.
+					if ( 'row' === this_module_type && ! _.isUndefined( this_parent_view ) && 'column' === this_parent_view.model.get('type') ) {
+						this_module_type = 'row_inner';
 					}
+
+					view_settings['attributes'] = {
+						'data-module_type' : this_module_type
+					};
 
 					view_settings['view'] = this;
 
@@ -2195,8 +2709,9 @@ window.et_builder_version = '2.7.10';
 					view = new ET_PageBuilder.ColumnSettingsView( view_settings );
 				} else if ( this.attributes['data-open_view'] === 'saved_templates' ) {
 					view = new ET_PageBuilder.TemplatesModal( { attributes: { 'data-parent_cid' : this.attributes['data-parent_cid'] } } );
+				} else if ( this.attributes['data-open_view'] === 'help' ) {
+					view = new ET_PageBuilder.HelpView();
 				}
-
 				// do not proceed and return false if no template for this module exist yet
 				if ( typeof view.attributes !== 'undefined' && 'no_template' === view.attributes['data-no_template'] ) {
 					return false;
@@ -2232,6 +2747,15 @@ window.et_builder_version = '2.7.10';
 
 				$( 'body' ).addClass( 'et_pb_stop_scroll' );
 
+				// Hide "Save & Add To Library" button if current module has/is goal/subject.
+				// Divi Library should never saved module which has AB Testing attribute
+				if ( this.isABTestingModule() ) {
+					var $settings_container = $( view.render().el ).closest( '.et_pb_modal_settings_container' );
+
+					$settings_container.addClass( 'has_ab_testing_module' );
+					$settings_container.find( '.et-pb-modal-save-template' ).remove();
+				}
+
 				return this;
 			},
 
@@ -2242,8 +2766,11 @@ window.et_builder_version = '2.7.10';
 					$( '.et_modal_on_top' ).remove();
 				} else {
 
-					if ( typeof this.model !== 'undefined' && this.model.get( 'type' ) === 'module' && this.$( '#et_pb_content_new' ).length )
-						et_pb_tinymce_remove_control( 'et_pb_content_new' );
+					if (typeof this.model !== 'undefined' && this.model.get('type') === 'module' && this.$('.wp-editor-area').length) {
+						et_pb_tinymce_remove_control( 'et_pb_content' );
+						et_pb_tinymce_remove_control( 'et_pb_description' );
+						et_pb_tinymce_remove_control( 'et_pb_footer_content' );
+					}
 
 					et_pb_hide_active_color_picker( this );
 
@@ -2282,13 +2809,30 @@ window.et_builder_version = '2.7.10';
 				var that = this,
 					global_module_cid = '',
 					this_view = ET_PageBuilder_Layout.getView( that.model.get( 'cid' ) ),
-					this_parent_view = typeof that.model.get( 'parent' ) !== 'undefined' ? ET_PageBuilder_Layout.getView( that.model.get( 'parent' ) ) : '',
-					global_holder_view = '' !== this_parent_view && ( typeof that.model.get( 'et_pb_global_module' ) === 'undefined' || '' === that.model.get( 'et_pb_global_module' ) ) ? this_parent_view : this_view,
+					this_parent_view = ! _.isUndefined( that.model.get( 'parent' ) ) ? ET_PageBuilder_Layout.getView( that.model.get( 'parent' ) ) : '',
+					global_holder_view = this_view,
 					update_template_only = false,
-					close_modal = _.isUndefined( close_modal ) ? true : close_modal;
+					close_modal = _.isUndefined( close_modal ) ? true : close_modal,
+					is_disabled = 'not-allowed' === $( event.target ).css( 'cursor' );
 
+				// get the global module ID if exists.
+				if ( ! _.isUndefined( global_holder_view.model.get( 'et_pb_global_module' ) )  ) {
+					// if the module is global
+					global_module_cid = global_holder_view.model.get( 'cid' );
+				} else {
+					// check all parents to find the global parent if exists
+					while ( ! _.isUndefined( global_holder_view.model.get( 'parent' ) ) && '' === global_module_cid ) {
+						// Refresh global holder for new loop
+						global_holder_view = ET_PageBuilder_Layout.getView( global_holder_view.model.get( 'parent' ) );
+						global_module_cid = '' === global_module_cid && ! _.isUndefined( global_holder_view.model.get( 'et_pb_global_module' ) ) ? global_holder_view.model.get( 'cid' ) : global_module_cid;
+					}
+				}
 
 				event.preventDefault();
+
+				if ( is_disabled ) {
+					return;
+				}
 
 				// Disabling state and mark it. It takes a while for generating shortcode,
 				// so ensure that user doesn't update the page before shortcode generation has completed
@@ -2300,52 +2844,10 @@ window.et_builder_version = '2.7.10';
 					global_module_cid = typeof global_holder_view.model.get( 'global_parent_cid' ) !== 'undefined' ? global_holder_view.model.get( 'global_parent_cid' ) : global_holder_view.model.get( 'cid' );
 				}
 
-				if ( ( typeof that.model.get( 'et_pb_template_type' ) !== 'undefined' && 'module' === that.model.get( 'et_pb_template_type' ) || '' !== global_module_cid ) && ( typeof that.model.get( 'et_pb_saved_tabs' ) !== 'undefined' ) || ( '' !== this_parent_view && typeof this_parent_view.model.get( 'et_pb_saved_tabs' ) !== 'undefined' ) ) {
-					var selected_tabs_array    = typeof that.model.get( 'et_pb_saved_tabs' ) === 'undefined' ? this_parent_view.model.get( 'et_pb_saved_tabs' ).split( ',' ) : that.model.get( 'et_pb_saved_tabs' ).split( ',' ),
-						selected_tabs_selector = '',
-						existing_attributes    = that.model.attributes;
-
-					_.each( selected_tabs_array, function ( tab ) {
-						switch ( tab ) {
-							case 'general' :
-								selected_tabs_selector += '' !== selected_tabs_selector ? ',' : '';
-								selected_tabs_selector += '.et-pb-options-tab-general input, .et-pb-options-tab-general select, .et-pb-options-tab-general textarea';
-								break;
-							case 'advanced' :
-								selected_tabs_selector += '' !== selected_tabs_selector ? ',' : '';
-								selected_tabs_selector += '.et-pb-options-tab-advanced input, .et-pb-options-tab-advanced select, .et-pb-options-tab-advanced textarea';
-								break;
-							case 'css' :
-								selected_tabs_selector += '' !== selected_tabs_selector ? ',' : '';
-								selected_tabs_selector += '.et-pb-options-tab-custom_css input, .et-pb-options-tab-custom_css select, .et-pb-options-tab-custom_css textarea';
-								break;
-						}
-					});
-
-					_.each( existing_attributes, function( value, key ) {
-						if ( -1 !== key.indexOf( 'et_pb_' ) && 'et_pb_template_type' !== key && 'et_pb_saved_tabs' !== key && 'et_pb_global_module' !== key ) {
-							that.model.unset( key, { silent : true } );
-						}
-					} );
-
-					if ( typeof that.model.get( 'et_pb_saved_tabs' ) === 'undefined' ) {
-						that.model.set( 'et_pb_saved_tabs', this_parent_view.model.get( 'et_pb_saved_tabs' ) );
-					}
-
-					if ( typeof that.model.get( 'et_pb_template_type' ) !== 'undefined' && 'module' === that.model.get( 'et_pb_template_type' ) ) {
-						update_template_only = true;
-					}
-				}
-
-				that.performSaving( selected_tabs_selector );
+				that.performSaving();
 
 				if ( '' !== global_module_cid ) {
 					et_pb_update_global_template( global_module_cid );
-				}
-
-				// update all module settings only if we're updating not partially saved template
-				if ( false === update_template_only && typeof selected_tabs_selector !== 'undefined' ) {
-					that.performSaving();
 				}
 
 				// Enable history saving and set meta for history
@@ -2356,7 +2858,9 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
-				et_pb_tinymce_remove_control( 'et_pb_content_new' );
+				et_pb_tinymce_remove_control( 'et_pb_content' );
+				et_pb_tinymce_remove_control( 'et_pb_description' );
+				et_pb_tinymce_remove_control( 'et_pb_footer_content' );
 
 				et_pb_hide_active_color_picker( that );
 
@@ -2480,12 +2984,22 @@ window.et_builder_version = '2.7.10';
 				});
 			},
 
-			performSaving : function( option_tabs_selector ) {
-				var attributes = {},
-					defaults   = {},
-					options_selector = typeof option_tabs_selector !== 'undefined' && '' !== option_tabs_selector ? option_tabs_selector : 'input, select, textarea, #et_pb_content_main';
+			getAttr: function( object, name ) {
+				return _.isUndefined( object[ name ] ) ? '' : object[ name ];
+			},
 
+			performSaving : function( option_tabs_selector ) {
+				var thisClass  = this;
+				var attributes = {};
+				var unsetAttrs = [];
+				var defaults   = {};
+				var options_selector = typeof option_tabs_selector !== 'undefined' && '' !== option_tabs_selector ? option_tabs_selector : 'input, select, textarea, #et_pb_content_main';
+				var shortcode_name = thisClass.model.get( 'module_type' );
+				var address = thisClass.model.get( '_address' );
 				var $et_form_validation;
+
+				shortcode_name = shortcode_name.indexOf( 'et_pb_' ) === -1 ? ( 'et_pb_' + shortcode_name ) : shortcode_name;
+
 				$et_form_validation = $(this)[0].$el.find('form.validate');
 				if ( $et_form_validation.length ) {
 					validator = $et_form_validation.validate();
@@ -2499,18 +3013,64 @@ window.et_builder_version = '2.7.10';
 					et_builder_debug_message('passed form validation');
 				}
 
+				var global_module_id = 'global' === et_pb_options.is_global_template ? et_pb_options.template_post_id : this.model.get( 'et_pb_global_module' );
+
+				// update the unsynced options for the module
+				if ( $( '.et_pb_global_sync_switcher' ).length > 0 && typeof global_module_id !== 'undefined' && '' !== global_module_id ) {
+					var unsynced_options_array = [];
+
+					if ( $( '.et_pb_global_unsynced' ).length > 0 ) {
+						$( '.et_pb_global_unsynced' ).each( function() {
+							var $this_el = $( this );
+							var this_option_name = $this_el.data( 'option_name' );
+
+							// transform 'content' and 'raw_content' to 'et_pb_content_field'
+							this_option_name = _.includes( ['content', 'raw_content'], this_option_name ) ? 'et_pb_content_field' : this_option_name;
+
+							unsynced_options_array.push( this_option_name );
+
+							// unsync mobile options if exist
+							if ( ! _.isUndefined( $this_el.data( 'additional_options' ) ) && 'mobile' === $this_el.data( 'additional_options' ) ) {
+								unsynced_options_array.push( this_option_name + '_tablet' );
+								unsynced_options_array.push( this_option_name + '_phone' );
+							}
+						});
+					}
+
+					et_pb_all_unsynced_options[ global_module_id ] = unsynced_options_array;
+
+					// update the value in hidden option so unsynced options will be saved on post Update.
+					if ( 'global' === et_pb_options.is_global_template && $( '#et_pb_unsynced_global_attrs' ).length !== 0 ) {
+						$( '#et_pb_unsynced_global_attrs' ).val( JSON.stringify( unsynced_options_array ) );
+					}
+				}
+
 				ET_PageBuilder.Events.trigger( 'et-modal-settings:save', this );
 
-				this.$( options_selector ).each( function() {
-					var $this_el = $(this),
-						setting_value,
-						checked_values = [],
-						name = $this_el.is('#et_pb_content_main') ? 'et_pb_content_new' : $this_el.attr('id'),
-						default_value = $this_el.data('default') || '',
-						custom_css_option_value;
+				var migrations    = _.isUndefined( et_pb_options.et_pb_module_settings_migrations ) ? false : et_pb_options.et_pb_module_settings_migrations;
+				var name_changes  = _.isUndefined( migrations.name_changes ) ? false : migrations.name_changes;
 
-					// convert default value to string to make sure current and default values have the same type
-					default_value = default_value + '';
+				// Delete migrated attributes to avoid unwanted value re-assignment
+				// Their values were migrated to new attributes at this point
+				if ( name_changes &&  ! _.isUndefined( name_changes[ address ] ) ) {
+					_.forEach( name_changes[ address ], function( new_name, old_name ) {
+						unsetAttrs.push( 'et_pb_' + old_name );
+					});
+
+					// After being used, _builder version is updated thus making the migration obsolete.
+					// To avoid migration being re-implemented and producing incorrect attrs, current migration has to be removed
+					delete et_pb_options.et_pb_module_settings_migrations.name_changes[ address ];
+				}
+
+				this.$( options_selector ).each( function() {
+					var $this_el = $(this);
+					var default_value = et_pb_get_default_setting_value($this_el) || '';
+					var name = $this_el.is('#et_pb_content_main') ? 'et_pb_content' : $this_el.attr('id');
+					var isEqualToDefault = function (v1, v2) {
+						return $this_el.hasClass('et-pb-range-input')
+							? _.isEqual(parseFloat(v1), parseFloat(v2))
+							: _.isEqual(v1, v2);
+					};
 
 					// name attribute is used in normal html checkboxes, use it instead of ID
 					if ( $this_el.is( ':checkbox' ) ) {
@@ -2534,67 +3094,98 @@ window.et_builder_version = '2.7.10';
 					}
 
 					// Validate colorpicker - if invalid color given, return to default color
-					if ( $this_el.hasClass( 'et-pb-color-picker-hex' ) && new Color( $this_el.val() ).error ) {
+					var is_divider_color = name.indexOf('divider_color') > -1;
+					if ( $this_el.hasClass( 'et-pb-color-picker-hex' )
+						&& new Color( $this_el.val() ).error
+						&& ! $this_el.hasClass( 'et-pb-is-cleared' )
+						&& ! is_divider_color ) {
 						$this_el.val( $this_el.data( 'selected-value') );
 					}
 
-					// Process all checkboxex for the current setting at once
-					if ( $this_el.is( ':checkbox' ) && typeof attributes[name] === 'undefined' ) {
-						$this_el.closest( '.et-pb-option-container' ).find( '[name="' + name + '"]:checked' ).each( function() {
-							checked_values.push( $(this).val() );
-						} );
-
-						setting_value = checked_values.join( "," );
-					} else if ( $this_el.is( '#et_pb_content_main' ) ) {
-						// Process main content
-
-						setting_value = $this_el.html();
-
-						// Replace temporary ^^ signs with double quotes
-						setting_value = setting_value.replace( /\^\^/g, '%22' );
-					} else if ( $this_el.closest( '.et-pb-custom-css-option' ).length ) {
-						// Custom CSS settings content should be modified before it is added to the shortcode attribute
-
-						custom_css_option_value = $this_el.val();
-
-						// replace new lines with || in Custom CSS settings
-						setting_value = '' !== custom_css_option_value ? custom_css_option_value.replace( /\n/g, '\|\|' ) : '';
-					} else if ( $this_el.hasClass( 'et-pb-range-input' ) || $this_el.hasClass( 'et-pb-validate-unit' ) ) {
-						// Process range sliders. Sanitize for valid unit first
-						var et_validate_default_unit = $this_el.hasClass( 'et-pb-range-input' ) ? 'no_default_unit' : '';
-						setting_value = et_pb_sanitize_input_unit_value( $this_el.val(), false, et_validate_default_unit );
-					} else if ( ! $this_el.is( ':checkbox' ) ) {
-						// Process all other settings: inputs, textarea#et_pb_content_new, range sliders etc.
-
-						setting_value = $this_el.is('textarea#et_pb_content_new')
-							? et_pb_get_content( 'et_pb_content_new' )
-							: $this_el.val();
-
-						if ( $this_el.hasClass( 'et-pb-range-input' ) && setting_value === 'px' ) {
-							setting_value = '';
-						}
-					}
-
+					// convert default value to string to make sure current and default values have the same type
+					default_value = default_value + '';
 					// if default value is set, add it to the defaults object
 					if ( default_value !== '' ) {
 						defaults[ name ] = default_value;
 					}
 
 					// save the attribute value
-					attributes[name] = setting_value;
+					var setting_value = ET_PageBuilder.Helpers.getSettingValue($this_el);
+
+					if ( ! isEqualToDefault(setting_value, default_value) ) {
+						attributes[name] = setting_value;
+					} else {
+						unsetAttrs.push(name);
+					}
 				} );
 
 				// add defaults object
 				attributes['module_defaults'] = defaults;
 
+				// remove padding_mobile based on last_edited value to remove dependency to padding_mobile and rely on responsive padding
+				var module_attributes = this.model.attributes,
+					module_previous_attributes = this.model._previousAttributes,
+					module_type = module_attributes.type,
+					custom_padding_last_edited = _.isUndefined(attributes.et_pb_custom_padding_last_edited) ? [] : attributes.et_pb_custom_padding_last_edited.split('|'),
+					responsive_padding_active = typeof custom_padding_last_edited === 'object' && custom_padding_last_edited[0] === 'on',
+					is_custom_padding_updated = thisClass.getAttr( attributes, 'et_pb_custom_padding' ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_custom_padding' ),
+					is_custom_padding_tablet_updated = responsive_padding_active && thisClass.getAttr( attributes, 'et_pb_custom_padding_tablet' ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_custom_padding_tablet' ),
+					is_custom_padding_phone_updated = responsive_padding_active && thisClass.getAttr( attributes, 'et_pb_custom_padding_phone' ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_custom_padding_phone' ),
+					is_custom_padding_field_updated = is_custom_padding_updated || is_custom_padding_tablet_updated || is_custom_padding_phone_updated;
+
+				// remove padding_mobile on section if responsive padding is active
+				if ( module_type === 'section' && ( responsive_padding_active || is_custom_padding_field_updated ) ) {
+					attributes.et_pb_padding_mobile = '';
+				}
+
+				if ( module_type === 'row' || module_type === 'row_inner' ) {
+					// remove padding_mobile on row if responsive padding is active
+					if ( ( responsive_padding_active || is_custom_padding_field_updated ) ) {
+						attributes.et_pb_padding_mobile = '';
+					}
+
+					// remove column_padding
+					var column_count = typeof module_attributes.columns_layout === 'undefined' ? 0 : module_attributes.columns_layout.split(',').length;
+					for (var column_index = 1; column_index <= column_count; column_index++) {
+						var column_padding_last_edited_value = attributes['et_pb_padding_' + column_index + '_last_edited'],
+							column_padding_last_edited = typeof column_padding_last_edited_value === 'undefined' ? [] : column_padding_last_edited_value.split('|'),
+							column_responsive_padding_active = typeof column_padding_last_edited === 'object' && column_padding_last_edited[0] === 'on',
+							is_column_padding_top_updated    = thisClass.getAttr( attributes, 'et_pb_padding_top_' + column_index ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_padding_top_' + column_index ),
+							is_column_padding_right_updated  = thisClass.getAttr( attributes, 'et_pb_padding_right_' + column_index ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_padding_right_' + column_index ),
+							is_column_padding_bottom_updated = thisClass.getAttr( attributes, 'et_pb_padding_bottom_' + column_index ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_padding_bottom_' + column_index ),
+							is_column_padding_left_updated   = thisClass.getAttr( attributes, 'et_pb_padding_left_' + column_index ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_padding_left_' + column_index ),
+							is_column_padding_updated        = is_column_padding_top_updated || is_column_padding_right_updated || is_column_padding_bottom_updated || is_column_padding_left_updated,
+							is_column_padding_tablet_updated = column_responsive_padding_active && thisClass.getAttr( attributes, 'et_pb_padding_' + column_index + '_tablet' ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_padding_' + column_index + '_tablet' ),
+							is_column_padding_phone_updated  = column_responsive_padding_active && thisClass.getAttr( attributes, 'et_pb_padding_' + column_index + '_phone' ) !== thisClass.getAttr( module_previous_attributes, 'et_pb_padding_' + column_index + '_phone'),
+							is_column_padding_field_updated  = is_column_padding_updated || is_column_padding_tablet_updated || is_column_padding_phone_updated;
+
+						if ( column_responsive_padding_active || is_column_padding_field_updated ) {
+							attributes.et_pb_column_padding_mobile = '';
+							break;
+						}
+					}
+				}
+
 				// set model attributes
 				this.model.set( attributes );
+				unsetAttrs.map(this.model.unset.bind(this.model));
+			},
+
+			isABTestingModule: function() {
+				var model = this.model;
+
+				return ET_PageBuilder_AB_Testing.is_active() && (ET_PageBuilder_AB_Testing.is_subject(model) || ET_PageBuilder_AB_Testing.has_subject(model) || ET_PageBuilder_AB_Testing.is_goal(model) || ET_PageBuilder_AB_Testing.has_goal(model));
 			},
 
 			saveTemplate : function( event ) {
 				var module_width = -1 !== this.model.get( 'module_type' ).indexOf( 'fullwidth' ) ? 'fullwidth' : 'regular',
-					columns_layout = typeof this.model.get( 'columns_layout' ) !== 'undefined' ? this.model.get( 'columns_layout' ) : '0';
+					columns_layout = typeof this.model.get( 'columns_layout' ) !== 'undefined' ? this.model.get( 'columns_layout' ) : '0',
+					is_disabled = 'not-allowed' === $( event.target ).css( 'cursor' ) || this.isABTestingModule();
 				event.preventDefault();
+
+				if ( is_disabled ) {
+					return;
+				}
 
 				et_pb_create_prompt_modal( 'save_template', this, module_width, columns_layout );
 			},
@@ -2628,7 +3219,7 @@ window.et_builder_version = '2.7.10';
 				}
 			},
 
-			applyFilter : function() {
+			applyFilter : function(event) {
 				var $event_target = $(event.target),
 					all_data = $event_target.data( 'attr' ),
 					selected_category = $event_target.val();
@@ -2640,9 +3231,11 @@ window.et_builder_version = '2.7.10';
 
 		ET_PageBuilder.ColumnView = window.wp.Backbone.View.extend( {
 			template : _.template( $('#et-builder-column-template').html() ),
+			templateAddRow : _.template( $('#et-builder-specialty-column-template').html() ),
 
 			events : {
 				'click .et-pb-insert-module' : 'addModule',
+				'click .et-pb-insert-row' : 'addModule',
 				'contextmenu > .et-pb-insert-module' : 'showRightClickOptions',
 				'click' : 'hideRightClickOptions'
 			},
@@ -2657,6 +3250,11 @@ window.et_builder_version = '2.7.10';
 					connect_with = ( ! is_fullwidth_section ? ".et-pb-column:not(.et-pb-column-specialty, .et_pb_parent_locked)" : ".et_pb_fullwidth_sortable_area" );
 
 				this.$el.html( this.template( this.model.toJSON() ) );
+
+				// Specialty section's column button displays add row instead of add module
+				if (typeof this.model.attributes.specialty_columns !== 'undefined' ) {
+					this.$el.html( this.templateAddRow( this.model.toJSON() ) );
+				}
 
 				if ( is_fullwidth_section )
 					this.$el.addClass( 'et_pb_fullwidth_sortable_area' );
@@ -2674,17 +3272,17 @@ window.et_builder_version = '2.7.10';
 					this.model.set( 'et_pb_parent_locked', 'on', { silent : true } );
 				}
 
-				// Split Testing adjustment
+				// AB Testing adjustment
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
-					// Disable sortable of Split testing item for user with no ab_testing permission
+					// Disable sortable of AB Testing item for user with no ab_testing permission
 					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'column' ) ) {
 						return this;
 					}
 				}
 
 				this.$el.sortable( {
-					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
+					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-insert-module, .et-pb-insert-column, .et-pb-insert-row, .et_pb_locked, .et-pb-disable-sort',
 					connectWith: connect_with,
 					delay: 100,
 					items : ( this.model.get( 'layout_specialty' ) !== '1' ? '.et_pb_module_block' : '.et_pb_row' ),
@@ -2718,49 +3316,26 @@ window.et_builder_version = '2.7.10';
 						if ( ( $( ui.item ).closest( '.et_pb_section.et_pb_global' ).length || $( ui.item ).closest( '.et_pb_row.et_pb_global' ).length ) && $( ui.item ).hasClass( 'et_pb_global' ) ) {
 							alert( et_pb_options.global_module_alert );
 							cancel_action = true;
-						} else if ( ( $( ui.item ).closest( '.et_pb_section.et_pb_global' ).length || $( ui.item ).closest( '.et_pb_row.et_pb_global' ).length || $( ui.sender ).closest( '.et_pb_row.et_pb_global' ).length || $( ui.sender ).closest( '.et_pb_section.et_pb_global' ).length ) && '' === et_pb_options.template_post_id ) {
-							var module_cid = ui.item.data( 'cid' ),
-								model,
-								global_module_cid,
-								$moving_from,
-								$moving_to;
-
-							$moving_from = $( ui.sender ).closest( '.et_pb_row.et_pb_global' ).length ? $( ui.sender ).closest( '.et_pb_row.et_pb_global' ) : $( ui.sender ).closest( '.et_pb_section.et_pb_global' );
-							$moving_to = $( ui.item ).closest( '.et_pb_row.et_pb_global' ).length ? $( ui.item ).closest( '.et_pb_row.et_pb_global' ) : $( ui.item ).closest( '.et_pb_section.et_pb_global' );
-
-
-							if ( $moving_from === $moving_to ) {
-								model = this_el.collection.find( function( model ) {
-									return model.get('cid') == module_cid;
-								} );
-
-								global_module_cid = model.get( 'global_parent_cid' );
-
-								et_pb_update_global_template( global_module_cid );
-								et_reinitialize_builder_layout();
-							} else {
-								var $global_element = $moving_from;
-								for ( var i = 1; i <= 2; i++ ) {
-									global_module_cid = typeof $global_element.find( '.et-pb-section-content' ).data( 'cid' ) !== 'undefined' ? $global_element.find( '.et-pb-section-content' ).data( 'cid' ) : $global_element.find( '.et-pb-row-content' ).data( 'cid' );
-
-									if ( typeof global_module_cid !== 'undefined' && '' !== global_module_cid ) {
-
-										et_pb_update_global_template( global_module_cid );
-										et_reinitialize_builder_layout();
-									}
-
-									$global_element = $moving_to;
-								};
-							}
 						}
 
 						if ( cancel_action ) {
 							$(ui.sender).sortable('cancel');
 							et_reinitialize_builder_layout();
 						}
+
+						// Remove insert row button if a row is pasted into specialty's column
+						if ($this.is('.et-pb-column-specialty') && $this.find('.et_pb_row').length <= 1 && $this.find('.et-pb-insert-row').length) {
+							$this.find('.et-pb-insert-row').remove();
+						}
 					},
 					update : function( event, ui ) {
-						// Split Testing adjustment :: module as subject / goal
+						// Loading process occurs. Dragging is temporarily disabled
+						if ( ET_PageBuilder_App.isLoading ) {
+							this_el.$el.sortable( 'cancel' );
+							return;
+						}
+
+						// AB Testing adjustment :: module as subject / goal
 						if ( ET_PageBuilder_AB_Testing.is_active() ) {
 							var is_row_inner = $( ui.item ).hasClass( 'et_pb_row' ),
 								cid = is_row_inner ? $( ui.item ).children( '.et-pb-row-content' ).attr( 'data-cid' ) : $( ui.item ).attr( 'data-cid' );
@@ -2866,9 +3441,71 @@ window.et_builder_version = '2.7.10';
 						// Sort collection based on layout_index
 						ET_PageBuilder_Modules.comparator = 'layout_index';
 						ET_PageBuilder_Modules.sort();
+
+						if ( ( $( ui.item ).closest( '.et_pb_section.et_pb_global' ).length || $( ui.item ).closest( '.et_pb_row.et_pb_global' ).length || $( ui.sender ).closest( '.et_pb_row.et_pb_global' ).length || $( ui.sender ).closest( '.et_pb_section.et_pb_global' ).length ) && '' === et_pb_options.template_post_id ) {
+							var module_cid = ui.item.data( 'cid' ),
+								$from_global_row = $( ui.sender ).closest( '.et_pb_row.et_pb_global' ),
+								$to_global_row = $( ui.item ).closest( '.et_pb_row.et_pb_global' ),
+								global_module_cid,
+								$moving_from,
+								$moving_to;
+
+							$moving_from = $from_global_row.length > 0 ? $from_global_row : $( ui.sender ).closest( '.et_pb_section.et_pb_global' );
+							$moving_to = $to_global_row.length > 0 ? $to_global_row : $( ui.item ).closest( '.et_pb_section.et_pb_global' );
+
+
+							if ( $moving_from === $moving_to ) {
+								var global_module_cid = $from_global_row.length > 0 ? $( ui.sender ).closest( '.et-pb-row-content' ).data( 'cid' ) : $( ui.sender ).closest( '.et-pb-section-content' ).data( 'cid' );
+
+								et_pb_update_global_template( global_module_cid );
+								et_reinitialize_builder_layout();
+							} else {
+								var $global_element = $moving_from;
+
+								// remove global parent attributes if moved not to global parent.
+								if ( $moving_to.length === 0 && ( ( ! _.isUndefined( model.get( 'et_pb_global_parent' ) ) && '' !== model.get( 'et_pb_global_parent' ) ) || ! _.isUndefined( model.get( 'global_parent_cid' ) ) ) ) {
+									model.unset( 'et_pb_global_parent' );
+									model.unset( 'global_parent_cid' );
+									// remove global attributes from all the child components
+									ET_PageBuilder_Layout.removeGlobalAttributes( ET_PageBuilder_Layout.getView( model.get( 'cid' ) ) );
+								}
+
+								for ( var i = 1; i <= 2; i++ ) {
+									global_module_cid = typeof $global_element.find( '.et-pb-section-content' ).data( 'cid' ) !== 'undefined' ? $global_element.find( '.et-pb-section-content' ).data( 'cid' ) : $global_element.find( '.et-pb-row-content' ).data( 'cid' );
+
+									if ( typeof global_module_cid !== 'undefined' && '' !== global_module_cid ) {
+
+										et_pb_update_global_template( global_module_cid );
+										et_reinitialize_builder_layout();
+									}
+
+									$global_element = $moving_to;
+								}
+							}
+						}
 					},
 					start : function( event, ui ) {
 						et_pb_close_all_right_click_options();
+
+						// copy module if Alt key pressed
+						if ( event.altKey ) {
+							var is_row_inner = $( ui.item ).hasClass( 'et_pb_row' );
+							var cid = is_row_inner ? $( ui.item ).children( '.et-pb-row-content' ).attr( 'data-cid' ) : $( ui.item ).attr( 'data-cid' );
+							var movedModule = ET_PageBuilder_Layout.getView( cid );
+							var view_settings = {
+								model      : movedModule.model,
+								view       : movedModule.$el,
+								view_event : event
+							};
+							var clone_module = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+							clone_module.copy( event, true );
+
+							clone_module.pasteAfter( event, undefined, undefined, undefined, true, true );
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'cloned', 'module', movedModule.model.get( 'admin_label' ) );
+						}
 					}
 				} );
 
@@ -2885,11 +3522,15 @@ window.et_builder_version = '2.7.10';
 				if ( this.isColumnLocked() )
 					return;
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -2905,18 +3546,22 @@ window.et_builder_version = '2.7.10';
 
 				et_pb_close_all_right_click_options();
 
-				var view;
+				if ($(event.target).is('.et-pb-insert-row')) {
+					this.addRow();
+				} else {
+					var view;
 
-				view = new ET_PageBuilder.ModalView( {
-					model : this.model,
-					collection : this.collection,
-					attributes : {
-						'data-open_view' : 'all_modules'
-					},
-					view : this
-				} );
+					view = new ET_PageBuilder.ModalView( {
+						model : this.model,
+						collection : this.collection,
+						attributes : {
+							'data-open_view' : 'all_modules'
+						},
+						view : this
+					} );
 
-				$('body').append( view.render().el );
+					$('body').append( view.render().el );
+				}
 			},
 
 			// Add New Row functionality for the specialty section column
@@ -2925,6 +3570,10 @@ window.et_builder_version = '2.7.10';
 					global_parent = typeof this.model.get( 'et_pb_global_parent' ) !== 'undefined' && '' !== this.model.get( 'et_pb_global_parent' ) ? this.model.get( 'et_pb_global_parent' ) : '',
 					global_parent_cid = '' !== global_parent ? this.model.get( 'global_parent_cid' ) : '',
 					new_row_view;
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( this.isColumnLocked() ) {
 					return;
@@ -3048,123 +3697,18 @@ window.et_builder_version = '2.7.10';
 
 				var that = this,
 					$layout_el = $(event.target).is( 'li' ) ? $(event.target) : $(event.target).closest( 'li' ),
-					layout = $layout_el.data('layout').split(','),
+					layout = $layout_el.data('layout'),
 					layout_specialty = 'section' === that.model.get( 'type' ) && 'on' === that.model.get( 'et_pb_specialty' )
 						? $layout_el.data('specialty').split(',')
 						: '',
-					layout_elements_num = _.size( layout ),
-					this_view = this.options.view;
+					column_settings = {
+						'layout' : layout,
+						'layout_specialty' : layout_specialty,
+						'is_structure_change' : typeof that.model.get( 'change_structure' ) !== 'undefined' && 'true' === that.model.get( 'change_structure' ),
+						'specialty_columns' : $layout_el.data('specialty_columns')
+					};
 
-				if ( typeof that.model.get( 'change_structure' ) !== 'undefined' && 'true' === that.model.get( 'change_structure' ) ) {
-					var row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) ),
-						columns_structure_old = [],
-						index_count = 0,
-						global_module_cid = typeof that.model.get( 'global_parent_cid' ) !== 'undefined' ? that.model.get( 'global_parent_cid' ) : '';
-
-					_.each( row_columns, function( row_column ) {
-						columns_structure_old[index_count] = row_column.model.get( 'cid' );
-						index_count = index_count + 1;
-					} );
-				}
-
-				_.each( layout, function( element, index ) {
-					var update_content = layout_elements_num == ( index + 1 )
-						? 'true'
-						: 'false',
-						column_attributes = {
-							type : 'column',
-							cid : ET_PageBuilder_Layout.generateNewId(),
-							parent : that.model.get( 'cid' ),
-							layout : element,
-							view : this_view
-						}
-
-					if ( typeof that.model.get( 'et_pb_global_parent' ) !== 'undefined' && '' !== that.model.get( 'et_pb_global_parent' ) ) {
-						column_attributes.et_pb_global_parent = that.model.get( 'et_pb_global_parent' );
-						column_attributes.global_parent_cid = that.model.get( 'global_parent_cid' );
-					}
-
-					if ( '' !== layout_specialty ) {
-						column_attributes.layout_specialty = layout_specialty[index];
-						column_attributes.specialty_columns = parseInt( $layout_el.data('specialty_columns') );
-					}
-
-					if ( typeof that.model.get( 'specialty_row' ) !== 'undefined' ) {
-						that.model.set( 'module_type', 'row_inner', { silent : true } );
-						that.model.set( 'type', 'row_inner', { silent : true } );
-					}
-
-					that.collection.add( [ column_attributes ], { update_shortcodes : update_content } );
-				} );
-
-				if ( typeof that.model.get( 'change_structure' ) !== 'undefined' && 'true' === that.model.get( 'change_structure' ) ) {
-					var columns_structure_new = [];
-
-					row_columns = ET_PageBuilder_Layout.getChildViews( that.model.get( 'cid' ) );
-					index_count = 0;
-
-					_.each( row_columns, function( row_column ) {
-						columns_structure_new[index_count] = row_column.model.get( 'cid' );
-						index_count = index_count + 1;
-					} );
-
-					// delete old columns IDs
-					columns_structure_new.splice( 0, columns_structure_old.length );
-
-					for	( index = 0; index < columns_structure_old.length; index++ ) {
-						var is_extra_column = ( columns_structure_old.length > columns_structure_new.length ) && ( index > ( columns_structure_new.length - 1 ) ) ? true : false,
-							old_column_cid = columns_structure_old[index],
-							new_column_cid = is_extra_column ? columns_structure_new[columns_structure_new.length-1] : columns_structure_new[index],
-							column_html = ET_PageBuilder_Layout.getView( old_column_cid ).$el.html(),
-							modules = ET_PageBuilder_Layout.getChildViews( old_column_cid ),
-							$updated_column,
-							column_html_old = '';
-
-						ET_PageBuilder_Layout.getView( old_column_cid ).model.destroy();
-
-						ET_PageBuilder_Layout.getView( old_column_cid ).remove();
-
-						ET_PageBuilder_Layout.removeView( old_column_cid );
-
-						$updated_column = $('.et-pb-column[data-cid="' + new_column_cid + '"]');
-
-						if ( ! is_extra_column ) {
-							$updated_column.html( column_html );
-						} else {
-							$updated_column.find( '.et-pb-insert-module' ).remove();
-
-							column_html_old = $updated_column.html();
-
-							$updated_column.html( column_html_old + column_html );
-						}
-
-						_.each( modules, function( module ) {
-							module.model.set( 'parent', new_column_cid, { silent : true } );
-						} );
-					}
-
-					// Enable history saving and set meta for history
-					ET_PageBuilder_App.allowHistorySaving( 'edited', 'column' );
-
-					et_reinitialize_builder_layout();
-				}
-
-				if ( typeof that.model.get( 'template_type' ) !== 'undefined' && 'section' === that.model.get( 'template_type' ) && 'on' === that.model.get( 'et_pb_specialty' ) ) {
-					et_reinitialize_builder_layout();
-				}
-
-				if ( typeof that.model.get( 'et_pb_template_type' ) !== 'undefined' && 'row' === that.model.get( 'et_pb_template_type' ) ) {
-					et_add_template_meta( '_et_pb_row_layout', $layout_el.data( 'layout' ) );
-				}
-
-				if ( typeof global_module_cid !== 'undefined' && '' !== global_module_cid ) {
-					et_pb_update_global_template( global_module_cid );
-				}
-
-				// Enable history saving and set meta for history
-				ET_PageBuilder_App.allowHistorySaving( 'added', 'column' );
-
-				ET_PageBuilder_Events.trigger( 'et-add:columns' );
+				ET_PageBuilder_Layout.changeColumnStructure( that, column_settings );
 			},
 
 			removeView : function() {
@@ -3209,29 +3753,124 @@ window.et_builder_version = '2.7.10';
 			template : _.template( $('#et-builder-load_layout-template').html() ),
 
 			events : {
-				'click .et_pb_layout_button_load' : 'loadLayout',
-				'click .et_pb_layout_button_delete' : 'deleteLayout',
+				'click .et_pb_layout_button_load' : 'legacyLoadLayout',
+				'click .et_pb_layout_button_delete': 'deleteLayout',
 				'click .et-pb-options-tabs-links li a' : 'switchTab'
 			},
 
 			initialize : function( attributes ) {
-				this.options = attributes;
+				this.options  = attributes;
 
 				this.layoutIsLoading = false;
 
+				this.library_url = 'https://www.elegantthemes.com/layouts';
+
+				this.back_button_template = _.template( $('#et-builder-library-back-button-template').html() );
+				this.current_page         = {};
+				this.account_status_error = false;
+
+				this.account_status_error_template = _.template( $( '#et-builder-library-account-status-error-template' ).html() );
+
 				this.listenTo( ET_PageBuilder_Events, 'et-modal-view-removed', this.remove );
+				this.listenTo( ET_PageBuilder_Events, 'et-pb-loading:ended', this.onLoadingEnded );
+				this.listenTo( this, 'after-render', this.afterRender );
 			},
 
 			render : function() {
-				var $this_el = this.$el,
-					post_type = $('#post_type').val();
+				this.$el.html( this.template( { "display_switcher" : "on" } ) );
 
-				$this_el.html( this.template( { "display_switcher" : "on" } ) );
+				var post_type = $( '#post_type' ).val();
 
-				et_load_saved_layouts( 'predefined', 'et-pb-all-modules-tab', $this_el, post_type );
-				et_load_saved_layouts( 'not_predefined', 'et-pb-saved-modules-tab', $this_el, post_type );
+				if ( 'layout' === post_type ) {
+					// This is Extra's Category Builder
+					this.isCategoryBuilder = true;
+
+					et_load_saved_layouts( 'predefined', 'et-pb-all-modules-tab', this.$el, post_type );
+					et_load_saved_layouts( 'not_predefined', 'et-pb-saved-modules-tab', this.$el, post_type );
+				}
+
+				setTimeout( _.bind( function() {
+					this.trigger( 'after-render' );
+				}, this ), 150 );
 
 				return this;
+			},
+
+			remove: function() {
+				if ( this.library ) {
+					this.library.destroy();
+				}
+
+				$( document ).off( 'scroll.et_fb_library', this.onScrollWindow );
+				window.wp.Backbone.View.prototype.remove.apply( this );
+			},
+
+			afterRender: function() {
+				this.$modal = this.$el.parents( '.et_pb_modal_settings_container' );
+
+				if ( this.isCategoryBuilder ) {
+					return;
+				}
+
+				this.$modal.addClass( 'et_pb_library_modal' );
+
+				this.emitLoadingStarted();
+
+				Promise.all( [this.loadLibrary(), et_builder_layouts_loaded] ).then( _.bind( function( promises ) {
+					this.library        = promises[0];
+					this.$library       = $( this.library.frame );
+					this.local_layouts  = promises[1].layouts_data;
+					this.custom_layouts = promises[1].custom_layouts_data;
+
+					this.setIFrameSize();
+
+					$(window).on( 'resize', this.setIFrameSize.bind(this) );
+
+					this.$library.on( 'mouseenter', this.onMouseEnterIFrame );
+					this.$library.on( 'mouseleave', this.onMouseLeaveIFrame );
+
+					$( document ).on( 'scroll.et_fb_library', this.onScrollWindow );
+
+					this.library.on( 'current_page_changed', this.onPageChanged.bind(this) );
+					this.library.on( 'use_layout', this.onUseLayout.bind(this) );
+					this.library.on( 'download_progress', this.onDownloadProgress.bind(this) );
+					this.library.on( 'account_status_error', this.onAccountStatusError.bind(this) );
+					this.library.on( 'authentication_complete', this.onAuthenticationComplete.bind(this) );
+
+					this.library.call( 'setAccount', {
+						username: et_pb_options.et_account.et_username, // sanitized previously
+						api_key:  et_pb_options.et_account.et_api_key   // sanitized previously
+					} );
+
+					this.library.call( 'setShowLoadOptions', ! this.isCurrentLayoutEmpty() );
+
+					this.emitLoadingEnded();
+
+				}, this ) );
+
+				this.$modal
+					.find( '.et_pb_modal_settings' )
+					.on( 'click', '.et-pb-library-back-button', this.onClickBackButton.bind(this) );
+
+				// Backwards compatability with a hack known to be used by some 3rd-party devs to load custom layouts
+				$('<ul><li><span>')
+					.addClass('et-pb-load-layouts')
+					.hide(0)
+					.find( 'span' )
+					.addClass( 'et_pb_layout_button_load' )
+					.on( 'click', _.bind( function(event) { this.onUseLayout( $(event.target).parent().data('layout_id') ); }, this ) )
+					.parents( 'ul' )
+					.appendTo( this.$modal.find( '.et-pb-all-modules-tab' ) );
+			},
+
+			emitLoadingStarted: function() {
+				this.layoutIsLoading = true;
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+			},
+
+			emitLoadingEnded: function() {
+				this.layoutIsLoading = false;
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
 			},
 
 			deleteLayout : function( event ) {
@@ -3270,7 +3909,66 @@ window.et_builder_version = '2.7.10';
 				} );
 			},
 
-			loadLayout : function( event ) {
+			getLibraryURL: function() {
+				var query = [];
+				var args  = {
+					iframe:    1,
+					animation: true,
+					is_bb: 1
+				};
+
+				_.forEach( args, function( value, arg ) {
+					query.push( 'et_' + arg + '=' + value );
+				} );
+
+				query = query.join( '&' );
+
+				return this.library_url + '?' + query;
+			},
+
+			getLayout: function( id ) {
+				return new Promise( function ( resolve, reject ) {
+					$.ajax( {
+						type:     'POST',
+						url:      et_pb_options.ajaxurl,
+						dataType: 'json',
+						data:     {
+							action: 'et_builder_library_get_layout',
+							nonce:  et_pb_options.library_get_layout_nonce,
+							id:     id,
+							is_BB:  true
+						}
+					} ).then( function( response ) {
+						resolve( get( response, 'data.savedShortcode', '' ) );
+					} );
+				} );
+			},
+
+			importLayout: function( layout ) {
+				var portability = window.etCore.portability;
+				var importFB    = portability.importFB.bind( portability );
+				var $window     = $(window);
+
+				return new Promise( function( resolve, reject ) {
+					layout = new Blob( [layout], { type: 'application/json' } );
+
+					layout.lastModified = Date.now();
+					layout.name         = 'layout.json';
+
+					$window.on( 'et_fb_layout_import_finished.et_bb', function() {
+						resolve( get( window.et_fb_import_layout_response, 'data.postContent', '' ) );
+						$window.off( 'et_fb_layout_import_finished.et_bb' );
+					} );
+
+					importFB( layout, $('#post_ID').val() );
+				} );
+			},
+
+			isCurrentLayoutEmpty: function() {
+				return _.isEmpty( ET_PageBuilder_App.collection.findWhere( {type: 'module'} ) );
+			},
+
+			legacyLoadLayout : function( event ) {
 				event.preventDefault();
 
 				if ( this.layoutIsLoading ) {
@@ -3318,11 +4016,291 @@ window.et_builder_version = '2.7.10';
 				} );
 			},
 
-			switchTab: function( event ) {
-				var $this_el = $( event.currentTarget ).parent();
-				event.preventDefault();
+			loadLibrary: function() {
+				Postmate.debug = false;
 
-				et_handle_templates_switching( $this_el, 'layout', '' );
+				return new Postmate( {
+					container: this.$( '.active-container' )[0],
+					url:       this.getLibraryURL()
+				} );
+			},
+
+			onAccountStatusError: function( status ) {
+				this.account_status_error = true;
+
+				var tpl_data = {
+					expired: 'expired' === status
+				};
+
+				this.$library.hide();
+
+				$( this.account_status_error_template( tpl_data ) )
+					.insertBefore( this.$library )
+					.on( 'click', '.button', this.onClickAccountSubmitButton.bind(this) );
+			},
+
+			onAuthenticationComplete: function( result ) {
+				if ( ! this.account_status_error ) {
+					return;
+				}
+
+				this.emitLoadingEnded();
+
+				if ( ! result.authenticated ) {
+					this.$el
+						.find( 'et-pb-library-account-status-error' )
+						.addClass( 'et-pb-library-account-status-error--auth-failed' );
+
+					return;
+				}
+
+				this.account_status_error = false;
+
+				this.onClickBackButton();
+				this.library.call( 'retryUseLayout' );
+
+				et_pb_options.et_account.et_username = this.account.et_username;
+				et_pb_options.et_account.et_api_key  = this.account.et_api_key;
+
+				// Update account details in database
+				$.ajax( {
+					type:     'POST',
+					url:      et_pb_options.ajaxurl,
+					dataType: 'json',
+					data:     {
+						action:      'et_builder_library_update_account',
+						nonce:       et_pb_options.library_update_account_nonce,
+						et_username: this.account.et_username,
+						et_api_key:  this.account.et_api_key,
+						status:      result.status
+					}
+				} );
+			},
+
+			onClickAccountSubmitButton: function( event ) {
+				this.account = {
+					et_username: this.$el.find('#et_username').val(),
+					et_api_key:  this.$el.find( '#et_api_key' ).val()
+				};
+
+				this.emitLoadingStarted();
+
+				this.library.call( 'authenticate', this.account );
+			},
+
+			onClickBackButton: function() {
+				if ( this.account_status_error ) {
+					this.account_status_error = false;
+
+					this.$el.find( '.et-pb-library-account-status-error' ).remove();
+					this.$library.fadeIn();
+				} else {
+					if ( _.isUndefined( this.current_page.previous_url ) ) {
+						return;
+					}
+
+					this.library.call( 'goTo', this.current_page.previous_url );
+				}
+			},
+
+			onDownloadProgress: function( event, progress ) {
+				if ( this.layoutIsLoading ) {
+					return;
+				}
+
+				this.layoutIsLoading = true;
+
+				this.$el.find( '.et-pb-main-settings' ).css( { 'opacity': '0.5' } );
+
+				this.emitLoadingStarted();
+			},
+
+			onLoadingEnded: function() {
+				if ( ! this.isCategoryBuilder && this.layoutIsLoading ) {
+					// Autosave triggered this event but we're not done loading
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+				}
+			},
+
+			onMouseEnterIFrame: function( event ) {
+				this.inside_iframe = true;
+				this.windowX       = window.scrollX;
+				this.windowY       = window.scrollY;
+			},
+
+			onMouseLeaveIFrame: function( event ) {
+				this.inside_iframe = false;
+			},
+
+			onPageChanged: function( current_page ) {
+				var previous_url = this.current_page.previous_url;
+
+				this.current_page = current_page;
+
+				if ( ! this.current_page.previous_url ) {
+					this.current_page.previous_url = previous_url;
+				}
+
+				if ( this.current_page.is_layout ) {
+					this.showBackButton();
+				} else {
+					this.removeBackButton();
+				}
+			},
+
+			onScrollWindow: function( event ) {
+				if ( this.inside_iframe ) {
+					window.scrollTo( this.windowX, this.windowY );
+				}
+			},
+
+			onUseLayout: function( data ) {
+				var layout;
+				var replace_content = true;
+
+				if ( _.isObject( data ) ) {
+					layout          = data.layout;
+					replace_content = 'on' === data.replace_content;
+				} else {
+					layout = data;
+				}
+
+				var getLayout       = _.isString( layout ) ? this.importLayout : this.getLayout;
+				var _this           = this;
+
+				this.emitLoadingStarted();
+
+				getLayout( layout ).then( _.bind( function( content ) {
+					if ( ! replace_content ) {
+						content = et_pb_get_content( 'content' ) + content;
+					}
+
+					ET_PageBuilder_App.removeAllSections();
+
+					if ( content ) {
+						ET_PageBuilder_App.allowHistorySaving( 'loaded', 'layout' );
+					}
+
+					ET_PageBuilder_App.createNewLayout( content, 'load_layout' );
+
+					this.emitLoadingEnded();
+					ET_PageBuilder_Events.trigger( 'et-saved_layout:loaded' );
+
+					_this.layoutIsLoading = false;
+
+				}, this ) ).catch( _.bind( function( err ) {
+					this.emitLoadingEnded();
+					ET_PageBuilder_Events.trigger( 'et-saved_layout:loaded' );
+					console.error(err);
+					_this.layoutIsLoading = false;
+				}, this ) );
+			},
+
+			removeBackButton: function() {
+				this.$modal
+					.find( '.et_pb_modal_settings' )
+					.find( '.et-pb-library-back-button' )
+					.remove();
+
+				this.isBackButtonShown = false;
+			},
+
+			setIFrameSize: function() {
+				var width  = this.$modal.width();
+				var height = this.$modal.height();
+
+				if ( width > 1200 ) {
+					width = 1200;
+				}
+
+				this.$modal.css( 'left', 'calc((100vw - ' + width + 'px) / 2)' );
+
+				this.$library
+					.height( height )
+					.width( width );
+			},
+
+			showBackButton: function() {
+				if ( this.isBackButtonShown ) {
+					return;
+				}
+
+				this.isBackButtonShown = true;
+
+				this.$modal
+					.find( '.et_pb_modal_settings' )
+					.prepend( this.back_button_template() );
+			},
+
+			switchTab: function( event ) {
+				event.preventDefault();
+				var $tab       = $( event.currentTarget ).parent();
+				var tab        = $tab.data( 'open_tab' );
+				var layouts    = {};
+				var $active_container = this.$modal.find( '.active-container' );
+
+				if ( this.isCategoryBuilder ) {
+					et_handle_templates_switching( $tab, 'layout', '' );
+					return;
+				}
+
+				if ( tab === this.current_tab ) {
+					return;
+				}
+
+				if ( this.account_status_error ) {
+					this.account_status_error = false;
+
+					this.$el.find( '.et-pb-library-account-status-error' ).remove();
+					this.$library.fadeIn();
+				}
+
+				this.removeBackButton();
+
+				if ( startsWith( tab, 'et-pb-' ) ) {
+					if ( ! this.library ) {
+						// We're not ready yet so bail.
+						return;
+					}
+
+					$tab
+						.addClass( 'et-pb-options-tabs-links-active' )
+						.siblings()
+						.removeClass( 'et-pb-options-tabs-links-active' );
+
+					if ('et-pb-all-modules-tab' !== tab) {
+						var custom_tab_id = $tab.data('custom_tab_id');
+						var layouts_data = _.isUndefined(custom_tab_id) || '' === custom_tab_id ? this.local_layouts : this.custom_layouts[custom_tab_id];
+
+						// Display local layouts
+						layouts = $.extend(layouts_data, {
+							filters: {
+								type: 'layout'
+							},
+							load_options: {
+								show: ! this.isCurrentLayoutEmpty()
+							}
+						} );
+					}
+
+					if ( ! $active_container.hasClass( 'et-pb-all-modules-tab' ) ) {
+						$active_container.removeClass( 'active-container' ).fadeOut();
+						$active_container
+							.siblings( '.et-pb-all-modules-tab' )
+							.addClass( 'active-container' )
+							.css( 'opacity', '' )
+							.fadeIn();
+					}
+
+					if ( tab !== this.current_tab ) {
+						this.library.call( 'toggleLocalLayouts', layouts );
+					}
+
+				} else {
+					et_handle_templates_switching( $tab, 'layout', '' );
+				}
+
+				this.current_tab = tab;
 			}
 
 		} );
@@ -3425,10 +4403,12 @@ window.et_builder_version = '2.7.10';
 			},
 
 			render : function() {
-				var $this_el = this.$el,
+				var thisClass = this,
+					$this_el = this.$el,
 					content = '',
+					contents = [],
 					this_module_cid = this.model.attributes.cid,
-					$content_textarea,
+					$content_textareas,
 					$content_textarea_container,
 					$content_textarea_option,
 					advanced_mode = false,
@@ -3440,25 +4420,41 @@ window.et_builder_version = '2.7.10';
 					$icon_font_list,
 					$et_affect_fields,
 					$et_form_validation,
-					$icon_font_options = [ "et_pb_font_icon", "et_pb_button_one_icon", "et_pb_button_two_icon", "et_pb_button_icon" ];
+					$icon_font_options = [ "et_pb_font_icon", "et_pb_button_one_icon", "et_pb_button_two_icon", "et_pb_button_icon" ],
+					$add_email_account_buttons,
+					$preview_panel,
+					$previewable_upload_button_add,
+					$previewable_upload_button_edit,
+					$previewable_upload_button_delete;
+
+				// Update module's _builder_version to current builder's version
+				thisClass.model.set( 'et_pb__builder_version', et_pb_options.product_version );
 
 				// Replace encoded double quotes with normal quotes,
 				// escaping is applied in modules templates
 				_.each( this.model.attributes, function( value, key, list ) {
-					if ( typeof value === 'string' && key !== 'et_pb_content_new' && -1 === $.inArray( key, $icon_font_options ) && ! /^\%\%\d+\%\%$/.test( $.trim( value ) ) ) {
+					if ( typeof value === 'string' && key !== 'et_pb_content' && -1 === $.inArray( key, $icon_font_options ) && ! /^\%\%\d+\%\%$/.test( $.trim( value ) ) ) {
 						return list[ key ] = value.replace( /%22/g, '"' );
 					}
 				} );
 
 				this.$el.html( this.template( this.model.attributes ) );
 
-				$content_textarea = this.$el.find( '#et_pb_content_new' );
+				$content_textareas = this.$el.find('#et_pb_content, .et_pb_tiny_mce_field');
 
 				$color_picker = this.$el.find('.et-pb-color-picker-hex');
 
 				$color_picker_alpha = this.$el.find('.et-builder-color-picker-alpha');
 
 				$upload_button = this.$el.find('.et-pb-upload-button');
+
+				$preview_panel = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview');
+
+				$previewable_upload_button_add = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview-button--add');
+
+				$previewable_upload_button_edit = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview-button--edit');
+
+				$previewable_upload_button_delete = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview-button--delete');
 
 				$video_image_button = this.$el.find('.et-pb-video-image-button');
 
@@ -3472,6 +4468,10 @@ window.et_builder_version = '2.7.10';
 
 				$et_form_validation = $this_el.find('form.validate');
 
+				$warning = $this_el.find('.et-pb-option--warning');
+
+				$add_email_account_buttons = $this_el.find('.et_pb_email_add_account');
+
 				// validation
 				if ( $et_form_validation.length ) {
 					et_builder_debug_message('validation enabled');
@@ -3481,48 +4481,153 @@ window.et_builder_version = '2.7.10';
 				}
 
 				if ( $color_picker.length ) {
-					$color_picker.wpColorPicker({
-						defaultColor : $color_picker.data('default-color'),
-						palettes : '' !== et_pb_options.page_color_palette ? et_pb_options.page_color_palette.split( '|' ) : et_pb_options.default_color_palette.split( '|' ),
-						change       : function( event, ui ) {
-							var $this_el      = $(this),
-								$reset_button = $this_el.closest( '.et-pb-option-container' ).find( '.et-pb-reset-setting' ),
-								$custom_color_container = $this_el.closest( '.et-pb-custom-color-container' ),
-								current_value = $this_el.val(),
-								default_value;
-
-							if ( $custom_color_container.length ) {
-								$custom_color_container.find( '.et-pb-custom-color-picker' ).val( ui.color.toString() );
-							}
-
-							if ( ! $reset_button.length ) {
-								return;
-							}
-
-							default_value = et_pb_get_default_setting_value( $this_el );
-
-							if ( current_value !== default_value ) {
-								$reset_button.addClass( 'et-pb-reset-icon-visible' );
-							} else {
-								$reset_button.removeClass( 'et-pb-reset-icon-visible' );
-							}
-						},
-						clear: function() {
-							$(this).val( et_pb_options.invalid_color );
-							$(this).closest( '.et-pb-option-container' ).find( '.et-pb-main-setting' ).val( '' );
-						}
-					});
+					var draggingID;
+					var changeID;
 
 					$color_picker.each( function() {
-						var $this = $(this),
-							default_color = $this.data('default-color') || '',
+						var $this = $(this);
+						var setInputColorType = function() {
+							// Set timeout because the wpColorPicker updates the color code format if alpha is 0,
+							// so we need to ge the latest color code format
+							setTimeout(function(){
+								$this.attr('data-color-type', $this.attr('value').match(/^rgba?/i) ? 'rgb' : 'hex');
+							}, 1);
+						}
+
+						setInputColorType();
+						$this.on('keypress', setInputColorType)
+
+						$this.wpColorPicker({
+							defaultColor : $this.data('default-color'),
+							palettes     : '' !== et_pb_options.page_color_palette ? et_pb_options.page_color_palette.split( '|' ) : et_pb_options.default_color_palette.split( '|' ),
+							change       : function( event, ui ) {
+								var $this_el      = $(this);
+								var $option_container = $this_el.closest( '.et-pb-option-container' );
+								var $reset_button = $option_container.find( '.et-pb-reset-setting' );
+								var $custom_color_container = $this_el.closest( '.et-pb-custom-color-container' );
+								var $preview = $option_container.find( '.et-pb-option-preview' );
+								var has_preview = $this_el.hasClass('et-pb-color-picker-hex-has-preview');
+								var is_gradient_colorpicker = $this_el.closest('.et_pb_background-tab--gradient').length > 0;
+								var current_value = ui.color.toString().toLowerCase();
+								var default_value;
+
+								if ( $custom_color_container.length ) {
+									$custom_color_container.find( '.et-pb-custom-color-picker' ).val( ui.color.toString() );
+
+									// trigger change event if color picker inside font option for further processing
+									if ( $option_container.hasClass('et-pb-option-container--font') ) {
+										$custom_color_container.find( '.et-pb-custom-color-picker' ).trigger('change');
+									}
+								}
+
+								default_value = et_pb_get_default_setting_value( $this_el ).toLowerCase();
+
+								// do not apply default rules for reset button inside the font option. It has specific rules
+								if ( ! $option_container.hasClass('et-pb-option-container--font') ) {
+									if ( current_value !== default_value ) {
+										if ( $reset_button.length  ) {
+											$reset_button.addClass( 'et-pb-reset-icon-visible' );
+										}
+									} else {
+										if ( $reset_button.length  ) {
+											$reset_button.removeClass( 'et-pb-reset-icon-visible' );
+										}
+
+										if ( has_preview ) {
+											$preview.addClass('et-pb-option-preview--empty');
+										}
+									}
+
+									// Preview should be rendered as non-empty even if current color is default
+									if (has_preview && '' !== current_value) {
+										$preview.removeClass('et-pb-option-preview--empty');
+									}
+								}
+
+								if ( has_preview) {
+									$preview.css( {
+										backgroundColor: current_value
+									} );
+								}
+
+								if ( is_gradient_colorpicker ) {
+									et_pb_update_gradient_preview( $this_el );
+								}
+
+								if ( _.has( event, 'originalEvent' ) && _.has( event.originalEvent, 'type' ) && event.originalEvent.type === 'square' ) {
+									$option_container.find( '.button-confirm' ).css( 'backgroundColor', current_value + ' !important' );
+
+									if ( ! $option_container.hasClass( 'is-dragging' ) ) {
+										$option_container.addClass( 'is-dragging' );
+									}
+
+									clearTimeout( draggingID );
+
+									draggingID = setTimeout( function() {
+										et_pb_reposition_colorpicker_element( $this_el );
+
+										$option_container.find( '.button-confirm' ).css( 'backgroundColor', '' );
+
+										$option_container.removeClass( 'is-dragging' );
+									}, 300 );
+								}
+
+								// Set focus back to clearpicker input after color change so enter could close the colorpicker
+								clearTimeout( changeID );
+
+								changeID = setTimeout( function() {
+									$this_el.focus();
+								}, 300 );
+
+								// Remove clear marker class name to make color validation works again
+								if ( $this_el.hasClass( 'et-pb-is-cleared' ) ) {
+									$this_el.removeClass( 'et-pb-is-cleared' )
+								}
+								//Since this event is triggered before the input value is changed we can't use 'et_pb_setting:change'
+								$this_el.trigger('et_pb_setting:color_picker:change', [current_value]);
+
+								setInputColorType();
+							},
+							clear: function() {
+								$(this).val( et_pb_options.invalid_color );
+								$(this).closest( '.et-pb-option-container' ).find( '.et-pb-main-setting' ).val( '' );
+								$(this).siblings('.et-pb-color-picker-hex').trigger('et_pb_setting:color_picker:change', ['']);
+							},
+							width        : $this.closest( '.et-pb-option--background' ).length ? 660 : 300,
+							height       : 190,
+							diviColorpicker : $this.closest( '.et-pb-option--background' ).length ? true : false
+						});
+
+						var default_color = $this.data('default-color') || '',
 							$reset_button = $this.closest( '.et-pb-option-container' ).find( '.et-pb-reset-setting' );
+
+						if ( $this.hasClass('et-pb-color-picker-hex-has-preview') ) {
+							var $option_container = $this.closest('.et-pb-option-container');
+
+							$option_container.find('.et-pb-option-preview-button--add, .et-pb-option-preview-button--edit, .et-pb-option-preview').click( function(e) {
+								e.stopPropagation();
+
+								$this.wpColorPicker('open');
+							});
+
+							$option_container.find('.et-pb-option-preview-button--delete').click(function(e) {
+								e.stopPropagation();
+								var default_value = et_pb_get_default_setting_value($this).toLowerCase();
+
+								// Clear color value on DOM and colorpicker then add cleared class name to bypass color validation
+								$this.wpColorPicker('color', default_value).val(default_value).addClass('et-pb-is-cleared');
+
+								if ('' === default_value) {
+									$option_container.find('.et-pb-option-preview').removeAttr('style').addClass('et-pb-option-preview--empty');
+								}
+							});
+						}
 
 						if ( ! $reset_button.length ) {
 							return true;
 						}
-
-						if ( default_color !== $this.val() ) {
+						var value = $this.val() + '';
+						if ( default_color.toLowerCase() !== value.toLowerCase() ) {
 							$reset_button.addClass( 'et-pb-reset-icon-visible' );
 						}
 					} );
@@ -3575,6 +4680,50 @@ window.et_builder_version = '2.7.10';
 					et_pb_activate_upload( $upload_button );
 				}
 
+				if ( $previewable_upload_button_add.length || $previewable_upload_button_edit.length || $preview_panel ) {
+					function et_pb_trigger_upload_button( e ) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						if ( $(this).hasClass( 'et-pb-option-preview' ) && ! $(this).hasClass( 'et-pb-option-preview--empty' ) && $(this).siblings( '.button' ).attr( 'data-type' ) === 'video' ) {
+							return;
+						}
+
+						// If current background image preview is overwritten by featured image, image editing should be disabled
+						if ( et_pb_is_featured_image_background( $(this) ) ) {
+							return;
+						}
+
+						$(this).closest( '.et-pb-option' ).find( '.et-pb-upload-button' ).trigger( 'click' );
+					}
+
+					$preview_panel.click( et_pb_trigger_upload_button );
+
+					$previewable_upload_button_add.click( et_pb_trigger_upload_button );
+
+					$previewable_upload_button_edit.click( et_pb_trigger_upload_button );
+				}
+
+				if ( $previewable_upload_button_delete.length ) {
+					$previewable_upload_button_delete.click( function( e ) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						// If current background image preview is overwritten by featured image, image removal should be disabled
+						if ( et_pb_is_featured_image_background( $(this) ) ) {
+							return;
+						}
+
+						var $option  = $( this ).closest( '.et-pb-option' ),
+							$input   = $option.find( '.et-pb-upload-field' ),
+							$preview = $option.find( '.et-pb-option-preview' );
+
+						$input.val( '' );
+
+						$preview.addClass( 'et-pb-option-preview--empty' ).find('.et-pb-preview-content').remove();
+					} );
+				}
+
 				if ( $video_image_button.length ) {
 					et_pb_generate_video_image( $video_image_button );
 				}
@@ -3583,8 +4732,13 @@ window.et_builder_version = '2.7.10';
 					et_pb_activate_gallery( $gallery_button );
 				}
 
+				if ( $add_email_account_buttons.length ) {
+					et_pb_email_lists_buttons_setup( $add_email_account_buttons, this );
+				}
+
 				if ( $time_picker.length ) {
-					$time_picker.datetimepicker();
+					// use the specified date format to avoid issues with date translation to different languages
+					$time_picker.datetimepicker({'dateFormat':'yy-mm-dd'});
 				}
 
 				if( $validation_element.length ){
@@ -3619,12 +4773,20 @@ window.et_builder_version = '2.7.10';
 
 						function et_pb_icon_font_init() {
 							if ( current_symbol_val !== '' ) {
+								current_symbol_val = current_symbol_val.replace('[', '%91');
+								current_symbol_val = current_symbol_val.replace(']', '%93');
+
 								// font icon index is used now in the following format: %%index_number%%
 								if ( current_symbol_val.search( /^%%/ ) !== -1 ) {
 									icon_index_number = parseInt( current_symbol_val.replace( /%/g, '' ) );
 									$current_symbol   = $this_icon_list.find( 'li' ).eq( icon_index_number );
 								} else {
-									$current_symbol = $this_icon_list.find( 'li[data-icon="' + current_symbol_val + '"]' );
+									// set the 1st icon as active if wrong value saved for current_symbol_val
+									if ( '"' === current_symbol_val ) {
+										$current_symbol = $this_icon_list.find( 'li' ).eq( 0 );
+									} else {
+										$current_symbol = $this_icon_list.find( 'li[data-icon="' + current_symbol_val + '"]' );
+									}
 								}
 
 								$current_symbol.addClass( active_symbol_class );
@@ -3661,55 +4823,77 @@ window.et_builder_version = '2.7.10';
 					});
 				}
 
-				if ( $content_textarea.length ) {
-					$content_textarea_option = $content_textarea.closest( '.et-pb-option' );
+				if ($content_textareas.length) {
+					$content_textareas.each(function() {
+						var $content_textarea = $(this);
+						var textarea_id = $content_textarea.attr('id');
+						$content_textarea_option = $content_textarea.closest('.et-pb-option');
 
-					if ( $content_textarea_option.hasClass( 'et-pb-option-advanced-module' ) )
-						advanced_mode = true;
 
-					if ( ! advanced_mode ) {
-						$content_textarea_container = $content_textarea.closest( '.et-pb-option-container' );
+						if ($content_textarea_option.hasClass('et-pb-option-advanced-module'))
+							advanced_mode = true;
 
-						content = $content_textarea.html();
+						if (!advanced_mode) {
+							$content_textarea_container = $content_textarea.closest('.et-pb-option-container');
 
-						$content_textarea.remove();
+							contents[textarea_id] = $content_textarea.html();
 
-						$content_textarea_container.prepend( et_pb_content_html );
+							$content_textarea.remove();
 
-						setTimeout( function() {
-							if ( typeof window.switchEditors !== 'undefined' ) {
-								window.switchEditors.go( 'et_pb_content_new', et_get_editor_mode() );
+							$content_textarea_container.prepend($et_pb_content.find('#' + textarea_id + '_editor').html());
+
+							setTimeout(function() {
+								if (typeof window.switchEditors !== 'undefined') {
+									window.switchEditors.go(textarea_id, et_get_editor_mode());
+								}
+								
+								// Specify action for secondary input fields to correctly process the content
+								var action = 'et_pb_content' !== textarea_id ? 'load_secondary_editor' : '';
+								
+								et_pb_set_content(textarea_id, contents[textarea_id], action);
+
+								window.wpActiveEditor = textarea_id;
+							}, 100 );
+						} else {
+							var view_cid = ET_PageBuilder_Layout.generateNewId();
+							thisClass.view_cid = view_cid;
+
+							$content_textarea_option.hide();
+
+							$content_textarea.attr('id', 'et_pb_content_main');
+
+							view = new ET_PageBuilder.AdvancedModuleSettingsView({
+								model : thisClass,
+								el : thisClass.$el.find('.et-pb-option-advanced-module-settings'),
+								attributes : {
+									cid : view_cid,
+									value_changes : thisClass.model.get('value_changes'),
+								}
+							} );
+
+							ET_PageBuilder_Layout.addView(view_cid, view);
+
+							$content_textarea_option.before(view.render());
+
+							if ($content_textarea.html() !== '') {
+								view.generateAdvancedSortableItems($content_textarea.html(), thisClass.$el.find('.et-pb-option-advanced-module-settings').data('module_type'));
+								ET_PageBuilder_Events.trigger('et-advanced-module:updated_order', thisClass.$el);
 							}
-
-							et_pb_set_content( 'et_pb_content_new', content );
-
-							window.wpActiveEditor = 'et_pb_content_new';
-						}, 100 );
-					} else {
-						var view_cid = ET_PageBuilder_Layout.generateNewId();
-						this.view_cid = view_cid;
-
-						$content_textarea_option.hide();
-
-						$content_textarea.attr( 'id', 'et_pb_content_main' );
-
-						view = new ET_PageBuilder.AdvancedModuleSettingsView( {
-							model : this,
-							el : this.$el.find( '.et-pb-option-advanced-module-settings' ),
-							attributes : {
-								cid : view_cid
-							}
-						} );
-
-						ET_PageBuilder_Layout.addView( view_cid, view );
-
-						$content_textarea_option.before( view.render() );
-
-						if ( $content_textarea.html() !== '' ) {
-							view.generateAdvancedSortableItems( $content_textarea.html(), this.$el.find( '.et-pb-option-advanced-module-settings' ).data( 'module_type' ) );
-							ET_PageBuilder_Events.trigger( 'et-advanced-module:updated_order', this.$el );
 						}
-					}
+					});
+				}
+
+				if ( $warning.length ) {
+					$warning.each(function() {
+						var $warning_option = $(this);
+						var $warning_field = $warning_option.find('.et-pb-option-warning');
+						var display_if = $warning_field.attr('data-display_if');
+						var name = $warning_field.attr('data-name');
+
+						if ( et_pb_options[name] === display_if ) {
+							$warning_option.addClass('et-pb-option--warning-active');
+						}
+					});
 				}
 
 				this.renderMap();
@@ -3736,7 +4920,7 @@ window.et_builder_version = '2.7.10';
 					lat = ! _.isUndefined( latlng[0] ) ? parseFloat( latlng[0] ) : false,
 					lng = ! _.isUndefined( latlng[1] ) ? parseFloat( latlng[1] ) : false;
 
-				if ( lat && ! _.isNaN( lat ) && lng && ! _.isNaN( lng ) ) {
+				if ( typeof google !== 'undefined' && lat && ! _.isNaN( lat ) && lng && ! _.isNaN( lng ) ) {
 					return new google.maps.LatLng( lat, lng );
 				}
 
@@ -3747,39 +4931,41 @@ window.et_builder_version = '2.7.10';
 				this_el = this,
 				$map = this.$el.find('.et-pb-map');
 
-				if ( $map.length ) {
+				if (typeof google !== 'undefined' && $map.length) {
 					view_cid = this.view_cid;
 
-					var $address = this.$el.find('.et_pb_address'),
-						$address_lat = this.$el.find('.et_pb_address_lat'),
-						$address_lng = this.$el.find('.et_pb_address_lng'),
-						$find_address = this.$el.find('.et_pb_find_address'),
-						$zoom_level = this.$el.find('.et_pb_zoom_level'),
-						geocoder = new google.maps.Geocoder(),
-						markers = {};
+					var $address = this.$el.find('.et_pb_address');
+					var $address_lat = this.$el.find('.et_pb_address_lat');
+					var $address_lng = this.$el.find('.et_pb_address_lng');
+					var $find_address = this.$el.find('.et_pb_find_address');
+					var $zoom_level = this.$el.find('.et_pb_zoom_level');
+					var geocoder = new google.maps.Geocoder();
+					var markers = {};
+					var map_zoom_level = !isNaN(parseInt($zoom_level.val())) ? parseInt($zoom_level.val()) : 18;
+
 					var geocode_address = function() {
 						var address = $address.val();
-						if ( address.length <= 0 ) {
+						if (address.length <= 0) {
 							return;
 						}
-						geocoder.geocode( { 'address': address}, function(results, status) {
+						geocoder.geocode({'address': address}, function(results, status) {
 							if (status == google.maps.GeocoderStatus.OK) {
-								var result            = results[0],
-									location          = result.geometry.location,
-									address_is_latlng = this_el.is_latlng( address );
+								var result            = results[0];
+								var location          = result.geometry.location;
+								var address_is_latlng = this_el.is_latlng(address);
 
 								// If user passes valid lat lng instead of address, override geocode with given lat & lng
-								if ( address_is_latlng ) {
+								if (address_is_latlng) {
 									location = address_is_latlng;
 								}
 
-								if ( ! isNaN( location.lat() ) && ! isNaN( location.lng() ) ) {
+								if (!isNaN(location.lat()) && !isNaN(location.lng())) {
 									$address.val( result.formatted_address);
 									$address_lat.val(location.lat());
 									$address_lng.val(location.lng());
-									update_center( location );
+									update_center(location);
 								} else {
-									alert( et_pb_options.map_pin_address_invalid );
+									alert(et_pb_options.map_pin_address_invalid);
 								}
 							} else {
 								alert( et_pb_options.geocode_error + ': ' + status);
@@ -3787,71 +4973,69 @@ window.et_builder_version = '2.7.10';
 						});
 					}
 
-					var update_center = function( LatLng ) {
-						$map.map.setCenter( LatLng );
+					var update_center = function(LatLng) {
+						$map.map.setCenter(LatLng);
 					}
 
-					var update_zoom = function () {
-						$map.map.setZoom( parseInt( $zoom_level.val() ) );
+					var update_zoom = function() {
+						$map.map.setZoom(map_zoom_level);
 					}
 
-					$address.on('blur', geocode_address );
+					$address.on('blur', geocode_address);
 					$find_address.on('click', function(e){
 						e.preventDefault();
 					});
 
-					$zoom_level.on('blur', update_zoom );
+					$zoom_level.on('blur', update_zoom);
 
-					setTimeout( function() {
-						$map.map = new google.maps.Map( $map[0], {
-							zoom: parseInt( $zoom_level.val() ),
+					setTimeout(function() {
+						$map.map = new google.maps.Map($map[0], {
+							zoom: map_zoom_level,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						});
 
-						if ( '' != $address_lat.val() && '' != $address_lng.val() ) {
-							update_center( new google.maps.LatLng( $address_lat.val(), $address_lng.val() ) );
+						if ('' !== $address_lat.val() && '' !== $address_lng.val()) {
+							update_center(new google.maps.LatLng($address_lat.val(), $address_lng.val()));
 						}
 
-						if ( '' != $zoom_level ) {
+						if ('' !== $zoom_level) {
 							update_zoom();
 						}
 
-						setTimeout( function() {
-							var map_pins = ET_PageBuilder_Layout.getChildViews( view_cid );
-							if ( _.size( map_pins ) ) {
-								_.each( map_pins, function( map_pin, key ) {
+						setTimeout(function() {
+							var map_pins = ET_PageBuilder_Layout.getChildViews(view_cid);
+							if (_.size(map_pins)) {
+								_.each(map_pins, function(map_pin, key) {
 
 									// Skip current map pin if it has no lat or lng, as it will trigger maximum call stack exceeded
-									if ( _.isUndefined( map_pin.model.get('et_pb_pin_address_lat') ) || _.isUndefined( map_pin.model.get('et_pb_pin_address_lng') ) ) {
+									if (_.isUndefined(map_pin.model.get('et_pb_pin_address_lat')) || _.isUndefined(map_pin.model.get('et_pb_pin_address_lng'))) {
 										return;
 									}
 
 									markers[key] = new google.maps.Marker({
 										map: $map.map,
-										position: new google.maps.LatLng( parseFloat( map_pin.model.get('et_pb_pin_address_lat') ) , parseFloat( map_pin.model.get('et_pb_pin_address_lng') ) ),
+										position: new google.maps.LatLng(parseFloat(map_pin.model.get('et_pb_pin_address_lat')), parseFloat(map_pin.model.get('et_pb_pin_address_lng'))),
 										title: map_pin.model.get('et_pb_title'),
-										icon: { url: et_pb_options.images_uri + '/marker.png', size: new google.maps.Size( 46, 43 ), anchor: new google.maps.Point( 16, 43 ) },
-										shape: { coord: [1, 1, 46, 43], type: 'rect' }
+										icon: {url: et_pb_options.images_uri + '/marker.png', size: new google.maps.Size( 46, 43 ), anchor: new google.maps.Point(16, 43)},
+										shape: {coord: [1, 1, 46, 43], type: 'rect'}
 									});
 								});
 							}
-						}, 500 );
+						}, 500);
 
-						google.maps.event.addListener( $map.map, 'center_changed', function() {
+						google.maps.event.addListener($map.map, 'center_changed', function() {
 							var center = $map.map.getCenter();
-							$address_lat.val( center.lat() );
-							$address_lng.val( center.lng() );
+							$address_lat.val(center.lat());
+							$address_lng.val(center.lng());
 						});
 
-						google.maps.event.addListener( $map.map, 'zoom_changed', function() {
+						google.maps.event.addListener($map.map, 'zoom_changed', function() {
 							var zoom_level = $map.map.getZoom();
-							$zoom_level.val( zoom_level );
+							$zoom_level.val(zoom_level);
 						});
-
-					}, 200 );
+					}, 200);
 				}
 			}
-
 		} );
 
 		ET_PageBuilder.AdvancedModuleSettingsView = window.wp.Backbone.View.extend( {
@@ -3961,7 +5145,7 @@ window.et_builder_version = '2.7.10';
 				if ( content !== '' )
 					this.$add_sortable_item.removeClass( 'et-pb-add-sortable-initial' );
 
-				_.each( matches, function ( shortcode ) {
+				_.each( matches, function ( shortcode, shortcode_index ) {
 					var shortcode_element = shortcode.match( inner_reg_exp ),
 						shortcode_name = shortcode_element[2],
 						shortcode_attributes = shortcode_element[3] !== ''
@@ -3971,7 +5155,8 @@ window.et_builder_version = '2.7.10';
 						module_cid = ET_PageBuilder_Layout.generateNewId(),
 						module_settings,
 						prefixed_attributes = {},
-						found_inner_shortcodes = typeof shortcode_content !== 'undefined' && shortcode_content !== '' && shortcode_content.match( reg_exp );
+						found_inner_shortcodes = typeof shortcode_content !== 'undefined' && shortcode_content !== '' && shortcode_content.match( reg_exp ),
+						name_changes = et_pb_options.et_pb_module_settings_migrations.name_changes;
 
 					module_settings = {
 						type : 'module',
@@ -3982,7 +5167,7 @@ window.et_builder_version = '2.7.10';
 						mode : 'advanced',
 						parent : this_el.attributes['cid'],
 						parent_cid : this_el.model.model.attributes['cid']
-					}
+					};
 
 					if ( _.isObject( shortcode_attributes['named'] ) ) {
 						for ( var key in shortcode_attributes['named'] ) {
@@ -4000,14 +5185,35 @@ window.et_builder_version = '2.7.10';
 							prefixed_attributes[prefixed_key] = setting_value;
 						}
 
-						module_settings['et_pb_content_new'] = shortcode_content;
+						module_settings['et_pb_content'] = shortcode_content;
 
 						module_settings = _.extend( module_settings, prefixed_attributes );
 					}
 
 					if ( ! found_inner_shortcodes ) {
-						module_settings['et_pb_content_new'] = shortcode_content;
+						module_settings['et_pb_content'] = shortcode_content;
 					}
+
+					// BEGIN Settings Migrations
+					// Applying attribute name migration for current module item
+					if ( ! _.isEmpty( name_changes ) && ! _.isEmpty( name_changes[ this_el.module_type ] ) ) {
+						_.forEach( name_changes[ this_el.module_type ], function( new_attr_name, old_attr_name ) {
+							if ( ! _.isUndefined( module_settings[ 'et_pb_' + old_attr_name ] ) ) {
+								module_settings[ 'et_pb_' + new_attr_name ] = module_settings[ 'et_pb_' + old_attr_name ];
+
+								// Delete migrated name to avoid unwanted value re-assignment when module item is re-opened
+								delete module_settings[ 'et_pb_' + old_attr_name ];
+							}
+						} );
+					}
+
+					// Applying value migration for current module item
+					if ( ! _.isUndefined( this_el.attributes.value_changes ) && ! _.isUndefined( this_el.attributes.value_changes[ shortcode_index ] ) ) {
+						_.forEach( this_el.attributes.value_changes[ shortcode_index ], function( value, attribute_name ) {
+							module_settings[ 'et_pb_' + attribute_name ] = value;
+						} );
+					}
+					// END Settings Migrations
 
 					this_el.model.collection.add( [ module_settings ], { update_shortcodes : 'false' } );
 				} );
@@ -4071,6 +5277,8 @@ window.et_builder_version = '2.7.10';
 				} );
 
 				$('.et_pb_modal_settings_container').after( view.render().el );
+
+				et_pb_open_current_tab();
 			},
 
 			removeView : function( event ) {
@@ -4151,11 +5359,16 @@ window.et_builder_version = '2.7.10';
 					$map,
 					$social_network_picker,
 					$icon_font_list,
-					this_el = this;
+					this_el = this,
+					$preview_panel,
+					$previewable_upload_button_add,
+					$previewable_upload_button_edit,
+					$previewable_upload_button_delete;
 
 				this.$el.html( this.template() );
 
 				this.$el.addClass( 'et_pb_modal_settings_container_step2' );
+				this.$el.attr( 'data-parent-cid', this_module_cid );
 
 				if ( this.model.get( 'created' ) !== 'auto' || this.attributes['show_settings_clicked'] ) {
 					view = new ET_PageBuilder.AdvancedModuleSettingEditView( { view : this } );
@@ -4165,6 +5378,9 @@ window.et_builder_version = '2.7.10';
 					this.child_view = view;
 				}
 
+				// Update module's _builder_version to current builder's version
+				this.model.set( 'et_pb__builder_version', et_pb_options.product_version );
+
 				ET_PageBuilder.Events.trigger( 'et-advanced-module-settings:render', this );
 
 				$color_picker = this.$el.find('.et-pb-color-picker-hex');
@@ -4172,32 +5388,123 @@ window.et_builder_version = '2.7.10';
 				$color_picker_alpha = this.$el.find('.et-builder-color-picker-alpha');
 
 				if ( $color_picker.length ) {
-					$color_picker.wpColorPicker({
-						defaultColor : $color_picker.data('default-color'),
-						change       : function( event, ui ) {
-							var $this_el      = $(this),
-								$reset_button = $this_el.closest( '.et-pb-option-container' ).find( '.et-pb-reset-setting' ),
-								$custom_color_container = $this_el.closest( '.et-pb-custom-color-container' ),
-								current_value = $this_el.val(),
-								default_value;
+					var draggingID,
+						changeID;
 
-							if ( $custom_color_container.length ) {
-								$custom_color_container.find( '.et-pb-custom-color-picker' ).val( ui.color.toString() );
-							}
+					$color_picker.each( function() {
+						var $this = $(this);
 
-							if ( ! $reset_button.length ) {
-								return;
-							}
+						$this.wpColorPicker({
+							defaultColor : $this.data('default-color'),
+							palettes     : '' !== et_pb_options.page_color_palette ? et_pb_options.page_color_palette.split( '|' ) : et_pb_options.default_color_palette.split( '|' ),
+							change       : function( event, ui ) {
+								var $this_el      = $(this);
+								var $option_container = $this_el.closest( '.et-pb-option-container' );
+								var $reset_button = $option_container.find( '.et-pb-reset-setting' );
+								var $custom_color_container = $this_el.closest( '.et-pb-custom-color-container' );
+								var $preview = $option_container.find( '.et-pb-option-preview' );
+								var has_preview = $this_el.hasClass('et-pb-color-picker-hex-has-preview');
+								var is_gradient_colorpicker = $this_el.closest('.et_pb_background-tab--gradient').length > 0;
+								var current_value = ui.color.toString().toLowerCase();
+								var default_value;
 
-							default_value = et_pb_get_default_setting_value( $this_el );
+								if ( $custom_color_container.length ) {
+									$custom_color_container.find( '.et-pb-custom-color-picker' ).val( ui.color.toString() );
+								}
 
-							if ( current_value !== default_value ) {
-								$reset_button.addClass( 'et-pb-reset-icon-visible' );
-							} else {
-								$reset_button.removeClass( 'et-pb-reset-icon-visible' );
-							}
+								if ( ! $reset_button.length && ( ! has_preview && ! is_gradient_colorpicker ) ) {
+									return;
+								}
+
+								default_value = et_pb_get_default_setting_value( $this_el ).toLowerCase();
+
+								if ( current_value !== default_value ) {
+									$reset_button.addClass( 'et-pb-reset-icon-visible' );
+								} else {
+									$reset_button.removeClass( 'et-pb-reset-icon-visible' );
+
+									if ( has_preview ) {
+										$preview.addClass('et-pb-option-preview--empty');
+									}
+								}
+
+								// Preview should be rendered as non-empty even if current color is default
+								if (has_preview && '' !== current_value) {
+									$preview.removeClass('et-pb-option-preview--empty');
+								}
+
+								if ( has_preview) {
+									$preview.css( {
+										backgroundColor: current_value
+									} );
+								}
+
+								if ( is_gradient_colorpicker ) {
+									et_pb_update_gradient_preview( $this_el );
+								}
+
+								if ( has_preview || is_gradient_colorpicker ) {
+									if ( _.has( event, 'originalEvent' ) && _.has( event.originalEvent, 'type' ) && event.originalEvent.type === 'square' ) {
+										$option_container.find( '.button-confirm' ).css( 'backgroundColor', current_value + ' !important' );
+
+										if ( ! $option_container.hasClass( 'is-dragging' ) ) {
+											$option_container.addClass( 'is-dragging' );
+										}
+
+										clearTimeout( draggingID );
+
+										draggingID = setTimeout( function() {
+											et_pb_reposition_colorpicker_element( $this_el );
+
+											$option_container.find( '.button-confirm' ).css( 'backgroundColor', '' );
+
+											$option_container.removeClass( 'is-dragging' );
+										}, 300 );
+									}
+
+									// Set focus back to clearpicker input after color change so enter could close the colorpicker
+									clearTimeout( changeID );
+
+									changeID = setTimeout( function() {
+										$this_el.focus();
+									}, 300 );
+								}
+
+								// Remove clear marker class name to make color validation works again
+								if ( $this_el.hasClass( 'et-pb-is-cleared' ) ) {
+									$this_el.removeClass( 'et-pb-is-cleared' )
+								}
+
+								// Since this event is triggered before the input value is changed we can't use 'et_pb_setting:change'
+								$this_el.trigger('et_pb_setting:color_picker:change', [current_value]);
+							},
+							width        : $this.closest( '.et-pb-option--background' ).length ? 660 : 300,
+							height       : 190,
+							diviColorpicker : $this.closest( '.et-pb-option--background' ).length ? true : false
+						});
+
+						if ( $this.hasClass('et-pb-color-picker-hex-has-preview') ) {
+							var $option_container = $this.closest('.et-pb-option-container');
+
+							$option_container.find('.et-pb-option-preview-button--add, .et-pb-option-preview-button--edit, .et-pb-option-preview').click( function(e) {
+								e.stopPropagation();
+
+								$this.wpColorPicker('open');
+							});
+
+							$option_container.find('.et-pb-option-preview-button--delete').click( function(e) {
+								e.stopPropagation();
+								var default_value = et_pb_get_default_setting_value($this).toLowerCase();
+
+								// Remove clear marker class name to make color validation works again
+								$this.wpColorPicker('color', default_value).val(default_value).addClass('et-pb-is-cleared');
+
+								if ('' === default_value) {
+									$option_container.find('.et-pb-option-preview').removeAttr('style').addClass('et-pb-option-preview--empty');
+								}
+							});
 						}
-					});
+					} );
 				}
 
 				if ( $color_picker_alpha.length ) {
@@ -4245,8 +5552,50 @@ window.et_builder_version = '2.7.10';
 
 				$upload_button = this.$el.find('.et-pb-upload-button');
 
+				$preview_panel = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview');
+
+				$previewable_upload_button_add = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview-button--add');
+
+				$previewable_upload_button_edit = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview-button--edit');
+
+				$previewable_upload_button_delete = this.$el.find('.et-pb-option-container--upload .et-pb-option-preview-button--delete');
+
 				if ( $upload_button.length ) {
 					et_pb_activate_upload( $upload_button );
+				}
+
+				if ( $previewable_upload_button_add.length || $previewable_upload_button_edit.length || $preview_panel.length ) {
+					function et_pb_trigger_upload_button( e ) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						if ( $(this).hasClass( 'et-pb-option-preview' ) && ! $(this).hasClass( 'et-pb-option-preview--empty' ) ) {
+							return;
+						}
+
+						$(this).closest( '.et-pb-option' ).find( '.et-pb-upload-button' ).trigger( 'click' );
+					}
+
+					$preview_panel.click( et_pb_trigger_upload_button );
+
+					$previewable_upload_button_add.click( et_pb_trigger_upload_button );
+
+					$previewable_upload_button_edit.click( et_pb_trigger_upload_button );
+				}
+
+				if ( $previewable_upload_button_delete.length ) {
+					$previewable_upload_button_delete.click( function( e ) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						var $option  = $( this ).closest( '.et-pb-option' ),
+							$input   = $option.find( '.et-pb-upload-field' ),
+							$preview = $option.find( '.et-pb-option-preview' );
+
+						$input.val( '' );
+
+						$preview.addClass( 'et-pb-option-preview--empty' ).find('.et-pb-preview-content').remove();
+					} );
 				}
 
 				$video_image_button = this.$el.find('.et-pb-video-image-button');
@@ -4257,7 +5606,7 @@ window.et_builder_version = '2.7.10';
 
 				$map = this.$el.find('.et-pb-map');
 
-				if ( $map.length ) {
+				if ( typeof google !== 'undefined' && $map.length ) {
 					var map,
 						marker,
 						$address = this.$el.find('.et_pb_pin_address'),
@@ -4357,12 +5706,12 @@ window.et_builder_version = '2.7.10';
 
 				if ( $social_network_picker.length ) {
 					var $color_reset = this.$el.find('.reset-default-color'),
-						$social_network_icon_color = this.$el.find('#et_pb_bg_color');
+						$social_network_icon_color = this.$el.find('#et_pb_background_color');
 					if ( $color_reset.length ){
 						$color_reset.click(function(){
 							$main_settings = $color_reset.parents('.et-pb-main-settings');
 							$social_network_picker = $main_settings.find('.et-pb-social-network');
-							$social_network_icon_color = $main_settings.find('#et_pb_bg_color');
+							$social_network_icon_color = $main_settings.find('#et_pb_background_color');
 							if ( $social_network_icon_color.length ) {
 								$social_network_icon_color.wpColorPicker('color', $social_network_picker.find( 'option:selected' ).data('color') );
 								$color_reset.css( 'display', 'none' );
@@ -4373,16 +5722,27 @@ window.et_builder_version = '2.7.10';
 					$social_network_picker.change(function(){
 						$main_settings = $social_network_picker.parents('.et-pb-main-settings');
 
+						// If $social_network_picker.change() is triggered during setting view render, ignore it
+						// Continuing will cause saved background_color being overwrite by selected social_network's pre-defined color
+						if ( $social_network_picker.data( 'is_rendering_setting_view' ) ) {
+							return;
+						}
+
 						if ( $social_network_picker.val().length ) {
-							var $social_network_title = $main_settings.find('#et_pb_content_new'),
-								$social_network_icon_color = $main_settings.find('#et_pb_bg_color');
+							var $social_network_title = $main_settings.find('#et_pb_content'),
+								$social_network_icon_color = $main_settings.find('#et_pb_background_color');
 
 							if ( $social_network_title.length ) {
 								$social_network_title.val( $social_network_picker.find( 'option:selected' ).text() );
 							}
 
 							if ( $social_network_icon_color.length ) {
-								$social_network_icon_color.wpColorPicker('color', $social_network_picker.find( 'option:selected' ).data('color') );
+								var selectedColor = $social_network_picker.find( 'option:selected' ).data('color');
+
+								$social_network_icon_color.val( selectedColor ).wpColorPicker('color', selectedColor );
+								$social_network_icon_color.closest( '.et-pb-option-container' ).find( '.et-pb-option-preview' ).css({
+									backgroundColor: selectedColor,
+								});
 							}
 						}
 					});
@@ -4462,8 +5822,8 @@ window.et_builder_version = '2.7.10';
 				if ( event ) event.preventDefault();
 
 				// remove advanced tab WYSIWYG, only if the close button is clicked
-				if ( this.$el.find( '#et_pb_content_new' ) && event )
-					et_pb_tinymce_remove_control( 'et_pb_content_new' );
+				if ( this.$el.find( '#et_pb_content' ) && event )
+					et_pb_tinymce_remove_control( 'et_pb_content' );
 
 				et_pb_hide_active_color_picker( this );
 
@@ -4483,25 +5843,77 @@ window.et_builder_version = '2.7.10';
 				this.$( 'input, select, textarea' ).each( function() {
 					var $this_el = $(this),
 						id = $this_el.attr('id'),
-						setting_value;
-						/*checked_values = [],
-						name = $this_el.is('#et_pb_content_main') ? 'et_pb_content_new' : $this_el.attr('id');*/
+						setting_value,
+						checked_values = [];
+
+					// name attribute is used in normal html checkboxes, use it instead of ID
+					if ( $this_el.is( ':checkbox' ) ) {
+						id = $this_el.attr('name');
+					}
 
 					if ( typeof id === 'undefined' || ( -1 !== id.indexOf( 'qt_' ) && 'button' === $this_el.attr( 'type' ) ) ) {
 						// settings should have an ID and shouldn't be a Quick Tag button from the tinyMCE in order to be saved
 						return true;
 					}
 
-					id = $this_el.attr('id').replace( 'data.', '' );
+					if ( ! $this_el.is( ':checkbox' ) ) {
+						id = $this_el.attr('id').replace( 'data.', '' );
+					}
 
-					setting_value = $this_el.is('#et_pb_content_new')
-						? et_pb_get_content( 'et_pb_content_new' )
+					// All checkbox values are saved at once on the next step, so if the attribute name
+					// already exists, do nothing
+					if ( $this_el.is( ':checkbox' ) && typeof attributes[id] !== 'undefined' ) {
+						return true;
+					}
+
+					setting_value = $this_el.is('#et_pb_content')
+						? et_pb_get_content( 'et_pb_content' )
 						: $this_el.val();
 
-					// do not save the default values into module attributes
-					if ( '' !== this_model_defaults && typeof this_model_defaults[id] !== 'undefined' && this_model_defaults[id] === setting_value ) {
-						this_view.model.unset( id );
+					// Text align specific issue: $('select').val() chooses first value if there is no selected option found.
+					// This causes innacuracy in form of first <option> (left) is automatically selected when there is no selected alignment
+					// Cross-check .et_text_align_activec class-name existence to verify text align's setting_value accuracy
+					if ( $this_el.is( '.et-pb-text-align-select' ) && ! $this_el.parent().find( '.et_text_align_active' ).length ) {
 						return true;
+					}
+
+					// do not save the default values into module attributes
+
+					//if 'check_attr_default' flag presented use 'default' html data attribute to compare
+					if (!_.isEmpty($this_el.data('check_attr_default')) && ($this_el.data('check_attr_default') === 'yes')) {
+						if (et_pb_is_setting_value_default($this_el)) {
+							this_view.model.unset( id );
+							return true;
+						}
+					} else {
+						if ( '' !== this_model_defaults && typeof this_model_defaults[id] !== 'undefined' && this_model_defaults[id] === setting_value ) {
+							// Do not remove yes/no button value when it is equal to default because default value can be opposite value derrived
+							// from parent module. Yes/no input has no capability of setting value to default value on view render (on BB and VB).
+							// Furthermore, the default value has to be removed because it will be used as reference on ET_PageBuilder_App.generateModuleShortcode()
+							// which will be triggered by 'et-advanced-module:updated' event at the end of this method
+							if ($this_el.hasClass('yes_no_button')) {
+								delete this_model_defaults[id];
+								this_view.model.set('module_defaults', this_model_defaults);
+							} else {
+								this_view.model.unset( id );
+								return true;
+							}
+						}
+					}
+
+					// Process all checkboxex for the current setting at once
+					if ( $this_el.is( ':checkbox' ) && typeof attributes[id] === 'undefined' ) {
+						$this_el.closest( '.et-pb-option-container' ).find( '[name="' + id + '"]:checked' ).each( function() {
+							checked_values.push( $(this).val() );
+						} );
+
+						setting_value = checked_values.join( "," );
+					}
+
+					if ( $this_el.closest( '.et-pb-custom-css-option' ).length ) {
+						// Custom CSS settings content should be modified before it is added to the shortcode attribute
+						// replace new lines with || in Custom CSS settings
+						setting_value = '' !== setting_value ? setting_value.replace( /(?:\r\n|\r|\n)/g, '\|\|' ) : '';
 					}
 
 					attributes[ id ] = setting_value;
@@ -4517,12 +5929,20 @@ window.et_builder_version = '2.7.10';
 					}
 				}
 
+				// Get parent module's view
+				var parent_view = ET_PageBuilder_Layout.getView( this_view.model.attributes.view.model.model.attributes.cid );
+
+				// Remove remaining value_changes so migration value won't accidentally applied again when module item's setting modal is re-opened
+				if ( ! _.isUndefined( parent_view.model.get('value_changes') ) ) {
+					parent_view.model.unset( 'value_changes' );
+				}
+
 				this.model.set( attributes, { silent : true } );
 
 				ET_PageBuilder_Events.trigger( 'et-advanced-module:updated' );
 				ET_PageBuilder_Events.trigger( 'et-advanced-module:saved' );
 
-				et_pb_tinymce_remove_control( 'et_pb_content_new' );
+				et_pb_tinymce_remove_control( 'et_pb_content' );
 
 				this.removeView();
 			}
@@ -4549,7 +5969,7 @@ window.et_builder_version = '2.7.10';
 
 				this.$el.find( '.et-pb-main-settings' ).addClass( 'et-pb-main-settings-advanced' );
 
-				$content_textarea = this.$el.find( 'div#et_pb_content_new' );
+				$content_textarea = this.$el.find( 'div#et_pb_content' );
 
 				if ( $content_textarea.length ) {
 					$content_textarea_container = $content_textarea.closest( '.et-pb-option-container' );
@@ -4558,15 +5978,16 @@ window.et_builder_version = '2.7.10';
 
 					$content_textarea.remove();
 
-					$content_textarea_container.prepend( et_pb_content_html );
+					$content_textarea_container.prepend( $et_pb_content.find('#et_pb_content_editor').html() );
 
 					setTimeout( function() {
 						if ( typeof window.switchEditors !== 'undefined' )
-							window.switchEditors.go( 'et_pb_content_new', et_get_editor_mode() );
+							window.switchEditors.go( 'et_pb_content', et_get_editor_mode() );
 
-						et_pb_set_content( 'et_pb_content_new', content );
 
-						window.wpActiveEditor = 'et_pb_content_new';
+						et_pb_set_content('et_pb_content', content);
+
+						window.wpActiveEditor = 'et_pb_content';
 					}, 300 );
 				}
 
@@ -4609,46 +6030,52 @@ window.et_builder_version = '2.7.10';
 			},
 
 			render : function() {
-				var parent_views = ET_PageBuilder_Layout.getParentViews( this.model.get( 'parent' ) );
+				var parent_views = ET_PageBuilder_Layout.getParentViews(this.model.get('parent'));
 
-				this.$el.html( this.template( this.model.attributes ) );
+				this.$el.html(this.template(this.model.attributes));
 
-				if ( typeof this.model.attributes.et_pb_global_module !== 'undefined' || ( typeof this.model.attributes.et_pb_template_type !== 'undefined' && 'module' === this.model.attributes.et_pb_template_type && 'global' === et_pb_options.is_global_template ) ) {
-					this.$el.addClass( 'et_pb_global' );
+				if (typeof this.model.attributes.et_pb_global_module !== 'undefined' || (typeof this.model.attributes.et_pb_template_type !== 'undefined' && 'module' === this.model.attributes.et_pb_template_type && 'global' === et_pb_options.is_global_template)) {
+					this.$el.addClass('et_pb_global');
 				}
 
-				if ( typeof this.model.get( 'et_pb_locked' ) !== 'undefined' && this.model.get( 'et_pb_locked' ) === 'on' ) {
-					_.each( parent_views, function( parent ) {
-						parent.$el.addClass( 'et_pb_children_locked' );
-					} );
+				if (typeof this.model.get('et_pb_locked') !== 'undefined' && this.model.get('et_pb_locked') === 'on') {
+					_.each(parent_views, function(parent) {
+						parent.$el.addClass('et_pb_children_locked');
+					});
 				}
 
-				if ( typeof this.model.get( 'et_pb_parent_locked' ) !== 'undefined' && this.model.get( 'et_pb_parent_locked' ) === 'on' ) {
-					this.$el.addClass( 'et_pb_parent_locked' );
+				if (typeof this.model.get('et_pb_parent_locked') !== 'undefined' && this.model.get('et_pb_parent_locked') === 'on') {
+					this.$el.addClass('et_pb_parent_locked');
 				}
 
-				if ( ET_PageBuilder_Layout.isModuleFullwidth( this.model.get( 'module_type' ) ) )
-					this.$el.addClass( 'et_pb_fullwidth_module' );
-
-				if ( typeof this.model.get( 'pasted_module' ) !== 'undefined' && this.model.get( 'pasted_module' ) ) {
-					et_pb_handle_clone_class( this.$el );
-				}
-
-				if ( ET_PageBuilder_AB_Testing.is_active() ) {
-					if ( ET_PageBuilder_AB_Testing.is_subject( this.model ) ) {
-						this.$el.addClass( 'et_pb_ab_subject' );
+				if (ET_PageBuilder_AB_Testing.is_active()) {
+					if (ET_PageBuilder_AB_Testing.is_subject(this.model)) {
+						this.$el.addClass('et_pb_ab_subject');
 
 						// Apply subject rank coloring
-						ET_PageBuilder_AB_Testing.set_subject_rank_coloring( this );
+						ET_PageBuilder_AB_Testing.set_subject_rank_coloring(this);
 					}
 
-					if ( ET_PageBuilder_AB_Testing.is_goal( this.model ) ) {
-						this.$el.addClass( 'et_pb_ab_goal' );
+					if (ET_PageBuilder_AB_Testing.is_goal(this.model)) {
+						this.$el.addClass('et_pb_ab_goal');
 					}
 
-					if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( this.model.get( 'cid' ), 'module', this.model ) ) {
-						this.$el.addClass( 'et_pb_ab_no_permission' )
+					if (! ET_PageBuilder_AB_Testing.is_user_has_permission(this.model.get('cid'), 'module', this.model)) {
+						this.$el.addClass('et_pb_ab_no_permission');
 					}
+				}
+
+				// we have enough data to render removed component view at this point
+				if ('removed' === this.model.get('component_status')) {
+					return this;
+				}
+
+				if (ET_PageBuilder_Layout.isModuleFullwidth(this.model.get('module_type'))) {
+					this.$el.addClass('et_pb_fullwidth_module');
+				}
+
+				if (typeof this.model.get('pasted_module') !== 'undefined' && this.model.get('pasted_module')) {
+					et_pb_handle_clone_class(this.$el);
 				}
 
 				return this;
@@ -4665,6 +6092,10 @@ window.et_builder_version = '2.7.10';
 
 				event.preventDefault();
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
@@ -4673,7 +6104,7 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -4683,8 +6114,8 @@ window.et_builder_version = '2.7.10';
 					}
 				}
 
-				if ( typeof this.model.get( 'et_pb_global_module' ) !== 'undefined' ) {
-					global_module_cid = this.model.get( 'cid' );
+				if ( ( this.$el.closest( '.et_pb_section.et_pb_global' ).length || this.$el.closest( '.et_pb_row.et_pb_global' ).length ) && '' === et_pb_options.template_post_id ) {
+					global_module_cid = et_pb_get_global_parent_cid( this );
 				}
 
 				clone_module = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
@@ -4746,11 +6177,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -4794,10 +6229,10 @@ window.et_builder_version = '2.7.10';
 				if ( ( typeof this.model.get( 'et_pb_global_parent' ) !== 'undefined' && '' !== this.model.get( 'et_pb_global_parent' ) ) || ( ET_PageBuilder_Layout.getView( this.model.get('cid') ).$el.closest( '.et_pb_global' ).length ) ) {
 					$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_saved_global_modal' );
 
-					var saved_tabs = [ 'general', 'advanced', 'custom_css' ];
-					_.each( saved_tabs, function( tab_name ) {
-						$( '.et_pb_options_tab_' + tab_name ).addClass( 'et_pb_saved_global_tab' );
-					});
+					if ( 'module' === et_pb_options.global_module_type ) {
+						et_pb_add_selective_sync_buttons( $( '.et_pb_modal_settings_container' ), et_pb_options.template_post_id );
+						$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_modal_selective_sync' );
+					}
 				}
 			},
 
@@ -4808,11 +6243,15 @@ window.et_builder_version = '2.7.10';
 					return;
 				}
 
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
+
 				if ( ET_PageBuilder_AB_Testing.is_selecting() && ! ET_PageBuilder_Layout.get( 'forceRemove' ) ) {
 					return;
 				}
 
-				// Split Testing-related action
+				// AB Testing-related action
 				if ( ET_PageBuilder_AB_Testing.is_active() ) {
 
 					// Check for user permission and module status
@@ -4831,7 +6270,7 @@ window.et_builder_version = '2.7.10';
 					event.preventDefault();
 
 					if ( ( this.$el.closest( '.et_pb_section.et_pb_global' ).length || this.$el.closest( '.et_pb_row.et_pb_global' ).length ) && '' === et_pb_options.template_post_id ) {
-						global_module_cid = this.model.get( 'global_parent_cid' );
+						global_module_cid = et_pb_get_global_parent_cid( this );
 					}
 				}
 
@@ -4853,12 +6292,16 @@ window.et_builder_version = '2.7.10';
 					et_pb_update_global_template( global_module_cid );
 				}
 
-				// Run Split Testing updater
+				// Run AB Testing updater
 				ET_PageBuilder_AB_Testing.update();
 			},
 
 			unlockModule : function( event ) {
 				event.preventDefault();
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -4930,6 +6373,105 @@ window.et_builder_version = '2.7.10';
 			}
 		} );
 
+		ET_PageBuilder.HelpView = window.wp.Backbone.View.extend({
+			tagName: 'div',
+
+			id: 'et-builder-help',
+
+			className: 'et_pb_modal_settings',
+
+			template : _.template( $( '#et-builder-help-template' ).html() ),
+
+			isOSX: navigator.userAgent.indexOf('Mac OS X') != -1,
+
+			renderKbd: function(kbd) {
+				var key = kbd;
+
+				if (key === 'super') {
+					if (this.isOSX) {
+						key = 'cmd';
+					} else {
+						key = 'ctrl';
+					}
+				}
+
+				return $('<kbd />', {
+					class: 'key-' + key,
+				}).html(key);
+			},
+
+			render: function() {
+				var thisClass = this;
+
+				var $thisModal = this.$el;
+
+				et_pb_close_all_right_click_options();
+
+				$thisModal.html( this.template() );
+
+				var $shortcutTab = $thisModal.find('.et-pb-shortcuts-tab');
+
+				_.each(et_pb_help_options.shortcuts, function(shortcutSets){
+					_.each(shortcutSets, function(shortcutSet) {
+						if (_.isUndefined(shortcutSet.title)) {
+							// Define item
+							var $shortcutItem = $('<p />', {
+								class: 'et-pb-shortcut-item'
+							});
+
+							// Build shortcut keys
+							var $shortcutKeys = $('<span />', {
+								class: 'et-pb-shortcut-keys'
+							});
+
+							_.each(shortcutSet.kbd, function(shortcutKey, shortcutKeyIndex) {
+								// Append + divider
+								if (shortcutKeyIndex > 0) {
+									$shortcutKeys.append(' + ');
+								}
+
+								if (_.isArray(shortcutKey)) {
+									_.each(shortcutKey, function(shortcutOption, shortcutOptionIndex) {
+										if (shortcutOptionIndex > 0) {
+											$shortcutKeys.append(' / ');
+										}
+
+										$shortcutKeys.append(
+											$('<kbd />').html(shortcutOption)
+										);
+									});
+								} else {
+									$shortcutKeys.append(
+										// $('<kbd />').html(shortcutKey)
+										thisClass.renderKbd(shortcutKey)
+									);
+								}
+							});
+
+							// Append shortcut keys
+							$shortcutItem.append($shortcutKeys);
+
+							// Append description
+							$shortcutItem.append(
+								$('<span />', {
+									class: 'et-pb-shortcut-desc'
+								}).html(shortcutSet.desc)
+							);
+
+							// Append  Item
+							$shortcutTab.append($shortcutItem);
+						} else {
+							$shortcutTab.append(
+								$('<h2 />', {class: 'et-pb-shortcut-subtitle'}).html(shortcutSet.title)
+							);
+						}
+					});
+				});
+
+				return this;
+			}
+		});
+
 		ET_PageBuilder.RightClickOptionsView = window.wp.Backbone.View.extend( {
 
 			tagName : 'div',
@@ -4965,6 +6507,10 @@ window.et_builder_version = '2.7.10';
 				this.et_pb_has_storage_support        = et_pb_has_storage_support();
 				this.has_compatible_clipboard_content = ET_PB_Clipboard.get( this.getClipboardType() );
 				this.history_noun                     = this.type === 'row_inner' ? 'row' : this.type;
+
+				if ( ET_PageBuilder_App.isLoading ) {
+					return;
+				}
 
 				if ( ET_PageBuilder_AB_Testing.is_selecting() ) {
 					return;
@@ -5060,7 +6606,7 @@ window.et_builder_version = '2.7.10';
 				// Close right click options UI
 				this.closeAllRightClickOptions();
 
-				// Turn on Split Testing state
+				// Turn on AB Testing state
 				ET_PageBuilder_AB_Testing.toggle_status( true );
 
 				// Disable publish button
@@ -5071,10 +6617,10 @@ window.et_builder_version = '2.7.10';
 				// Check DB existence
 				ET_PageBuilder_AB_Testing.check_create_db();
 
-				// Turn on Split testing subject selection mode
+				// Turn on AB Testing subject selection mode
 				ET_PageBuilder_App.is_selecting_ab_testing_subject = true;
 
-				// Adding nescesarry class for Split testing subject selection mode's UI
+				// Adding nescesarry class for AB Testing subject selection mode's UI
 				$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_subject' );
 			},
 
@@ -5082,10 +6628,10 @@ window.et_builder_version = '2.7.10';
 				// Close right click options UI
 				this.closeAllRightClickOptions();
 
-				// Set split test to off
+				// Set AB Testing to off
 				ET_PageBuilder_AB_Testing.toggle_status( false );
 
-				// Turn off Split testing subject selection mode
+				// Turn off AB Testing subject selection mode
 				ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
 
 				// Check against "on to off" or "off to off" state
@@ -5123,7 +6669,7 @@ window.et_builder_version = '2.7.10';
 				// Close right click options UI
 				this.closeAllRightClickOptions();
 
-				if ( ET_PageBuilder_AB_Testing.is_active() && ( ET_PageBuilder_AB_Testing.is_split_test_item( model ) || type === 'app' ) ) {
+				if ( ET_PageBuilder_AB_Testing.is_active() && ( ET_PageBuilder_AB_Testing.is_ab_testing_item( model ) || type === 'app' ) ) {
 					ET_PageBuilder_AB_Testing.alert( 'cannot_save_' + type + '_layout_has_ab_testing' );
 					return;
 				}
@@ -5287,9 +6833,6 @@ window.et_builder_version = '2.7.10';
 					ET_PageBuilder_App.allowHistorySaving( 'locked', this.history_noun );
 				}
 
-				// Update global module
-				this.updateGlobalModule();
-
 				// close the click right options
 				this.closeAllRightClickOptions();
 
@@ -5335,6 +6878,9 @@ window.et_builder_version = '2.7.10';
 
 						// Rebuild shortcodes
 						ET_PageBuilder_App.saveAsShortcode();
+
+						// Update global module
+						this_el.updateGlobalModule();
 					} else {
 						alert( et_pb_options.locked_item_permission_alert );
 					}
@@ -5377,6 +6923,9 @@ window.et_builder_version = '2.7.10';
 
 						// Rebuild shortcodes
 						ET_PageBuilder_App.saveAsShortcode();
+
+						// Update global module
+						this_el.updateGlobalModule();
 					} else {
 						alert( et_pb_options.locked_item_permission_alert );
 					}
@@ -5402,7 +6951,7 @@ window.et_builder_version = '2.7.10';
 					history_verb = 'expanded';
 				}
 
-				// Carousel effect for split testing subject
+				// Carousel effect for AB Testing subject
 				if ( ET_PageBuilder_AB_Testing.is_active() && this.model.get( 'et_pb_ab_subject' ) === 'on' ) {
 					ET_PageBuilder_AB_Testing.subject_carousel( cid );
 				}
@@ -5420,8 +6969,11 @@ window.et_builder_version = '2.7.10';
 				ET_PageBuilder_App.saveAsShortcode();
 			},
 
-			copy : function( event ) {
-				event.preventDefault();
+			copy : function( event, keepEvent ) {
+
+				if ( ! keepEvent ) {
+					event.preventDefault();
+				}
 
 				var module_attributes = _.clone( this.model.attributes ),
 					type              = module_attributes.type,
@@ -5448,7 +7000,8 @@ window.et_builder_version = '2.7.10';
 					module_attributes.childviews = this.getChildViews( module_attributes.cid );
 				}
 
-				module_attributes.created = 'manually';
+				delete module_attributes.className;
+				delete module_attributes.et_pb_locked;
 
 				// Set clipboard content
 				clipboard_content = JSON.stringify( module_attributes );
@@ -5460,19 +7013,22 @@ window.et_builder_version = '2.7.10';
 				this.closeAllRightClickOptions();
 			},
 
-			pasteAfter : function( event, parent, clipboard_type, has_cloned_cid ) {
-				event.preventDefault();
+			pasteAfter : function( event, parent, clipboard_type, has_cloned_cid, keepEvent, noHistory ) {
+				if ( ! keepEvent ) {
+					event.preventDefault();
+				}
 
-				var parent            = _.isUndefined( parent ) ? this.model.get( 'parent' ) : parent,
-					clipboard_type    = _.isUndefined( clipboard_type ) ? this.getClipboardType() : clipboard_type,
-					clipboard_content,
-					has_cloned_cid    = _.isUndefined( has_cloned_cid ) ? true : has_cloned_cid;
+				var parent            = _.isUndefined( parent ) ? this.model.get( 'parent' ) : parent;
+				var clipboard_type    = _.isUndefined( clipboard_type ) ? this.getClipboardType() : clipboard_type;
+				var has_cloned_cid    = _.isUndefined( has_cloned_cid ) ? true : has_cloned_cid;
+				var parent_view       = ET_PageBuilder_Layout.getView( parent );
+				var clipboard_content;
 
 				// Get clipboard content
 				clipboard_content = ET_PB_Clipboard.get( clipboard_type );
 				clipboard_content = JSON.parse( clipboard_content );
 
-				// If current clipboard content is Split testing subject, assign new subject ID
+				// If current clipboard content is AB Testing subject, assign new subject ID
 				if ( ! _.isUndefined( clipboard_content.et_pb_ab_subject ) || 'on' === clipboard_content.et_pb_ab_subject ) {
 					clipboard_content.et_pb_ab_subject_id = ET_PageBuilder_AB_Testing.get_subject_id();
 				}
@@ -5484,7 +7040,7 @@ window.et_builder_version = '2.7.10';
 				// Paste views recursively
 				this.setPasteViews( clipboard_content, parent, 'main_parent' );
 
-				// Carousel effect for split testing subject
+				// Carousel effect for AB Testing subject
 				if ( ET_PageBuilder_AB_Testing.is_active() && ( clipboard_content.type === 'row' || clipboard_content.type === 'row_inner' || clipboard_content.type === 'section' ) && clipboard_content.et_pb_ab_subject === 'on' ) {
 					ET_PageBuilder_AB_Testing.subject_carousel( clipboard_content.cid );
 				}
@@ -5493,20 +7049,24 @@ window.et_builder_version = '2.7.10';
 				ET_PageBuilder_Events.trigger( 'et-advanced-module:updated' );
 				ET_PageBuilder_Events.trigger( 'et-advanced-module:saved' );
 
-				// Update global module
-				this.updateGlobalModule();
+				// Update global module. Need to update global module only when pasting into Global parent
+				if ( ! _.isUndefined( parent_view ) && ( ET_PageBuilder_Layout.is_global( parent_view.model ) || ET_PageBuilder_Layout.is_global_children( parent_view.model ) ) ) {
+					this.updateGlobalModule();
+				}
 
 				// close the click right options
 				this.closeAllRightClickOptions();
 
 				// Enable history saving and set meta for history
 				// pasteAfter can be used for clone, so only use copied if history verb being used is default
-				if ( ET_PageBuilder_Visualize_Histories.verb === 'did' ) {
+				if ( ET_PageBuilder_Visualize_Histories.verb === 'did' && ! noHistory ) {
 					ET_PageBuilder_App.allowHistorySaving( 'copied', this.history_noun );
 				}
 
-				// Rebuild shortcodes
-				ET_PageBuilder_App.saveAsShortcode();
+				if ( ! keepEvent ) {
+					// Rebuild shortcodes
+					ET_PageBuilder_App.saveAsShortcode();
+				}
 			},
 
 			pasteApp : function( event ) {
@@ -5596,6 +7156,11 @@ window.et_builder_version = '2.7.10';
 					view.pasted_module = false;
 				}
 
+				// update global parent attribute when pasting the module from Global Row or Section.
+				if ( !  _.isUndefined( view.et_pb_global_parent ) && '' !== view.et_pb_global_parent ) {
+					view.et_pb_global_parent = et_pb_get_global_parent_cid( ET_PageBuilder_Layout.getView( parent ) );
+				}
+
 				// Set new global_parent_cid for pasted element
 				if ( ! _.isUndefined( view.et_pb_global_module ) && _.isUndefined( view.global_parent_cid ) && _.isUndefined( this.set_global_parent_cid ) ) {
 					this.global_parent_cid = cid;
@@ -5618,13 +7183,18 @@ window.et_builder_version = '2.7.10';
 					delete view.et_pb_template_type;
 				}
 
-				// If current view is Split testing subject, assign new subject ID
+				// If current view is AB Testing subject, assign new subject ID
 				if ( ! _.isUndefined( view.et_pb_ab_subject ) || 'on' === view.et_pb_ab_subject ) {
 					view.et_pb_ab_subject_id = ET_PageBuilder_AB_Testing.get_subject_id();
 				}
 
 				// Delete unused childviews
 				delete view.childviews;
+
+				// add default Admin Label if not defined
+				if ( _.isUndefined( view.admin_label ) ) {
+					view.admin_label = ! _.isUndefined( view.module_type ) ? ET_PageBuilder_Layout.getDefaultAdminLabel( view.module_type ) : '';
+				}
 
 				// Add view to collections
 				this.model.collection.add( view, { at : view_index } );
@@ -5640,9 +7210,9 @@ window.et_builder_version = '2.7.10';
 			updateGlobalModule : function () {
 				var global_module_cid;
 
-				if ( ! ET_PageBuilder_Layout.is_global( this.model ) ) {
+				if ( ET_PageBuilder_Layout.is_global( this.model ) ) {
 					global_module_cid = this.options.model.get( 'cid' );
-				} else if ( ! ET_PageBuilder_Layout.is_global_children( this.model ) ) {
+				} else if ( ET_PageBuilder_Layout.is_global_children( this.model ) ) {
 					global_module_cid = this.options.model.get( 'global_parent_cid' );
 				}
 
@@ -5678,7 +7248,7 @@ window.et_builder_version = '2.7.10';
 								 ! ET_PageBuilder_Layout.is_global( this.options.model ) &&
 								 ! ET_PageBuilder_Layout.is_global_children( this.options.model ) &&
 								 this.options.model.attributes.et_pb_locked !== "on" &&
-								 ! ( ET_PageBuilder_AB_Testing.is_active() && ( ET_PageBuilder_AB_Testing.is_split_test_item( this.options.model ) || type === 'app' ) ) &&
+								 ! ( ET_PageBuilder_AB_Testing.is_active() && ( ET_PageBuilder_AB_Testing.is_ab_testing_item( this.options.model ) || type === 'app' ) ) &&
 								 et_pb_options.is_divi_library !== "1" ) {
 								has_option = true;
 							}
@@ -5742,7 +7312,6 @@ window.et_builder_version = '2.7.10';
 					case "copy" :
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
 								 this.et_pb_has_storage_support &&
-								 this.options.model.attributes.et_pb_locked !== "on" &&
 								 _.isUndefined( this.model.attributes.et_pb_skip_module ) &&
 								 is_ab_allowed_copy &&
 								 ! is_ab_goal &&
@@ -5754,8 +7323,7 @@ window.et_builder_version = '2.7.10';
 							if ( this.hasOptionSupport( [ "section", "row_inner", "row", "module" ] ) &&
 								 this.et_pb_has_storage_support &&
 								 this.has_compatible_clipboard_content &&
-								 is_ab_allowed_paste &&
-								 this.options.model.attributes.et_pb_locked !== "on" ) {
+								 is_ab_allowed_paste ) {
 								has_option = true;
 							}
 						break;
@@ -6023,7 +7591,7 @@ window.et_builder_version = '2.7.10';
 
 					ET_PageBuilder_App.createLayoutFromContent( et_prepare_template_content( shortcode ), '', '', { is_reinit : 'reinit' } );
 
-					// Auto turn on Split Testing if the history has Split testing data
+					// Auto turn on AB Testing if the history has AB Testing data
 					if ( ET_PageBuilder_AB_Testing.is_active_based_on_models() ) {
 						ET_PageBuilder_AB_Testing.toggle_status( true );
 
@@ -6091,6 +7659,9 @@ window.et_builder_version = '2.7.10';
 				this.render();
 
 				this.maybeGenerateInitialLayout();
+
+				// Set current builder product name and version as the last version used to save this post/page.
+				$( '#et_builder_version' ).val( 'BB|' + window.et_builder_product_name + '|' + window.et_builder_version );
 			},
 
 			render : function() {
@@ -6124,11 +7695,15 @@ window.et_builder_version = '2.7.10';
 					}
 
 					this.$loading_animation.show();
-				};
+
+					this.isLoading = true;
+				}
 			},
 
 			endLoadingAnimation : function() {
 				this.$loading_animation.hide();
+
+				this.isLoading = false;
 			},
 
 			pageBuilderIsActive : function() {
@@ -6362,7 +7937,7 @@ window.et_builder_version = '2.7.10';
 			viewABStats : function( event ) {
 				event.preventDefault();
 
-				// View Split Testing stats is disabled on Divi Library
+				// View AB Testing stats is disabled on Divi Library
 				if ( et_pb_options.is_divi_library === "1" ) {
 					return;
 				}
@@ -6527,25 +8102,25 @@ window.et_builder_version = '2.7.10';
 				var module_id = ET_PageBuilder_Layout.generateNewId(),
 					this_el = this;
 
-				ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+				ET_PageBuilder_Events.trigger('et-pb-loading:started');
 
-				setTimeout( function() {
+				setTimeout(function() {
 					var fix_shortcodes = true,
 						content = '';
 
 					// check whether the tinyMCE container is loaded already if not - try again.
-					if ( typeof window.tinyMCE !== 'undefined' && window.tinyMCE.get( 'content' ) && ! window.tinyMCE.get( 'content' ).isHidden() && ! $( 'iframe#content_ifr' ).length ) {
+					if (typeof window.tinyMCE !== 'undefined' && window.tinyMCE.get('content') && ! window.tinyMCE.get('content').isHidden() && ! $('iframe#content_ifr').length) {
 						et_pb_bulder_loading_attempts++;
 
 						//show failure modal after 30 unsuccessful attempts
-						if ( 30 < et_pb_bulder_loading_attempts ) {
-							var $failure_notice_template = $( '#et-builder-failure-notice-template' );
+						if (30 < et_pb_bulder_loading_attempts) {
+							var $failure_notice_template = $('#et-builder-failure-notice-template');
 
-							ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+							ET_PageBuilder_Events.trigger('et-pb-loading:ended');
 
-							$( '#et_pb_main_container' ).removeClass( 'et_pb_loading_animation' );
+							$('#et_pb_main_container').removeClass('et_pb_loading_animation');
 
-							$( 'body' ).addClass( 'et_pb_stop_scroll' ).append( $failure_notice_template.html() );
+							$('body').addClass('et_pb_stop_scroll').append($failure_notice_template.html());
 
 							return;
 						}
@@ -6558,56 +8133,67 @@ window.et_builder_version = '2.7.10';
 					 * Visual editor adds paragraph tags around shortcodes,
 					 * it causes &nbsp; to be inserted into a module content area
 					 */
-					content = et_pb_get_content( 'content', fix_shortcodes );
+					content = et_pb_get_content('content', fix_shortcodes);
 
 					// Enable history saving and set meta for history
-					if ( content !== '' ) {
-						this_el.allowHistorySaving( 'loaded', 'page' );
+					if (content !== '') {
+						this_el.allowHistorySaving('loaded', 'page');
 					}
 
 					// Save page loaded
-					this_el.addHistory( content );
+					this_el.addHistory(content);
 
-					if  ( this_el.pageBuilderIsActive() ) {
-						if ( -1 === content.indexOf( '[et_pb_') ) {
+					if (this_el.pageBuilderIsActive()) {
+						if (-1 === content.indexOf('[et_pb_') && (et_pb_options.is_divi_library !== "1" || et_pb_options.layout_type !== 'module')) {
 							ET_PageBuilder_App.reInitialize();
-						} else if ( -1 !== content.indexOf( 'specialty_placeholder') ) {
-							this_el.createLayoutFromContent( et_prepare_template_content( content ) );
-							$( '.et_pb_section_specialty' ).append( this_el.template_button() );
+						} else if (-1 !== content.indexOf('specialty_placeholder')) {
+							this_el.createLayoutFromContent(et_prepare_template_content(content));
+							$('.et_pb_section_specialty').append(this_el.template_button());
 						} else {
-							this_el.createLayoutFromContent( et_prepare_template_content( content ) );
+							this_el.createLayoutFromContent(et_prepare_template_content(content));
 						}
 					} else {
-						this_el.createLayoutFromContent( content );
+						this_el.createLayoutFromContent(content);
 					}
 
-					et_pb_maybe_apply_wpautop_to_models( et_get_editor_mode(), 'initial_load' );
+					et_pb_maybe_apply_wpautop_to_models(et_get_editor_mode(), 'initial_load');
 
-					ET_PageBuilder_Events.trigger( 'et-pb-content-updated' );
+					ET_PageBuilder_Events.trigger('et-pb-content-updated');
 
-					ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+					ET_PageBuilder_Events.trigger('et-pb-loading:ended');
 
-					$( '#et_pb_main_container' ).addClass( 'et_pb_loading_animation' );
+					$('#et_pb_main_container').addClass('et_pb_loading_animation');
 
-					setTimeout( function() {
-						$( '#et_pb_main_container' ).removeClass( 'et_pb_loading_animation' );
-					}, 500 );
+					setTimeout(function() {
+						$('#et_pb_main_container').removeClass('et_pb_loading_animation');
+					}, 500);
 
 					// start listening to any collection events after all modules have been generated
-					this_el.listenTo( this_el.collection, 'change reset add', _.debounce( this_el.saveAsShortcode, 128 ) );
+					this_el.listenTo(this_el.collection, 'change reset add', _.debounce(this_el.saveAsShortcode, 128));
 
 					ET_PageBuilder_AB_Testing.update();
-				}, 500 );
+				}, 500);
 			},
 
 			wp_regexp_not_global : _.memoize( function( tag ) {
 				return new RegExp( '\\[(\\[?)(' + tag + ')(?![\\w-])([^\\]\\/]*(?:\\/(?!\\])[^\\]\\/]*)*?)(?:(\\/)\\]|\\](?:([^\\[]*(?:\\[(?!\\/\\2\\])[^\\[]*)*)(\\[\\/\\2\\]))?)(\\]?)' );
 			}),
 
-			getShortCodeParentTags : function () {
+			getShortCodeParentTags : function (append_shortcodes) {
 				var shortcodes = 'et_pb_section|et_pb_row|et_pb_column|et_pb_column_inner|et_pb_row_inner'.split('|');
 
-				shortcodes = shortcodes.concat( et_pb_options.et_builder_module_parent_shortcodes.split('|') );
+				shortcodes = shortcodes.concat(et_pb_options.et_builder_module_parent_shortcodes.split('|'));
+
+				// append additional shortcodes if defined
+				if (!_.isUndefined(append_shortcodes) && '' !== append_shortcodes) {
+					var append_array = append_shortcodes.split('|');
+					var extra_shortcodes = _.difference(append_array, shortcodes);
+
+					if (!_.isEmpty(extra_shortcodes)) {
+						shortcodes = _.union(shortcodes, extra_shortcodes);
+					}
+				}
+
 				shortcodes = shortcodes.join('|');
 				return shortcodes;
 			},
@@ -6620,130 +8206,204 @@ window.et_builder_version = '2.7.10';
 				var raw_content_shortcodes = et_pb_options.et_builder_module_raw_content_shortcodes,
 					raw_content_shortcodes_array;
 
-				raw_content_shortcodes_array = raw_content_shortcodes.split( '|' )
+				raw_content_shortcodes_array = raw_content_shortcodes.split( '|' );
 
 				return raw_content_shortcodes_array;
 			},
 			//ignore_template_tag, current_row_cid, global_id, is_reinit, after_section, global_parent
-			createLayoutFromContent : function( content, parent_cid, inner_shortcodes, additional_options ) {
-				var this_el = this,
-					et_pb_shortcodes_tags = typeof inner_shortcodes === 'undefined' || '' === inner_shortcodes ? this.getShortCodeParentTags() : this.getShortCodeChildTags(),
-					reg_exp = window.wp.shortcode.regexp( et_pb_shortcodes_tags ),
-					inner_reg_exp = this.wp_regexp_not_global( et_pb_shortcodes_tags ),
-					matches = content.match( reg_exp ),
-					et_pb_raw_shortcodes = this.getShortCodeRawContentTags(),
-					additional_options_received = typeof additional_options === 'undefined' ? {} : additional_options;
+			createLayoutFromContent : function(content, parent_cid, inner_shortcodes, additional_options, parent_address) {
+				var this_el = this;
+				var all_shortcodes_matches = !_.isUndefined(content) && '' !== content ? content.match(/\[([^\W\/\[\]\x00-\x20=]+)/g) : '';
+				var all_shortcodes_in_content = all_shortcodes_matches && _.isArray(all_shortcodes_matches) ? all_shortcodes_matches.join('|').replace(/\[/g, '') : '';
+				var all_registered_shortcodes = this.getShortCodeParentTags().split('|');
+				var et_pb_shortcodes_tags = typeof inner_shortcodes === 'undefined' || '' === inner_shortcodes ? this.getShortCodeParentTags(all_shortcodes_in_content) : this.getShortCodeChildTags();
+				var reg_exp = window.wp.shortcode.regexp(et_pb_shortcodes_tags);
+				var inner_reg_exp = this.wp_regexp_not_global(et_pb_shortcodes_tags);
+				var matches = content.match(reg_exp);
+				var et_pb_raw_shortcodes = this.getShortCodeRawContentTags();
+				var additional_options_received = typeof additional_options === 'undefined' ? {} : additional_options;
 
-				_.each( matches, function ( shortcode ) {
-					var shortcode_element = shortcode.match( inner_reg_exp ),
-						shortcode_name = shortcode_element[2],
-						shortcode_attributes = shortcode_element[3] !== ''
-							? window.wp.shortcode.attrs( shortcode_element[3] )
-							: '',
-						shortcode_content = shortcode_element[5],
-						module_cid = ET_PageBuilder_Layout.generateNewId(),
-						module_settings,
-						prefixed_attributes = {},
-						found_inner_shortcodes = typeof shortcode_content !== 'undefined' && shortcode_content !== '' && shortcode_content.match( reg_exp ),
-						global_module_id = '';
+				_.each(matches, function(shortcode, index) {
+					var shortcode_element = shortcode.match(inner_reg_exp);
+					var original_shortcode_name = shortcode_element[2];
+					var shortcode_name = shortcode_element[2];
+					var shortcode_attributes = shortcode_element[3] !== ''
+							? window.wp.shortcode.attrs(shortcode_element[3])
+							: '';
+					var shortcode_content = shortcode_element[5];
+					var module_cid = ET_PageBuilder_Layout.generateNewId();
+					var module_settings;
+					var prefixed_attributes = {};
+					var is_structure_element = $.inArray(shortcode_name, [ 'et_pb_section', 'et_pb_row', 'et_pb_column', 'et_pb_row_inner', 'et_pb_column_inner' ]) > -1;
+					var found_inner_shortcodes = is_structure_element && typeof shortcode_content !== 'undefined' && shortcode_content !== '' && shortcode_content.match(reg_exp);
+					var global_module_id = '';
+					var is_unregistered_shortcode = !is_structure_element && _.indexOf(all_registered_shortcodes, shortcode_name) === -1;
 
-					if ( shortcode_name === 'et_pb_section' || shortcode_name === 'et_pb_row' || shortcode_name === 'et_pb_column' || shortcode_name === 'et_pb_row_inner' || shortcode_name === 'et_pb_column_inner' )
-						shortcode_name = shortcode_name.replace( 'et_pb_', '' );
+					if (is_structure_element) {
+						shortcode_name = shortcode_name.replace('et_pb_', '');
+					}
 
 					module_settings = {
 						type : shortcode_name,
 						cid : module_cid,
 						created : 'manually',
-						module_type : shortcode_name
-					}
+						module_type : shortcode_name,
+						component_status : ''
+					};
 
-					if ( typeof additional_options_received.current_row_cid !== 'undefined' && '' !== additional_options_received.current_row_cid ) {
+					if (typeof additional_options_received.current_row_cid !== 'undefined' && '' !== additional_options_received.current_row_cid) {
 						module_settings['current_row'] = additional_options_received.current_row_cid;
 					}
 
-					if ( typeof additional_options_received.global_id !== 'undefined' && '' !== additional_options_received.global_id ) {
-						module_settings['et_pb_global_module'] = additional_options_received.global_id;
-					}
-
-					if ( typeof additional_options_received.global_parent !== 'undefined' && '' !== additional_options_received.global_parent ) {
+					if (typeof additional_options_received.global_parent !== 'undefined' && '' !== additional_options_received.global_parent) {
 						module_settings['et_pb_global_parent'] = additional_options_received.global_parent;
 						module_settings['global_parent_cid'] = additional_options_received.global_parent_cid;
 					}
 
-					if ( shortcode_name === 'section' && ( typeof additional_options_received.after_section !== 'undefined' && '' !== additional_options_received.after_section ) ) {
+					if (shortcode_name === 'section' && (typeof additional_options_received.after_section !== 'undefined' && '' !== additional_options_received.after_section)) {
 						module_settings['after_section'] = additional_options_received.after_section;
 					}
 
-					if ( shortcode_name !== 'section' ) {
+					if (shortcode_name !== 'section') {
 						module_settings['parent'] = parent_cid;
 					}
 
-					if ( shortcode_name.indexOf( 'et_pb_' ) !== -1 ) {
+					if (shortcode_name.indexOf('et_pb_') !== -1) {
 						module_settings['type'] = 'module';
-
-						module_settings['admin_label'] = ET_PageBuilder_Layout.getTitleByShortcodeTag( shortcode_name );
-					} else {
-						module_settings['admin_label'] = shortcode_name;
 					}
 
-					if ( _.isObject( shortcode_attributes['named'] ) ) {
-						global_module_id = typeof shortcode_attributes['named']['global_module'] !== 'undefined' && '' === global_module_id ? shortcode_attributes['named']['global_module'] : global_module_id;
+					// this logic is sufficient even for 3rd party modules taking into account all the changes made to support it
+					if (original_shortcode_name === module_settings['type']) {
+						module_settings['type'] = 'module';
+					}
 
-						for ( var key in shortcode_attributes['named'] ) {
-							if ( typeof additional_options_received.ignore_template_tag === 'undefined' || '' === additional_options_received.ignore_template_tag || ( 'ignore_template' === additional_options_received.ignore_template_tag && 'template_type' !== key ) ) {
-								var prefixed_key = key !== 'admin_label' && key !== 'specialty_columns' ? 'et_pb_' + key : key;
+					// generate default admin_label
+					module_settings['admin_label'] = is_unregistered_shortcode ? shortcode_name : ET_PageBuilder_Layout.getDefaultAdminLabel(shortcode_name);
 
-								if ( ( shortcode_name === 'column' || shortcode_name === 'column_inner' ) && prefixed_key === 'et_pb_type' )
-									prefixed_key = 'layout';
+					// global modules may have predefined address, so use it if exist.
+					module_settings._address = !_.isUndefined(additional_options_received.predefined_address) ? additional_options_received.predefined_address : index.toString();
 
-								prefixed_attributes[prefixed_key] = shortcode_attributes['named'][key];
+					if (! _.isUndefined(parent_address)) {
+						module_settings._address = parent_address + '.' + module_settings._address;
+					}
+
+					if (_.isObject(shortcode_attributes['named'])) {
+						var fill_legacy_global_options = false;
+
+						// prepare global module selective sync attributes
+						if ('global' === et_pb_options.is_global_template && ! is_structure_element && typeof shortcode_attributes['named']['template_type'] !== 'undefined' && 'module' === shortcode_attributes['named']['template_type']) {
+							if ('updated' === et_pb_options.selective_sync_status) {
+								et_pb_all_unsynced_options[et_pb_options.template_post_id] = et_pb_options.excluded_global_options;
+							} else {
+								fill_legacy_global_options = true;
+								et_pb_all_legacy_synced_options[et_pb_options.template_post_id] = [];
 							}
 						}
 
-						module_settings = _.extend( module_settings, prefixed_attributes );
+						global_module_id = typeof shortcode_attributes['named']['global_module'] !== 'undefined' && '' === global_module_id ? shortcode_attributes['named']['global_module'] : global_module_id;
 
+						// settings migration should not be performed on reinit. It should only be performed on initial content loading
+						// Exception: force migration may be triggered for global modules using migrate_global_modules flag
+						if ('reinit' !== additional_options_received.is_reinit || ('migrate' === additional_options_received.migrate_global_modules && ('' !== global_module_id || '' !== additional_options_received.global_parent))) {
+							shortcode_attributes = et_pb_migrate_settings(shortcode_attributes, module_settings._address, module_settings.type, shortcode_name);
+						}
+
+						for (var key in shortcode_attributes['named']) {
+							if (typeof additional_options_received.ignore_template_tag === 'undefined' || '' === additional_options_received.ignore_template_tag || ('ignore_template' === additional_options_received.ignore_template_tag && 'template_type' !== key)) {
+								var prefixed_key = key !== 'admin_label' && key !== 'specialty_columns' && key !== 'value_changes' ? 'et_pb_' + key : key,
+									skip_setting = false;
+
+								// fill the array of legacy global synced options for module
+								if (fill_legacy_global_options) {
+									et_pb_all_legacy_synced_options[et_pb_options.template_post_id].push(key);
+								}
+
+								if ((shortcode_name === 'column' || shortcode_name === 'column_inner') && prefixed_key === 'et_pb_type') {
+									prefixed_key = 'layout';
+								}
+
+								// skip unsynced options for global modules if isset
+								if (! _.isEmpty(additional_options_received.unsynced_options) && -1 !== _.indexOf(additional_options_received.unsynced_options, key)) {
+									skip_setting = true;
+								}
+
+								if (! skip_setting) {
+									prefixed_attributes[prefixed_key] = shortcode_attributes['named'][key];
+
+									// Delete module item's value changes that is being assigned to module. Otherwise, this will pollutes `window.wp.shortcode.attrs()` and causing incorrect shortcode attribute parsing
+									if (key === 'value_changes') {
+										delete shortcode_attributes['named'][key];
+									}
+
+								}
+							}
+						}
+
+						module_settings = _.extend(module_settings, prefixed_attributes);
 					}
 
-					if ( typeof module_settings['specialty_columns'] !== 'undefined' ) {
+					if (typeof module_settings['specialty_columns'] !== 'undefined') {
 						module_settings['layout_specialty'] = '1';
-						module_settings['specialty_columns'] = parseInt( module_settings['specialty_columns'] );
+						module_settings['specialty_columns'] = parseInt(module_settings['specialty_columns']);
 					}
-
-					if ( ! found_inner_shortcodes ) {
-						if ( $.inArray( shortcode_name, et_pb_raw_shortcodes ) > -1 ) {
-							module_settings['et_pb_raw_content'] = _.unescape( shortcode_content );
+					// Skip content if it's not synced for global modules.
+					if (! found_inner_shortcodes && (_.isUndefined(additional_options_received.unsynced_options) || _.isEmpty(additional_options_received.unsynced_options) || -1 === _.indexOf(additional_options_received.unsynced_options, 'et_pb_content_field'))) {
+						if ($.inArray(shortcode_name, et_pb_raw_shortcodes) > -1) {
+							module_settings['et_pb_raw_content'] = _.unescape(shortcode_content);
+							// replace line-break placeholders with real line-breaks
+							module_settings['et_pb_raw_content'] = module_settings['et_pb_raw_content'].replace(/<!-- \[et_pb_line_break_holder\] -->/g, '\n');
 						} else {
-							module_settings['et_pb_content_new'] = shortcode_content;
+							module_settings['et_pb_content'] = shortcode_content;
 						}
 					}
 
-					if ( ! module_settings['et_pb_disabled'] !== 'undefined' && module_settings['et_pb_disabled'] === 'on' ) {
+					// convert line break placeholders into real line-breaks for the message pattern option in Contact Form module
+					if ('et_pb_contact_form' === shortcode_name && typeof module_settings['et_pb_custom_message'] !== 'undefined') {
+						// unescape content to make sure quotes displayed correctly in the Editor.
+						module_settings['et_pb_custom_message'] = _.unescape(module_settings['et_pb_custom_message'].replace(/\|\|et_pb_line_break_holder\|\|/g, '\r\n'));
+					}
+
+					if (! module_settings['et_pb_disabled'] !== 'undefined' && module_settings['et_pb_disabled'] === 'on') {
 						module_settings.className = ' et_pb_disabled';
 					}
 
-					if ( ! module_settings['et_pb_locked'] !== 'undefined' && module_settings['et_pb_locked'] === 'on' ) {
+					if (! module_settings['et_pb_locked'] !== 'undefined' && module_settings['et_pb_locked'] === 'on') {
 						module_settings.className = ' et_pb_locked';
 					}
 
-					this_el.collection.add( [ module_settings ] );
+					if (typeof additional_options_received.global_id !== 'undefined' && '' !== additional_options_received.global_id) {
+						module_settings['et_pb_global_module'] = additional_options_received.global_id;
+					}
 
-					if ( 'reinit' === additional_options_received.is_reinit || ( global_module_id === '' || ( global_module_id !== '' && 'row' !== shortcode_name && 'row_inner' !== shortcode_name && 'section' !== shortcode_name ) ) ) {
-						if ( found_inner_shortcodes ) {
-							var global_parent_id = typeof additional_options_received.global_parent === 'undefined' || '' === additional_options_received.global_parent ? global_module_id : additional_options_received.global_parent,
-								global_parent_cid_new = typeof additional_options_received.global_parent_cid === 'undefined' || '' === additional_options_received.global_parent_cid
+					// shortcode is not registered in wp. It means it's a 3rd party module and plugin is disabled
+					if (!is_structure_element && _.indexOf(all_registered_shortcodes, shortcode_name) === -1) {
+						// add module into collection and continue
+						module_settings['title'] = shortcode_name;
+						module_settings['component_status'] = 'removed';
+						this_el.collection.add([module_settings]);
+						return;
+					}
+
+					this_el.collection.add([module_settings]);
+
+					if ('reinit' === additional_options_received.is_reinit || (global_module_id === '' || (global_module_id !== '' && 'row' !== shortcode_name && 'row_inner' !== shortcode_name && 'section' !== shortcode_name))) {
+						if (found_inner_shortcodes) {
+							var global_parent_id = typeof additional_options_received.global_parent === 'undefined' || '' === additional_options_received.global_parent ? global_module_id : additional_options_received.global_parent;
+							var global_parent_cid_new = typeof additional_options_received.global_parent_cid === 'undefined' || '' === additional_options_received.global_parent_cid
 									? typeof global_module_id !== 'undefined' && '' !== global_module_id ? module_cid : ''
 									: additional_options_received.global_parent_cid;
+							var inner_shortcode = ! is_structure_element ? found_inner_shortcodes : '';
 
-							this_el.createLayoutFromContent( shortcode_content, module_cid, '', { is_reinit : additional_options_received.is_reinit, global_parent : global_parent_id, global_parent_cid : global_parent_cid_new } );
+							this_el.createLayoutFromContent(shortcode_content, module_cid, inner_shortcode, { is_reinit : additional_options_received.is_reinit, global_parent : global_parent_id, global_parent_cid : global_parent_cid_new, migrate_global_modules : additional_options_received.migrate_global_modules }, module_settings._address);
 						}
 					} else {
 						//calculate how many global modules we requested on page
 						et_pb_globals_requested++;
 
-						et_pb_load_global_row( global_module_id, module_cid );
-						this_el.createLayoutFromContent( shortcode_content, module_cid, '', { is_reinit : 'reinit' } );
+						et_pb_load_global_row(global_module_id, module_cid, shortcode, module_settings._address);
+						this_el.createLayoutFromContent(shortcode_content, module_cid, '', { is_reinit : 'reinit' }, module_settings._address);
 					}
-				} );
+				});
 			},
 
 			addModule : function( module ) {
@@ -6785,7 +8445,7 @@ window.et_builder_version = '2.7.10';
 							$( view.render().el ).find( '.et-pb-section-content' ).append( sub_view.render().el );
 						}
 
-						if ( 'on' === module.get( 'et_pb_specialty' ) && 'auto' === module.get( 'created' ) ) {
+						if ( 'on' === module.get( 'et_pb_specialty' ) && 'auto' === module.get( 'created' ) && ! module.get( 'pasted_module' ) ) {
 							$( view.render().el ).addClass( 'et_pb_section_specialty' );
 
 							var et_view;
@@ -6804,8 +8464,8 @@ window.et_builder_version = '2.7.10';
 						}
 
 						// add Rows layout once the section has been created in "auto" mode
-
-						if ( 'manually' !== module.get( 'created' ) && 'on' !== module.get( 'et_pb_fullwidth' ) && 'on' !== module.get( 'et_pb_specialty' ) ) {
+						// skip this step if pasting section.
+						if ( ! module.get( 'pasted_module' ) && 'manually' !== module.get( 'created' ) && 'on' !== module.get( 'et_pb_fullwidth' ) && 'on' !== module.get( 'et_pb_specialty' ) ) {
 							view.addRow();
 						}
 
@@ -6813,6 +8473,10 @@ window.et_builder_version = '2.7.10';
 					case 'row' :
 					case 'row_inner' :
 						view = new ET_PageBuilder.RowView( view_settings );
+
+						if ( module.get( 'parent' ) !== '' ) {
+							ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '.et-pb-insert-row' ).hide();
+						}
 
 						ET_PageBuilder_Layout.addView( module.get('cid'), view );
 
@@ -6827,7 +8491,7 @@ window.et_builder_version = '2.7.10';
 							if ( ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '.et-pb-section-content' ).length ) {
 								ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '.et-pb-section-content' ).append( view.render().el );
 							} else {
-								ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '> .et-pb-insert-module' ).hide().end().append( view.render().el );
+								ET_PageBuilder_Layout.getView( module.get( 'parent' ) ).$el.find( '> .et-pb-insert-module, > .et-pb-insert-row' ).hide().end().append( view.render().el );
 							}
 						}
 
@@ -6998,8 +8662,12 @@ window.et_builder_version = '2.7.10';
 				var this_el = this,
 					action_setting = arguments.length > 0 && typeof arguments[0] === 'object' && arguments[0]['et_action'] || '';
 
-				if ( et_options && et_options['update_shortcodes'] == 'false' )
+				// set that the bb is in use, which is looked for by fb if the user switches to new tab
+				set_this_editor_in_use();
+
+				if ( et_options && et_options['update_shortcodes'] == 'false' ) {
 					return;
+				}
 
 				shortcode = this_el.generateCompleteShortcode();
 
@@ -7017,7 +8685,51 @@ window.et_builder_version = '2.7.10';
 				}, 500 );
 			},
 
-			generateCompleteShortcode : function( cid, layout_type, ignore_global_tag, ignore_global_tabs ) {
+			/**
+			 * Get default section background color configured on page settings
+			 * Fallback to #ffffff if no value found
+			 *
+			 * @return {string} hexacode or rgba color
+			 */
+			getDefaultSectionBackgroundColor : function() {
+				var default_background_color = $('#_et_pb_section_background_color').val();
+
+				if ( default_background_color === '' || ! default_background_color ) {
+					default_background_color = '#ffffff';
+				}
+
+				return default_background_color;
+			},
+
+			/**
+			 * Get array of background color of all sections mainly for section dividers adjacent color calculation
+			 *
+			 * @return {array} background colors
+			 */
+			getSectionsBackgroundColor : function() {
+				var thisClass = this,
+					sections_background_color = [];
+
+				// Loop all sections
+				this.$el.find('.et_pb_section').each(function() {
+					var section_cid = $(this).find('.et-pb-data-cid').data('cid');
+					var section_model = ET_PageBuilder_Modules.find(function(model) {
+							return model.get('cid') == section_cid;
+						});
+					var background_color = get(section_model, 'attributes.et_pb_background_color', '');
+
+					// If current section has no background_color attribute, get default color
+					if (background_color === '' || ! background_color) {
+						background_color = thisClass.getDefaultSectionBackgroundColor();
+					}
+
+					sections_background_color.push(background_color);
+				} );
+
+				return sections_background_color;
+			},
+
+			generateCompleteShortcode : function( cid, layout_type, ignore_global_tag, ignore_global_tabs, is_saving_global ) {
 				var shortcode = '',
 					this_el = this,
 					all_sections = typeof cid === 'undefined' ? true : false,
@@ -7097,7 +8809,7 @@ window.et_builder_version = '2.7.10';
 									var specialty_module_cid = $( this ).data( 'cid' );
 
 									if ( ( false === all_sections && ( cid === specialty_module_cid || true === include_whole_section ) ) || true === all_sections ) {
-										shortcode += this_el.generateModuleShortcode( $(this), false, layout_type, ignore_global_tag, '', ignore_global_tabs );
+										shortcode += this_el.generateModuleShortcode( $(this), false, layout_type, ignore_global_tag, '', ignore_global_tabs, is_saving_global );
 									}
 								} );
 							}
@@ -7131,7 +8843,7 @@ window.et_builder_version = '2.7.10';
 								$this_column.find( '.et_pb_module_block' ).each( function() {
 									var module_cid = $( this ).data( 'cid' );
 									if ( ( false === all_sections && ( cid === module_cid || true === include_whole_section || true === include_whole_row ) ) || true === all_sections ) {
-										shortcode += this_el.generateModuleShortcode( $(this), false, layout_type, ignore_global_tag, '', ignore_global_tabs );
+										shortcode += this_el.generateModuleShortcode( $(this), false, layout_type, ignore_global_tag, '', ignore_global_tabs, is_saving_global );
 									}
 								} );
 
@@ -7156,10 +8868,11 @@ window.et_builder_version = '2.7.10';
 			return shortcode;
 			},
 
-			generateModuleShortcode : function( $module, open_tag_only, layout_type, ignore_global_tag, defined_module_type, ignore_global_tabs ) {
+			generateModuleShortcode : function( $module, open_tag_only, layout_type, ignore_global_tag, defined_module_type, ignore_global_tabs, is_saving_global ) {
 				var attributes = '',
 					content = '',
 					$this_module = $module,
+					is_module_type = ! $this_module.is( '.et_pb_section' ) && ! $this_module.is( '.et_pb_row' ) && ! $this_module.is( '.et_pb_row_inner' ) && ! $this_module.is( '.et_pb_column' ) && ! $this_module.is( '.et_pb_column_inner' ),
 					prefix = $this_module.is( '.et_pb_section' ) || $this_module.is( '.et_pb_row' ) || $this_module.is( '.et_pb_row_inner' )
 						? 'et_pb_'
 						: '',
@@ -7170,47 +8883,114 @@ window.et_builder_version = '2.7.10';
 						return model.get('cid') == module_cid;
 					} ),
 					module_type = typeof module !== 'undefined' ? module.get( 'module_type' ) : 'undefined',
+					is_synced_global_module = false,
 					module_settings,
 					shortcode,
-					template_module_type;
+					template_module_type,
+					unsynced_options = [];
 
 				if ( typeof defined_module_type !== 'undefined' && '' !== defined_module_type ) {
 					module_type = defined_module_type;
 				}
 
+				if ( typeof module === 'undefined' ) {
+					return;
+				}
+
 				module_settings = module.attributes;
 
+				// Added prev_background_color and next_background_color attribute for sections divider
+				if ( module_settings.type === 'section' ) {
+					var section_address = parseInt( module.attributes._address ),
+						prev_section_address = section_address - 1,
+						next_section_address = section_address + 1,
+						sections_background_color = this.getSectionsBackgroundColor(),
+						section_background_color = _.isUndefined( module_settings.et_pb_background_color ) ? this.getDefaultSectionBackgroundColor() : module_settings.et_pb_background_color,
+						prev_adjacent_background_color = _.isUndefined( sections_background_color[prev_section_address] ) ? '' : sections_background_color[prev_section_address],
+						next_adjacent_background_color = _.isUndefined( sections_background_color[next_section_address] ) ? '' : sections_background_color[next_section_address],
+						isModuleHasAdvancedBackground = ET_PageBuilder.Helpers.moduleHasBackground(
+							module_settings,
+							['gradient', 'image', 'video']
+						);
+
+
+					// If current and prev section has identical background color and current section
+					// has no background gradient, image, or video, set adjacent color for previous
+					// section to black so divider color will automatically visible
+					if ( prev_adjacent_background_color === section_background_color && !isModuleHasAdvancedBackground ) {
+						prev_adjacent_background_color = '#000000';
+					}
+
+					module_settings.et_pb_prev_background_color = prev_adjacent_background_color;
+
+					// If current and next section has identical background color and current section
+					// has no background gradient, image, or video, set adjacent color for next
+					// section to black so divider color will automatically visible
+					if ( next_adjacent_background_color === section_background_color && !isModuleHasAdvancedBackground ) {
+						next_adjacent_background_color = '#000000';
+					}
+
+					module_settings.et_pb_next_background_color = next_adjacent_background_color;
+				}
+
+				is_synced_global_module = ( 'module' === et_pb_options.layout_type && 'global' === et_pb_options.is_global_template ) || ( is_saving_global && is_module_type && !_.isUndefined( module_settings['et_pb_global_module'] ) );
+
+				// save only synced options for the global modules
+				if ( is_saving_global && is_module_type && typeof module_settings['et_pb_global_module'] !== 'undefined' ) {
+					unsynced_options = ! _.isEmpty( et_pb_all_unsynced_options[ module_settings['et_pb_global_module'] ] ) ? et_pb_all_unsynced_options[ module_settings['et_pb_global_module'] ] : [];
+				}
+
 				for ( var key in module_settings ) {
+					if ( ! _.isEmpty( unsynced_options ) ) {
+						var global_option_name = $.inArray( key, ['et_pb_content', 'et_pb_raw_content'] ) !== -1 ? 'et_pb_content_field' : key.replace( 'et_pb_', '' );
+
+						// skip unsynced options
+						if ( $.inArray( global_option_name, unsynced_options ) !== -1 ) {
+							continue;
+						}
+					}
+
 					if ( typeof ignore_global_tag === 'undefined' || 'ignore_global' !== ignore_global_tag || ( typeof ignore_global_tag !== 'undefined' && 'ignore_global' === ignore_global_tag && 'et_pb_global_module' !== key && 'et_pb_global_parent' !== key ) ) {
 						if ( typeof ignore_global_tabs === 'undefined' || 'ignore_global_tabs' !== ignore_global_tabs || ( typeof ignore_global_tabs !== 'undefined' && 'ignore_global_tabs' === ignore_global_tabs && 'et_pb_saved_tabs' !== key ) ) {
 							var setting_name = key,
 								setting_value;
 
+							// remove previous instance of these flags, the bb_built will be added again below as needed
+							if ( _.includes( ['et_pb_fb_built', 'et_pb_bb_built', '_address'], setting_name ) ) {
+								continue;
+							}
+
 							if ( setting_name.indexOf( 'et_pb_' ) === -1 && setting_name !== 'admin_label' ) continue;
 
 							setting_value = typeof( module.get( setting_name ) ) !== 'undefined' ? module.get( setting_name ) : '';
 
-							if ( setting_name === 'et_pb_content_new' || setting_name === 'et_pb_raw_content' ) {
+							if ( setting_name === 'et_pb_content' || setting_name === 'et_pb_raw_content' ) {
 								content = setting_value;
 
 								if ( setting_name === 'et_pb_raw_content' ) {
+									// replace the line-breaks with placeholders, so they won't be removed/replaced by WP
+									content = content.replace( /\r?\n|\r/g, '<!-- [et_pb_line_break_holder] -->' );
 									content = _.escape( content );
 								}
 
 								content = $.trim( content );
 
-								if ( setting_name === 'et_pb_content_new' ) {
+								var modules_with_child = $.parseJSON( et_pb_options.et_builder_modules_with_children );
+
+								// don't add additional line-breaks to the modules wich child elements. It'll add unwanted extra space to them
+								if ( ! _.includes( _.keys( modules_with_child ), module.get( 'module_type' ) ) && '' !== content && setting_name === 'et_pb_content' ) {
 									content = "\n\n" + content + "\n\n";
 								}
 
-							} else if ( setting_value !== '' ) {
+							} else if ( setting_value !== '' || is_synced_global_module ) {
 								// check if there is a default value for a setting
 								if ( typeof module_settings['module_defaults'] !== 'undefined' && typeof module_settings['module_defaults'][ setting_name ] !== 'undefined' ) {
 									var module_setting_default = module_settings['module_defaults'][ setting_name ],
 										string_setting_value = setting_value + ''; // cast setting value to string to properly compare it with the module_setting_default
 
 									// don't add an attribute to a shortcode, if default value is equal to the current value
-									if ( module_setting_default === string_setting_value ) {
+									// Exception: Global Modules. We should save default values to make sure it synced with all modules correctly.
+									if ( module_setting_default === string_setting_value && ! is_synced_global_module ) {
 										delete module.attributes[ setting_name ];
 										continue;
 									}
@@ -7218,12 +8998,33 @@ window.et_builder_version = '2.7.10';
 
 								setting_name = setting_name.replace( 'et_pb_', '' );
 
-								// Make sure double quotes are encoded, before adding values to shortcode
 								if ( typeof setting_value === 'string' ) {
-									setting_value = setting_value.replace( /\"/g, '%22' );
+									// Make sure double quotes are encoded, before adding values to shortcode
+									setting_value = setting_value.replace( /\"/g, '%22' ).replace( /\\/g, '%92' );
+									setting_value = setting_value.replace( /\[/g, '%91' ).replace( /\]/g, '%93' );
 								}
 
-								attributes += ' ' + setting_name + '="' + setting_value + '"';
+								if ( 'et_pb_contact_form' === module_type && setting_name === 'custom_message' ) {
+									// save the line breaks in contact message pattern correctly
+									setting_value = _.escape( setting_value.replace( /\r?\n|\r/g, '||et_pb_line_break_holder||' ) );
+								}
+
+								// escape URLs
+								var url_regex = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+
+								if ( url_regex.test( setting_value ) ) {
+									setting_value = _.escape( _.unescape( setting_value ) );
+								}
+
+								// make sure admin label is always on the same position to correctly save the shortcode into library
+								if ( 'admin_label' === setting_name ) {
+									// save admin label to shortcode only if it's not default
+									if ( setting_value !== ET_PageBuilder_Layout.getDefaultAdminLabel( module_settings['module_type'] ) ) {
+										attributes = ' ' + setting_name + '="' + setting_value + '"' + attributes;
+									}
+								} else {
+									attributes += ' ' + setting_name + '="' + setting_value + '"';
+								}
 							}
 						}
 					}
@@ -7238,6 +9039,11 @@ window.et_builder_version = '2.7.10';
 
 				if ( typeof module_settings['template_type'] !== 'undefined' ) {
 					attributes += ' template_type="' + module_settings['template_type'] + '"';
+				}
+
+				// prefix sections with a bb_built attr flag
+				if ( 'section' === module_type ) {
+					attributes = ' bb_built="1"' + attributes;
 				}
 
 				shortcode = '[' + prefix + module_type + attributes;
@@ -7263,7 +9069,14 @@ window.et_builder_version = '2.7.10';
 					cancel : '.et-pb-settings, .et-pb-clone, .et-pb-remove, .et-pb-section-add, .et-pb-row-add, .et-pb-insert-module, .et-pb-insert-column, .et_pb_locked, .et-pb-disable-sort',
 					delay: 100,
 					update : function( event, ui ) {
-						// Split Testing adjustment :: section as/has subject/goal
+
+						// Loading process occurs. Dragging is temporarily disabled
+						if ( ET_PageBuilder_App.isLoading ) {
+							this_el.$el.sortable( 'cancel' );
+							return;
+						}
+
+						// AB Testing adjustment :: section as/has subject/goal
 						if ( ET_PageBuilder_AB_Testing.is_active() ) {
 							var section_cid = $( ui.item ).children( '.et-pb-section-content' ).attr( 'data-cid' );
 
@@ -7283,6 +9096,26 @@ window.et_builder_version = '2.7.10';
 					},
 					start : function( event, ui ) {
 						et_pb_close_all_right_click_options();
+
+						// copy section if Alt key pressed
+						if ( event.altKey ) {
+							var movedSection = ET_PageBuilder_Layout.getView( $( ui.item ).children('.et-pb-section-content').data( 'cid' ) );
+
+							var view_settings = {
+								model      : movedSection.model,
+								view       : movedSection.$el,
+								view_event : event
+							};
+
+							var clone_section = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+							clone_section.copy( event, true );
+
+							clone_section.pasteAfter( event, undefined, undefined, undefined, true, true );
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'cloned', 'section' );
+						}
 					}
 				} );
 			},
@@ -7342,12 +9175,7 @@ window.et_builder_version = '2.7.10';
 				this.stopListening( this.collection, 'change reset add', this.saveAsShortcode );
 
 				if ( action === 'load_layout' && typeof window.switchEditors !== 'undefined' ) {
-					content = window.switchEditors.wpautop( content );
-
-					content = content.replace( /<p>\[/g, '[' );
-					content = content.replace( /\]<\/p>/g, ']' );
-					content = content.replace( /\]<br \/>/g, ']' );
-					content = content.replace( /<br \/>\n\[/g, '[' );
+					content = et_pb_fix_shortcodes( window.switchEditors.wpautop( content ) );
 				}
 
 				this.createLayoutFromContent( content );
@@ -7402,11 +9230,12 @@ window.et_builder_version = '2.7.10';
 				this.order_modules_array['children_count'] = [];
 
 				// go through all the modules in the builder content and set the module_order attribute for each.
-				this.$el.find( '.et_pb_section' ).each( function() {
+				this.$el.find( '.et_pb_section' ).each( function( index ) {
 					var $this_section = $(this).find( '.et-pb-section-content' ),
 						section_cid = $this_section.data( 'cid' );
 
 					ET_PageBuilder_App.setModuleOrder( section_cid );
+					ET_PageBuilder_App.setModuleAddresses( section_cid, index );
 
 					if ( $this_section.closest( '.et_pb_section' ).hasClass( 'et_pb_section_fullwidth' ) ) {
 						$this_section.find( '.et_pb_module_block' ).each( function() {
@@ -7512,6 +9341,10 @@ window.et_builder_version = '2.7.10';
 
 				current_model = ET_PageBuilder_Modules.findWhere( { cid : cid } );
 
+				if ( typeof current_model === 'undefined' ) {
+					return;
+				}
+
 				module_type = typeof current_model.attributes.module_type !== 'undefined' ? current_model.attributes.module_type : current_model.attributes.type;
 
 				// determine the column type. Check the parent, if parent == row_inner, then column type = column_inner
@@ -7549,10 +9382,10 @@ window.et_builder_version = '2.7.10';
 					start_from = typeof this.order_modules_array['children_count'][ child_slug ] !== 'undefined' ? this.order_modules_array['children_count'][ child_slug ] : 0;
 					current_model.attributes.child_start_from = start_from; // this attributed used as a start point for calculation of child modules order
 
-					if ( typeof current_model.attributes.et_pb_content_new !== 'undefined' && '' !== current_model.attributes.et_pb_content_new ) {
-						et_pb_shortcodes_tags = ET_PageBuilder_App.getShortCodeChildTags(),
-						reg_exp = window.wp.shortcode.regexp( et_pb_shortcodes_tags ),
-						matches = current_model.attributes.et_pb_content_new.match( reg_exp );
+					if ( typeof current_model.attributes.et_pb_content !== 'undefined' && '' !== current_model.attributes.et_pb_content ) {
+						var et_pb_shortcodes_tags = ET_PageBuilder_App.getShortCodeChildTags();
+						var reg_exp = window.wp.shortcode.regexp( et_pb_shortcodes_tags );
+						var matches = current_model.attributes.et_pb_content.match( reg_exp );
 						start_from += null !== matches ? matches.length : 0;
 					}
 
@@ -7561,6 +9394,43 @@ window.et_builder_version = '2.7.10';
 
 				// increment the module order for current module_type
 				this.order_modules_array[ module_type ] = module_order + 1;
+			},
+
+			setModuleAddresses: function( cid, index, parent_address ) {
+				var module   = ET_PageBuilder_Modules.findWhere( { cid : cid } );
+				var children = ET_PageBuilder_Modules.where( { parent : cid } );
+
+				if ( _.isUndefined( module ) ) {
+					return;
+				}
+
+				var module_type     = _.isUndefined( module.attributes.module_type ) ? module.attributes.type : module.attributes.module_type;
+				var current_address = module.get( '_address' );
+				var new_address     = 'section' === module_type ? index.toString() : parent_address + '.' + index.toString();
+				var path            = _.isUndefined( current_address ) ? false : 'et_pb_module_settings_migrations.value_changes.' + current_address;
+				var has_migrations  = path ? has( et_pb_options, path ) : false;
+				var has_name_changes_migration = has( et_pb_options, 'et_pb_module_settings_migrations.name_changes' ) && ! _.isUndefined( et_pb_options.et_pb_module_settings_migrations.name_changes[current_address] );
+
+				if ( new_address !== current_address ) {
+					// Update module settings migration data
+					if ( has_migrations ) {
+						et_pb_options.et_pb_module_settings_migrations.value_changes[new_address] = _.clone( et_pb_options.et_pb_module_settings_migrations.value_changes[current_address] );
+						delete et_pb_options.et_pb_module_settings_migrations.value_changes[current_address];
+					}
+
+					if ( has_name_changes_migration ) {
+						et_pb_options.et_pb_module_settings_migrations.name_changes[new_address] = _.clone( et_pb_options.et_pb_module_settings_migrations.name_changes[current_address] );
+						delete et_pb_options.et_pb_module_settings_migrations.name_changes[current_address];
+					}
+				}
+
+				module.set( { _address: new_address } );
+
+				if ( ! _.isUndefined( children ) && children.length > 0 ) {
+					_.forEach( children, function( child_module, child_index ) {
+						ET_PageBuilder_App.setModuleAddresses( child_module.attributes.cid, child_index, new_address );
+					} );
+				}
 			},
 
 			updateAdvancedModulesOrder: function( $this_el ) {
@@ -7594,6 +9464,728 @@ window.et_builder_version = '2.7.10';
 			}
 		} );
 
+		ET_PageBuilder.Controls = {};
+		ET_PageBuilder.Controls.BorderRadiusControl = function (container) {
+
+			this.initialize(container);
+
+		};
+
+		$.extend(ET_PageBuilder.Controls.BorderRadiusControl.prototype, {
+
+			initialize: function(container) {
+				this._container = container;
+				this._setting_field = container.siblings('.et-pb-main-setting');
+
+				if (!this._setting_field.length) {
+					return false;
+				}
+
+				this._link_button = container.find('.et-pb-border-radius-wrap-link-button > a');
+				this._radius_fields = container.find('.et-pb-border-radius-option-input');
+				this._radius_preview = container.find('.et-pb-border-radius-preview');
+				this._defalut_value = _.isUndefined(this._setting_field.data('default_inherited')) ? this._setting_field.data('default') : this._setting_field.data('default_inherited');
+
+				var setting_value = this._setting_field.val();
+				if (_.isEmpty(setting_value)) {
+					setting_value = this._defalut_value;
+					this._setting_field.val(this._defalut_value);
+					var setting = this._setting_field;
+					setTimeout(function() {
+						setting.trigger('et_pb_setting:change');
+					}, 100);
+				}
+
+				var combined_value = setting_value;
+				this._values = this._splitValue(combined_value);
+				this._lastValue = '';
+
+				this._setting_field.change(this._onSettingChange.bind(this));
+				this._radius_fields.change(this._onFieldChange.bind(this));
+				this._link_button.click(this._onClickLink.bind(this));
+
+				this._render();
+			},
+
+			_onClickLink: function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				var currentLinkState = this._getSettingValue('border-link');
+				//if the user clicks on the link icon in the middle, all values will become the last modified value
+				if (!currentLinkState) {
+					//if that is not traceable, change all four the to the upper left corner value
+					if (this._lastValue === '') {
+						this._lastValue = this._getSettingValue('top-left');
+					}
+					var spreadValues = this._spreadValue(this._lastValue);
+					this._onChange(this._combineValues(spreadValues));
+				} else {
+					var currentValues = this._getValues();
+					currentValues['border-link'] = false;
+					this._onChange(this._combineValues(currentValues));
+				}
+			},
+
+			_onSettingChange: function(e) {
+				var combinedValue = !_.isUndefined(e.target.value) && e.target.value !== '' ? e.target.value : this._getDefaultValue();
+				this._values = this._splitValue(combinedValue);
+				this._render();
+			},
+
+
+			_onChange: function(value) {
+				var combinedValue = _.isUndefined(value) ? this._getDefaultValue() : value;
+				$(this._setting_field).val(combinedValue);
+				this._values = this._splitValue(combinedValue);
+				$(this._setting_field).trigger('et_pb_setting:change');
+				this._render();
+			},
+
+			_isOn: function(value) {
+				return value === 'on';
+			},
+
+			_isLinkedMode: function() {
+				return this._getSettingValue('border-link');
+			},
+
+			_spreadValue: function(value) {
+				return {
+					'border-link': true,
+					'top-left': value,
+					'top-right': value,
+					'bottom-right': value,
+					'bottom-left': value
+				};
+			},
+
+			_onFieldChange: function(e) {
+				var sanitizedValue = et_pb_sanitize_input_unit_value(e.target.value, false);
+				this._lastValue = sanitizedValue;
+
+				var values;
+				if (this._isLinkedMode()) {
+					values = this._spreadValue(sanitizedValue);
+				} else {
+					var corner = e.target.getAttribute('data-corner');;
+					values = this._getValues();
+					values[corner] = sanitizedValue;
+				}
+
+				this._onChange(this._combineValues(values));
+			},
+
+			_getDefaultValue: function() {
+				return !_.isUndefined(this._defalut_value) &&
+				(this._defalut_value !== '') ? this._setting_field.val() : 'on||||';
+			},
+
+			_getValues: function() {
+				return this._values;
+			},
+
+			_getSettingValue: function(valueName) {
+				var values = this._getValues();
+
+				return values[valueName];
+			},
+
+			_splitValue: function(combinedValue) {
+				var values = combinedValue.split('|');
+
+				return {
+					'border-link': !_.isUndefined(values[0]) ? this._isOn(values[0]) : true,
+					'top-left': !_.isUndefined(values[1]) && values[1] !== '' ? values[1] : '0px',
+					'top-right': !_.isUndefined(values[2]) && values[2] !== '' ? values[2] : '0px',
+					'bottom-right': !_.isUndefined(values[3]) && values[3] !== '' ? values[3] : '0px',
+					'bottom-left': !_.isUndefined(values[4]) && values[4] !== '' ? values[4] : '0px'
+				};
+			},
+
+			_combineValues: function(values) {
+				return (values['border-link'] ? 'on' : '') + '|' + values['top-left'] + '|' +
+					values['top-right'] + '|' + values['bottom-right'] + '|' + values['bottom-left'];
+			},
+
+			_render: function() {
+				//render fields
+				_.each(this._radius_fields, function(field) {
+					$(field).val(this._getSettingValue($(field).data('corner')));
+				}, this);
+
+				//render link button
+				$(this._link_button).toggleClass('active', this._getSettingValue('border-link'));
+
+				//render preview area
+				$(this._radius_preview).css('border-top-left-radius', this._getSettingValue('top-left'));
+				$(this._radius_preview).css('border-top-right-radius', this._getSettingValue('top-right'));
+				$(this._radius_preview).css('border-bottom-right-radius', this._getSettingValue('bottom-right'));
+				$(this._radius_preview).css('border-bottom-left-radius', this._getSettingValue('bottom-left'));
+			},
+		});
+
+		ET_PageBuilder.Controls.BorderRadius = function (container) {
+			var tabbed_controls = container.find('.et-pb-border-radius-wrap');
+			if (tabbed_controls.length) {
+				tabbed_controls.each(function() {
+					new ET_PageBuilder.Controls.BorderRadiusControl($(this));
+				});
+			}
+		};
+
+
+		ET_PageBuilder.Controls.TabbedControl = function (container) {
+
+			this.initialize(container);
+
+		};
+
+		$.extend(ET_PageBuilder.Controls.TabbedControl.prototype, {
+			_getByPath: function(object, path) {
+				return _.reduce(path.split('.'), function(prevObj, currObj) {
+					return prevObj ? prevObj[currObj] : undefined
+				}, object);
+			},
+
+			initialize: function(container) {
+				var _tabs = container.find('.et-pb-settings-tab');
+				var _content_divs = container.find('.et-pb-settings-tab-content');
+
+				if (!_tabs.length || !_content_divs.length) {
+					return false;
+				}
+
+				var thisClass = this;
+				this._$container = container;
+				this._suffix = container.data('attr-suffix');
+				this._tabs = {};
+				this._tab_content = {};
+				this._first_tab = null;
+				this._active_tab = null;
+				this._tab_settings_map = null;
+				this._outside_preview = container.find('.et-pb-outside-preview-container');
+				this._reset_button = container.closest('.et-pb-composite-tabbed-wrapper').siblings('.et-pb-composite-tabbed-reset-setting');
+				this._is_child_settings_container = container.parents('.et_pb_modal_settings_container').hasClass('et_pb_modal_settings_container_step2');
+
+				_tabs.each(function() {
+					var tab = $(this).find('.et-pb-settings-tab-title');
+					thisClass._tabs[$(tab).data('tab')] = tab;
+					if (tab.length) {
+						tab.click(thisClass._onClickTab.bind(thisClass));
+					}
+				});
+
+				_content_divs.each(function(index, element) {
+					var tabIndex = $(element).data('tab')
+					thisClass._tab_content[tabIndex] = {
+						'content' : this,
+						'preview-area': $(element).find('.et-pb-tab-preview-container'),
+					};
+					if (index === 0) {
+						thisClass._first_tab  = tabIndex;
+						thisClass._active_tab = tabIndex;
+					}
+				});
+
+				//wait until control reset icon will be initialized
+				//it has 50ms delay at first control initialization
+				setTimeout(function() {
+					thisClass._buildTabSettingsMap();
+					$(_content_divs).on('et_pb_setting:change et_pb_setting:color_picker:change', thisClass._onChangeHandler.bind(thisClass));
+					$(_content_divs).on('change', 'select', thisClass._onChangeHandler.bind(thisClass));
+					$(thisClass._reset_button).on('click', thisClass._onClickReset.bind(thisClass));
+
+					thisClass._render();
+				}, 100);
+			},
+
+			_buildTabSettingsMap: function() {
+				var result = {};
+				_.map(this._tab_content, function(tab, tabIndex) {
+					result[tabIndex] = {};
+					var isTabSettingModified = false;
+					$(tab['content']).find('.et-pb-main-setting').each(function(index, element) {
+						var defaultValue = et_pb_get_default_setting_value($(element));
+						var controlIndex = $(element).parents('.et-pb-composite-tabbed-option').data('control-index');
+						result[tabIndex][controlIndex] = {};
+						result[tabIndex][controlIndex]['default'] = defaultValue;
+						result[tabIndex][controlIndex]['value'] = ET_PageBuilder.Helpers.getSettingValue($(element));
+						isTabSettingModified = isTabSettingModified || !et_pb_is_setting_value_default($(element));
+					});
+
+					// Divider's composite tab modified status completely relied on *_style
+					// attribute value instead of entire tab inputs
+					if ( _.contains( [ 'top_divider', 'bottom_divider' ], tabIndex ) ) {
+						result[tabIndex]['modified'] = result[ tabIndex ][ tabIndex + '_style']['value'] !== result[ tabIndex ][ tabIndex + '_style']['default'];
+					} else {
+						result[tabIndex]['modified'] = isTabSettingModified;
+					}
+				});
+				this._tab_settings_map = result;
+			},
+
+			_isAnySettingModified: function() {
+				var result = false;
+				_.map(this._tab_settings_map, function(tab) {
+					if (this._getByPath(tab, 'modified')) {
+						result = true;
+					}
+				}, this);
+
+				return result;
+			},
+
+			_onChangeHandler: function(e) {
+				//Workaround for handling color picker changes
+				setTimeout(this._onSettingChange.bind(this), 100);
+			},
+
+			_onSettingChange: function() {
+				this._buildTabSettingsMap();
+				this._render();
+			},
+
+			_onClickTab: function(e) {
+				e.preventDefault();
+				var tab = e.target.getAttribute('data-tab');
+				this._makeTabActive(tab);
+				this._render();
+			},
+
+			_onClickReset: function() {
+				var that = this;
+				_.map(this._tab_settings_map, function(tab) {
+					_.map(tab, function(value, setting) {
+						$control = that._$container.find('[data-control-index="' + setting + '"]');
+						$control.find('.et-pb-reset-setting').trigger('click');
+					}, this);
+				});
+				this._active_tab  = this._first_tab;
+			},
+
+			_makeTabActive: function(tab) {
+				this._active_tab = tab;
+			},
+
+			_showTab: function(tab) {
+				$(this._tabs[tab]).closest('.et-pb-settings-tab').addClass('active');
+				$(this._tab_content[tab]['content']).show();
+			},
+
+			_hideTab: function(tab) {
+				$(this._tabs[tab]).closest('.et-pb-settings-tab').removeClass('active');
+				$(this._tab_content[tab]['content']).hide();
+			},
+
+			_renderOutsidePreviewArea: function(previewContainer) {
+				return false;
+			},
+
+			_renderTabPreviewArea: function(tab, previewContainer) {
+				return false;
+			},
+
+			_render: function() {
+				this._renderOutsidePreviewArea(this._outside_preview);
+				this._renderTabPreviewArea(this._active_tab, this._tab_content[this._active_tab]['preview-area']);
+				_.map(this._tabs, function (tab, tabIndex) {
+					if (tabIndex === this._active_tab) {
+						this._showTab(tabIndex);
+					} else {
+						this._hideTab(tabIndex);
+					}
+
+					if (this._tab_settings_map[tabIndex]['modified']) {
+						$(this._tabs[tabIndex]).closest('.et-pb-settings-tab').addClass('modified');
+					} else {
+						$(this._tabs[tabIndex]).closest('.et-pb-settings-tab').removeClass('modified');
+					}
+				}, this);
+				if (this._isAnySettingModified()) {
+					$(this._reset_button).addClass('et-pb-reset-icon-visible');
+				} else {
+					$(this._reset_button).removeClass('et-pb-reset-icon-visible');
+				}
+			},
+		});
+
+		ET_PageBuilder.Controls.Tabbed = function (container) {
+			var tabbed_controls = container.find('.et-pb-composite-tabbed');
+			if (tabbed_controls.length) {
+				tabbed_controls.each(function() {
+					new ET_PageBuilder.Controls.TabbedControl($(this));
+				});
+			}
+		};
+
+		ET_PageBuilder.Controls.BorderStylesControl = function (container) {
+
+			this._setting_values = null;
+			this._had_previously_resetted = false;
+			this.initialize(container);
+
+		};
+
+		$.extend(ET_PageBuilder.Controls.BorderStylesControl.prototype, ET_PageBuilder.Controls.TabbedControl.prototype, {
+			_processWidth: function(value) {
+				var width = parseInt(value);
+				if (width > 50) {
+					width = 50;
+				}
+				return et_pb_sanitize_input_unit_value(width.toString(), false, 'px');
+			},
+
+			_setControlInitials: function($element) {
+			  var that = this;
+				var controlIndex = $element.parents('.et-pb-composite-tabbed-option').data('control-index');
+				this._setting_values[controlIndex] = {};
+
+				var saved_value = $element.data('saved_value');
+				var defaultKey = et_pb_get_default_key($element);
+				var value = '';
+				var defaultValue = '';
+				var parentDefault = '';
+
+				if ($element.hasClass('et-pb-range')) {
+					var $range_input = $element.siblings('.et-pb-range-input');
+
+					defaultValue = $range_input.data(defaultKey);
+					parentDefault = $range_input.data('default_inherited');
+					value = $range_input.val();
+
+					//assign special flag for checking 'default' data attribute instead of backbone
+					//model defaults array while saving child setting
+					$range_input.data('check_attr_default', 'yes');
+				} else {
+					value = $element.val();
+					defaultValue = $element.data(defaultKey);
+					parentDefault = $element.data('default_inherited');
+
+					//assign special flag for checking 'default' data attribute instead of backbone
+					//model defaults array while saving child setting
+					$element.data('check_attr_default', 'yes');
+				}
+
+				var defaultForComparison = _.isUndefined(defaultValue) ? '' : defaultValue;
+				var valueForComparison = '';
+				if (_.isUndefined(saved_value)) {
+					valueForComparison = value;
+				} else {
+					if (_.isEmpty(saved_value)) {
+						if (value === defaultValue) {
+							valueForComparison = defaultValue;
+						} else {
+							valueForComparison = '';
+						}
+					} else {
+						valueForComparison = saved_value;
+					}
+				}
+
+				var isSettingModified = valueForComparison !== defaultForComparison;
+				if (!_.isEmpty(parentDefault)) {//for child setting
+					if (_.isEmpty(valueForComparison) || valueForComparison === parentDefault) {
+						isSettingModified = false;
+					}
+				}
+
+				//if child setting and the setting is modified in parent we should adjust control according to the setting value
+				if (!_.isEmpty(parentDefault) && defaultValue !== parentDefault && !isSettingModified) {
+					that._updateControl($element, defaultValue, false);
+				}
+
+				//saved setting value
+				this._setting_values[controlIndex]['saved_value'] = isSettingModified ? valueForComparison : '';
+
+				//default value
+				this._setting_values[controlIndex]['default_value'] = defaultValue;
+
+				//default from parent
+				this._setting_values[controlIndex]['default_inherited'] = parentDefault;
+
+				//control itself
+				this._setting_values[controlIndex]['control'] = $element;
+
+				//get control edge
+				var lastUnderscoreIndex = controlIndex.replace(this._suffix, '').lastIndexOf('_');
+				var edge = controlIndex.substr(lastUnderscoreIndex).replace(this._suffix, '');
+
+				//related tab
+				this._setting_values[controlIndex]['tab'] = 'border' + edge;
+
+				var modified = this._tab_settings_map['border' + edge]['modified'];
+				this._tab_settings_map['border' + edge]['modified'] = modified || isSettingModified;
+
+			},
+
+			_recalculateEdgeSettings: function(controlIndex) {
+				if (controlIndex.indexOf('all') === -1) {//control not from All tab so nothing to change
+					return;
+				}
+
+				//get setting type
+				var lastUnderscoreIndex = controlIndex.replace(this._suffix, '').lastIndexOf('_');
+				var settingType = controlIndex.substr(0, lastUnderscoreIndex);//one of border_color, border_width, border_style
+				var that = this;
+
+				_.map(this._setting_values, function(values, setting) {
+					if (setting.indexOf(settingType) !== -1 && setting.indexOf('all') === -1) {//setting related to edge tab
+						var $element = values['control'];
+						var allTabValue = _.isEmpty(that._setting_values[controlIndex]['saved_value']) ?
+							that._setting_values[controlIndex]['default_value'] : that._setting_values[controlIndex]['saved_value'];
+
+						if (_.isEmpty(values['default_inherited'])) {//update logic for parent settings
+							values['default_value'] = allTabValue;
+							if (_.isEmpty(values['saved_value'])) {//edge setting is not modified
+								that._updateControl($element, allTabValue, allTabValue);//update value and control default
+							} else {
+								that._updateControl($element, false, allTabValue);//update only control default
+							}
+						} else {//update logic for child settings
+							//implementing the same behavior as within VB
+							allTabValue = that._setting_values[controlIndex]['saved_value'];
+							var allTabDefault = that._setting_values[controlIndex]['default_value'];
+							if (_.isEmpty(values['saved_value'])) {//edge setting is not modified
+								if (!_.isEmpty(allTabValue)) {//rewrite child edge setting only if All tab setting is modified
+									//save edge default to be able to restore setting value in case of All tab setting will be not modified
+									if (_.isEmpty(values['saved_default'])) {
+										values['saved_default'] = values['default_value'];
+									}
+									values['default_value'] = allTabValue;
+									that._updateControl($element, allTabValue, allTabValue);//update value and control default
+								} else {
+									if (!_.isEmpty(values['saved_default'])) {//restore child setting value from previously saved default
+										var previousDefault = values['saved_default'];
+										values['default_value'] = previousDefault;
+										that._updateControl($element, previousDefault, previousDefault);
+										values['saved_default'] = '';
+									} else {
+										if (values['default_value'] === values['default_inherited']) {
+											values['default_value'] = allTabDefault;
+											that._updateControl($element, allTabDefault, allTabDefault);
+										} else {
+											that._updateControl($element, values['default_value'], false);
+										}
+									}
+								}
+							} else {//edge setting is modified so assign default from All tab
+								var defaultValue = _.isEmpty(allTabValue) ? allTabDefault : allTabValue;
+								values['default_value'] = defaultValue;
+								that._updateControl($element, values['saved_value'], defaultValue);
+							}
+						}
+					}
+				});
+			},
+
+			_onSettingChange: function($element, controlIndex, resetFlag) {
+				var value = resetFlag ? '' : ET_PageBuilder.Helpers.getSettingValue($element);
+				this._updateSetting(controlIndex, value);
+				this._recalculateEdgeSettings(controlIndex);
+			},
+
+			_onChangeHandler: function(e, param) {
+				//if change event fired after change value according all tab then skip it
+				if (!_.isUndefined(param) && param === 'et_pb_from_all_tab') {
+					return;
+				}
+
+				var $element = $(e.target);
+				var controlIndex = $element.parents('.et-pb-composite-tabbed-option').data('control-index');
+				var resetFlag = !_.isUndefined(param) && param === 'et_pb_reset_setting';
+
+				//avoid double setting change after reset
+				if (this._had_previously_resetted) {
+					this._had_previously_resetted = false;
+					return;
+				}
+
+				if (resetFlag) {
+					this._had_previously_resetted = true;
+				}
+
+				//otherwise handle control updates
+				if (e.type === 'et_pb_setting:color_picker:change') {//handle color picker changes in different way
+					this._updateSetting(controlIndex, param);
+					this._recalculateEdgeSettings(controlIndex);
+				} else if (controlIndex.indexOf('color') === -1) {
+					this._onSettingChange($element, controlIndex, resetFlag);
+				}
+				this._render();
+			},
+
+			_updateSetting: function(controlIndex, value) {
+				var that = this;
+				var setting = this._setting_values[controlIndex];
+				var isSettingModified = value !== setting['default_value'];
+				setting['saved_value'] = !isSettingModified ? '' : value;
+
+				var tab = setting['tab'];
+				var isTabModified = false;
+				_.map(this._tab_settings_map[tab], function(control, controlIndex) {
+					if (controlIndex !== 'modified') {
+						var settingValue = that._setting_values[controlIndex]['saved_value'];
+						var defaultValue = that._setting_values[controlIndex]['default_value'];
+						isSettingModified = !_.isEmpty(settingValue) && (settingValue !== defaultValue);
+						isTabModified = isTabModified || isSettingModified;
+					}
+				});
+				this._tab_settings_map[tab]['modified'] = isTabModified;
+			},
+
+			_updateControl: function($element, value, defaultValue) {
+				var defaultKey = et_pb_get_default_key($element);
+				var isRange = $element.hasClass( 'et-pb-range' );
+				var rangeInput = null;
+
+				if (isRange) {
+					rangeInput = $element.siblings( '.et-pb-range-input' );
+				}
+
+				if (defaultValue) {
+					if (isRange) {
+						rangeInput.data(defaultKey, defaultValue);
+						$element.data(defaultKey, parseFloat(defaultValue) || 0);
+					} else {
+						$element.data(defaultKey, defaultValue);
+					}
+				}
+
+				if (value) {
+					if (isRange) {
+						$element.val(parseFloat(value) || 0);
+						$element = rangeInput;
+					}
+
+					$element.val(value).trigger('change', ['et_pb_from_all_tab']);
+				}
+			},
+
+			_resetAllTab: function() {
+				var that = this;
+
+				_.map(this._setting_values, function(values, setting) {
+					if (setting.indexOf('all') !== -1) {//setting related to All tab
+						values['saved_value'] = '';
+						that._updateControl(values['control'], values['default_value'], false);
+						that._recalculateEdgeSettings(setting);
+					}
+				});
+			},
+
+			_resetEdgeTabs: function() {
+				var that = this;
+
+				_.map(this._setting_values, function(values, setting) {
+					if (setting.indexOf('all') === -1) {//setting related to edge tab
+						//handle parent and child setting defaults in different way
+						if (_.isEmpty(values['default_inherited'])) {//parent setting
+							values['default_value'] = '';
+						} else {//child setting
+							if (!_.isEmpty(values['saved_default'])) {//restore child setting value from previously saved default
+								values['default_value'] = values['saved_default'];
+								values['saved_default'] = '';
+							}
+						}
+						values['saved_value'] = '';
+					}
+				});
+			},
+
+			_onClickReset: function() {
+				if (this._is_child_settings_container) {
+					this._resetAllTab();
+					this._resetEdgeTabs();
+				} else {
+					this._resetEdgeTabs();
+					this._resetAllTab();
+				}
+
+				this._active_tab  = this._first_tab;
+				this._render();
+			},
+
+			_buildTabSettingsMap: function() {
+				var that = this;
+
+				var result = {};
+				_.map(this._tab_content, function(tab, tabIndex) {
+					result[tabIndex] = {};
+					$(tab['content']).find('.et-pb-main-setting').each(function(index, element) {
+						var controlIndex = $(element).parents('.et-pb-composite-tabbed-option').data('control-index');
+						result[tabIndex][controlIndex] = {};
+					});
+					result[tabIndex]['modified'] = false;
+				});
+				this._tab_settings_map = result;
+
+				//on first run walk through all settings and initialize _setting_values
+				if (this._setting_values === null) {
+					this._setting_values = {};
+					//run through edge tabs first
+					_.map(this._tab_content, function(tab, tabIndex) {
+						if (tabIndex !== 'border_all') {
+							$(tab['content']).find('.et-pb-main-setting').each(function(index, element) {
+								that._setControlInitials($(element));
+								});
+						}
+					});
+
+					//then through all edge tab
+					$(this._tab_content['border_all']['content']).find('.et-pb-main-setting').each(function(index, element) {
+						that._setControlInitials($(element));
+
+						var controlIndex = $(element).parents('.et-pb-composite-tabbed-option').data('control-index');
+						that._recalculateEdgeSettings(controlIndex);
+					});
+				}
+			},
+
+			_renderTabPreviewArea: function(tab, previewContainer) {
+				var borderEdges = [
+					'top',
+					'right',
+					'bottom',
+					'left'
+				];
+
+				var properties = [
+					'width',
+					'style',
+					'color'
+				];
+
+				var previewBorderStyles = {};
+				_.forEach(borderEdges, function(edge) {
+					var edgeCSS = '';
+					_.forEach(properties, function(property) {
+						var path = 'border_' + property + '_' + edge + this._suffix;
+						var value = _.isEmpty(this._setting_values[path]['saved_value']) ?
+							this._setting_values[path]['default_value'] : this._setting_values[path]['saved_value'];
+						if (property == 'width') {
+							value = this._processWidth(value);
+						}
+						edgeCSS += ' ' + value;
+					}, this);
+					previewBorderStyles['border-' + edge] = edgeCSS;
+				}, this);
+
+				_.map(previewBorderStyles, function(value, property){
+					previewContainer.find('.et-pb-tab-preview-container-preview').css(property, value);
+				}, this);
+			},
+		});
+
+		ET_PageBuilder.Controls.BorderStyles = function (container) {
+			var tabbed_controls = container.find('.et-pb-composite-tabbed-border-style');
+			if (tabbed_controls.length) {
+				tabbed_controls.each(function() {
+					new ET_PageBuilder.Controls.BorderStylesControl($(this));
+				});
+			}
+		};
+
 		// Close and remove right click options
 		function et_pb_close_all_right_click_options() {
 			// Remove right click options UI
@@ -7609,13 +10201,17 @@ window.et_builder_version = '2.7.10';
 			et_pb_close_all_right_click_options();
 		});
 
+		function et_pb_is_builder_used() {
+			return $('#et_pb_use_builder').val() === 'on';
+		}
+
 		function et_pb_activate_upload( $upload_button ) {
 			$upload_button.click( function( event ) {
 				var $this_el = $(this);
 
 				event.preventDefault();
 
-				et_pb_file_frame = wp.media.frames.et_pb_file_frame = wp.media({
+				et_pb_file_frame = wp.media.frames.et_pb_file_frame = new wp.media.view.MediaFrame.ETSelect({
 					title: $this_el.data( 'choose' ),
 					library: {
 						type: $this_el.data( 'type' )
@@ -7627,30 +10223,45 @@ window.et_builder_version = '2.7.10';
 				});
 
 				et_pb_file_frame.on( 'select', function() {
-					var attachment = et_pb_file_frame.state().get('selection').first().toJSON();
+					var url = et_pb_file_frame.state().props.get('url');
+					var $upload_field = $this_el.siblings( '.et-pb-upload-field' );
 
-					$this_el.siblings( '.et-pb-upload-field' ).val( attachment.url );
+					$upload_field.val( url );
+					$upload_field.trigger( 'change' );
 
-					et_pb_generate_preview_image( $this_el );
+					et_pb_generate_preview_content( $this_el );
+				});
+
+				et_pb_file_frame.on( 'insert', function() {
+					var selectedMediaItem = et_pb_file_frame.state().get('selection').models[0];
+
+					if ( ! _.isUndefined( selectedMediaItem ) ) {
+						var $upload_field = $this_el.siblings( '.et-pb-upload-field' );
+
+						$upload_field.val( selectedMediaItem.get('url') );
+						$upload_field.trigger( 'change' );
+
+						et_pb_generate_preview_content( $this_el );
+					}
 				});
 
 				et_pb_file_frame.open();
 			} );
 
 			$upload_button.siblings( '.et-pb-upload-field' ).on( 'input', function() {
-				et_pb_generate_preview_image( $(this).siblings( '.et-pb-upload-button' ) );
+				et_pb_generate_preview_content( $(this).siblings( '.et-pb-upload-button' ) );
 			} );
 
 			$upload_button.siblings( '.et-pb-upload-field' ).each( function() {
-				et_pb_generate_preview_image( $(this).siblings( '.et-pb-upload-button' ) );
+				et_pb_generate_preview_content( $(this).siblings( '.et-pb-upload-button' ) );
 			} );
 		}
 
 		function et_pb_activate_gallery( $gallery_button ) {
 			$gallery_button.click( function( event ) {
-				var $this_el = $(this)
-					$gallery_ids = $gallery_button.closest( '.et-pb-option' ).siblings( '.et-pb-option-gallery_ids' ).find( '.et-pb-gallery-ids-field' ),
-					$gallery_orderby = $gallery_button.closest( '.et-pb-option' ).siblings( '.et-pb-option-gallery_orderby' ).find( '.et-pb-gallery-ids-field' );
+				var $this_el = $(this),
+					$gallery_ids = $gallery_button.next( '.et-pb-gallery' ),
+					$gallery_orderby = $gallery_button.closest( '.et-pb-options-tab' ).find( '.et-pb-option-gallery_orderby .et-pb-gallery-ids-field' );
 
 				event.preventDefault();
 
@@ -7707,6 +10318,318 @@ window.et_builder_version = '2.7.10';
 			});
 		}
 
+		function et_pb_email_lists_select_get_provider( $select ) {
+			return $select
+				.siblings( 'input' )
+				.attr( 'id' )
+				.replace( 'et_pb_', '' )
+				.replace( '_list', '' );
+		}
+
+		function et_pb_email_lists_add_new_account( $accounts_select, settingsView ) {
+			var provider      = et_pb_email_lists_select_get_provider( $accounts_select );
+			var $container    = $accounts_select.closest( '.et-pb-option--select_with_option_groups' );
+			var $api_fields   = $container.parent().find('[class*="et_pb_email_' + provider + '"]:visible');
+			var data          = {};
+			var nonce_key     = 'et_builder_email_add_account_nonce';
+
+			$api_fields.each( function() {
+				var key = $(this).attr( 'id' ).replace( 'pb_', '' );
+
+				if ( endsWith( key, '_list' ) ) {
+					return;
+				}
+
+				data[key] = $(this).val();
+			} );
+
+			function complete( data ) {
+				$accounts_select
+					.val( $accounts_select.data( 'previous_value' ) )
+					.trigger( 'change' );
+
+				$api_fields.val( '' );
+
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+				if ( 'error' in data && data.error ) {
+					alert( data.message );
+				}
+			}
+
+			data.action      = 'et_builder_email_add_account';
+			data[nonce_key]  = et_pb_options.et_builder_email_add_account_nonce;
+			data.et_bb       = true;
+			data.et_provider = provider;
+
+			$.ajax({
+				type: 'POST',
+				url: et_pb_options.ajaxurl,
+				data: data
+			}).done( function( data, status, response ) {
+				data = JSON.parse( data );
+
+				$accounts_select.html( _.template( data.accounts_list ).bind( settingsView )( settingsView.model.attributes ) );
+				complete( data );
+
+			}).fail( complete );
+		}
+
+		function et_pb_email_fetch_lists( $accounts_select, $button, settingsView ) {
+			var provider     = et_pb_email_lists_select_get_provider( $accounts_select );
+			var account_name = $accounts_select.data( 'selected_account' );
+
+			function complete( data ) {
+				$accounts_select
+					.val( $accounts_select.data( 'previous_value' ) )
+					.trigger( 'change' );
+
+				$button.removeClass( 'fetch_lists_in_progress' );
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+				if ( 'error' in data && data.error ) {
+					alert( data.message );
+				}
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: et_pb_options.ajaxurl,
+				data: {
+					action: 'et_builder_email_get_lists',
+					et_builder_email_fetch_lists_nonce: et_pb_options.et_builder_email_fetch_lists_nonce,
+					et_provider: provider,
+					et_account: account_name,
+					et_bb: true
+				}
+
+			}).done( function( data, status, response ) {
+				data = JSON.parse( data );
+
+				$accounts_select.html( _.template( data.accounts_list ).bind( settingsView )( settingsView.model.attributes ) );
+				complete( data );
+
+			}).fail( complete );
+		}
+
+		function et_pb_email_remove_account( $accounts_select, settingsView ) {
+			var provider     = et_pb_email_lists_select_get_provider( $accounts_select );
+			var account_name = $accounts_select.data( 'selected_account' );
+
+			function complete( data ) {
+				$accounts_select
+					.val( 'none' )
+					.trigger( 'change' );
+
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+				if ( 'error' in data && data.error ) {
+					alert( data.message );
+				}
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: et_pb_options.ajaxurl,
+				data: {
+					action: 'et_builder_email_remove_account',
+					et_builder_email_remove_account_nonce: et_pb_options.et_builder_email_remove_account_nonce,
+					et_provider: provider,
+					et_account: account_name,
+					et_bb: true
+				}
+
+			}).done( function( data, status, response ) {
+				data = JSON.parse( data );
+
+				$accounts_select.html( _.template( data.accounts_list ).bind( settingsView )( settingsView.model.attributes ) );
+				complete( data );
+
+			}).fail( complete );
+		}
+
+		function et_pb_email_setup_submit_cancel_buttons( $buttons, $accounts_select, settingsView ) {
+			$buttons.on( 'click', function() {
+				if ( $(this).hasClass( 'et_pb_email_submit' ) ) {
+					// Submit button
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+					et_pb_email_lists_add_new_account( $accounts_select, settingsView );
+				} else {
+					// Cancel button
+					$accounts_select
+						.val( $accounts_select.data( 'previous_value' ) )
+						.trigger( 'change' );
+				}
+			});
+
+			$buttons.appendTo( $buttons.parent() );
+		}
+
+		function et_pb_email_lists_buttons_setup( $add_account_buttons, settingsView ) {
+			var dependencies = window.et_pb_module_field_dependencies.et_pb_signup;
+
+			$add_account_buttons.each( function() {
+				var $add_account_button    = $(this);
+				var $accounts_select       = $add_account_button.siblings( 'select' );
+				var $fetch_lists_button    = $add_account_button.siblings( '.et_pb_email_force_fetch_lists' );
+				var $remove_account_button = $add_account_button.siblings( '.et_pb_email_remove_account' );
+				var $value_field           = $(this).siblings( 'input' );
+				var field_name             = $value_field.closest( '.et-pb-option' ).data( 'option_name' );
+				var affects                = _.keys( dependencies[field_name].affects );
+				var $affects;
+
+				affects  = _.map( affects, function( affect ) { return '#et_pb_' + affect; } ).join( ', ' );
+				$affects = $(this).closest( '.et-pb-options-tab' ).find( affects );
+
+				$affects.one( 'et-pb-option-field-shown', function() {
+					var $buttons = $(this).siblings( 'button' );
+					et_pb_email_setup_submit_cancel_buttons( $buttons, $accounts_select, settingsView );
+				});
+
+				$fetch_lists_button.data( 'original_text', $fetch_lists_button.text() );
+				$remove_account_button.data( 'original_text', $remove_account_button.text() );
+
+				$accounts_select.on( 'change', function() {
+					var value = $(this).val();
+
+					if ( 'add_new_account' === value && ! $accounts_select.parent().hasClass( 'new_account_in_progress' ) ) {
+						$accounts_select.parent().addClass( 'new_account_in_progress' );
+
+						$('<span>')
+							.text( $accounts_select.data( 'adding_new_account_text' ) )
+							.insertAfter( $accounts_select )
+							.addClass( 'et_pb_email_account_message' );
+
+						$add_account_button
+							.hide()
+							.siblings()
+							.not( 'span' )
+							.hide();
+
+						if ( $accounts_select.siblings( '#et_pb_aweber_list' ).length > 0 ) {
+							window.open( 'https://auth.aweber.com/1.0/oauth/authorize_app/b17f3351' );
+						}
+
+					} else if ( 'fetch_lists' === value && ! $accounts_select.parent().hasClass( 'fetch_lists_in_progress' ) ) {
+						$accounts_select.parent().addClass( 'fetch_lists_in_progress' );
+						ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+						et_pb_email_fetch_lists( $accounts_select, $add_account_button, settingsView );
+
+					} else if ( 'remove_account' === value && ! $accounts_select.parent().hasClass( 'remove_account_in_progress' )) {
+						$accounts_select.parent().addClass( 'remove_account_in_progress' );
+
+						$add_account_button
+							.hide()
+							.siblings('p')
+							.hide();
+
+						$remove_account_button.text( $remove_account_button.data( 'confirm_text' ) );
+						$fetch_lists_button.text( $fetch_lists_button.data( 'cancel_text' ) );
+
+						var msg = $accounts_select.data( 'confirm_remove_text' ) + ' ' + $accounts_select.data( 'selected_account' );
+
+						$('<span>')
+							.text( msg )
+							.insertAfter( $accounts_select )
+							.addClass( 'et_pb_email_account_message' );
+
+						$accounts_select.hide();
+
+					} else {
+						$accounts_select.parent().removeClass( 'new_account_in_progress remove_account_in_progress fetch_lists_in_progress' );
+
+						var $modal_save_buttons = settingsView.$el.prev().find( '.et-pb-modal-save, .et-pb-modal-save-template' );
+						$modal_save_buttons.css( 'cursor', '' );
+
+						if ( 'none' === value ) {
+							$accounts_select.parent().addClass( 'no_account_selected' );
+						} else {
+							$accounts_select.parent().removeClass( 'no_account_selected' );
+						}
+
+						$add_account_button.show();
+
+						$remove_account_button.text( $remove_account_button.data( 'original_text' ) );
+
+						$fetch_lists_button.text( $fetch_lists_button.data( 'original_text' ) );
+
+						if ( ! value || 'none' === value ) {
+							$remove_account_button.hide();
+							$fetch_lists_button.hide();
+						} else {
+							$remove_account_button.show();
+							$fetch_lists_button.show();
+						}
+
+						$add_account_button.siblings('span').remove();
+						$add_account_button.siblings('p').show();
+
+						$accounts_select.show();
+					}
+				});
+
+				$add_account_button.click( function() {
+					var $modal_save_buttons = settingsView.$el.prev().find( '.et-pb-modal-save, .et-pb-modal-save-template' );
+					$modal_save_buttons.css( 'cursor', 'not-allowed' );
+
+					$accounts_select
+						.data( 'previous_value', $accounts_select.val() )
+						.val( 'add_new_account' )
+						.trigger( 'change' );
+				});
+
+				$fetch_lists_button.click( function() {
+					if ( $accounts_select.parent().hasClass( 'remove_account_in_progress' ) ) {
+						// Cancel button clicked
+						$accounts_select
+							.val( $accounts_select.data( 'previous_value' ) )
+							.trigger( 'change' );
+
+						return;
+					}
+
+					var account = $accounts_select
+						.find(':selected')
+						.parent()
+						.attr('label');
+
+					$accounts_select.data( 'selected_account', account );
+					$accounts_select
+						.data( 'previous_value', $accounts_select.val() )
+						.val( 'fetch_lists' )
+						.trigger( 'change' );
+				});
+
+				$remove_account_button.click( function() {
+					if ( $accounts_select.parent().hasClass( 'remove_account_in_progress' ) ) {
+						ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+						et_pb_email_remove_account( $accounts_select, settingsView );
+						return;
+					}
+
+					var account = $accounts_select
+						.find(':selected')
+						.parent()
+						.attr('label');
+
+					if ( ! account ) {
+						return;
+					}
+
+					$accounts_select.data( 'selected_account', account );
+
+					$accounts_select
+						.data( 'previous_value', $accounts_select.val() )
+						.val( 'remove_account' )
+						.trigger( 'change' );
+				});
+
+				setTimeout( function() {
+					$accounts_select.trigger( 'change' );
+				}, 200 );
+			});
+		}
+
 		function et_pb_generate_video_image( $video_image_button ) {
 			$video_image_button.click( function( event ) {
 				var $this_el = $(this),
@@ -7737,25 +10660,153 @@ window.et_builder_version = '2.7.10';
 			} );
 		}
 
-		function et_pb_generate_preview_image( $upload_button ){
+		function et_pb_generate_preview_content( $upload_button ){
+			if ( $upload_button.length < 1 ) {
+				return;
+			}
+
 			var $upload_field = $upload_button.siblings( '.et-pb-upload-field' ),
 				$preview = $upload_field.siblings( '.et-pb-upload-preview' ),
-				image_url = $upload_field.val().trim();
+				$background_preview = $upload_field.closest( '.et-pb-option' ).find( '.et-pb-option-preview' ),
+				has_preview = $background_preview.length,
+				image_url = $upload_field.val().trim(),
+				type = $upload_button.data( 'type' ),
+				module_type = $upload_button.closest( '.et_pb_module_settings' ).attr( 'data-module_type' ),
+				featured_image = $upload_button.closest('.et-pb-options-tabs').find('#et_pb_featured_image').val(),
+				featured_placement = $upload_button.closest('.et-pb-options-tabs').find('#et_pb_featured_placement').val(),
+				featured_image_src = $('#postimagediv img').attr('src'),
+				is_featured_image = _.contains( et_pb_options.et_builder_modules_featured_image_background, module_type ) && featured_image === 'on' && featured_placement === 'background',
+				base_name = $upload_field.closest( '.et-pb-option-container-inner' ).attr( 'data-base_name' ),
+				prefix = 'background' === base_name ? '' : base_name + '_';
 
-			if ( $upload_button.data( 'type' ) !== 'image' ) return;
+			// Overwrite image field by featured image in particular modules
+			if ( is_featured_image ) {
+				image_url = featured_image_src;
+				$background_preview.addClass( 'et-pb-featured-image-background' );
+			} else {
+				$background_preview.removeClass( 'et-pb-featured-image-background' );
+			}
+
+			if ( type !== 'image' && ! ( type === 'video' && has_preview ) ) return;
 
 			if ( image_url === '' ) {
-				if ( $preview.length ) $preview.remove();
+				if ( has_preview ) {
+					$background_preview.addClass( 'et-pb-option-preview--empty' ).find('.et-pb-preview-content').remove();
+
+					return;
+				} else if ( $preview.length ) {
+					$preview.remove();
+				}
 
 				return;
 			}
 
-			if ( ! $preview.length ) {
+			if ( has_preview ) {
+				$background_preview.find('.et-pb-preview-content').remove();
+
+				var $background_container = $upload_button.closest( '.et-pb-option-container--background' ),
+					$background_settings_fields = $background_container.find('input, select'),
+					column_index = $background_container.attr('data-column-index'),
+					background_images = [ 'url(' + image_url + ')' ],
+					gradient_backround = et_pb_get_gradient( $background_container.find( '.et_pb_background-tab--gradient' ), base_name ),
+					background_settings = {},
+					preview_content = '',
+					has_background_gradient = false,
+					has_background_image = false;
+
+				if ( gradient_backround ) {
+					has_background_gradient = true;
+					background_images.push( gradient_backround );
+				}
+
+				$background_settings_fields.each(function() {
+					if ( typeof $(this).attr('id') !== 'undefined' ) {
+						var name          = $(this).attr( 'id' ).replace( 'et_pb_', '' ),
+							value         = $(this).val(),
+							default_value = typeof $(this).attr( 'data-default' ) !== 'undefined' ? $(this).attr( 'data-default' ) : '',
+							has_value     = value !== '' && typeof value !== 'undefined';
+
+						// Column adjustment
+						if ( typeof column_index !== 'undefined' ) {
+							name = name.replace( '_' + column_index, '' );
+						}
+
+						background_settings[ name ] = has_value ? value : default_value;
+					}
+				});
+
+				if ( type === 'image' ) {
+					var is_parallax = background_settings[prefix + 'parallax'] === 'on',
+						imageStyle = {
+							position: 'absolute',
+							top: 0,
+							right: 0,
+							bottom: 0,
+							left: 0,
+						};
+
+					if ( is_parallax ) {
+						imageStyle.backgroundImage = 'url(' + image_url + ')';
+						imageStyle.backgroundRepeat = 'no-repeat';
+						imageStyle.backgroundSize = 'cover';
+						imageStyle.backgroundPosition = 'center';
+					} else {
+						if (typeof background_settings[base_name + '_position'] === 'undefined' ) {
+							background_settings[base_name + '_position'] = '';
+						}
+
+						if ( background_settings[base_name + '_color_gradient_overlays_image'] === 'on' ) {
+							background_images.reverse();
+						}
+
+						has_background_image = true;
+						imageStyle.backgroundImage = background_images.join(', ');
+						imageStyle.backgroundSize = background_settings[base_name + '_size'];
+						imageStyle.backgroundPosition = background_settings[base_name + '_position'].replace( '_', ' ' );
+						imageStyle.backgroundRepeat = background_settings[base_name + '_repeat'];
+						imageStyle.backgroundBlendMode = background_settings[base_name + '_blend'];
+
+						if ( has_background_gradient && has_background_image ) {
+							imageStyle.backgroundColor = 'initial';
+						} else {
+							imageStyle.backgroundColor = background_settings[base_name + '_color'];
+						}
+					}
+
+					preview_content = $('<div />', {
+						class: 'et-pb-preview-content'
+					}).css( imageStyle );
+				} else if ( type === 'video' ) {
+					preview_content = $('<video />', {
+						class: 'et-pb-preview-content',
+						src: image_url,
+						loop: true,
+						controls: true,
+						height: 190
+					} );
+				}
+
+				$background_preview.removeClass( 'et-pb-option-preview--empty' ).prepend( preview_content );
+			} else if ( ! $preview.length ) {
 				$upload_button.siblings('.description').before( '<div class="et-pb-upload-preview">' + '<strong class="et-pb-upload-preview-title">' + et_pb_options.preview_image + '</strong>' + '<img src="" width="408" /></div>' );
 				$preview = $upload_field.siblings( '.et-pb-upload-preview' );
 			}
 
 			$preview.find( 'img' ).attr( 'src', image_url );
+		}
+
+		function et_pb_reposition_colorpicker_element( $colorpicker ) {
+			var $colorpicker_container = $colorpicker.closest( '.et-pb-option-container' ),
+				handle_width           = parseInt( $colorpicker_container.find( '.iris-square-value.ui-draggable' ).width() ),
+				handle_left            = parseInt( $colorpicker_container.find( '.iris-square-value.ui-draggable' ).css( 'left' ) ) + ( handle_width / 2 ),
+				container_width        = parseInt( $colorpicker_container.width() ),
+				iris_strip_right_max   = 50;
+
+			if ( $colorpicker !== '' && handle_left > ( container_width - iris_strip_right_max ) ) {
+				$colorpicker_container.addClass( 'on-right-corner' );
+			} else {
+				$colorpicker_container.removeClass( 'on-right-corner' );
+			}
 		}
 
 		var ET_PageBuilder_Events = _.extend( {}, Backbone.Events ),
@@ -7817,7 +10868,14 @@ window.et_builder_version = '2.7.10';
 
 			toggle_status : function( status ) {
 				var $input = $( '#et_pb_use_ab_testing' ),
+					inputValue = $input.val(),
 					status = _.isUndefined( status ) ? false : status;
+
+				if ( ( inputValue === 'on' && ! status ) || ( ( inputValue === 'off' || inputValue === '' ) && status ) ) {
+					$input.addClass( 'et_pb_value_updated' );
+				}
+
+				set_this_editor_in_use();
 
 				if ( status ) {
 					$input.val( 'on' );
@@ -8010,7 +11068,7 @@ window.et_builder_version = '2.7.10';
 					status = is_subject || is_subject_children || has_subject || is_goal || is_goal_children || has_goal;
 				}
 
-				// User with no ab_testing permisson cannot modify Split testing-related item
+				// User with no ab_testing permisson cannot modify AB Testing-related item
 				if ( ! has_permission && status ) {
 					return false;
 				}
@@ -8018,7 +11076,7 @@ window.et_builder_version = '2.7.10';
 				return true;
 			},
 
-			is_split_test_item : function( model ) {
+			is_ab_testing_item : function( model ) {
 				if (
 					this.is_subject( model ) ||
 					this.is_subject_children( model ) ||
@@ -8236,6 +11294,11 @@ window.et_builder_version = '2.7.10';
 			set_subject : function( view, waiting ) {
 				var that = this;
 
+				// Prevent removed component to be selected as subject
+				if ('removed' === view.model.get('component_status')) {
+					return;
+				}
+
 				// make sure ab testing database tables created otherwise wait until creating process is finished
 				if ( 'exists' !== et_pb_options.ab_db_status ) {
 					setTimeout( function() {
@@ -8316,8 +11379,13 @@ window.et_builder_version = '2.7.10';
 
 			set : function ( view, event ) {
 				if ( this.is_selecting_subject() ) {
+					// Prevent global children to be selected as subject
+					if ( ! _.isUndefined( view.model.get( 'et_pb_global_parent' ) ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_select_global_children_as_subject' );
+						return;
+					}
 
-					// Disguiese all global-item related attributes into while being used as Split test
+					// Disguiese all global-item related attributes into while being used as AB Testing
 					if ( ET_PageBuilder_Layout.is_global( view.model ) || ET_PageBuilder_Layout.is_global_children( view.model ) ) {
 						ET_PageBuilder_Layout.removeGlobalAttributes( view, true );
 					}
@@ -8331,6 +11399,17 @@ window.et_builder_version = '2.7.10';
 
 					return;
 				} else if ( this.is_selecting_goal() ) {
+					// Prevent global children to be selected as goal
+					if ( ! _.isUndefined( view.model.get( 'et_pb_global_parent' ) ) ) {
+						ET_PageBuilder_AB_Testing.alert( 'cannot_select_global_children_as_goal' );
+						return;
+					}
+
+					// Prevent removed component to be selected as goal
+					if ('removed' === view.model.get('component_status')) {
+						return;
+					}
+
 					// Prevent row / section of selected subject to be set as subject
 					if ( this.has_subject( view.model ) ) {
 						this.alert( 'cannot_select_subject_parent_as_goal' );
@@ -8340,8 +11419,8 @@ window.et_builder_version = '2.7.10';
 					// Mark as doing combination. This force disables enable_history
 					ET_PageBuilder_App.is_doing_combination = true;
 
-					// Disguise all global-item related attributes while being used as Split test goal
-					// global item behaviour removes Split testing goal attributes when its setting modal
+					// Disguise all global-item related attributes while being used as AB Testing goal
+					// global item behaviour removes AB Testing goal attributes when its setting modal
 					// saves modified configuration
 					if ( ET_PageBuilder_Layout.is_global( view.model ) || ET_PageBuilder_Layout.is_global_children( view.model ) ) {
 						ET_PageBuilder_Layout.removeGlobalAttributes( view, true );
@@ -8380,7 +11459,7 @@ window.et_builder_version = '2.7.10';
 
 						ET_PageBuilder_AB_Testing.alert( 'configure_ab_testing_alternative' );
 
-						// Update Split Testing Status
+						// Update AB Testing Status
 						this.update();
 					}
 
@@ -8412,7 +11491,7 @@ window.et_builder_version = '2.7.10';
 						// Mark as doing combination. This force disables enable_history
 						ET_PageBuilder_App.is_doing_combination = true;
 
-						// Turn off Split testing's winner selecting mode
+						// Turn off AB Testing's winner selecting mode
 						ET_PageBuilder_App.is_selecting_ab_testing_winner = false;
 
 						// Loop subjects
@@ -8433,7 +11512,7 @@ window.et_builder_version = '2.7.10';
 							}
 						});
 
-						// Remove Split testing related data
+						// Remove AB Testing related data
 						view.model.unset( 'et_pb_ab_subject' );
 						view.model.unset( 'et_pb_ab_subject_id' );
 
@@ -8450,7 +11529,7 @@ window.et_builder_version = '2.7.10';
 							return;
 						}
 
-						// Turn off Split testing sequence
+						// Turn off AB Testing sequence
 						this.turn_off_ab_testing_sequence();
 
 						return;
@@ -8480,7 +11559,7 @@ window.et_builder_version = '2.7.10';
 					$( '#publish' ).removeClass( 'disabled' );
 				}, 650 );
 
-				// Remove nescesarry class for Split testing winner selection mode's UI
+				// Remove nescesarry class for AB Testing winner selection mode's UI
 				$( '#et_pb_layout' ).removeClass( 'et_pb_select_ab_testing_winner' );
 
 				// Hide view stats icon
@@ -8510,7 +11589,11 @@ window.et_builder_version = '2.7.10';
 				var subject_ids = this.subject_ids(),
 					formatted_subject_ids = subject_ids.join();
 
-				$( '#et_pb_ab_subjects' ).val( formatted_subject_ids );
+				if ( $( '#et_pb_ab_subjects' ).val() !== formatted_subject_ids ) {
+					$( '#et_pb_ab_subjects' ).val( formatted_subject_ids ).addClass('et_pb_value_updated');
+				}
+
+				set_this_editor_in_use();
 			},
 
 			update_layout : function () {
@@ -9042,7 +12125,7 @@ window.et_builder_version = '2.7.10';
 						});
 					})
 
-					// Refresh split test
+					// Refresh AB Testing
 					$prompt_modal.on( 'click', '.et-pb-ab-refresh-stats', function() {
 						ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
 
@@ -9078,7 +12161,7 @@ window.et_builder_version = '2.7.10';
 
 			draw_graphs : function( analysis, data, line_chart, pie_chart, $line_chart, $pie_chart, $ab_testing_table, $ab_testing_table_thead, $ab_testing_table_tbody, $ab_testing_table_tfoot, thead_template, tbody_row_template, tfoot_template, skip_subject_filtering  ) {
 				var line_chart_data = {
-						labels: $.merge( [""], data.dates ),
+						labels: data.dates,
 						datasets: []
 					},
 					pie_chart_data = [],
@@ -9114,7 +12197,7 @@ window.et_builder_version = '2.7.10';
 						strokeColor: data['subjects_totals'][ subject_key ]['color'],
 						pointColor: data['subjects_totals'][ subject_key ]['color'],
 						pointStrokeColor: "#fff",
-						data: $.merge( [ null ], _.values( data['subjects_analysis'][ subject_key ][ analysis ] ) )
+						data: _.values( data['subjects_analysis'][ subject_key ][ analysis ] )
 					});
 
 					// Generate pie chart data
@@ -9312,10 +12395,12 @@ window.et_builder_version = '2.7.10';
 				}
 			},
 
-			remove_post_meta : function(){
-				// Update all Split testing related hidden post meta data so it will be removed when the page is updated
+			delete_post_meta : function(){
+				// Update all AB Testing related hidden post meta data so it will be removed when the page is updated
 				this.toggle_status( false );
 				$( '#et_pb_ab_subjects' ).val( '' );
+
+				set_this_editor_in_use();
 			},
 
 			subject_carousel : function( cid ) {
@@ -9362,6 +12447,7 @@ window.et_builder_version = '2.7.10';
 
 			var $this_el = $(this),
 				is_builder_used = $this_el.hasClass( 'et_pb_builder_is_used' ),
+				$et_pb_fb_cta = $( '#et_pb_fb_cta' ),
 				content;
 
 			if ( is_builder_used ) {
@@ -9386,12 +12472,59 @@ window.et_builder_version = '2.7.10';
 				ET_PageBuilder_Events.trigger( 'et-activate-builder' );
 
 				et_pb_hide_layout_settings();
+
+				$et_pb_fb_cta.addClass( 'et_pb_ready' );
+
+				$( 'form#post' ).append( '<input type="hidden" name="et_pb_show_page_creation" value="on" />' );
 			}
+		} );
+
+		$( '#et_pb_fb_cta' ).click( function( e ) {
+			e.preventDefault();
+
+			// Fade wrap.
+			$( 'html' ).fadeOut();
+
+			// Set redirect.
+			$( 'form#post' ).append( '<input type="hidden" name="et-fb-builder-redirect" value="' + $( this ).attr('href') + '" />' );
+
+			// Set builder.
+			if ( ! $toggle_builder_button.hasClass( 'et_pb_builder_is_used' ) ) {
+				$et_pb_old_content.val( et_pb_get_content( 'content' ) );
+
+				ET_PageBuilder_App.reInitialize();
+
+				$use_builder_custom_field.val( 'on' );
+			}
+
+			// Prevent reload box and queue save to allow builder to create empty section if necessary.
+			$( window )
+				.off( 'beforeunload' )
+				.delay( 500 )
+				.queue( function() {
+					var trigger = $( '#save-action #save-post' );
+
+					// Publish if save draft isn't present.
+					if ( trigger.length === 0 ){
+						trigger = $( '#publishing-action #publish' );
+					}
+
+					trigger.trigger( 'click' );
+				} );
+		} ).contextmenu( function() {
+			$.ajax( {
+				type: 'POST',
+				url: $( '#post' ).attr( 'action' ),
+				data: $('#post').serializeArray(),
+			} );
 		} );
 
 		function et_pb_deactivate_builder() {
 			var $body = $( 'body' ),
 				page_position = 0;
+				$et_pb_fb_cta = $( '#et_pb_fb_cta' );
+
+			$et_pb_fb_cta.removeClass( 'et_pb_ready' );
 
 			et_pb_set_content( 'content', $et_pb_old_content.val() );
 
@@ -9413,10 +12546,12 @@ window.et_builder_version = '2.7.10';
 
 			ET_PageBuilder_Events.trigger( 'et-deactivate-builder' );
 
-			// If Split testing is active, remove all Split testing related post meta
+			// If AB Testing is active, remove all AB Testing related post meta
 			if ( ET_PageBuilder_AB_Testing.is_active() ) {
-				ET_PageBuilder_AB_Testing.remove_post_meta();
+				ET_PageBuilder_AB_Testing.delete_post_meta();
 			}
+
+			$( 'form#post' ).append( '<input type="hidden" name="et_pb_show_page_creation" value="off" />' );
 
 			//trigger window resize event to trigger tinyMCE editor toolbar sizes recalculation.
 			$( window ).trigger( 'resize' );
@@ -9428,6 +12563,7 @@ window.et_builder_version = '2.7.10';
 				$modal = $( '<div class="et_pb_modal_overlay' + on_top_class + on_top_both_actions_class + '" data-action="' + action + '"></div>' ),
 				modal_interface = $( '#et-builder-prompt-modal-' + action ).length ? $( '#et-builder-prompt-modal-' + action ).html() : $( '#et-builder-prompt-modal' ).html(),
 				modal_content = _.template( $( '#et-builder-prompt-modal-' + action + '-text' ).html() ),
+				auto_close_modal = true,
 				modal_attributes = {},
 				$yes_no_button_wrapper,
 				$yes_no_button,
@@ -9442,11 +12578,16 @@ window.et_builder_version = '2.7.10';
 				var current_view = ET_PageBuilder_Layout.getView( cid_or_element.model.get( 'cid' ) ),
 					parent_view = typeof current_view.model.get( 'parent' ) !== 'undefined' ? ET_PageBuilder_Layout.getView( current_view.model.get( 'parent' ) ) : '',
 					$global_children = current_view.$el.find( '.et_pb_global' ),
+					is_global = current_view.$el.is( '.et_pb_global' ),
 					has_global = $global_children.length ? 'has_global' : 'no_globals';
 
 				modal_attributes.is_global = typeof current_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== current_view.model.get( 'et_pb_global_module' ) ? 'global' : 'regular';
 				modal_attributes.is_global_child = '' !== parent_view && ( ( typeof parent_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== parent_view.model.get( 'et_pb_global_module' ) ) || ( typeof parent_view.model.get( 'global_parent_cid' ) !== 'undefined' && '' !== parent_view.model.get( 'global_parent_cid' ) ) ) ? 'global' : 'regular';
 				modal_attributes.module_type = current_view.model.get( 'type' );
+			}
+
+			if ( 'delete_font' === action ) {
+				modal_attributes.font_name = cid_or_element;
 			}
 
 			if ( ! _.isUndefined( template_settings ) ) {
@@ -9457,48 +12598,83 @@ window.et_builder_version = '2.7.10';
 
 			$modal.find( '.et_pb_prompt_modal' ).prepend( modal_content( modal_attributes ) );
 
+			if ( 'upload_font' === action ) {
+				// Populate file name.
+				$modal.find( '.et-core-portability-import-form input[type="file"]' ).on( 'change', function( e ) {
+					var files = $( this ).get( 0 ).files;
+					var fonts_list = '';
+					var supported_file_formats = et_pb_options.supported_font_formats;
+
+					if ( ! _.isEmpty( files ) ) {
+						_.each( files, function( file_data ) {
+							var file_name = !_.isUndefined( file_data['name'] ) ? file_data['name'].toLowerCase() : '';
+
+							// check selected file format.
+							_.each(supported_file_formats, function( file_ext ) {
+								var processed_ext = '.' + file_ext;
+
+								if ( file_name.match(file_ext+'$') ) {
+									fonts_list += '<div class="et-fb-font-files-list-item" data-file_format="' + file_ext + '" data-file_name="' + file_name + '"><span class="et-fb-font-files-list-item-remove"></span>' + file_name + '</div>';
+								}
+							});
+						});
+					}
+
+					if ( '' !== fonts_list ) {
+						$( '.et-font-uploader-selected-fonts' ).html('');
+						$( '.et-font-uploader-selected-fonts' ).removeClass('et-font-uploader-hidden-field').append( fonts_list );
+					}
+				} );
+
+				// Trigger file window.
+				$modal.find( '.et-core-portability-import-form button' ).click( function( e ) {
+					e.preventDefault();
+					var $this_form = $( this ).closest( '.et-core-portability-import-form' );
+					$this_form.find( 'input[type="file"]' ).trigger( 'click' );
+				} );
+
+				$modal.on( 'click', '.et-fb-font-files-list-item-remove', function( e ) {
+					$( e.target ).closest('.et-fb-font-files-list-item').remove();
+				} );
+
+				$modal.find( '.et-font-uploader-all-weights' ).on( 'change', function( e ) {
+					var is_all_selected = $(this).prop( 'checked' );
+					var $other_weights = $modal.find( '.et-font-uploader-weight-values' );
+
+					if ( ! is_all_selected ) {
+						$other_weights.removeClass( 'et-font-uploader-hidden-section' );
+					} else {
+						$other_weights.addClass( 'et-font-uploader-hidden-section' );
+					}
+				});
+			}
+
 			if ( 'open_settings' === action ) {
-				var $et_pb_enable_ab_testing = $modal.find( '#et_pb_enable_ab_testing' ),
-					$et_pb_stats_refresh_option = $modal.find( '#et_pb_ab_refresh_interval' ),
-					$et_pb_shortcode_tracking_option = $modal.find( '#et_pb_enable_shortcode_tracking' ),
-					$et_pb_shortcode_tracking_val = ET_PageBuilder_AB_Testing.get_shortcode_tracking_status(),
-					$et_pb_enable_ab_value = ET_PageBuilder_AB_Testing.is_active() ? 'on' : 'off',
-					$et_pb_stats_refresh_value = ET_PageBuilder_AB_Testing.get_stats_refresh_interval();
-
 				$modal.addClass( 'et_pb_builder_settings' );
-
-				$et_pb_enable_ab_testing.children( 'option' ).removeAttr( 'selected' );
-
-				$et_pb_enable_ab_testing.children( 'option[value="' + $et_pb_enable_ab_value + '"]' ).attr( 'selected', 'selected' );
-
-				$et_pb_shortcode_tracking_option.children( 'option[value="' + $et_pb_shortcode_tracking_val + '"]' ).attr( 'selected', 'selected' );
-
-				$et_pb_stats_refresh_option.children( 'option[value="' + $et_pb_stats_refresh_value + '"]' ).attr( 'selected', 'selected' );
 
 				// update the shortcode
 				et_pb_update_tracking_shortcode();
 
 				$modal.find( '.et_pb_prompt_field_list' ).each(function() {
-					var $field_list           = $(this);
+					var $field_list           = $(this),
 						id                    = $field_list.attr( 'data-id' ),
 						type                  = $field_list.attr( 'data-type' ),
 						autoload              = $field_list.attr( 'data-autoload' ),
-						$saving_input         = $( '#_' + id ),
+						custom_id             = {
+							et_pb_enable_ab_testing: 'et_pb_use_ab_testing'
+						},
+						$saving_input         = typeof custom_id[ id ] !== 'undefined' ? $( '#' + custom_id[ id ] ) : $( '#_' + id ),
 						saved_value           = $saving_input.val();
 
 					switch ( type ) {
-						case ( 'yes_or_no' ) :
+						case ( 'yes_no_button' ) :
 							var $yn_wrapper = $field_list.find( '.et_pb_yes_no_button_wrapper' ),
-								$yn_button  = $field_list.find( '.et_pb_yes_no_button' ),
-								$yn_select  = $field_list.find( 'select' ),
-								yn_value    = $yn_select.val();
+								$yn_button  = $yn_wrapper.find( '.et_pb_yes_no_button' ),
+								$yn_select  = $yn_wrapper.find( 'select' );
 
 							// Determine Y/N button state on load
-							if ( yn_value === 'on' ) {
-								$yn_button.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
-							} else {
-								$yn_button.removeClass( 'et_pb_on_state' ).addClass( 'et_pb_off_state' );
-							}
+							$yn_select.val( saved_value );
+							$yn_select.trigger( 'change' );
 
 							// On button click
 							$yn_button.click( function() {
@@ -9559,7 +12735,7 @@ window.et_builder_version = '2.7.10';
 							$yn_select.trigger( 'change' );
 							break;
 
-						case ( 'colorpicker' ) :
+						case ( 'color-alpha' ) :
 							var $input_colorpicker = $field_list.find( '.input-colorpicker' );
 
 								$input_colorpicker.val( saved_value ).wpColorPicker({
@@ -9590,6 +12766,7 @@ window.et_builder_version = '2.7.10';
 
 										$input.val( color );
 										$preview.css({ 'backgroundColor' : color });
+										set_this_editor_in_use();
 									}
 								});
 
@@ -9599,7 +12776,14 @@ window.et_builder_version = '2.7.10';
 									e.preventDefault();
 
 									$colorpalette_colorpicker.wpColorPicker( 'color', colorpalette_colorpicker_color )
-								})
+								});
+
+								$colorpalette_colorpicker.closest( '.wp-picker-container' ).find( '.wp-color-result' ).attr( 'title', et_pb_options.select_text );
+
+								$colorpalette_colorpicker.closest( '.wp-picker-container' ).on( 'click', '.wp-color-result', function( event ) {
+									// Hide active colorpalette colorpicker when "Select" button clicked
+									$palette_wrapper.find( '.colorpalette-colorpicker' ).removeClass( 'active' );
+								});
 
 								colorpalette_colorpicker_index++;
 							});
@@ -9650,6 +12834,12 @@ window.et_builder_version = '2.7.10';
 							$input_range.trigger( 'change' );
 							break;
 
+						case( 'select' ) :
+							var $select = $(this).find( 'select' );
+
+							$select.val( saved_value );
+							break;
+						case( 'codemirror' ) :
 						case( 'textarea' ) :
 							var $textarea     = $(this).find( 'textarea' );
 
@@ -9774,7 +12964,7 @@ window.et_builder_version = '2.7.10';
 						var layout_name = $prompt_modal.find( '#et_pb_new_layout_name' ).val().trim();
 
 						if ( layout_name == '' ) {
-							$prompt_modal.find( '#et_pb_new_layout_name' ).focus()
+							$prompt_modal.find( '#et_pb_new_layout_name' ).focus();
 
 							return;
 						}
@@ -9792,6 +12982,14 @@ window.et_builder_version = '2.7.10';
 								et_post_type : et_pb_options.post_type
 							},
 							success: function( data ) {
+								// update the list of saved layouts after new one was added
+								if ( 'layout' === et_pb_options.post_type ) {
+									// Extra's Category Builder
+									et_load_saved_layouts( 'not_predefined', '', '', et_pb_options.post_type, true );
+									return;
+								}
+
+								et_builder_layouts_loaded = et_builder_library_get_layouts_data();
 							}
 						} );
 
@@ -9805,10 +13003,9 @@ window.et_builder_version = '2.7.10';
 							module_width_upd             = typeof module_width !== 'undefined' ? module_width : 'regular',
 							module_cid                   = cid_or_element.model.get( 'cid' ),
 							template_shortcode           = '',
-							selected_tabs                = '',
 							selected_cats                = '',
 							new_cat                      = $prompt_modal.find( '#et_pb_new_cat_name' ).val(),
-							ignore_global                = typeof has_global !== 'undefined' && 'has_global' === has_global && 'global' === layout_scope ? 'ignore_global' : 'include_global',
+							ignore_global                = is_global || ( typeof has_global !== 'undefined' && 'has_global' === has_global && 'global' === layout_scope ) ? 'ignore_global' : 'include_global',
 							ignore_saved_tabs            = 'ignore_global' === ignore_global ? 'ignore_global_tabs' : '',
 							$modal_settings_container    = $( '.et_pb_modal_settings_container' ),
 							$modal_overlay               = $( '.et_pb_modal_overlay' );
@@ -9819,56 +13016,6 @@ window.et_builder_version = '2.7.10';
 							$prompt_modal.find( '#et_pb_new_template_name' ).focus();
 
 							return;
-						}
-
-						if ( $( '.et_pb_select_module_tabs' ).length ) {
-							if ( ! $( '.et_pb_select_module_tabs input' ).is( ':checked' ) ) {
-								$( '.et_pb_error_message_save_template' ).css( "display", "block" );
-								return;
-							} else {
-								selected_tabs = '';
-
-								$( '.et_pb_select_module_tabs input' ).each( function() {
-									var this_input = $( this );
-
-									if ( this_input.is( ':checked' ) ) {
-										selected_tabs += '' !== selected_tabs ? ',' + this_input.val() : this_input.val();
-									}
-
-								});
-
-								selected_tabs = 'general,advanced,css' === selected_tabs ? 'all' : selected_tabs;
-							}
-
-							if ( 'all' !== selected_tabs ) {
-								var selected_tabs_selector = '',
-									selected_tabs_array = selected_tabs.split(','),
-									existing_attributes = cid_or_element.model.attributes;
-
-								_.each( selected_tabs_array, function ( tab ) {
-									switch ( tab ) {
-										case 'general' :
-											selected_tabs_selector += '.et-pb-options-tab-general input, .et-pb-options-tab-general select, .et-pb-options-tab-general textarea';
-											break;
-										case 'advanced' :
-											selected_tabs_selector += '' !== selected_tabs_selector ? ',' : '';
-											selected_tabs_selector += '.et-pb-options-tab-advanced input, .et-pb-options-tab-advanced select, .et-pb-options-tab-advanced textarea';
-											break;
-										case 'css' :
-											selected_tabs_selector += '' !== selected_tabs_selector ? ',' : '';
-											selected_tabs_selector += '.et-pb-options-tab-custom_css input, .et-pb-options-tab-custom_css select, .et-pb-options-tab-custom_css textarea';
-											break;
-									}
-								});
-
-								_.each( existing_attributes, function( value, key ) {
-									if ( -1 !== key.indexOf( 'et_pb_' ) ) {
-										cid_or_element.model.unset( key, { silent : true } );
-									}
-								} );
-							}
-
-							cid_or_element.model.set( 'et_pb_saved_tabs', selected_tabs, { silent : true } );
 						}
 
 						if ( $( '.layout_cats_container input' ).is( ':checked' ) ) {
@@ -9883,7 +13030,11 @@ window.et_builder_version = '2.7.10';
 
 						}
 
-						cid_or_element.performSaving( selected_tabs_selector );
+						if ( 'module' === layout_type ) {
+							cid_or_element.model.set( 'et_pb_saved_tabs', 'all', { silent : true } );
+						}
+
+						cid_or_element.performSaving();
 
 						template_shortcode = ET_PageBuilder_App.generateCompleteShortcode( module_cid, layout_type, ignore_global, ignore_saved_tabs );
 
@@ -9892,15 +13043,14 @@ window.et_builder_version = '2.7.10';
 							template_shortcode = template_shortcode.replace( /et_pb_column_inner/g, 'et_pb_column' );
 						}
 
-						// save all the settings after template was generated.
-						if ( 'all' !== selected_tabs ) {
-							cid_or_element.performSaving();
-						}
-
 						$modal_settings_container.addClass( 'et_pb_modal_closing' );
 						$modal_overlay.addClass( 'et_pb_overlay_closing' );
 
 						setTimeout( function() {
+							if ( 'module' === layout_type ) {
+								et_pb_tinymce_remove_control( 'et_pb_content' );
+							}
+
 							$modal_settings_container.remove();
 							$modal_overlay.remove();
 							$( 'body' ).removeClass( 'et_pb_stop_scroll' );
@@ -9920,7 +13070,7 @@ window.et_builder_version = '2.7.10';
 								et_layout_type : layout_type,
 								et_module_width : module_width_upd,
 								et_columns_layout : columns_layout,
-								et_selected_tabs : selected_tabs,
+								et_selected_tabs : 'all',
 								et_module_type : module_type,
 								et_layout_cats : selected_cats,
 								et_layout_new_cat : new_cat,
@@ -9965,17 +13115,20 @@ window.et_builder_version = '2.7.10';
 										$( 'body' ).find( '.et_pb_global_loading_overlay' ).remove();
 									}, 650 );
 								}
+
+								// clear the library cache to update the library modules list
+								$et_pb_templates_cache = {};
 							}
 						} );
 						break;
 
 					case 'open_settings' :
 						var $enable_ab_testing_select = $modal.find( '#et_pb_enable_ab_testing' ),
-							refresh_ab_stats_interval_value = $modal.find( '#et_pb_ab_refresh_interval' ).val(),
+							refresh_ab_stats_interval_value = $modal.find( '#et_pb_ab_stats_refresh_interval' ).val(),
 							enable_ab_testing_select_value = $enable_ab_testing_select.val() === 'on' ? true : false,
 							shortcode_tracking_value = $modal.find( '#et_pb_enable_shortcode_tracking' ).val(),
-							$refresh_ab_stats_interval_meta = $( '#et_pb_ab_stats_refresh_interval' ),
-							$shortcode_tracking_value_meta = $( '#_et_pb_enable_shortcode_tracking' );
+							$refresh_ab_stats_interval_meta = $( '#_et_pb_ab_stats_refresh_interval' ),
+							$shortcode_tracking_value_meta = $( '#et_pb_enable_shortcode_tracking' );
 
 							// Passes settings data to hidden inputs
 							$modal.find( '.et_pb_prompt_field_list' ).each(function(){
@@ -9983,7 +13136,8 @@ window.et_builder_version = '2.7.10';
 									id = $item.attr( 'data-id' ),
 									autoload = $item.attr( 'data-autoload' ) === '1' ? true : false,
 									$saving_input = $( '#_' + id ),
-									saving_palette = [];
+									saving_palette = [],
+									initial_value = $saving_input.val();
 
 								// Only pass autoload item
 								if ( ! autoload ) {
@@ -9997,22 +13151,34 @@ window.et_builder_version = '2.7.10';
 
 									$saving_input.val( saving_palette.join('|') );
 
+									if ( initial_value !== saving_palette.join('|') ) {
+										$saving_input.addClass( 'et_pb_value_updated' );
+
+										set_this_editor_in_use();
+									}
+
 									// update option so updated color palette will be applied immediately
 									et_pb_options.page_color_palette = saving_palette.join('|');
 								} else {
 									$saving_input.val( $item.find( '#' + id ).val() );
 
-									if ( '_et_pb_section_background_color' === $saving_input.attr( 'id' ) ) {
+									if ( initial_value !== $item.find( '#' + id ).val() ) {
+										$saving_input.addClass( 'et_pb_value_updated' );
+
+										set_this_editor_in_use();
+									}
+
+									if ( 'et_pb_section_background_color' === $saving_input.attr( 'id' ) ) {
 										et_pb_options.page_section_bg_color = $item.find( '#' + id ).val();
 									}
 
-									if ( '_et_pb_gutter_width' === $saving_input.attr( 'id' ) ) {
+									if ( 'et_pb_page_gutter_width' === $saving_input.attr( 'id' ) ) {
 										et_pb_options.page_gutter_width = $item.find( '#' + id ).val();
 									}
 								}
 							});
 
-							// Update Split testing status meta data
+							// Update AB Testing status meta data
 							ET_PageBuilder_AB_Testing.toggle_status( enable_ab_testing_select_value );
 
 							// Update Refresh stats interval meta data
@@ -10035,15 +13201,15 @@ window.et_builder_version = '2.7.10';
 									// Prompt select subject modal box
 									ET_PageBuilder_AB_Testing.alert_yes_no( 'select_ab_testing_subject' );
 
-									// Turn on Split testing subject selection mode
+									// Turn on AB Testing subject selection mode
 									ET_PageBuilder_App.is_selecting_ab_testing_subject = true;
 
-									// Adding nescesarry class for Split testing subject selection mode's UI
+									// Adding nescesarry class for AB Testing subject selection mode's UI
 									$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_subject' );
 								}
 
 							} else {
-								// Turn off Split testing subject selection mode
+								// Turn off AB Testing subject selection mode
 								ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
 
 								// Check against "on to off" or "off to off" state
@@ -10051,6 +13217,10 @@ window.et_builder_version = '2.7.10';
 									et_pb_create_prompt_modal( 'turn_off_ab_testing' );
 								}
 							}
+
+							// Update shortcode layout so page settings related attribute like section dividers'
+							// prev_background_color and next_background_color can be properly updated
+							ET_PageBuilder_App.saveAsShortcode();
 						break;
 
 					case 'turn_off_ab_testing' :
@@ -10072,10 +13242,10 @@ window.et_builder_version = '2.7.10';
 						ET_PageBuilder_App.disable_publish = true;
 						$( '#publish' ).addClass( 'disabled' );
 
-						// Turn on Split Testing selecting winner mode
+						// Turn on AB Testing selecting winner mode
 						ET_PageBuilder_App.is_selecting_ab_testing_winner = true;
 
-						// Adding nescesarry class for Split testing winner selection mode's UI
+						// Adding nescesarry class for AB Testing winner selection mode's UI
 						$( '#et_pb_layout' ).addClass( 'et_pb_select_ab_testing_winner' );
 
 						break;
@@ -10084,7 +13254,7 @@ window.et_builder_version = '2.7.10';
 						// Remove Temporary global attributes
 						ET_PageBuilder_Layout.removeTemporaryGlobalAttributes( template_settings.view );
 
-						// Turn off Split testing sequence
+						// Turn off AB Testing sequence
 						ET_PageBuilder_AB_Testing.turn_off_ab_testing_sequence();
 
 						break;
@@ -10096,10 +13266,10 @@ window.et_builder_version = '2.7.10';
 						break;
 
 					case 'view_ab_stats' :
-						// Set split test to off
+						// Set AB Testing to off
 						ET_PageBuilder_AB_Testing.toggle_status( false );
 
-						// Turn off Split testing subject selection mode
+						// Turn off AB Testing subject selection mode
 						ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
 
 						// Check against "on to off" or "off to off" state
@@ -10107,9 +13277,73 @@ window.et_builder_version = '2.7.10';
 							et_pb_create_prompt_modal( 'turn_off_ab_testing' );
 						}
 						break;
+
+					case 'delete_font' :
+						auto_close_modal = false;
+						if ( ! $( this ).hasClass('et-font-uploader-disabled' ) ) {
+							et_pb_process_user_font( 'remove', {'font_name':cid_or_element}, $prompt_modal, $( this ) );
+						}
+						break;
+
+					case 'upload_font' :
+						var font_name = $modal.find( '#et-font-uploader-name' ).val();
+						var font_files = $modal.find( '.et-core-portability-import-form input[type="file"]' ).get( 0 ).files;
+						var font_weight = $modal.find( '.et-font-uploader-all-weights' ).prop( 'checked' ) ? 'all' : '';
+						var new_font_data = {};
+						var error_message = '';
+
+						$modal.find( '.et-font-uploader-error' ).html('');
+
+						auto_close_modal = false;
+
+						// get the selected font weights if all is not selected
+						if ( 'all' !== font_weight ) {
+							var $other_weights_values = $modal.find( '.et-font-uploader-weight-values input' );
+							var valid_values = ['100', '200', '300', '400', '500', '600', '700', '800', '900' ];
+							var selected_weights = [];
+
+							$.each( $other_weights_values, function( optionIndex, $option_el ) {
+								if ( $( $option_el ).prop('checked') ) {
+									selected_weights.push( valid_values[optionIndex] );
+								}
+							});
+
+							font_weight = selected_weights.join(',');
+						}
+
+						if ( '' === font_name ) {
+							error_message += et_pb_options.font_name_error + '\n';
+						}
+
+						if ( _.isUndefined(font_files) ) {
+							error_message += et_pb_options.font_file_error + '\n';
+						}
+
+						if ( '' === font_weight ) {
+							error_message += et_pb_options.font_weight_error + '\n';
+						}
+
+						if ( '' !== error_message ) {
+							$modal.find( '.et-font-uploader-error' ).html(error_message);
+						} else {
+							new_font_data = {
+								'font_name' : font_name,
+								'font_weight' : font_weight,
+								'generic_family' : 'sans-serif',
+								'font_files' : font_files
+							};
+
+							if ( ! $( this ).hasClass('et-font-uploader-disabled' ) ) {
+								et_pb_process_user_font( 'add', new_font_data, $prompt_modal, $( this ), cid_or_element );
+							}
+						}
+
+						break;
 				}
 
-				et_pb_close_modal( $( this ) );
+				if ( auto_close_modal ) {
+					et_pb_close_modal( $( this ) );
+				}
 			} );
 
 			$( '.et_pb_modal_overlay .et_pb_prompt_proceed_alternative' ).click( function( event ) {
@@ -10122,7 +13356,7 @@ window.et_builder_version = '2.7.10';
 						// Revive global attributes
 						ET_PageBuilder_Layout.removeTemporaryGlobalAttributes( template_settings.view, true );
 
-						// Turn off Split testing sequence
+						// Turn off AB Testing sequence
 						ET_PageBuilder_AB_Testing.turn_off_ab_testing_sequence();
 
 						break;
@@ -10137,10 +13371,10 @@ window.et_builder_version = '2.7.10';
 						ET_PageBuilder_App.disable_publish = false;
 						$( '#publish' ).removeClass( 'disabled' );
 
-						// Turn off Split testing subject selection mode
+						// Turn off AB Testing subject selection mode
 						ET_PageBuilder_App.is_selecting_ab_testing_subject = false;
 
-						// Adding nescesarry class for Split testing subject selection mode's UI
+						// Adding nescesarry class for AB Testing subject selection mode's UI
 						$( '#et_pb_layout' ).removeClass( 'et_pb_select_ab_testing_subject' );
 
 						delete ET_PageBuilder_App.ab_last_visible_alert;
@@ -10162,10 +13396,121 @@ window.et_builder_version = '2.7.10';
 							delete ET_PageBuilder_App.ab_last_visible_alert;
 						}
 						break;
+					case 'turn_off_ab_testing' :
+						// Return meta value input to "on"
+						ET_PageBuilder_AB_Testing.toggle_status(true);
+						break;
 				}
 
 				et_pb_close_modal( $( this ) );
 			} );
+		}
+
+		function et_pb_process_user_font( action, font_data, $modal, $button, upload_font_to ) {
+			var font_settings = {};
+
+			if ( 'add' === action ) {
+				font_settings = JSON.stringify({
+					'font_weights': font_data.font_weight,
+					'generic_family': font_data.generic_family
+				});
+			}
+
+			var form_data = new FormData();
+			var request_data = {
+				action : 'et_pb_process_custom_font',
+				et_pb_font_action : action,
+				et_fb_upload_font_nonce : et_pb_options.upload_font_nonce,
+				et_pb_font_name: font_data.font_name,
+				et_pb_font_settings: font_settings
+			};
+
+			_.each( font_data.font_files, function(single_font, index) {
+				// process only font files which were not removed from the list by user
+				var $selected_font_el = $( '.et-font-uploader-selected-fonts' ).find("[data-file_name='" + single_font.name.toLowerCase() + "']");
+
+				if ( $selected_font_el.length > 0 ) {
+					var font_ext = $selected_font_el.data('file_format');
+					request_data['et_pb_font_file_' + font_ext] = single_font;
+				}
+			});
+
+			_.each( request_data, function(value, name) {
+				form_data.append( name, value);
+			} );
+
+			$.ajax( {
+				type: "POST",
+				url: et_pb_options.ajaxurl,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				beforeSend: function() {
+					$modal.append( '<div id="et_pb_loading_animation"></div>' );
+					$button.addClass('et-font-uploader-disabled');
+				},
+				complete: function() {
+					$modal.find( '#et_pb_loading_animation' ).remove();
+				},
+				success: function( data ) {
+					var result = $.parseJSON( data );
+
+					if ( ! _.isEmpty( result['error'] ) ) {
+						$button.removeClass('et-font-uploader-disabled');
+						$modal.find( '.et-font-uploader-error' ).html( result['error'] );
+					} else {
+						// update custom fonts list after font removed
+						if ( 'remove' === action && !_.isUndefined( et_pb_options.user_fonts[ font_data.font_name ] ) ) {
+							delete et_pb_options.user_fonts[ font_data.font_name ];
+							var font_item_class = '.select-option-item-' + font_data.font_name.replace(/ /g, '_');
+
+							if ( $( font_item_class ).length > 0 ) {
+								$( font_item_class ).each( function() {
+									var $current_font_item = $(this);
+									var is_selected_font = $current_font_item.hasClass('et_pb_selected_menu_item');
+									var $option_container = is_selected_font ? $current_font_item.closest( '.et-pb-option-container--font' ) : '';
+
+									$current_font_item.remove();
+
+									// reset font-family to default if currently selected font removed
+									if ( is_selected_font ) {
+										et_pb_update_recent_fonts( font_data.font_name, 'remove' );
+										et_pb_update_font_settings($option_container, 'default');
+										et_pb_setup_font_setting( $option_container, false );
+									}
+								});
+							}
+						}
+
+						if ( 'add' === action ) {
+							if ( ! _.isEmpty( result.updated_fonts ) ) {
+								et_pb_options.user_fonts = result.updated_fonts;
+								var new_font_name = result.uploaded_font;
+
+								// add new font to all custom font sections in opened modal
+								// select new font in the option where Upload font was initiated
+								if ( ! _.isUndefined( new_font_name ) ) {
+									var new_font_item_class = new_font_name.replace(/ /g, '_');
+									var $all_custom_fonts_sections = $( '.et-pb-option-subgroup-uploaded .et-pb-option-subgroup-container' );
+									var $font_item_el = '<li class="select-option-item select-option-item-custom-font select-option-item-' + new_font_item_class + '" data-value="' + new_font_name + '">' + new_font_name + '<span class="et-pb-user-font-marker"></span></li>';
+
+									if ( $all_custom_fonts_sections.length > 0 ) {
+										$all_custom_fonts_sections.append($font_item_el);
+									}
+
+									// select new font for the appropriate option
+									var $option_to_activate = _.isUndefined( upload_font_to ) ? '' : $( '[data-option_name="' + upload_font_to + '"]' ).find('.select-option-item-custom-font[data-value="' + new_font_name + '"]');
+									if ( '' !== $option_to_activate && $option_to_activate.length > 0 ) {
+										$option_to_activate.click();
+									}
+								}
+							}
+						}
+
+						et_pb_close_modal( $modal );
+					}
+				}
+			});
 		}
 
 		function et_pb_update_tracking_shortcode() {
@@ -10187,9 +13532,11 @@ window.et_builder_version = '2.7.10';
 
 		function et_pb_close_modal( $this_button ) {
 			var $modal_overlay = $this_button.closest( '.et_pb_modal_overlay' );
+			var $body = $('body');
 
 			// Unlock body scroll
-			$('body').removeClass('et_pb_stop_scroll');
+			$body.removeClass('et_pb_stop_scroll');
+			$body.removeClass('et_pb_advanced_menu_opened');
 
 			$modal_overlay.addClass( 'et_pb_modal_closing' );
 
@@ -10260,19 +13607,26 @@ window.et_builder_version = '2.7.10';
 
 		}
 
-		function et_pb_get_content( textarea_id, fix_shortcodes ) {
+		function et_pb_get_content(textarea_id, fix_shortcodes) {
 			var content,
 				fix_shortcodes = typeof fix_shortcodes !== 'undefined' ? fix_shortcodes : false;
 
-			if ( typeof window.tinyMCE !== 'undefined' && window.tinyMCE.get( textarea_id ) && ! window.tinyMCE.get( textarea_id ).isHidden() ) {
-				content = window.tinyMCE.get( textarea_id ).getContent();
+			if (typeof window.tinyMCE !== 'undefined' && window.tinyMCE.get(textarea_id) && !window.tinyMCE.get(textarea_id).isHidden()) {
+				content = window.tinyMCE.get(textarea_id).getContent();
+				
+				if (-1 === $.inArray(textarea_id, ['et_pb_content', 'content'])) {
+					// Escape content from secondary editors
+					content = _.escape(content);
+					// Escaped quotes somehow get unescape when the form is sent to the server. Unescape them now and we'll %22 escape them later
+					content = content.replace(/&quot;/g, '"');
+				}
 			} else {
 				content = $( '#' + textarea_id ).val();
 			}
-
-			if ( fix_shortcodes && typeof window.tinyMCE !== 'undefined' ) {
-				content = content.replace( /<p>\[/g, '[' );
-				content = content.replace( /\]<\/p>/g, ']' );
+		
+			if (fix_shortcodes && typeof window.tinyMCE !== 'undefined') {
+				content = content.replace(/<p>\[/g, '[');
+				content = content.replace(/\]<\/p>/g, ']');
 			}
 
 			return content.trim();
@@ -10294,17 +13648,42 @@ window.et_builder_version = '2.7.10';
 			return is_editor_in_visual_mode;
 		}
 
+		function set_this_editor_in_use() {
+			var post_id = $('#post_ID').val();
+			var secure = ( 'https:' === window.location.protocol );
+			var cookie_expires = 5 * 60; // 5 mins (in secs)
+
+			wpCookies.set( 'et-editor-available-post-' + post_id + '-bb', 'bb', cookie_expires * 6, et_pb_options.cookie_path, false, secure );
+			wpCookies.set( 'et-editing-post-' + post_id + '-bb', 'bb', cookie_expires, et_pb_options.cookie_path, false, secure );
+			wpCookies.remove( 'et-saving-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+			wpCookies.remove( 'et-saved-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+		}
+
 		function et_pb_set_content( textarea_id, content, current_action ) {
 			var current_action                = current_action || '',
 				main_editor_in_visual_mode    = et_pb_is_editor_in_visual_mode( 'content' ),
-				current_editor_in_visual_mode = et_pb_is_editor_in_visual_mode( textarea_id );
+				current_editor_in_visual_mode = et_pb_is_editor_in_visual_mode( textarea_id ),
+				trimmed_content = $.trim( content );
+			
+			if ('load_secondary_editor' === current_action) {
+				// Unescape HTML for secondary editors, otherwise tiny_mce will not render HTML correctly.
+				trimmed_content = _.unescape(trimmed_content);
+			}
 
 			if ( typeof window.tinyMCE !== 'undefined' && window.tinyMCE.get( textarea_id ) && current_editor_in_visual_mode ) {
 				var editor = window.tinyMCE.get( textarea_id );
+				
+				if ('load_secondary_editor' === current_action) {
+					// Apply autop for the secondary editor to parse the line-breaks correctly inside tinyMCE
+					trimmed_content = window.switchEditors.wpautop(trimmed_content);
+				}
+				editor.setContent( trimmed_content, { format : 'html' } );
+			}
 
-				editor.setContent( $.trim( content ), { format : 'html'  } );
-			} else {
-				$( '#' + textarea_id ).val( $.trim( content ) );
+			// Always set this content as well, since WP autosave uses, for example,
+			// uses `$( '#content' ).val()` to fetch current post content
+			if ( $( '#' + textarea_id ).length ) {
+				$( '#' + textarea_id ).val( trimmed_content );
 			}
 
 			// initiate quicktags only once to avoid issue with duplication of tags
@@ -10341,6 +13720,36 @@ window.et_builder_version = '2.7.10';
 				$affected_fields.each( function() {
 					$(this).trigger( 'change' );
 				} );
+			}
+		}
+
+		function et_pb_hide_empty_toggles( $option_el ) {
+			if ( $option_el.length === 0 ) {
+				return;
+			}
+
+			var $toggle_container = $option_el.closest( '.et-pb-options-toggle-container' );
+
+			if ( $toggle_container.length === 0 ) {
+				return;
+			}
+
+			var has_visible_options = false;
+
+			// check if toggle has visible options by checking the `display` property of each option inside the toggle
+			if ( $toggle_container.find( '.et-pb-option' ).length > 0 ) {
+				$toggle_container.find( '.et-pb-option' ).each(function() {
+					if ( 'none' !== $( this ).css( 'display' ) ) {
+						has_visible_options = true;
+					}
+				});
+			}
+
+			// add/remove empty toggle class depending of visibility of options inside
+			if ( has_visible_options ) {
+				$toggle_container.removeClass( 'et-pb-options-toggle-empty' );
+			} else {
+				$toggle_container.addClass( 'et-pb-options-toggle-empty' );
 			}
 		}
 
@@ -10463,21 +13872,28 @@ window.et_builder_version = '2.7.10';
 
 		// check the advanced settings and update defaults based on the current settings of the parent module
 		function et_pb_set_child_defaults( $container, module_cid ) {
-			var $advanced_tab          = $container.find( '.et-pb-options-tab-advanced' ),
-				$advanced_tab_settings = $advanced_tab.find( '.et-pb-main-setting' ),
-				$parent_container      = $( '.et_pb_modal_settings_container:not(.et_pb_modal_settings_container_step2)'),
-				$parent_container_adv  = $parent_container.find( '.et-pb-options-tab-advanced' ),
-				current_module         = ET_PageBuilder_Modules.findWhere( { cid : module_cid } );
+			var $advanced_tab          = $container.find( '.et-pb-options-tab-advanced' );
+			var $advanced_tab_settings = $advanced_tab.find( '.et-pb-main-setting' );
+			var $parent_container      = $( '.et_pb_modal_settings_container:not(.et_pb_modal_settings_container_step2)');
+			var $parent_container_adv  = $parent_container.find( '.et-pb-options-tab-advanced' );
+			var current_module         = ET_PageBuilder_Modules.findWhere( { cid : module_cid } );
+			var is_conditional 		   = function (el) {
+					var key = et_pb_get_default_key($(el));
+					var data = $(el).data(key);
+					return _.isArray(data) && _.isObject(data[1]);
+				};
 
 			if ( $advanced_tab.length ) {
 				$advanced_tab_settings.each( function() {
-					var $this_option = $( this ),
-						$option_main_input,
-						option_id;
+					var $this_option = $( this );
+					var option_id = $this_option.attr('id');
+					var defaultKey = '';
+					var parentDefault = '';
 
-					// process only range options
+					// process range options
 					if ( $this_option.hasClass( 'et-pb-range' ) ) {
-						$option_main_input = $this_option.siblings( '.et-pb-range-input' );
+						var $option_main_input = $this_option.siblings( '.et-pb-range-input' );
+						parentDefault = $option_main_input.data(defaultKey) || "";
 
 						$option_main_input.each( function() {
 							var $current_option = $( this ),
@@ -10485,7 +13901,7 @@ window.et_builder_version = '2.7.10';
 								current_device = typeof $current_option.data( 'device' ) !== 'undefined' ? $current_option.data( 'device' ) : 'all',
 								option_parent = $( '#' + option_id );
 
-							if ( option_parent.length ) {
+							if ( option_parent.length && !is_conditional($current_option) ) {
 								// check whether module already has module_defaults, otherwise set it to empty array
 								current_module.attributes['module_defaults'] = current_module.attributes['module_defaults'] || [];
 								// update 'module_defaults' to avoid saving the default values into database
@@ -10497,59 +13913,98 @@ window.et_builder_version = '2.7.10';
 									$mobile_option.data( 'default_inherited', option_parent.val() );
 									$mobile_option.data( 'default', option_parent.val() );
 								}
-								$current_option.data( 'default_inherited', option_parent.val() );
+								defaultKey = et_pb_get_default_key(option_parent);
+								parentDefault = option_parent.data(defaultKey) || "";
+								$current_option.data( 'default_inherited', parentDefault );
 								$current_option.data( 'default', option_parent.val() );
 							}
 						} );
+					} else if ($this_option.closest('.et-presets').length) {
+						//Presets should not inherit parent value as default value
+					} else {
+						var option_parent = $( '#' + option_id );
+
+						if ( option_parent.length ) {
+							var parent_value = option_parent.val();
+
+							// check whether module already has module_defaults, otherwise set it to empty array
+							current_module.attributes['module_defaults'] = current_module.attributes['module_defaults'] || [];
+							// update 'module_defaults' to avoid saving the default values into database
+							current_module.attributes['module_defaults'][ option_id ] = parent_value;
+
+							defaultKey = et_pb_get_default_key(option_parent);
+							parentDefault = option_parent.data(defaultKey) || "";
+							$this_option.data( 'default_inherited', parentDefault );
+							$this_option.data( defaultKey, parent_value );
+						}
 					}
 				} );
 			}
 		}
 
 		function et_pb_init_main_settings( $container, this_module_cid ) {
-			var $main_tabs                = $container.find( '.et-pb-options-tabs-links' ),
-				$settings_tab             = $container.find( '.et-pb-options-tab' ),
+			var module                       = ET_PageBuilder_Modules.findWhere( { cid : this_module_cid } );
+			var $main_tabs                   = $container.find( '.et-pb-options-tabs-links' );
+			var $settings_tab                = $container.find( '.et-pb-options-tab' );
 
-				$et_affect_fields         = $container.find( '.et-pb-affects' ),
+			var $et_affect_fields            = $container.find( '.et-pb-affects' );
+			var $et_responsive_affect_fields = $container.find( '.et-pb-responsive-affects' );
 
-				$main_custom_margin_field = $container.find( '.et_custom_margin_main' ),
-				$custom_margin_fields     = $container.find( '.et_custom_margin' ),
+			var $main_custom_margin_field    = $container.find( '.et_custom_margin_main' );
+			var $custom_margin_fields        = $container.find( '.et_custom_margin' );
 
-				$font_select              = $container.find( 'select.et-pb-font-select' ),
-				$font_style_fields        = $container.find( '.et_builder_font_style' ),
+			var $font_select                 = $container.find( '.et-pb-option--font' );
+			var $font_style_fields           = $container.find( '.et_builder_font_style' );
+			var $font_styles_selects         = $container.find( '.et_builder_font_weight, .et_pb_font_line_style_select, .et-pb-font-line-color-value' );
+			var $font_select_placeholder     = $container.find( '.et_pb_select_placeholder' );
 
-				$range_field              = $container.find( '.et-pb-range' ),
-				$range_input              = $container.find( '.et-pb-range-input' ),
+			var $text_align_selects          = $container.find( 'select.et-pb-text-align-select' );
+			var $text_align_button           = $container.find( '.et_builder_text_align' );
 
-				$advanced_tab             = $container.find( '.et-pb-options-tab-advanced' ),
-				$advanced_tab_settings    = $advanced_tab.find( '.et-pb-main-setting' ),
+			var $multiple_buttons_input      = $container.find( '.et_pb_multiple_buttons_wrapper input' );
+			var $multiple_buttons_button     = $container.find( '.et_builder_multiple_buttons_button' );
 
-				$custom_color_picker        = $container.find( '.et-pb-custom-color-picker' ),
-				$custom_color_choose_button = $container.find( '.et-pb-choose-custom-color-button' ),
+			var $range_field                 = $container.find( '.et-pb-range' );
+			var $range_input                 = $container.find( '.et-pb-range-input' );
 
-				$yes_no_button_wrapper = $container.find( '.et_pb_yes_no_button_wrapper' ),
-				$yes_no_button         = $container.find( '.et_pb_yes_no_button' ),
-				$yes_no_select         = $container.find( 'select' ),
-				$validate_unit_field   = $container.find( '.et-pb-validate-unit' ),
-				$transparent_bg_option = $container.find( '#et_pb_transparent_background' ),
+			var $advanced_tab                = $container.find( '.et-pb-options-tab-advanced' );
+			var $advanced_tab_settings       = $advanced_tab.find( '.et-pb-main-setting' );
 
-				$regular_input = $container.find( 'input.regular-text.et_pb_setting_mobile' ),
-				hidden_class = 'et_pb_hidden',
+			var $custom_color_picker         = $container.find( '.et-pb-custom-color-picker' );
+			var $custom_color_choose_button  = $container.find( '.et-pb-choose-custom-color-button' );
 
-				$custom_css_option = $container.find( '.et-pb-options-tab-custom_css .et-pb-option' )
+			var $select_with_option_groups   = $container.find( '.et-pb-option-container--select_with_option_groups select' );
 
-				$mobile_settings_toggle = $container.find( '.et-pb-mobile-settings-toggle' ),
-				$mobile_settings_tabs   = $container.find( '.et_pb_mobile_settings_tabs' ),
+			var $yes_no_button_wrapper       = $container.find( '.et_pb_yes_no_button_wrapper' );
+			var $yes_no_button               = $container.find( '.et_pb_yes_no_button' );
+			var $yes_no_select               = $container.find( '.et_pb_yes_no_button_wrapper select' );
+			var $validate_unit_field         = $container.find( '.et-pb-validate-unit' );
+			var $options_wrapper             = $container.find( '.et_options_list:not(.et_conditional_logic)' );
+			var $conditional_logic           = $container.find( '.et_conditional_logic' );
+			var $select_animation            = $container.find( '.et_select_animation' );
+			var $presets                     = $container.find( '.et-preset-container' );
+			var $background_fields           = $container.find( '.et-pb-option--background, .et-pb-option--background-field' );
+			var $regular_input               = $container.find( 'input.regular-text.et_pb_setting_mobile' );
+			var hidden_class                 = 'et_pb_hidden';
 
-				$checkboxes_set = $container.find( '.et_pb_checkboxes_wrapper' ),
-				$checkbox       = $checkboxes_set.find( 'input[type="checkbox"]' ),
+			var $custom_css_option           = $container.find( '.et-pb-options-tab-custom_css .et-pb-option' );
 
-				$section_bg_color_option = 'section' === $container.data( 'module_type' ) ? $container.find( '#et_pb_background_color' ) : '',
+			var $mobile_settings_toggle      = $container.find( '.et-pb-mobile-settings-toggle' );
+			var $mobile_settings_tabs        = $container.find( '.et_pb_mobile_settings_tabs' );
 
-				$gutter_width_option = $container.find( '#et_pb_gutter_width' ),
+			var $checkboxes_set              = $container.find( '.et_pb_checkboxes_wrapper' );
+			var $checkbox                    = $checkboxes_set.find( 'input[type="checkbox"]' );
 
-				$google_maps_api_option = $container.find( '#et_pb_google_api_key' ),
-				$google_maps_api_button = $container.find( '.et_pb_update_google_key' );
+			var $section_bg_color_option     = 'section' === $container.data( 'module_type' ) ? $container.find( '#et_pb_background_color' ) : '';
+
+			var $gutter_width_option         = $container.find( '#et_pb_gutter_width' );
+
+			var $google_maps_api_option      = $container.find( '#et_pb_google_api_key' );
+			var $google_maps_api_button      = $container.find( '.et_pb_update_google_key' );
+
+			var $id_field                    = $container.find('#et_pb_field_id');
+
+			var $tabbed_subtoggles           = $container.find('.et_pb_contains_tabbed_subtoggle');
 
 			if ( $google_maps_api_option.length ) {
 				$google_maps_api_button.attr( 'href', et_pb_options.options_page_url );
@@ -10575,6 +14030,40 @@ window.et_builder_version = '2.7.10';
 				// update default gutters
 				$gutter_width_option.siblings( '.et-pb-main-setting' ).data( 'default', et_pb_options.page_gutter_width );
 				$gutter_width_option.data( 'default', et_pb_options.page_gutter_width );
+			}
+
+			if ( $tabbed_subtoggles.length ) {
+				$tabbed_subtoggles.each( function() {
+					var $this_section = $( this );
+					var $navigation = $this_section.find( '.subtoggle_tabs_nav' );
+
+					// do not proceed if no navigation found
+					if ( $navigation.length < 1 || $navigation.find( '.subtoggle_tabs_nav_item' ).length < 1 ) {
+						return;
+					}
+
+					var navigation_item_width = ( 100/$navigation.find( '.subtoggle_tabs_nav_item' ).length ) + '%';
+
+					// adjust width of navigation tabs to fill the width of settings modal
+					$navigation.find( '.subtoggle_tabs_nav_item' ).css( { 'width' : navigation_item_width } );
+
+					// automatically open the first tab on load
+					$( $navigation.find( '.subtoggle_tabs_nav_item a' )[0] ).addClass( 'et-bb-active-sub-tab' );
+					$( $this_section.find( '.et_pb_tabbed_subtoggle' )[0] ).addClass( 'et-bb-active-subtoggle' );
+
+					$navigation.find( '.subtoggle_tabs_nav_item a' ).click( function( event ) {
+						event.preventDefault();
+
+						var $clicked_button = $( this );
+						var clicked_button_id = $clicked_button.data( 'tab_id' );
+
+						$this_section.find( '.subtoggle_tabs_nav_item a' ).removeClass( 'et-bb-active-sub-tab' );
+						$clicked_button.addClass( 'et-bb-active-sub-tab' );
+
+						$this_section.find( '.et_pb_tabbed_subtoggle' ).removeClass( 'et-bb-active-subtoggle' )
+						$this_section.find( "[data-tab_id='" + clicked_button_id + "']" ).addClass( 'et-bb-active-subtoggle' );
+					});
+				});
 			}
 
 			if ( $mobile_settings_tabs.length ) {
@@ -10656,7 +14145,7 @@ window.et_builder_version = '2.7.10';
 
 				last_edited_options[1] = typeof last_edited_options[1] !== 'undefined' ? last_edited_options[1] : '';
 
-				$last_edited_field.val( last_edited_options[0] + '|' + last_edited_options[1] );
+				$last_edited_field.val( last_edited_options[0] + '|' + last_edited_options[1] ).trigger( 'et_pb_setting:change' );
 
 				return false;
 			});
@@ -10766,22 +14255,37 @@ window.et_builder_version = '2.7.10';
 				et_pb_update_mobile_defaults( $( this ) );
 			});
 
-			$custom_color_picker.each( function() {
-				var $this_color_picker      = $(this),
-					this_color_picker_value = $this_color_picker.val(),
-					$container              = $this_color_picker.closest( '.et-pb-custom-color-container' ),
-					$choose_color_button    = $container.siblings( '.et-pb-choose-custom-color-button' ),
-					$main_color_picker      = $container.find( '.et-pb-color-picker-hex' );
+			$custom_color_picker.each(function() {
+				var $this_color_picker      = $(this);
+				var this_color_picker_value = $this_color_picker.val();
+				var $container              = $this_color_picker.closest('.et-pb-custom-color-container');
+				var $options_container      = $this_color_picker.closest('.et-pb-options-tab');
+				var $choose_color_button    = $container.siblings('.et-pb-choose-custom-color-button');
+				var old_color_option        = typeof $this_color_picker.data('old-option-ref') !== 'undefined' && '' !== $this_color_picker.data('old-option-ref') ? $this_color_picker.data('old-option-ref') : '';
+				var $old_color_el           = '' !== old_color_option ? $options_container.find('.et-pb-option-' + old_color_option) : '';
+				var $old_color_input        = '' !== $old_color_el && $old_color_el.length ? $old_color_el.find('input') : '';
+				var $main_color_picker      = $container.find('.et-pb-color-picker-hex');
+				var default_value           = et_pb_get_default_setting_value($main_color_picker).toLowerCase();
 
-				if ( '' === this_color_picker_value ) {
+				// process the value from old option if exists
+				if ('' !== $old_color_input) {
+					// get the value from old option only if new option is not set
+					if ('' === this_color_picker_value && '' !== $old_color_input.val()) {
+						this_color_picker_value = $old_color_input.val();
+					}
+					// always reset the old option to remove it from shortcode
+					$old_color_input.val('');
+				}
+
+				if ('' === this_color_picker_value || this_color_picker_value === default_value) {
 					return true;
 				}
 
-				$container.removeClass( hidden_class );
-				$choose_color_button.addClass( hidden_class );
+				$container.removeClass(hidden_class);
+				$choose_color_button.addClass(hidden_class);
 
-				$main_color_picker.wpColorPicker( 'color', this_color_picker_value );
-			} );
+				$main_color_picker.wpColorPicker('color', this_color_picker_value);
+			});
 
 			$custom_color_choose_button.click( function() {
 				var $this_el = $(this),
@@ -10791,23 +14295,35 @@ window.et_builder_version = '2.7.10';
 
 				$this_el.addClass( hidden_class );
 				$color_picker_container.removeClass( hidden_class );
+				$color_picker_container.find( '.wp-color-result' ).click();
 
 				$hidden_color_input.val( $color_picker.wpColorPicker( 'color' ) );
 
 				return false;
 			} );
 
-			// calculate the value for transparent bg option if plugin activated
-			if ( $transparent_bg_option.length && et_pb_options.is_plugin_used ) {
-				var is_default_value = typeof $transparent_bg_option.data( 'default' ) !== 'undefined' && 'default' === $transparent_bg_option.data( 'default' ) ? true : false,
-					bg_color_option_value = $container.find( '#et_pb_background_color' ).val();
+			$select_with_option_groups.each( function() {
+				var $value_field = $(this).siblings( 'input.et-pb-main-setting' ),
+					values       = $value_field.val().split( '|' ),
+					group        = values.length > 1 ? values[0] : '',
+					value        = values.length > 1 ? values[1] : values[0];
 
-				// default value for the option should be yes if custom color is not defined
-				if ( is_default_value && '' === bg_color_option_value ) {
-					$transparent_bg_option.val( 'on' );
-					$transparent_bg_option.trigger( 'change' );
+				if ( '' === group ) {
+					group = $(this).find(':selected').parent().attr('label');
+					$value_field
+						.val( group + '|' + value )
+						.trigger( 'change' );
 				}
-			}
+
+				$(this).val( value );
+
+				$(this).change( function() {
+					var group = $(this).find(':selected').parent().attr('label') || '';
+					$value_field
+						.val( group + '|' + $(this).val() )
+						.trigger( 'change' );
+				});
+			});
 
 			$yes_no_button_wrapper.each( function() {
 				var $this_el = $( this ),
@@ -10821,6 +14337,622 @@ window.et_builder_version = '2.7.10';
 					$this_switcher.removeClass( 'et_pb_on_state' );
 					$this_switcher.addClass( 'et_pb_off_state' );
 				}
+			});
+
+			$options_wrapper.each( function() {
+				var $current_wrapper = $(this),
+					$options_list    = $current_wrapper.find( 'textarea' ),
+					options_value    = $options_list.val(),
+					debounce;
+
+				$current_wrapper.on( 'keydown', 'input[type=text]', function(event) {
+					if ('Enter' === event.key) {
+						event.stopPropagation();
+					}
+				});
+
+				$current_wrapper.on( 'keyup', 'input[type=text]', function(event) {
+					clearTimeout( debounce );
+
+					if ( 'Enter' === event.key ) {
+						add_options_list_row( $(this), false, true );
+					}
+
+					debounce = setTimeout( function() {
+						update_options_list( $current_wrapper, $options_list );
+					}, 500 );
+				} );
+
+				$current_wrapper.on( 'click', '.et-pb-add-sortable-option', function( event ) {
+					event.preventDefault();
+
+					add_options_list_row( $(this), true, true );
+				} );
+
+				$current_wrapper.on( 'click', '.et_options_list_copy', function( event ) {
+					event.preventDefault();
+
+					add_options_list_row( $(this) );
+				} );
+
+				$current_wrapper.on( 'click', '.et_options_list_remove', function( event ) {
+					event.preventDefault();
+
+					if ( $current_wrapper.find( '.et_options_list_row' ).length === 1 ) {
+						$current_wrapper.find( '.et_options_list_row:first input[type=text]' ).val( '' );
+						update_options_list( $current_wrapper, $options_list );
+						return;
+					}
+
+					var $parentRow = $(this).parents( '.et_options_list_row' );
+
+					$parentRow.remove();
+
+					update_options_list( $current_wrapper, $options_list );
+				} );
+
+				$current_wrapper.on( 'click', '.et_options_list_check', function( event ) {
+					event.preventDefault();
+
+					var $check  = $(this);
+					var isRadio = $check.parent().hasClass('et_options_list_row_radio');
+
+					if ( isRadio ) {
+						$current_wrapper.find( '.et_options_list_check' ).not( $check ).removeClass( 'et_options_list_checked' );
+					}
+
+					$check.toggleClass( 'et_options_list_checked' );
+
+					update_options_list( $current_wrapper, $options_list );
+				} );
+
+				if ( ! options_value ) {
+					var current_cid  = parseInt( $current_wrapper.parents('[data-parent-cid]').attr('data-parent-cid') );
+					var current_data = ET_PageBuilder_Modules.findWhere( { cid : current_cid } );
+
+					// This is for backwards compatibility with the old implementation where
+					// there was an option for checking the checkbox by default
+					var is_checked = ! _.isUndefined( current_data.attributes.et_pb_checkbox_checked ) && 'on' === current_data.attributes.et_pb_checkbox_checked;
+
+					// This helps with migrating the old checkboxes to the new functionality
+					// by adding the existing title as the first checkbox in the list
+					var default_title = ! _.isUndefined( current_data.attributes.et_pb_field_title ) ? current_data.attributes.et_pb_field_title : '';
+
+					options_value = JSON.stringify([{
+						value   : default_title,
+						checked : true === is_checked ? 1 : 0
+					}]);
+
+					$options_list.val(options_value);
+
+					if ( 'checkbox' === current_data.attributes.et_pb_field_type && $current_wrapper.find('.et_options_list_row_checkbox').length > 0 ) {
+						setTimeout(function() {
+							$('#et_pb_field_title').val('');
+						}, 0);
+					}
+				}
+
+				init_options_list( $current_wrapper, $options_list, options_value );
+
+				$current_wrapper.children( '.et_options_rows' ).sortable({
+					axis : 'y',
+					containment: 'parent',
+					update: function() {
+						update_options_list( $current_wrapper, $options_list );
+						setTimeout( function() {
+							$('.et_options_rows').children().css({
+								position: '',
+								top: '',
+								left: ''
+							});
+						}, 700);
+					}
+				});
+			} );
+
+			function add_options_list_row( $button, newRow, reset ) {
+				var rowSelector = '.et_options_list_row';
+
+				if ( newRow ) {
+					rowSelector = '.et_options_list_row:last';
+				}
+
+				// Target the clicked row
+				var $parentRow = $button.parents( rowSelector );
+
+				if ( newRow ) {
+					$parentRow = $button.parent().find( rowSelector );
+				}
+
+				// Create a clone of the clicked row
+				var $newRow = $parentRow.clone();
+
+				// Remove the checked status for the new row to avoid multiple checked options
+				$newRow.find( '.et_options_list_checked' ).removeClass( 'et_options_list_checked' );
+
+				// Reset the value for new rows
+				if ( reset ) {
+					$newRow.find( 'input[type=text]' ).val('');
+				}
+
+				// Append the new row
+				$newRow.insertAfter( $parentRow );
+				$newRow.find( 'input[type=text]' ).focus();
+			}
+
+			function init_options_list( $wrapper, $options_list, options_value ) {
+				if ( '' === options_value || _.isUndefined( options_value ) ) {
+					return;
+				}
+
+				var $row  = $wrapper.find( '.et_options_list_row:first' );
+				var $rows = $('<div>').addClass('et_options_rows');
+
+				try {
+					options_value = JSON.parse( options_value );
+				} catch (e) {
+					// ContactFormItemOptionsSerialization migration implementation for BB.
+					options_value = options_value.replace(/\{("value":")(.*?)(",)("checked":.,?.*?)\}/gi, function(match, m1, m2, m3, m4) {
+						var escapedContent = m2.replace(/(.)?(")/gi, function(match, m1, m2) {
+							if (m1 !== '\\') {
+								return m1 + '\\' + m2;
+							}
+							return match;
+						} );
+						return '{' + m1 + escapedContent + m3 + m4 + '}';
+					});
+					options_value = JSON.parse(options_value);
+				}
+
+				for ( var i = 0; i < options_value.length; i++ ) {
+					var option    = options_value[i];
+					var isChecked = 1 === option.checked;
+
+					var $newRow = $row.clone();
+					$newRow.find( 'input[type=text]' ).val( option.value );
+					$newRow.find( '.et_options_list_check' ).toggleClass( 'et_options_list_checked', isChecked );
+					$newRow.appendTo( $rows );
+				}
+
+				$rows.insertAfter( $row );
+				$row.remove();
+			}
+
+			function update_options_list( $wrapper, $options_list ) {
+				var options = [];
+
+				$options_list.val( '' );
+
+				$wrapper.find( 'input[type=text]' ).each( function() {
+					var $input        = $(this);
+					var isChecked     = $input.prev( '.et_options_list_checked' ).length > 0;
+					var option_object = {
+						value: $input.val(),
+						checked: 0
+					};
+
+					if ( '' === option_object.value ) {
+						return;
+					}
+
+					if ( isChecked ) {
+						option_object.checked = 1;
+					}
+
+					options.push( option_object );
+				} );
+
+				$options_list.val( JSON.stringify( options ) );
+			}
+
+			$conditional_logic.each( function() {
+				/* Parse the conditional logic settings */
+				var $logicSet = $(this);
+				var logicData = $logicSet.find('textarea').val();
+				logicData     = '' !== logicData ? logicData : '[]';
+				logicData     = JSON.parse( logicData );
+
+				/* Create an entry for each setting's row */
+				var $row = $(this).find('.et_options_list_row');
+
+				if ( 1 < logicData.length ) {
+					for ( var i = 1; i < logicData.length; i++ ) {
+						var $cloned_row = $row.clone();
+
+						$logicSet.find('.et_options_list_row:last').after( $cloned_row );
+					}
+				}
+
+				/* Wait for the Backbone templates to render */
+				setTimeout( function() {
+					/* Setup datastore */
+					var datastore = {};
+					var $wrapper  = $logicSet.parents( '.et_pb_modal_settings_container_step2' );
+					var parentID  = $wrapper.data('parent-cid');
+					var $parent   = $wrapper.prev( '.et_pb_modal_settings_container' );
+					var $siblings = $parent.find( 'ul.et-pb-sortable-options li:not([data-cid="' + parentID + '"])' );
+					var $field    = $logicSet.find('.et_conditional_logic_field');
+
+					$siblings.each( function() {
+						var $sibling     = $(this);
+						var siblingCID   = $sibling.data('cid');
+						var siblingData  = ET_PageBuilder_Modules.findWhere( { cid : siblingCID } );
+						var siblingAttrs = siblingData.attributes;
+						var fieldID      = siblingAttrs.et_pb_field_id;
+
+						if ( '' === fieldID ) {
+							return;
+						}
+
+						fieldID = fieldID.toLowerCase();
+
+						var fieldType  = ! _.isUndefined( siblingAttrs.et_pb_field_type ) ? siblingAttrs.et_pb_field_type : 'input';
+						var fieldTitle = ! _.isUndefined( siblingAttrs.et_pb_field_title ) ? siblingAttrs.et_pb_field_title : fieldID;
+						fieldTitle     = '' !== fieldTitle.trim() ? fieldTitle : fieldID;
+
+						var $option    = $('<option data-type="' + fieldType + '" value="' + fieldID + '">' + fieldTitle + '</option>');
+
+						$field.append( $option );
+
+						datastore[fieldID] = siblingAttrs;
+					});
+
+					var firstKey = '';
+
+					for (var prop in datastore) {
+						if ( datastore.hasOwnProperty(prop) ) {
+							firstKey = prop;
+							break;
+						}
+					}
+
+					var firstID = datastore[firstKey].et_pb_field_id.toLowerCase();
+
+					if ( 0 === logicData.length && 0 !== datastore.length ) {
+						logicData.push({
+							field    : firstID,
+							condition: 'is',
+							value    : ''
+						});
+					}
+
+					for ( var i = 0; i < logicData.length; i++ ) {
+						var row            = logicData[i];
+						var $row           = $logicSet.find('.et_options_list_row').eq(i);
+						var $field         = $row.find('.et_conditional_logic_field');
+						var $condition     = $field.next('.et_conditional_logic_condition');
+						var fieldData      = datastore[firstID];
+						var fieldType      = 'input';
+						var fieldValue     = '';
+						var fieldID        = _.isUndefined( row.field ) || _.isUndefined( datastore[row.field] ) ? firstID : row.field;
+						var fieldCondition = _.isUndefined( row.condition ) ? 'is' : row.condition;
+
+						if ( ! _.isUndefined( datastore[row.field] ) ) {
+							fieldData  = datastore[row.field];
+							fieldValue = row.value;
+							fieldType  = _.isUndefined( fieldData.et_pb_field_type ) ? 'input' : fieldData.et_pb_field_type;
+						}
+
+						$row.find('.et_conditional_logic_value').remove();
+
+						var $value = et_pb_create_conditional_logic_value_field( fieldType, fieldValue, fieldData, $logicSet );
+
+						$value.insertAfter( $condition );
+
+						$field.val( fieldID );
+						$condition.val( fieldCondition );
+					}
+
+					et_pb_update_conditional_logic( $logicSet );
+
+					$logicSet.on('change', '.et_conditional_logic_field', function() {
+						var $field     = $(this);
+						var field      = $field.val();
+						var $condition = $field.next('.et_conditional_logic_condition');
+						var $row       = $field.parents('.et_options_list_row');
+
+						var fieldData     = datastore[field];
+						var fieldValue    = '';
+						var fieldType     = _.isUndefined( fieldData.et_pb_field_type ) ? 'input' : fieldData.et_pb_field_type;
+						var selectedValue = $row.attr('data-selected-value');
+
+						if ( selectedValue && ! _.includes(['radio', 'select', 'checkbox'], fieldType) ) {
+							fieldValue = selectedValue;
+						}
+
+						$row.find('.et_conditional_logic_value').remove();
+
+						var $value = et_pb_create_conditional_logic_value_field( fieldType, fieldValue, fieldData, $logicSet );
+
+						$value.insertAfter( $condition );
+
+						et_pb_update_conditional_logic( $logicSet );
+					});
+
+					$logicSet.on('change', '.et_conditional_logic_condition, .et_conditional_logic_value', function() {
+						et_pb_update_conditional_logic( $logicSet );
+					});
+
+					$logicSet.on('click', '.et-pb-add-sortable-option', function(event) {
+						event.preventDefault();
+
+						et_pb_add_conditional_logic_row( $(this), datastore );
+					});
+
+					$logicSet.on('click', '.et_options_list_remove', function(event) {
+						event.preventDefault();
+
+						et_pb_remove_conditional_logic_row( $(this) );
+					});
+				}, 0);
+			} );
+
+			// Replace any spaces in field ID with underscores
+			$id_field.on('focusout', function() {
+				var sanitizedID = $(this).val().replace(/\s+/g, '_');
+
+				var $wrapper  = $id_field.parents( '.et_pb_modal_settings_container_step2' );
+				var $parent   = $wrapper.prev( '.et_pb_modal_settings_container' );
+				var parentID  = $wrapper.data('parent-cid');
+				var $siblings = $parent.find( 'ul.et-pb-sortable-options li:not([data-cid="' + parentID + '"])' );
+				var siblings  = [];
+
+				$siblings.each( function() {
+					var $sibling     = $(this);
+					var siblingCID   = $sibling.data('cid');
+					var siblingData  = ET_PageBuilder_Modules.findWhere( { cid : siblingCID } );
+					var siblingAttrs = siblingData.attributes;
+
+					siblings.push( siblingAttrs );
+				});
+
+				// Assign a starting placeholder ID if it is blank
+				if ( '' === sanitizedID ) {
+					var currentData  = ET_PageBuilder_Modules.findWhere( { cid : parentID } );
+					var module_order = parseInt( currentData.attributes.module_order );
+					sanitizedID      = 'Field_' + ( module_order + 1 );
+				}
+
+				// Check siblings for duplicate IDs
+				while(true) {
+					var hasDuplicates = false;
+
+					for ( var i = 0; i < siblings.length; i++ ) {
+						var sibling = siblings[i];
+
+						// Unlike VB we don't need to check if the sibling is the same
+						// as the current module in BB, since we already exlude it
+						// when generating the siblings data array
+
+						var siblingID = sibling.et_pb_field_id;
+
+						if ( siblingID.toLowerCase() === sanitizedID.toLowerCase() ) {
+							sanitizedID	 = sanitizedID + '_2';
+							hasDuplicates = true;
+							break;
+						}
+					}
+
+					if ( false === hasDuplicates ) {
+						break;
+					}
+				}
+
+				$(this).val( sanitizedID );
+			});
+
+			function et_pb_create_conditional_logic_value_field( fieldType, fieldValue, fieldData, $wrapper ) {
+				var $value = null;
+
+				switch( fieldType ) {
+					case 'checkbox':
+					case 'radio':
+					case 'select':
+						var optionsString;
+
+						switch( fieldType ) {
+							case 'checkbox':
+								optionsString = fieldData.et_pb_checkbox_options;
+								break;
+							case 'radio':
+								optionsString = fieldData.et_pb_radio_options;
+								break;
+							case 'select':
+								optionsString = fieldData.et_pb_select_options;
+								break;
+						}
+
+						options = et_pb_jsonify( optionsString );
+
+						$value = $('<select></select>');
+
+						$.each( options, function( optionIndex, optionData ) {
+							var $option = $('<option value="' + optionData.value + '">' + optionData.value + '</option>');
+							$value.append( $option );
+
+							if ( '' === fieldValue ) {
+								return;
+							}
+
+							$value.val( fieldValue );
+						});
+
+						break;
+					default:
+						$value = $('<input type="text" value="' + fieldValue + '" />');
+						break;
+				}
+
+				$value.addClass('et_conditional_logic_value');
+
+				return $value;
+			}
+
+			function et_pb_add_conditional_logic_row( $button, datastore ) {
+				if ( 0 === datastore.length ) {
+					return;
+				}
+
+				var $wrapper   = $button.parents('.et_conditional_logic');
+				var $row       = $wrapper.find('.et_options_list_row:last');
+				var $newRow    = $row.clone();
+				var $condition = $newRow.find('.et_conditional_logic_condition');
+
+				var firstKey = '';
+
+				for (var prop in datastore) {
+					if ( datastore.hasOwnProperty(prop) ) {
+						firstKey = prop;
+						break;
+					}
+				}
+
+				var fieldData  = datastore[firstKey];
+				var fieldValue = '';
+				var fieldType  = _.isUndefined( fieldData.et_pb_field_type ) ? 'input' : fieldData.et_pb_field_type;
+
+				$newRow.find('.et_conditional_logic_value').remove();
+
+				var $value = et_pb_create_conditional_logic_value_field( fieldType, fieldValue, fieldData, $wrapper );
+
+				$value.insertAfter( $condition );
+
+				$condition.val( 'is' );
+
+				$newRow.insertAfter($row);
+
+				et_pb_update_conditional_logic( $wrapper );
+			}
+
+			function et_pb_remove_conditional_logic_row( $button ) {
+				var $row     = $button.parent('.et_options_list_row');
+				var $wrapper = $row.parent('.et_conditional_logic');
+
+				if ( 1 === $wrapper.find('.et_options_list_row').length ) {
+					return;
+				}
+
+				$row.remove();
+
+				et_pb_update_conditional_logic( $wrapper );
+			}
+
+			function et_pb_update_conditional_logic( $wrapper ) {
+				var $textarea = $wrapper.find('textarea');
+				var logic     = [];
+
+				$wrapper.find('.et_options_list_row').each(function() {
+					var $row          = $(this);
+					var field         = $row.find('.et_conditional_logic_field').val();
+					var condition     = $row.find('.et_conditional_logic_condition').val();
+					var $value        = $row.find('.et_conditional_logic_value');
+					var value         = $value.val();
+					var fieldType     = $row.find('.et_conditional_logic_field').find('option:selected').data('type');
+					var selectedValue = _.includes(['radio', 'select', 'checkbox'], fieldType) ? false : value;
+					var logicSet      = {
+						field    : field,
+						condition: condition,
+						value    : value
+					};
+
+					if ( false !== selectedValue ) {
+						$row.attr('data-selected-value', selectedValue);
+					}
+
+					logic.push( logicSet );
+
+					$value.prop('disabled', false);
+
+					if ( _.includes(['is empty', 'is not empty'], condition) ) {
+						$value.prop('disabled', true);
+					}
+				});
+
+				$textarea.val( JSON.stringify( logic ) );
+			}
+
+			function et_pb_jsonify( escapedString ) {
+				if ( '' === escapedString ) {
+					escapedString = '[]';
+				}
+
+				var unescapedString;
+
+				unescapedString = escapedString.replace( /%22/g, "\"" );
+				unescapedString = unescapedString.replace( /%91/g, "[" );
+				unescapedString = unescapedString.replace( /%92/g, "\\" );
+				unescapedString = unescapedString.replace( /%93/g, "]" );
+
+				var string_json  = JSON.parse( unescapedString );
+
+				return string_json;
+			}
+
+			$select_animation.each(function() {
+				var $current_select  = $(this);
+				var $animation_style = $current_select.find('input[type="hidden"]');
+				var current_value    = $animation_style.val();
+
+				$current_select.find('.et_animation_button_title[data-value="' + current_value + '"]').parent().addClass('et_active_animation');
+
+				$current_select.on('click', '.et_animation_button a', function(event) {
+					event.preventDefault();
+
+					var $animation_button = $(this);
+
+					if ( $animation_button.hasClass('et_active_animation') ) {
+						return;
+					}
+
+					var animation_type = $animation_button.find('.et_animation_button_title').attr('data-value');
+					animation_type     = animation_type.trim();
+
+					$current_select.find('.et_animation_button a').removeClass('et_active_animation');
+
+					$animation_button.addClass('et_active_animation');
+					$animation_style.val( animation_type ).trigger('change');
+				})
+			});
+
+			$presets.each(function() {
+				var $this = $(this);
+				var $style = $this.find('input[type="hidden"]');
+				var active_class = 'et-preset-active';
+				var change_value = function(id, value){
+					var el = $this.closest('.et-pb-options-toggle-container').find('#et_pb_' + id);
+					el.val(value);
+					el.trigger('change');
+				};
+				var update_presets = function () {
+					$this.find('.et-preset').removeClass(active_class);
+					$this.find('.et-preset[data-value="' + $style.val() + '"]').addClass(active_class);
+				};
+
+				$this.on('click', '.et-preset', function(event) {
+					var $preset = $(this);
+					var type = $preset.attr('data-value').trim();
+					var fields = {};
+					event.preventDefault();
+
+					if ( $preset.hasClass(active_class) ) {
+						return;
+					}
+
+					$this.find('.et-preset').removeClass(active_class);
+
+					$preset.addClass(active_class);
+					$style.val( type ).trigger('change');
+
+					try	{
+						fields = JSON.parse($preset.attr('data-fields'));
+					} catch(e){
+						fields = [];
+					}
+
+					$.each(fields, change_value);
+				});
+				$style.on('change', update_presets);
+				update_presets();
 			});
 
 			$yes_no_button.click( function() {
@@ -10856,6 +14988,220 @@ window.et_builder_version = '2.7.10';
 
 			});
 
+			if ( $background_fields.length ) {
+				$background_fields.each(function() {
+					var $background_fields_ui = $(this),
+						is_background = $background_fields_ui.is('.et-pb-option--background'),
+						wrapper_class = is_background ? '.et-pb-option--background' : '.et-pb-option--background-field',
+						base_name = $background_fields_ui.find( '.et-pb-option-container-inner' ).data( 'base_name' ),
+						base_prefix = is_background ? '' : base_name + '_',
+						tab_nav_count = $background_fields_ui.find('.et_pb_background-tab-navs li').size();
+
+					$background_fields_ui.find('.et_pb_background-tab:first').show();
+					$background_fields_ui.find('.et_pb_background-tab-navs li:first a').addClass('active');
+
+					// Tab Nav Width Adjustment
+					if ( 4 !== tab_nav_count) {
+						$background_fields_ui.find('.et_pb_background-tab-navs li').css({ width: (100/tab_nav_count) + '%'});
+					}
+
+					// Background field tab navigation
+					$background_fields_ui.find('.et_pb_background-tab-navs').on( 'click', 'a', function(e) {
+						e.preventDefault();
+
+						var $clicked_tab = $(this),
+							clicked_tab = $clicked_tab.attr('data-tab'),
+							$wrapper = $clicked_tab.closest( wrapper_class );
+
+						$wrapper.find('.et_pb_background-tab-navs a').removeClass('active');
+						$clicked_tab.addClass('active');
+						$wrapper.find('.et_pb_background-tab:visible').hide();
+						$wrapper.find('.et_pb_background-tab[data-tab="' + clicked_tab + '"]').fadeIn();
+						$wrapper.find('.et_pb_background-tab[data-tab="' + clicked_tab + '"]').find( '.et-pb-affects' ).trigger( 'change' );
+
+						et_pb_update_background_tab_filled_status( $clicked_tab.closest( wrapper_class ), false );
+					});
+
+					// Gradient preview
+					var $gradient_preview_tab    = $background_fields_ui.find('.et_pb_background-tab--gradient'),
+						$gradient_preview        = $gradient_preview_tab.find('.et-pb-option-preview'),
+						$gradient_preview_add    = $gradient_preview.find('.et-pb-option-preview-button--add'),
+						$gradient_preview_swap   = $gradient_preview.find('.et-pb-option-preview-button--swap'),
+						$gradient_preview_delete = $gradient_preview.find('.et-pb-option-preview-button--delete'),
+						use_color_gradient       = is_background ? 'use_background_color_gradient' : base_name + '_use_color_gradient',
+						$use_gradient_ui         = $gradient_preview_tab.find('.et_pb_background-option--' + use_color_gradient + ' .et_pb_yes_no_button'),
+						$use_gradient_input      = $gradient_preview_tab.find('.et_pb_background-option--' + use_color_gradient + ' select'),
+						$gradient_start_input    = $gradient_preview_tab.find( '.et_pb_background-option--' + base_name + '_color_gradient_start .wp-color-picker' ),
+						gradient                 = et_pb_get_gradient( $gradient_preview_tab, base_name );
+
+					// Has gradient color
+					if ( gradient ) {
+						$gradient_preview.css({
+							backgroundImage: gradient
+						});
+
+						$gradient_preview.removeClass( 'et-pb-option-preview--empty' );
+					}
+
+					$gradient_preview.click(function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						if ( ! $gradient_preview.hasClass('et-pb-option-preview--empty') ) {
+							$gradient_start_input.wpColorPicker('open', true);
+							return;
+						}
+
+						$use_gradient_ui.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
+						$use_gradient_input.val( 'on' ).trigger( 'change' );
+
+						$gradient_preview.removeClass( 'et-pb-option-preview--empty' );
+					});
+
+					$gradient_preview_add.click(function(e) {
+						e.stopPropagation();
+						$use_gradient_ui.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
+						$use_gradient_input.val( 'on' ).trigger( 'change' );
+
+						$gradient_preview.removeClass( 'et-pb-option-preview--empty' );
+					});
+
+					$gradient_preview_delete.click(function(e) {
+						e.stopPropagation();
+
+						$use_gradient_ui.removeClass( 'et_pb_on_state' ).addClass( 'et_pb_off_state' );
+						$use_gradient_input.val( 'off' ).trigger( 'change' );
+
+						$gradient_preview.addClass( 'et-pb-option-preview--empty' );
+					});
+
+					$gradient_preview_swap.click(function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						var $background = $(this).closest( wrapper_class ),
+							$start      = $background.find( '.et_pb_background-option--' + base_name + '_color_gradient_start .et-pb-color-picker-hex' ),
+							$end        = $background.find( '.et_pb_background-option--' + base_name + '_color_gradient_end .et-pb-color-picker-hex' ),
+							startValue  = $start.val(),
+							endValue    = $end.val();
+
+						// Swap color
+						$start.val( endValue ).trigger( 'change' );
+						$end.val( startValue ).trigger( 'change' );
+					});
+
+					$gradient_preview_tab.on( 'change input keyup', 'select, input[type="text"], input[type="range"]', function() {
+						et_pb_update_gradient_preview( $(this) );
+					});
+
+					// Determine filled tab state
+					function et_pb_update_background_tab_filled_status( $background_fields_ui, activate_filled_tab ) {
+						$background_fields_ui.find( '.et_pb_background-tab' ).each(function() {
+							var $background_tab     = $(this),
+								tab_status          = false,
+								background_tab_name = $background_tab.attr( 'data-tab' ),
+								$background_tab_nav = $background_fields_ui.find( '.et_pb_background-tab-nav[data-tab="' + background_tab_name + '"]' );
+
+							switch( background_tab_name ) {
+								case( 'color' ) :
+									var $use_background_color = $background_tab.find( '.et_pb_background-option--use_background_color' ),
+										$background_color = $background_tab.find( '.et_pb_background-option--' + base_name + '_color' );
+
+									if ( $use_background_color.length && $background_color.length ) {
+										tab_status = 'on' === $use_background_color.find( 'select option:selected' ).val() && '' !== $background_color.find( '.et-pb-color-picker-hex' ).val();
+									} else if ( ! $use_background_color.length && $background_color.length ) {
+										tab_status = '' !== $background_color.find( '.et-pb-color-picker-hex' ).val();
+									}
+
+									break;
+								case( 'gradient' ) :
+									var use_background_color_gradient = $background_tab.find( '.et_pb_background-option--' + use_color_gradient + ' select option:selected' ).val();
+
+									if ( 'on' === use_background_color_gradient ) {
+										tab_status = true;
+									}
+
+									break;
+								case( 'image' ) :
+									var background_image = $background_tab.find( '.et_pb_background-option--' + base_name + '_image .et-pb-upload-field' ).val() || $background_tab.find( '.et_pb_background-option--background_url .et-pb-upload-field' ).val();
+
+									if ( ! _.isUndefined( background_image ) && '' !== background_image ) {
+										tab_status = true;
+									}
+
+									break;
+								case( 'video' ) :
+									var background_video_mp4 = $background_tab.find( '.et_pb_background-option--' + base_name + '_video_mp4 .et-pb-upload-field' ).val(),
+										background_video_webm = $background_tab.find( '.et_pb_background-option--' + base_name + '_video_webm .et-pb-upload-field' ).val();
+
+									if ( ( ! _.isUndefined( background_video_mp4 ) && '' !== background_video_mp4 ) || ( ! _.isUndefined( background_video_webm ) && '' !== background_video_webm ) ) {
+										tab_status = true;
+									}
+
+									break;
+							}
+
+							if ( tab_status ) {
+								$background_tab_nav.addClass( 'et-pb-filled' );
+
+								if ( activate_filled_tab ) {
+									$background_fields_ui.find( '.et_pb_background-tab' ).removeAttr( 'style' );
+									$background_tab_nav.trigger( 'click' );
+								}
+							} else {
+								$background_tab_nav.removeClass( 'et-pb-filled' );
+							}
+						});
+					}
+
+					et_pb_update_background_tab_filled_status( $background_fields_ui, true );
+
+					// Update image preview panel whenever these fields are changed
+					var column_index = $background_fields_ui.find( '.et-pb-option-container--background' ).attr( 'data-column-index' ),
+						field_suffix = typeof column_index === 'undefined' ? '' : '_' + column_index,
+						image_preview_affecting_fields = [
+							'#et_pb_' + base_name + '_color' + field_suffix,
+							'#et_pb_use_background_color', // Call to Action
+							'#et_pb_' + base_name + '_color_gradient_start' + field_suffix,
+							'#et_pb_' + base_name + '_color_gradient_end' + field_suffix,
+							'#et_pb_' + use_color_gradient + field_suffix,
+							'#et_pb_' + base_name + '_color_gradient_type' + field_suffix,
+							'#et_pb_' + base_name + '_color_gradient_direction' + field_suffix,
+							'#et_pb_' + base_name + '_color_gradient_direction_radial' + field_suffix,
+							'#et_pb_' + base_name + '_color_gradient_start_position' + field_suffix,
+							'#et_pb_' + base_name + '_color_gradient_end_position' + field_suffix,
+							typeof column_index === 'undefined' ? '#et_pb_bg_img' + field_suffix : '#et_pb_background_image',
+							'#et_pb_background_url', // Fullwidth Header
+							'#et_pb_' + base_prefix + 'parallax' + field_suffix,
+							'#et_pb_' + base_prefix + 'parallax_method' + field_suffix,
+							'#et_pb_' + base_name + '_size' + field_suffix,
+							'#et_pb_' + base_name + '_position' + field_suffix,
+							'#et_pb_' + base_name + '_repeat' + field_suffix,
+							'#et_pb_' + base_name + '_blend' + field_suffix,
+							'.et-pb-range'
+						];
+
+					$background_fields_ui.find( image_preview_affecting_fields.join( ', ' ) ).change( function() {
+						et_pb_generate_preview_content( $background_fields_ui.find( '.et_pb_background-tab--image .et-pb-upload-button' ) );
+					} );
+
+					// Some background image is overwritten by featured image. Need to wait until DOM is inserted
+					setTimeout(function() {
+						if ( $( '#et_pb_featured_placement' ).length ) {
+							$('#et_pb_featured_placement').change(function() {
+								et_pb_generate_preview_content( $background_fields_ui.find( '.et_pb_background-tab--image .et-pb-upload-button' ) );
+							});
+						}
+
+						if ( $( '#et_pb_featured_image' ).length ) {
+							$('#et_pb_featured_image').change(function() {
+								et_pb_generate_preview_content( $background_fields_ui.find( '.et_pb_background-tab--image .et-pb-upload-button' ) );
+							});
+						}
+					}, 700);
+				});
+			}
+
 			$main_tabs.find( 'li a' ).click( function() {
 				var $this_el              = $(this),
 					tab_index             = $this_el.closest( 'li' ).index(),
@@ -10876,8 +15222,6 @@ window.et_builder_version = '2.7.10';
 
 						$next_tab.css( { 'display' : 'block', 'opacity' : 0 } ).stop( true, true ).animate( { opacity : 1 }, fade_speed, function() {
 							var $this = $(this);
-
-							//et_pb_update_affected_fields( $et_affect_fields );
 
 							if ( ! $this.find( '.et-pb-option:visible' ).length && ! $next_tab.hasClass( 'et-pb-options-tab-view_stats' ) ) {
 								$this.append( '<p class="et-pb-all-options-hidden">' + et_pb_options.all_tab_options_hidden + '<p>' );
@@ -10942,15 +15286,21 @@ window.et_builder_version = '2.7.10';
 			$custom_margin_fields.change( function() {
 				var $this_el    = $(this),
 					this_device = typeof $this_el.data( 'device' ) !== 'undefined' ? $this_el.data( 'device' ) : 'all',
-					$container  = $this_el.closest( '.et_custom_margin_padding' ),
+					$container  = $this_el.closest( '.et_margin_padding' ),
 					$main_container = $container.closest( '.et-pb-option-container' ),
 					$mobile_toggle = $main_container.find( '.et-pb-mobile-settings-toggle' ),
 					$main_field = 'all' === this_device ? $container.find( '.et_custom_margin_main' ) : $container.find( '.et_custom_margin_main.et_pb_setting_mobile_' + this_device ),
 					fields_selector = 'all' === this_device ? '.et_custom_margin' : '.et_custom_margin.et_pb_setting_mobile_' + this_device,
-					margin      = '';
+					margin      = '',
+					$option = $this_el.closest( '.et-pb-option' ),
+					option_name = $option.data( 'option_name' ),
+					property_map = {
+						custom_padding: 'padding',
+						custom_margin: 'margin'
+					};
 
 				$container.find( fields_selector ).each( function() {
-					margin += $.trim( et_pb_sanitize_input_unit_value( $(this).val(), $(this).hasClass( 'auto_important' ) ) ) + '|';
+					margin += $.trim( et_pb_sanitize_input_unit_value( $(this).val(), $(this).hasClass( 'auto_important' ), undefined, property_map[option_name] ) ) + '|';
 				} );
 
 				margin = margin.slice( 0, -1 );
@@ -10968,58 +15318,207 @@ window.et_builder_version = '2.7.10';
 
 			$font_style_fields.click( function() {
 				var $this_el = $(this);
+				var $options_container = $this_el.closest('.et_builder_font_styles');
+				var related_options = [['uppercase', 'capitalize'], ['underline', 'line_through']];
+				var button_name = $this_el.data('button_name');
+				var $main_container = $this_el.closest( '.et-pb-option-container--font' );
 
 				$this_el.toggleClass( 'et_font_style_active' );
 
-				$font_select.trigger( 'change' );
+				// Option can affect other options, i.e. enabling one option from set disables other options
+				// Check if one of the related options enabled and disable others
+				_.forEach( related_options, function(options_set) {
+					if ( -1 !== _.indexOf( options_set, button_name ) ) {
+						_.forEach( options_set, function(related_option) {
+							if ( related_option !== button_name ) {
+								$options_container.find('.et_builder_' + related_option + '_font').removeClass( 'et_font_style_active' );
+							}
+						});
+					}
+				});
+
+				et_pb_update_font_settings( $this_el.closest( '.et-pb-option-container--font' ) );
+				et_pb_setup_font_setting( $this_el.closest( '.et-pb-option--font' ) );
 
 				return false;
 			} );
 
-			$font_select.change( function() {
-				var $this_el           = $(this),
-					$main_option       = $this_el.siblings( 'input.et-pb-font-select' ),
-					$style_options     = $this_el.siblings( '.et_builder_font_styles' ),
-					$bold_option       = $style_options.find( '.et_builder_bold_font' ),
-					$italic_option     = $style_options.find( '.et_builder_italic_font' ),
-					$uppercase_option  = $style_options.find( '.et_builder_uppercase_font' ),
-					$underline_option  = $style_options.find( '.et_builder_underline_font' ),
-					style_active_class = 'et_font_style_active',
-					font_name          = $this_el.val(),
-					result             = '';
-
-				result += font_name !== 'default' ? $.trim( font_name ) : '';
-
-				result += '|';
-
-				if ( $bold_option.hasClass( style_active_class ) ) {
-					result += 'on';
-				}
-
-				result += '|';
-
-				if ( $italic_option.hasClass( style_active_class ) ) {
-					result += 'on';
-				}
-
-				result += '|';
-
-				if ( $uppercase_option.hasClass( style_active_class ) ) {
-					result += 'on';
-				}
-
-				result += '|';
-
-				if ( $underline_option.hasClass( style_active_class ) ) {
-					result += 'on';
-				}
-
-				$main_option.val( result ).trigger( 'change' );
+			$font_styles_selects.change( function() {
+				et_pb_update_font_settings( $(this).closest( '.et-pb-option-container--font' ) );
 			} );
+
+			$font_select.on( 'click', '.et-pb-settings-option-select li', function( event ) {
+				var $this_el          = $(this),
+					$menu_container   = $this_el.closest( '.et-pb-option--font' ),
+					$menu_items       = $menu_container.find( '.et-pb-settings-option-select-advanced' ),
+					menu_value        = $this_el.data('value');
+
+				if ( ! _.isUndefined(menu_value) ) {
+					if ( $( event.target ).closest( '.et-pb-user-font-marker' ).length > 0 ) {
+						et_pb_create_prompt_modal( 'delete_font', menu_value );
+						return;
+					}
+
+					et_pb_update_font_settings( $menu_container, menu_value );
+					et_pb_close_advanced_menu( $menu_items );
+
+					if ( 'default' !== menu_value ) {
+						et_pb_update_recent_fonts( menu_value );
+					}
+
+					et_pb_setup_font_setting( $menu_container, false );
+				}
+			} );
+
+			$font_select.on( 'click', '.et-pb-font-upload-button', function( event ) {
+				var option_name = $( event.target ).closest( '.et-pb-option--font' ).data('option_name');
+				et_pb_create_prompt_modal( 'upload_font', option_name );
+			});
+
+			$font_select.on( 'input', '.et-pb-menu-filter', function() {
+				var search_text = $( this ).val();
+				var $menu_options = $( this ).closest( '.et-pb-settings-option-select-advanced' );
+				var $menu_items = $menu_options.find('.select-option-item');
+
+				if ( '' !== search_text ) {
+					$menu_options.addClass('et_pb_menu_search_active');
+				} else {
+					$menu_options.removeClass('et_pb_menu_search_active');
+				}
+
+				$menu_items.removeClass('et_pb_hidden_item');
+
+				// filter menu items depending on search string
+				var filtered_items = _.filter($menu_items, function(item){ return ( -1 === $( item ).text().toLowerCase().search( search_text.toLowerCase() ) ) });
+
+				$( filtered_items ).addClass('et_pb_hidden_item');
+			});
 
 			$font_select.each( function() {
-				et_pb_setup_font_setting( $(this), false );
+				et_pb_setup_font_setting( $(this), false, true );
 			} );
+
+			$font_select_placeholder.click( function() {
+				var $this_placeholder = $( this );
+				var $menu_container = $this_placeholder.closest( '.et-pb-select-font-outer' );
+				var $menu_options = $menu_container.find( '.et-pb-settings-option-select-advanced' );
+				var $menu_items = $menu_options.find('.select-option-item');
+				var $search_field = $menu_container.find( '.et-pb-menu-filter' );
+
+				// open menu and reset all classes
+				$menu_options.addClass('et_pb_menu_active');
+				$menu_options.removeClass('et_pb_menu_search_active');
+				$menu_items.removeClass('et_pb_hidden_item');
+				$search_field.val('');
+				$menu_options.animate({
+					scrollTop: 0
+				}, 0);
+
+				// set the menu position and size
+				var menu_position = $this_placeholder.offset();
+				var window_height = $( window ).height();
+				var window_scroll = $( window ).scrollTop();
+				var safety_space = 50; // some space to move the menu away from the edge
+				var max_height = 500 > window_height ? ( window_height - safety_space ) : 500;
+				var top_position = menu_position.top - window_scroll - 20;
+				var bottom_space = window_height - top_position;
+
+				if ( bottom_space < max_height ) {
+					top_position -= ( max_height - bottom_space ) + safety_space;
+				} else {
+					max_height = bottom_space - safety_space;
+				}
+
+				$menu_options.css({'top' : top_position, 'maxHeight' : max_height});
+
+				$( 'body' ).addClass('et_pb_advanced_menu_opened');
+			});
+
+			$text_align_selects.each( function() {
+				var $text_align_select = $(this),
+					saved_value        = $text_align_select.data('saved_value'),
+					default_value      = $text_align_select.data('default'),
+					text_align         = '' !== saved_value ? $text_align_select.val() : default_value,
+					$container         = $text_align_select.closest( '.et-pb-option-container' ),
+					$select_field      = $container.find( 'select.et-pb-text-align-select' ),
+					$selected_button   =  text_align !== '' ? $container.find( '.et_builder_' + text_align + '_text_align' ) : false;
+
+				if ( $selected_button ) {
+					$selected_button.addClass( 'et_text_align_active' );
+				}
+			} );
+
+			$text_align_selects.change( function() {
+				var $this_el = $( this ),
+					$container = $this_el.closest( '.et-pb-option-container' ),
+					$active_button = $container.find( '.et_builder_text_align.et_text_align_active' ),
+					value = $active_button.length ? $active_button.data( 'value' ) : false,
+					defaultValue = $this_el.attr( 'data-default' ),
+					new_saved_value = defaultValue === value ? '' : value;
+
+				if ( value ) {
+					$this_el.data('saved_value', new_saved_value);
+					$this_el.val( value ).trigger( 'et_pb_setting:change' );
+				}
+			} );
+
+			$text_align_button.click(function() {
+				var $button = $(this),
+					activeClassName = 'et_text_align_active',
+					$container = $button.closest( '.et-pb-option-container' ),
+					is_active = $button.hasClass( activeClassName ),
+					$select = $container.find( '.et-pb-text-align-select' ),
+					defaultValue = $select.attr( 'data-default' );
+
+				$container.find( '.et_builder_text_align' ).removeClass( activeClassName );
+
+				if ( ! is_active ) {
+					$button.addClass( activeClassName );
+				} else if ( ! _.isUndefined( defaultValue ) && defaultValue !== '' ) {
+					$container.find( '.et_builder_' + defaultValue + '_text_align' ).addClass( activeClassName );
+				}
+
+				$select.trigger( 'change' );
+
+				return false;
+			} );
+
+			$multiple_buttons_input.each(function() {
+				var $input_el = $(this);
+				et_pb_render_multiple_buttons($input_el);
+			});
+
+			$multiple_buttons_input.on('change', function() {
+				et_pb_render_multiple_buttons($(this));
+			});
+
+			$multiple_buttons_button.click(function() {
+				var $button         = $(this);
+				var activeClassName = 'et_builder_multiple_buttons_button_active';
+				var $container      = $button.closest('.et-pb-option-container');
+				var $input          = $container.find('input');
+				var default_value   = $input.data('default');
+				var current_value   = $input.val();
+				var current_values  = !_.isUndefined(current_value) && '' !== current_value ? current_value.split('|') : [];
+				var buttonValue     = $button.data('value');
+				var newValue        = current_value;
+				var multi_selection = 'yes' === $input.data('multi');
+
+				if ('yes' === $input.data('toggleable') && $button.hasClass(activeClassName)) {
+					newValue = multi_selection ? _.without(current_values, buttonValue).join('|') : default_value;
+				} else {
+					// support milti selection
+					if (multi_selection) {
+						current_values.push(buttonValue);
+					}
+
+					newValue = multi_selection ? current_values.join('|') : buttonValue;
+				}
+
+				$input.val(newValue).trigger('change');
+
+				return false;
+			});
 
 			$range_field.on( 'input change', function() {
 				var $this_el          = $(this),
@@ -11048,10 +15547,9 @@ window.et_builder_version = '2.7.10';
 					range_value += length;
 				}
 
-				$range_input.val( range_value );
+				$range_input.val( range_value ).trigger( 'et_pb_setting:change' );
 
 				et_pb_update_mobile_defaults( $this_el, range_value );
-
 			} );
 
 			if ( $range_field.length ) {
@@ -11070,6 +15568,7 @@ window.et_builder_version = '2.7.10';
 						}
 
 						$this_el.val( default_value );
+						range_input_value = default_value;
 					}
 
 					// Define defaults for tablet and phone settings on load
@@ -11088,17 +15587,26 @@ window.et_builder_version = '2.7.10';
 						$range_input.data( 'default', new_phone_default );
 					}
 
+					et_pb_check_range_boundaries( $this_el, range_input_value, true );
 				} );
 			}
 
-			$range_input.on( 'keyup change', function() {
+			$range_input.on( 'keyup change', function( event ) {
 				var $this_el      = $(this),
 					this_device   = typeof $this_el.data( 'device' ) === 'undefined' ? 'all' : $this_el.data( 'device' ),
-					this_value    = $this_el.val(),
+					this_value    = et_pb_get_range_input_value( $this_el, true ),
 					$range_slider = 'all' === this_device ? $this_el.siblings( '.et-pb-range' ) : $this_el.siblings( '.et-pb-range.et_pb_setting_mobile_' + this_device ),
+					update_step   = false,
 					slider_value;
 
 				slider_value = parseFloat( this_value ) || 0;
+
+				// check the range slider step and update if value entered manually.
+				if ( ! _.isUndefined( event.type ) && 'keyup' === event.type ) {
+					update_step = true;
+				}
+
+				et_pb_check_range_boundaries( $range_slider, slider_value, update_step );
 
 				$range_slider.val( slider_value ).trigger( 'et_pb_setting:change' );
 
@@ -11121,11 +15629,45 @@ window.et_builder_version = '2.7.10';
 						$option_container = $this_el.closest( '.et-pb-option-container' ),
 						$reset_button    = $option_container.find( '.et-pb-reset-setting' ),
 						is_range_option  = $this_el.hasClass( 'et-pb-range' ),
-						$current_element = is_range_option && 'all' === this_device ? $this_el.siblings( '.et-pb-range-input' ) : $this_el,
-						$current_element = is_range_option && 'all' !== this_device ? $this_el.siblings( '.et-pb-range-input.et_pb_setting_mobile_' + this_device ) : $current_element,
-						default_value    = et_pb_get_default_setting_value( $current_element ),
-						current_value    = $current_element.val(),
-						$mobile_toggle   = $option_container.find( '.et-pb-mobile-settings-toggle' );
+						is_font_option  = $this_el.hasClass( 'et-pb-font-select' ),
+						is_preset  = $this_el.hasClass( 'et-presets' ) || $this_el.hasClass( 'et_select_animation' );
+
+					var $current_element = is_range_option && 'all' === this_device ? $this_el.siblings( '.et-pb-range-input' ) : $this_el;
+
+					if (is_preset) {
+						$current_element = $this_el.children('input');
+					}
+
+					$current_element = is_range_option && 'all' !== this_device ? $this_el.siblings( '.et-pb-range-input.et_pb_setting_mobile_' + this_device ) : $current_element;
+
+					var default_value    = et_pb_get_default_setting_value( $current_element ).toLowerCase();
+					var current_value    = $current_element.val() + '';
+					current_value = current_value.toLowerCase();
+					var $mobile_toggle   = $option_container.find( '.et-pb-mobile-settings-toggle' );
+
+					// specific actions required for reset buttons in Font option
+					if ( is_font_option ) {
+						var font_settings = current_value.split('|');
+						var font_settings_default = default_value.split('|');
+
+						$reset_button.each( function() {
+							var $this_button = $( this );
+							var font_setting_id = 0;
+
+							if ( $this_button.hasClass('et_pb_reset_weight') ) {
+								font_setting_id = 1;
+							}
+
+							if ( '' !== font_settings[ font_setting_id ] && font_settings_default[ font_setting_id ] !== font_settings[ font_setting_id ] ) {
+								$this_button.addClass( 'et-pb-reset-icon-visible' );
+							} else {
+								$this_button.removeClass( 'et-pb-reset-icon-visible' );
+							}
+
+						});
+
+						return;
+					}
 
 					if ( $current_element.hasClass( 'et_pb_setting_mobile' ) && ! $current_element.hasClass( 'et_pb_setting_mobile_active' ) ) {
 						// make the mobile toggle icon visible if any option is not default
@@ -11137,14 +15679,8 @@ window.et_builder_version = '2.7.10';
 						return;
 					}
 
-					if ( $current_element.is( 'select' ) && default_value === '' && $current_element.prop( 'selectedIndex' ) === 0 ) {
-						$reset_button.removeClass( 'et-pb-reset-icon-visible' );
-
-						return;
-					}
-
 					// range option default value can be defined without units, so compare current value with default and default + 'px' for range option
-					if ( ( current_value !== default_value && ! is_range_option ) || ( is_range_option && current_value !== default_value + 'px' && current_value !== default_value ) ) {
+					if ( !et_pb_is_setting_value_default( $current_element, is_range_option) ) {
 						setTimeout( function() {
 							$reset_button.addClass( 'et-pb-reset-icon-visible' );
 						}, 50 );
@@ -11167,63 +15703,229 @@ window.et_builder_version = '2.7.10';
 				} );
 			}
 
-			$container.find( '.et-pb-reset-setting' ).on( 'click', function() {
+			$container.find( '.et-pb-reset-setting' ).not('.et-pb-reset-skip').on( 'click', function() {
 				et_pb_reset_element_settings( $(this) );
 			} );
 
+			var module_type       = $container.data( 'module_type' );
+			var $other_et_affects = $();
+
+			if ( 'section' === module_type ) {
+				module_type = 'et_pb_section';
+			}
+
+			if ( has( window.et_pb_module_field_dependencies, module_type ) ) {
+				var field_dependencies = window.et_pb_module_field_dependencies[module_type];
+
+				function et_pb_show_field_decide( new_value, show_if, show_if_not ) {
+					var show = false;
+
+					if ( show_if && show_if_not ) {
+						show_if     = _.isArray( show_if ) ? _.includes( show_if, new_value ) : new_value === show_if;
+						show_if_not = _.isArray( show_if_not ) ? ! _.includes( show_if_not, new_value ) : new_value !== show_if_not;
+
+						show = show_if && show_if_not;
+
+					} else if ( show_if ) {
+						show = _.isArray( show_if ) ? _.includes( show_if, new_value ) : new_value === show_if;
+
+					} else if ( show_if_not ) {
+						show = _.isArray( show_if_not ) ? ! _.includes( show_if_not, new_value ) : new_value !== show_if_not;
+					}
+
+					return show;
+				}
+
+				function et_pb_get_field_dependencies( affected_field ) {
+					var deps = [];
+
+					if ( field_dependencies[affected_field].show_if ) {
+						deps = _.keys( field_dependencies[affected_field].show_if );
+					}
+
+					if ( field_dependencies[affected_field].show_if_not ) {
+						deps = _.union( deps, _.keys( field_dependencies[affected_field].show_if_not ) );
+					}
+
+					return deps;
+				}
+
+				function et_pb_dependency_value_change_handler( affected_field ) {
+					var show    = [];
+					var affects = field_dependencies[affected_field].affects;
+
+					var $affected_field     = $container.find( '#et_pb_' + affected_field );
+					var $affected_container = $affected_field.closest( '.et-pb-option' );
+
+					var dependencies = et_pb_get_field_dependencies( affected_field );
+
+					_.forEach( dependencies, function ( dependency ) {
+						var new_value   = $container.find( '#et_pb_' + dependency ).val();
+						var show_if     = field_dependencies[dependency].affects[affected_field]['show_if'];
+						var show_if_not = field_dependencies[dependency].affects[affected_field]['show_if_not'];
+
+						show.push( et_pb_show_field_decide( new_value, show_if, show_if_not ) );
+					} );
+
+					show = ! _.includes( show, false );
+
+					// shows or hides the affected field container
+					$affected_container.toggle( show ).addClass( 'et_pb_animate_affected' );
+
+					var event = show ? 'et-pb-option-field-shown' : 'et-pb-option-field-hidden';
+					$affected_field.trigger( event );
+
+					setTimeout( function () {
+						$affected_container.removeClass( 'et_pb_animate_affected' );
+						et_pb_hide_empty_toggles( $affected_field );
+					}, 500 );
+
+					if ( ! _.isUndefined( affects ) ) {
+						_.forEach( affects, function ( value, affected_field ) {
+							et_pb_dependency_value_change_handler( affected_field );
+						} );
+					}
+				}
+
+				_.forEach( field_dependencies, function( dependency_info, field_name ) {
+					if ( _.isUndefined( dependency_info.affects ) ) {
+						return;
+					}
+
+					var $dependency = $container.find( '#et_pb_' + field_name );
+
+					$other_et_affects = $other_et_affects.add( $dependency );
+
+					$dependency.on( 'change', function() {
+						_.forEach( dependency_info.affects, function( value, affected_field ) {
+							et_pb_dependency_value_change_handler( affected_field );
+						} );
+					} );
+				});
+			}
 
 			if ( $et_affect_fields.length ) {
 				$et_affect_fields.change( function() {
-					var $this_field         = $(this), // this field value affects another field visibility
-						new_field_value     = $this_field.val(),
-						new_field_value_number = parseInt( new_field_value ),
-						$affected_fields     = $( $this_field.data( 'affects' ) ),
-						this_field_tab_index = $this_field.closest( '.et-pb-options-tab' ).index();
+					var $this_field            = $(this); // this field value affects another field visibility
+					var $this_field_container  = $this_field.closest('.et-pb-option');
+					var new_field_value        = $this_field.val();
+					var new_field_value_number = parseInt(new_field_value);
 
-					$affected_fields.each( function() {
-						var $affected_field          = $(this),
-							$affected_container      = $affected_field.closest( '.et-pb-option' ),
-							is_text_trigger          = 'text' === $this_field.attr( 'type' ) && typeof show_if_not === 'undefined' && typeof show_if === 'undefined', // need to know if trigger is text field
-							show_if                  = $affected_container.data( 'depends_show_if' ) || 'on',
-							show_if_not              = is_text_trigger ? '' : $affected_container.data( 'depends_show_if_not' ),
-							show                     = show_if === new_field_value || ( typeof show_if_not !== 'undefined' && show_if_not !== new_field_value ),
-							affected_field_tab_index = $affected_field.closest( '.et-pb-options-tab' ).index(),
-							$dependant_fields        = $affected_container.find( '.et-pb-affects' ); // affected field might affect some other fields as well
+					var data_affects_obj    = _.map($this_field.data('affects').split(', '), function(affect) {
+							var is_selector = -1 !== affect.indexOf('#et_pb_');
+
+							return is_selector ? affect : '#et_pb_' + affect;
+						});
+					var data_affects         = data_affects_obj.join(', ');
+					var $affected_fields     = $container.find(data_affects);
+					var this_field_tab_index = $this_field.closest('.et-pb-options-tab').index();
+					var $changes_to_be_triggered = [];
+
+					var process_filed_visibility = function(field, hide) {
+						//Make sure that there is sent a bool value
+						hide = true === hide;
+
+						var $affected_field          = $(field);
+						var $affected_container      = $affected_field.closest( '.et-pb-option' );
+						var is_text_trigger          = 'text' === $this_field.attr( 'type' ); // need to know if trigger is text field
+						var show_if                  = $affected_container.data( 'depends_show_if' ) || 'on';
+						var show_if_not              = is_text_trigger ? '' : $affected_container.data( 'depends_show_if_not' );
+						var show                     = !hide && (show_if === new_field_value || ( typeof show_if_not !== 'undefined' && ! _.contains( show_if_not.split(','), new_field_value ) ));
+						var affected_field_tab_index = $affected_field.closest( '.et-pb-options-tab' ).index();
+						var $dependant_fields        = $affected_container.find( '.et-pb-affects' ); // affected field might affect some other fields as well
+						var is_use_background_color_gradient = $this_field.closest( '.et_pb_background-template--use_color_gradient' ).length;
 
 						// make sure hidden text fields do not break the visibility of option
-						if ( is_text_trigger && ! $this_field.is( ':visible' ) ) {
+						if (
+							$affected_field.hasClass('et_pb_field_processed')
+							||
+							is_text_trigger
+							&&
+							! $this_field.is( ':visible' )
+						) {
 							return;
 						}
 
 						// if the affected field should be displayed, but the field that affects it is not visible, don't show the affected field ( it only can happen on settings page load )
-						if ( this_field_tab_index === affected_field_tab_index && show && ! $this_field.is( ':visible' ) ) {
+						if (this_field_tab_index === affected_field_tab_index && show && $this_field_container.css('display') === 'none' && !$this_field.is('[type="hidden"]') && !is_use_background_color_gradient) {
 							show = false;
 						}
 
 						// shows or hides the affected field container
 						$affected_container.toggle( show ).addClass( 'et_pb_animate_affected' );
 
+						var event = $affected_field.is( ':visible' ) ? 'et-pb-option-field-shown' : 'et-pb-option-field-hidden';
+						$affected_field.trigger( event );
+
 						setTimeout( function() {
 							$affected_container.removeClass( 'et_pb_animate_affected' );
+							et_pb_hide_empty_toggles( $affected_field );
 						}, 500 );
 
 						// if the affected field affects other fields, find out if we need to hide/show them
 						if ( $dependant_fields.length ) {
-							var $inner_affected_elements = $( $dependant_fields.data( 'affects' ) );
+							var data_inner_affects_obj = _.map( $dependant_fields.data( 'affects' ).split(', '), function( affect ) {
+								var is_selector = -1 !== affect.indexOf('#et_pb_');
 
-							if ( ! $affected_container.is( ':visible' ) ) {
+								return is_selector ? affect : '#et_pb_' + affect;
+							} );
+							var data_inner_affects = data_inner_affects_obj.join(', ');
+							var $inner_affected_elements = $( data_inner_affects );
+
+							if ( ! show ) {
 								// if the main affected field is hidden, hide all fields it affects
 
 								$inner_affected_elements.each( function() {
-									$(this).closest( '.et-pb-option' ).hide();
-								} );
+									process_filed_visibility(this, true);
+									et_pb_hide_empty_toggles( $(this) );
+								} ).removeClass('et_pb_field_processed');
 							} else {
-								// if the main affected field is displayed, trigger the change event for all fields it affects
-
-								$affected_field.trigger( 'change' );
+								// if the main affected field is displayed, add it to the list of changes to be triggered
+								$changes_to_be_triggered.push($affected_field);
 							}
 						}
-					} );
+
+						$affected_field.addClass('et_pb_field_processed');
+					};
+
+					$affected_fields
+						.each(function () {
+							process_filed_visibility(this);
+						})
+						.removeClass('et_pb_field_processed');
+
+					// triger change event for affected fields
+					_.forEach($changes_to_be_triggered, function($field) {
+						$field.trigger('change');
+					});
+
+					// don't make conditional logic row sortable as that is not needed and causes it to not work properly
+					$('.et_options_list:not(.et_conditional_logic)').each(function() {
+						var $list = $(this);
+
+						if ( 0 !== $list.find('.et_options_rows').length ) {
+							return;
+						}
+
+						var $options = $list.find('textarea');
+
+						$list.find('.et_options_list_row').wrapAll('<div class="et_options_rows" />');
+
+						$list.find( '.et_options_rows' ).sortable({
+							axis : 'y',
+							containment: 'parent',
+							update: function() {
+								update_options_list( $list, $options );
+								setTimeout( function() {
+									$('.et_options_rows').children().css({
+										position: '',
+										top: '',
+										left: ''
+									});
+								}, 700);
+							}
+						});
+					});
 				} );
 
 				// trigger change event for all dependant ( affected ) fields to show on settings page load
@@ -11231,12 +15933,75 @@ window.et_builder_version = '2.7.10';
 					// make all settings visible to properly enable all affected fields
 					$settings_tab.css( { 'display' : 'block' } );
 
+					// include fields using more advanced dependency declaration instead of html5 data attrs
+					$et_affect_fields = $et_affect_fields.add( $other_et_affects );
+
+					$et_affect_fields.data( 'is_rendering_setting_view', true );
+
 					et_pb_update_affected_fields( $et_affect_fields );
+
+					$et_affect_fields.data( 'is_rendering_setting_view', false );
 
 					// After all affected fields is being processed return all tabs to the initial state
 					$settings_tab.css( { 'display' : 'none' } );
 					et_pb_open_current_tab();
 				}, 100 );
+			}
+
+			setTimeout(function() {
+				// Hide all empty toggles which may appear in Settings Modal
+				// Don't remove them from settings modal because some options rely on hidden fields in BB and some of them are conditional
+				if ($('.et-pb-option-toggle-content').length > 0) {
+					$('.et-pb-option-toggle-content').each(function() {
+						if ('' === $.trim($(this).text())) {
+							$(this).closest('.et-pb-options-toggle-container').addClass('et-pb-options-toggle-empty');
+						}
+					});
+				}
+			}, 100);
+
+			if ( $et_responsive_affect_fields.length ) {
+				$et_responsive_affect_fields.on( 'et_pb_setting:change', function() {
+					var $field = $(this),
+						$field_wrapper = $field.parent(),
+						$responsive_fields = $field_wrapper.children( '.et-pb-responsive-affects' ),
+						responsive_desktop_name = $field.data( 'responsive-desktop-name' ),
+						affects = $field.data( 'responsive-affects' ).split( ',' ),
+						values = {
+							desktop: $field_wrapper.find( '#' + responsive_desktop_name ).val(),
+							tablet: $field_wrapper.find( '#' + responsive_desktop_name + '_tablet' ).val(),
+							phone: $field_wrapper.find( '#' + responsive_desktop_name + '_phone' ).val()
+						},
+						$last_edited = $field.closest('.et_pb_modal_settings_container_step2').length ? $field_wrapper.find( 'input[id="data.' + responsive_desktop_name + '_last_edited"]' ) : $field_wrapper.find( '#' + responsive_desktop_name + '_last_edited' ),
+						last_edited = $last_edited.val(),
+						is_responsive = 'string' === typeof last_edited ? last_edited.split('|')[0] === 'on' : false;
+
+					_.forEach( affects, function( affect ) {
+						var $affected_field = $( '#et_pb_' + affect ),
+							$affected_field_container = $affected_field.closest( '.et-pb-option:not(.et_pb_background-option)' ),
+							show_if_not = $affected_field_container.data( 'depends_show_if_not' ).split( ',' ),
+							show = true;
+
+						if ( is_responsive ) {
+							show = ! _.contains( show_if_not, values.desktop ) || ! _.contains( show_if_not, values.tablet ) || ! _.contains( show_if_not, values.phone );
+						} else {
+							show = ! _.contains( show_if_not, values.desktop );
+						}
+
+						$affected_field_container.toggle( show );
+
+						// Also toggle group toggle if this is the only option on the toggle group
+						if ( $affected_field_container.siblings().length < 1 ) {
+							$affected_field_container.closest( '.et-pb-options-toggle-container' ).toggle( show );
+						}
+					} );
+				} );
+
+				setTimeout( function() {
+					$et_responsive_affect_fields.each(function() {
+						$(this).trigger( 'et_pb_setting:change' );
+					});
+				} );
 			}
 
 			// update the unique class for opened module when custom css tab opened
@@ -11285,18 +16050,300 @@ window.et_builder_version = '2.7.10';
 					}
 				});
 			}
+
+			// handle global module options sync button clicks
+			$container.on( 'click', '.et_pb_global_sync_switcher', function() {
+				var $clicked_button = $( this );
+				var option_unsynced = $clicked_button.hasClass( 'et_pb_global_unsynced' );
+
+				if ( option_unsynced ) {
+					$clicked_button.removeClass( 'et_pb_global_unsynced' );
+				} else {
+					$clicked_button.addClass( 'et_pb_global_unsynced' );
+				}
+			});
+
+			new ET_PageBuilder.Controls.BorderRadius($container);
+			new ET_PageBuilder.Controls.BorderStyles($container);
+			new ET_PageBuilder.Controls.TabbedControl($container.find('#et_pb_divider_settings').parent());
+
+      //open links within option descriptions on a new tab
+      $container.on('click', '.et-pb-option-container .description a', function(e) {
+        var url = e.target.href;
+
+        if (!_.isUndefined(url)) {
+          e.preventDefault();
+          var newTab = window.open(url, '_blank');
+          newTab.focus();
+        }
+      });
+    }
+
+		function et_pb_render_multiple_buttons($input_el) {
+			var default_value     = $input_el.data('default');
+			var input_val         = $input_el.val();
+			var $container        = $input_el.closest('.et-pb-option-container');
+			var processed_value   = input_val === '' ? [] : input_val.split('|');
+
+			$container.find('.et_builder_multiple_buttons_button').removeClass( 'et_builder_multiple_buttons_button_active');
+
+			if (processed_value.length > 0) {
+				_.forEach(processed_value, function(single_value) {
+					$button_el = $container.find('.et_builder_' + single_value + '_button');
+					if ($button_el.length > 0) {
+						$button_el.addClass('et_builder_multiple_buttons_button_active');
+					}
+				} );
+
+				$input_el.trigger('et_pb_setting:change');
+			}
+		}
+
+		function et_pb_update_font_settings($option_container, font_family) {
+			var	$main_option         = $option_container.find( 'input.et-pb-font-select' ),
+				main_option_val      = $main_option.val().split('|'),
+				bold_option          = $option_container.find( '.et_builder_font_weight' ).val(),
+				$style_options       = $option_container.find( '.et_builder_font_styles' ),
+				$line_color_option   = $option_container.find( '.et-pb-font-line-color-value' ),
+				$line_style_option   = $option_container.find( '.et_pb_font_line_style_select' ),
+				$italic_option       = $style_options.find( '.et_builder_italic_font' ),
+				$uppercase_option    = $style_options.find( '.et_builder_uppercase_font' ),
+				$underline_option    = $style_options.find( '.et_builder_underline_font' ),
+				$capitalize_option   = $style_options.find( '.et_builder_capitalize_font' ),
+				$line_through_option = $style_options.find( '.et_builder_line_through_font' ),
+				style_active_class   = 'et_font_style_active',
+				font_name            = _.isUndefined( font_family ) ? main_option_val[0] : font_family,
+				result               = '';
+
+			result += font_name !== 'default' ? $.trim( font_name ) : '';
+
+			result += '|';
+
+			if ( '400' !== bold_option ) {
+				result += bold_option;
+			}
+
+			result += '|';
+
+			if ( $italic_option.hasClass( style_active_class ) ) {
+				result += 'on';
+			}
+
+			result += '|';
+
+			if ( $uppercase_option.hasClass( style_active_class ) ) {
+				result += 'on';
+			}
+
+			result += '|';
+
+			if ( $underline_option.hasClass( style_active_class ) ) {
+				result += 'on';
+			}
+
+			result += '|';
+
+			if ( $capitalize_option.hasClass( style_active_class ) ) {
+				result += 'on';
+			}
+
+			result += '|';
+
+			if ( $line_through_option.hasClass( style_active_class ) ) {
+				result += 'on';
+			}
+
+			result += '|';
+
+			if ( '' !== $line_color_option.val() ) {
+				result += $line_color_option.val();
+			}
+
+			result += '|';
+
+			if ( 'solid' !== $line_style_option.val() ) {
+				result += $line_style_option.val();
+			}
+
+			$main_option.val( result ).trigger( 'change' );
+		}
+
+		function et_pb_close_advanced_menu( $menu ) {
+			var $menu_container   = $menu.closest( '.et-pb-option--font' ),
+				$menu_placeholder = $menu_container.find( '.et_pb_select_placeholder' );
+
+			$menu.removeClass('et_pb_menu_active');
+			$( 'body' ).removeClass('et_pb_advanced_menu_opened');
+		}
+
+		// check the range slider boundaries against the provided value and extend min or max boundary if needed
+		function et_pb_check_range_boundaries( $range_slider, slider_value, update_step ) {
+			var slider_max = parseFloat( $range_slider.attr( 'max' ) ),
+				slider_min = parseFloat( $range_slider.attr( 'min' ) );
+
+			if ( $range_slider.hasClass( 'et-pb-fixed-range' ) ) {
+				return;
+			}
+
+			slider_value = '' !== slider_value ? parseFloat( slider_value ) : 0;
+
+			// extend max boundary of the slider if needed
+			if ( slider_value > slider_max ) {
+				$range_slider.attr( 'max', slider_value );
+
+				$range_slider.val(slider_value);
+			}
+
+			// extend min boundary of the slider if needed
+			if ( slider_value < slider_min ) {
+				$range_slider.attr( 'min', slider_value );
+
+				$range_slider.val(slider_value);
+			}
+
+			// set the step to 0.1 if we need to update step and value is not integer
+			if ( update_step && '0.1' !== $range_slider.attr( 'step' ) && ( slider_value % 1 > 0 ) ) {
+				$range_slider.attr( 'step', '0.1' );
+				// reset the slider value to make sure it updated correctly after changing the step
+				$range_slider.val( slider_value );
+			}
+		}
+
+		function et_pb_get_range_input_value( $range_input, update_element_value ) {
+			var $range_field    = $range_input.parent().find( '.et-pb-range' ),
+				range_value     = $range_input.val(),
+				range_processed = typeof range_value === 'string' ? range_value.trim() : range_value,
+				range_digit     = parseFloat( range_processed ),
+				range_string    = range_processed.toString().replace( range_digit, '' ),
+				result;
+
+			// no need to use Number.isNaN there. parseFloat guarantees that we have a number or `NaN` value at this point.
+			if ( isNaN( range_digit ) ) {
+				range_digit = '';
+			}
+
+			if ( $range_field.hasClass( 'et-pb-fixed-range' ) ) {
+				var range_field_max = parseFloat( $range_field.attr( 'max' ) ),
+					range_field_min = parseFloat( $range_field.attr( 'min' ) ),
+					is_too_high = range_digit > range_field_max,
+					is_too_low = range_digit < range_field_min;
+
+				if ( is_too_high ) {
+					range_digit = range_field_max;
+				} else if ( is_too_low ) {
+					range_digit = range_field_min;
+				}
+			}
+
+			result = range_digit.toString() + range_string;
+
+			if ( update_element_value && result !== range_value ) {
+				$range_input.val( result );
+			}
+
+			return result;
+		}
+
+		function et_pb_get_default_key(el){
+			return $(el).hasClass( 'et-pb-color-picker-hex' ) ? 'default-color' : 'default';
 		}
 
 		function et_pb_get_default_setting_value( $element ) {
-			var default_data_name = $element.hasClass( 'et-pb-color-picker-hex' ) ? 'default-color' : 'default',
-				default_value;
+			var default_data_name = et_pb_get_default_key($element);
+			var default_value;
 
 			// need to check for 'undefined' type instead of $element.data( default_data_name ) || '' because default value maybe 0
 			default_value = typeof $element.data( default_data_name ) !== 'undefined' ? $element.data( default_data_name ) : '';
+
+			if (_.isArray(default_value) && default_value.length > 0) {
+				var target = $element.closest('.et-pb-options-toggle-container').find('#et_pb_' + default_value[0]);
+				var values = default_value[1] || {};
+
+				default_value = values['' + target.val()];
+			}
+
 			// convert any type to string
 			default_value = default_value + '';
 
 			return default_value;
+		}
+
+		function et_pb_is_setting_value_default ($element) {
+			var default_value = et_pb_get_default_setting_value($element).toLowerCase();
+			var current_value = _.isUndefined(ET_PageBuilder.Helpers.getSettingValue($element)) ? '' : ET_PageBuilder.Helpers.getSettingValue($element).toString().toLowerCase();
+			var is_range_option  = $element.hasClass('et-pb-range');
+
+			if ($element.is('select')  && default_value === '' && $element.prop('selectedIndex') === 0) {
+				return true;
+			}
+
+			if ((!_.isNull(current_value) && current_value !== default_value && ! is_range_option) || (is_range_option && current_value !== default_value + 'px' && current_value !== default_value)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		function et_pb_update_gradient_preview( $this ) {
+			var $wrapper = $this.closest('.et_pb_background-tab--gradient'),
+				base_name = $wrapper.closest( '.et-pb-option-container-inner' ).attr( 'data-base_name' ),
+				gradient = et_pb_get_gradient( $wrapper, base_name ),
+				$preview = $wrapper.find('.et-pb-option-preview');
+
+			if ( gradient ) {
+				$preview.css({
+					backgroundImage: gradient
+				});
+			} else {
+				$preview.removeAttr( 'style' );
+			}
+		}
+
+		function et_pb_get_gradient( $wrapper, base_name ) {
+			var base_name = base_name || 'background',
+				use_color_gradient      = 'background' === base_name ? 'use_background_color_gradient' : base_name + '_use_color_gradient',
+				$use_gradient_input     = $wrapper.find('.et_pb_background-option--' + use_color_gradient + ' select'),
+				$start_input            = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_start .et-pb-color-picker-hex'),
+				$end_input              = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_end .et-pb-color-picker-hex'),
+				$type_input             = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_type select'),
+				$linear_direction_input = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_direction .et-pb-range-input'),
+				$radial_direction_input = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_direction_radial select'),
+				$start_position_input   = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_start_position .et-pb-range-input'),
+				$end_position_input     = $wrapper.find('.et_pb_background-option--' + base_name + '_color_gradient_end_position .et-pb-range-input');
+
+			if ( 'on' !== $use_gradient_input.val() ) {
+				return false;
+			}
+
+			var args = {
+				type:            'linear',
+				direction:       '180deg',
+				radialDirection: 'center',
+				colorStart:      '#2b87da',
+				colorEnd:        '#29c4a9',
+				startPosition:   '0%',
+				endPosition:     '100%'
+			};
+
+			_.each({
+				type:            $type_input.val(),
+				direction:       $linear_direction_input.val(),
+				radialDirection: $radial_direction_input.val(),
+				colorStart:      $start_input.val(),
+				colorEnd:        $end_input.val(),
+				startPosition:   $start_position_input.val(),
+				endPosition:     $end_position_input.val()
+			}, function(value, key) {
+				if ('' !== value && ! _.isUndefined(value)) {
+					args[key] = value;
+				}
+			})
+
+			var direction     = args.type === 'linear' ? args.direction : ( 'circle at ' + args.radialDirection ),
+				startPosition = et_pb_sanitize_input_unit_value(args.startPosition, undefined, '%'),
+				endPosition   = et_pb_sanitize_input_unit_value(args.endPosition, undefined, '%');
+
+			return args.type + '-gradient( ' + direction + ', ' + args.colorStart + ' ' + startPosition + ', ' + args.colorEnd + ' ' + endPosition + ' )';
 		}
 
 		/*
@@ -11309,6 +16356,33 @@ window.et_builder_version = '2.7.10';
 				this_device       = typeof $this_el.data( 'device' ) === 'undefined' || ! $main_container.hasClass( 'et_pb_has_mobile_settings' ) ? 'all' : $this_el.data( 'device' ),
 				$main_setting     = 'all' === this_device ? $option_container.find( '.et-pb-main-setting' ) : $option_container.find( '.et-pb-main-setting.et_pb_setting_mobile_' + this_device ),
 				default_value     = et_pb_get_default_setting_value( $main_setting );
+
+			if ( $main_setting.is( '.et-pb-text-align-select' ) ) {
+				if ( default_value ) {
+					$option_container
+						.find( '.et_builder_' + default_value + '_text_align' )
+						.addClass( 'et_text_align_active' )
+						.siblings()
+						.removeClass( 'et_text_align_active' );
+				} else {
+					$option_container
+						.find( '.et_text_align_active' )
+						.removeClass( 'et_text_align_active' );
+				}
+
+				$main_setting
+					.val( default_value )
+					.trigger( 'change' )
+					.trigger( 'et_pb_setting:change' );
+
+				if ( ! $this_el.hasClass( 'et-pb-reset-setting' ) ) {
+					$this_el = $option_container.find( '.et-pb-reset-setting' );
+				}
+
+				$this_el.removeClass( 'et-pb-reset-icon-visible' );
+
+				return;
+			}
 
 			if ( $main_setting.is( 'select' ) && default_value === '' ) {
 				$main_setting.prop( 'selectedIndex', 0 ).trigger( 'change' );
@@ -11326,20 +16400,22 @@ window.et_builder_version = '2.7.10';
 				$main_setting.wpColorPicker( 'color', default_value );
 
 				if ( default_value === '' ) {
-					$main_setting.siblings('.wp-picker-clear').trigger('click');
+					$option_container.find('.wp-picker-clear').trigger('click');
 				}
 
 				if ( ! $this_el.hasClass( 'et-pb-reset-setting' ) ) {
 					$this_el = $option_container.find( '.et-pb-reset-setting' );
 				}
 
-				$this_el.hide();
+				$this_el.removeClass( 'et-pb-reset-icon-visible' );
 
 				return;
 			}
 
 			if ( $main_setting.hasClass( 'et-pb-font-select' ) ) {
-				et_pb_setup_font_setting( $main_setting, true );
+				var reset_option = $this_el.hasClass('et_pb_reset_weight') ? 'weight' : 'font';
+				et_pb_setup_font_setting( $option_container, reset_option );
+				return;
 			}
 
 			if ( $main_setting.hasClass( 'et-pb-range' ) ) {
@@ -11347,7 +16423,7 @@ window.et_builder_version = '2.7.10';
 				default_value = et_pb_get_default_setting_value( $main_setting );
 			}
 
-			$main_setting.val( default_value );
+			$main_setting.val( default_value ).trigger( 'et_pb_setting:change', ['et_pb_reset_setting'] );
 
 			$main_setting.data( 'has_saved_value', 'no' );
 
@@ -11356,12 +16432,30 @@ window.et_builder_version = '2.7.10';
 			} else {
 				$main_setting.trigger( 'change' );
 			}
+
+			if ( $main_setting.hasClass('et_select_animation') ) {
+				$main_setting.find('.et_animation_button > a.et_active_animation').removeClass('et_active_animation');
+				$main_setting.find('.et_animation_button:first > a').addClass('et_active_animation');
+			}
+
+			if ( $main_setting.hasClass('et-presets') ) {
+				// When presets control is resetted, remove the active class and add it to its first preset
+				$main_setting.find('.et-preset').removeClass('et-preset-active').first().addClass('et-preset-active');
+			}
 		}
 
-		function et_pb_sanitize_input_unit_value( value, auto_important, default_unit ) {
+		// Determine whether the value passed is acceptable value for given css property
+		function et_pb_is_acceptable_css_string_value( property, value ) {
+			var acceptable_css_string_values = et_pb_options.acceptable_css_string_values;
+
+			return ! _.isUndefined( acceptable_css_string_values[ property ] ) ? _.contains( acceptable_css_string_values[ property ], value ) : false;
+		}
+
+		function et_pb_sanitize_input_unit_value( value, auto_important, default_unit, context ) {
 			var value = typeof value === 'undefined' ? '' : value,
-				valid_one_char_units  = [ "%" ],
-				valid_two_chars_units = [ "em", "px", "cm", "mm", "in", "pt", "pc", "ex", "vh", "vw" ],
+				valid_one_char_units  = [ "%", "x" ],
+				valid_two_chars_units = [ "em", "px", "cm", "mm", "in", "pt", "pc", "ex", "vh", "vw", "ms" ],
+				valid_three_chars_units = [ "deg", "rem" ],
 				important             = "!important",
 				important_length      = important.length,
 				has_important         = false,
@@ -11381,8 +16475,20 @@ window.et_builder_version = '2.7.10';
 				value = value.substr( 0, value_length ).trim();
 			}
 
-			if ( $.inArray( value.substr( -1, 1 ), valid_one_char_units ) !== -1 ) {
-				unit_value = parseFloat( value ) + "%";
+			// Allow whitelisted strings to be used
+			if ( ! _.isUndefined( context ) && et_pb_is_acceptable_css_string_value( context, value ) ) {
+				unit_value = value;
+
+				// Re-add !important tag
+				if ( has_important && ! auto_important ) {
+					unit_value = unit_value + ' ' + important;
+				}
+
+				return unit_value;
+			}
+
+			if ( $.inArray( value.substr( -3, 3 ), valid_three_chars_units ) !== -1 ) {
+				var unit_value = parseFloat( value ) + value.substr( -3, 3 );
 
 				// Re-add !important tag
 				if ( has_important && ! auto_important ) {
@@ -11394,6 +16500,17 @@ window.et_builder_version = '2.7.10';
 
 			if ( $.inArray( value.substr( -2, 2 ), valid_two_chars_units ) !== -1 ) {
 				var unit_value = parseFloat( value ) + value.substr( -2, 2 );
+
+				// Re-add !important tag
+				if ( has_important && ! auto_important ) {
+					unit_value = unit_value + ' ' + important;
+				}
+
+				return unit_value;
+			}
+
+			if ( $.inArray( value.substr( -1, 1 ), valid_one_char_units ) !== -1 ) {
+				unit_value = parseFloat( value ) + value.substr( -1, 1 );
 
 				// Re-add !important tag
 				if ( has_important && ! auto_important ) {
@@ -11420,7 +16537,7 @@ window.et_builder_version = '2.7.10';
 			var $this_field      = $element,
 				this_device      = typeof $this_field.data( 'device' ) !== 'undefined' ? $this_field.data( 'device' ) : 'all',
 				this_field_value = $this_field.val(),
-				$container       = $this_field.closest( '.et_custom_margin_padding' ),
+				$container       = $this_field.closest( '.et_margin_padding' ),
 				$main_container  = $container.closest( '.et-pb-option-container' ),
 				$mobile_toggle   = $main_container.find( '.et-pb-mobile-settings-toggle' ),
 				$margin_fields   = 'all' === this_device ? $container.find( '.et_custom_margin' ) : $container.find( '.et_custom_margin.et_pb_setting_mobile_' + this_device ),
@@ -11444,9 +16561,15 @@ window.et_builder_version = '2.7.10';
 					var $this_field = $(this),
 						field_index = $margin_fields.index( $this_field ),
 						auto_important  = $this_field.hasClass( 'auto_important' ),
-						corner_value = et_pb_sanitize_input_unit_value( margins[ field_index ], auto_important );
+						$option = $this_field.closest( '.et-pb-option' ),
+						option_name = $option.data( 'option_name' ),
+						property_map = {
+							custom_padding: 'padding',
+							custom_margin: 'margin'
+						},
+						corner_value = et_pb_sanitize_input_unit_value( margins[ field_index ], auto_important, undefined, property_map[ option_name ] );
 
-					$this_field.val( corner_value );
+					$this_field.val( corner_value ).trigger('et_pb_setting:change');
 
 					if ( '' !== corner_value ) {
 						show_mobile = true;
@@ -11463,63 +16586,284 @@ window.et_builder_version = '2.7.10';
 			}
 		}
 
-		function et_pb_setup_font_setting( $element, reset ) {
-			var $this_el           = $element,
-				$container         = $this_el.parent('.et-pb-option-container'),
-				$main_option       = $container.find( 'input.et-pb-font-select' ),
-				$select_option     = $container.find( 'select.et-pb-font-select' ),
-				$style_options     = $container.find( '.et_builder_font_styles' ),
-				$bold_option       = $style_options.find( '.et_builder_bold_font' ),
-				$italic_option     = $style_options.find( '.et_builder_italic_font' ),
-				$uppercase_option  = $style_options.find( '.et_builder_uppercase_font' ),
-				$underline_option  = $style_options.find( '.et_builder_underline_font' ),
-				style_active_class = 'et_font_style_active',
-				font_value         = $.trim( $main_option.val() ),
+		function et_pb_setup_font_setting($container, reset, initial_setup) {
+			var $options_container     = $container.closest('.et-pb-options-tab'),
+				$font_option_container = $container.find('.et-pb-select-font-outer'),
+				$main_option           = $container.find('input.et-pb-font-select'),
+				$select_option         = $container.find('.et-pb-settings-option-select-advanced'),
+				$style_options         = $container.find('.et_builder_font_styles'),
+				$select_placeholder    = $container.find('.et_pb_select_placeholder'),
+				$bold_option           = $container.find('.et_builder_font_weight'),
+				$line_color_option     = $container.find('.et_pb_font_line_color'),
+				$line_style_option     = $container.find('.et_pb_font_line_style_select'),
+				$font_style_options    = $container.find('.et_pb_font_style_container'),
+				$italic_option         = $style_options.find('.et_builder_italic_font'),
+				$uppercase_option      = $style_options.find('.et_builder_uppercase_font'),
+				$underline_option      = $style_options.find('.et_builder_underline_font'),
+				$capitalize_option     = $style_options.find('.et_builder_capitalize_font'),
+				$line_through_option   = $style_options.find('.et_builder_line_through_font'),
+				style_active_class     = 'et_font_style_active',
+				font_value             = $.trim($main_option.val()),
+				default_value          = !_.isUndefined($main_option.data('default')) ? $main_option.data('default') : '||||||||',
+				all_caps_option        = typeof $main_option.data('old-option-ref') !== 'undefined' && '' !== $main_option.data('old-option-ref') ? $main_option.data('old-option-ref') : '',
+				$all_caps_el           = '' !== all_caps_option ? $options_container.find('.et-pb-option-' + all_caps_option) : '',
+				$all_caps_input        = '' !== $all_caps_el && $all_caps_el.length ? $all_caps_el.find('input') : '',
+				selected_font          = 'default',
+				recent_items           = et_pb_get_recent_fonts($select_option),
+				weight_value           = '400',
+				is_underline           = false,
+				is_strikethrough       = false,
+				selected_font_item,
 				font_values;
 
-			if ( reset ) {
-				font_value = $.trim( $main_option.attr('data-default') );
+			if (reset) {
+				var default_values = default_value.split('|');
+				font_values = '' === font_value.replace(/\|/g, '') ? default_values : font_value.split('|');
+
+				if ('weight' === reset) {
+					font_values[1] = default_values[1];
+				} else {
+					font_values[0] = default_values[0];
+				}
+				font_value = font_values.join('|');
 			}
 
-			if ( font_value !== '' ) {
-				font_values = font_value.split( '|' );
+			if (initial_setup) {
+				// update the label for Font Weight and Font Style options to include the group label
+				var $font_weight_container = $container.find('.et_pb_font_weight_container');
+				var $style_label = $font_style_options.find('label');
+				var $weight_label = $font_weight_container.find('label');
+				var group_header = $font_option_container.data('group_label');
 
-				if ( font_values[0] !== '' ) {
-					$select_option.val( font_values[0] );
-				} else {
-					$select_option.prop( 'selectedIndex', 0 );
+				// set to default if font value is empty
+				if ('' === font_value.replace(/\|/g, '')) {
+					font_value = default_value;
 				}
 
-				if ( font_values[1] === 'on' ) {
-					$bold_option.addClass( style_active_class );
-				} else {
-					$bold_option.removeClass( style_active_class );
+				$style_label.html(group_header + ' ' + $style_label.html());
+				$weight_label.html(group_header + ' ' + $weight_label.html());
+
+				// update reset buttons location and data
+				var $reset_button = $container.find('.et-pb-reset-setting');
+				var $reset_button_weight = $reset_button.clone();
+
+				$font_option_container.append($reset_button.addClass('et_pb_reset_font'));
+				$font_weight_container.append($reset_button_weight.addClass('et_pb_reset_weight'));
+			}
+
+			if (font_value !== '') {
+				font_values = font_value.split('|');
+				selected_font = font_values[0] !== '' ? font_values[0] : 'default';
+
+				$select_placeholder.html(_.escape(selected_font));
+
+				if ( font_values[1] !== '' ) {
+					weight_value = 'on' === font_values[1] ? '700' : font_values[1];
 				}
 
-				if ( font_values[2] === 'on' ) {
-					$italic_option.addClass( style_active_class );
+				if (font_values[2] === 'on') {
+					$italic_option.addClass(style_active_class);
 				} else {
-					$italic_option.removeClass( style_active_class );
+					$italic_option.removeClass(style_active_class);
 				}
 
-				if ( font_values[3] === 'on' ) {
-					$uppercase_option.addClass( style_active_class );
+				if (font_values[3] === 'on') {
+					$uppercase_option.addClass(style_active_class);
 				} else {
-					$uppercase_option.removeClass( style_active_class );
+					$uppercase_option.removeClass(style_active_class);
 				}
 
-				if ( font_values[4] === 'on' ) {
-					$underline_option.addClass( style_active_class );
+				if (font_values[4] === 'on') {
+					$underline_option.addClass(style_active_class);
+					is_underline = true;
 				} else {
-					$underline_option.removeClass( style_active_class );
+					$underline_option.removeClass(style_active_class);
+				}
+
+				if (!_.isUndefined(font_values[5]) && font_values[5] === 'on') {
+					$capitalize_option.addClass(style_active_class);
+				} else {
+					$capitalize_option.removeClass(style_active_class);
+				}
+
+				if (!_.isUndefined(font_values[6]) && font_values[6] === 'on') {
+					$line_through_option.addClass(style_active_class);
+					is_strikethrough = true;
+				} else {
+					$line_through_option.removeClass(style_active_class);
+				}
+
+			 	if (!_.isUndefined(font_values[7]) && font_values[7] !== '') {
+					$line_color_option.find('.et-pb-custom-color-container').removeClass('et_pb_hidden');
+					$line_color_option.find('.et-pb-custom-color-button').addClass('et_pb_hidden');
+					$line_color_option.find('.et-pb-color-picker-hex-alpha').wpColorPicker('color', font_values[7]);
+				}
+
+				if (!_.isUndefined(font_values[8]) && font_values[8] !== '') {
+					$line_style_option.val(font_values[8]);
 				}
 			} else {
-				$select_option.prop( 'selectedIndex', 0 );
-				$bold_option.removeClass( style_active_class );
-				$italic_option.removeClass( style_active_class );
-				$uppercase_option.removeClass( style_active_class );
-				$underline_option.removeClass( style_active_class );
+				$select_placeholder.html(_.escape(selected_font));
+				$italic_option.removeClass(style_active_class);
+				$uppercase_option.removeClass(style_active_class);
+				$underline_option.removeClass(style_active_class);
+				$capitalize_option.removeClass(style_active_class);
+				$line_through_option.removeClass(style_active_class);
 			}
+
+			// hide line color and line style options if underline and strikethrough are not selected
+			if (!is_underline && !is_strikethrough) {
+				$container.find('.et_pb_font_line_settings').addClass('et_pb_hidden');
+				$container.find('.et-pb-option-container').removeClass('et_pb_fonts_long');
+			} else {
+				var line_group_header = $font_option_container.data('group_label');
+
+				// construct the label for line style options dynamically
+				$container.find('.et_pb_font_line_settings .et_pb_font_line_color > label').each(function() {
+					var $this_label = $(this);
+					var label_text = is_underline ? $this_label.data('underline_label') : $this_label.data('strikethrough_label');
+
+					$this_label.html(line_group_header + ' ' + label_text);
+				});
+
+				$container.find('.et_pb_font_line_settings').removeClass('et_pb_hidden');
+				$container.find('.et-pb-option-container').addClass('et_pb_fonts_long');
+			}
+
+			var supported_weigths = get_supported_weights(selected_font);
+
+			// make all the options accessible
+			$bold_option.find('option').removeClass('et_pb_unsupported_option');
+
+			// hide unsupported font-weight options for selected font
+			$bold_option.find('option').each(function() {
+				var $option_el = $(this);
+
+				// hide option if it doesn't exist in the list of supported options
+				if (-1 === _.indexOf(supported_weigths, $option_el.val())) {
+					$option_el.addClass('et_pb_unsupported_option');
+
+					// reset selected option to default
+					if (weight_value === $option_el.val()) {
+						weight_value = '400';
+					}
+				}
+			});
+
+			$bold_option.find('option[value="' + weight_value + '"]').prop('selected', true);
+
+			// mark the selected font and prepend it to the beginning of menu.
+			$selected_font_item = $select_option.find('.select-option-item-' + selected_font.replace(/ /g, '_'));
+			$select_option.find('.et_pb_selected_menu_item').removeClass('et_pb_selected_menu_item');
+			$selected_font_item.addClass('et_pb_selected_menu_item');
+			$select_option.find('.et_pb_selected_item_container').html(_.escape($selected_font_item.text()));
+
+			if (!_.isEmpty(recent_items)) {
+				$select_option.find('.et-pb-recent-fonts').removeClass('et_pb_hidden_subgroup');
+				$select_option.find('.et-pb-recent-fonts ul').html('');
+				_.each(recent_items, function(item) {
+					var $recent_element = '<li class="select-option-item select-option-item-recent-font select-option-item-' + item.replace(/ /g, '_') + '" data-value="' + item + '">' + item + '</li>';
+					$select_option.find('.et-pb-recent-fonts ul').append($recent_element);
+				});
+			} else {
+				$select_option.find('.et-pb-recent-fonts').addClass('et_pb_hidden_subgroup');
+			}
+
+			// backward compatibility for obsolete "all caps" option
+			if ($all_caps_input.length && '' !== $all_caps_input.val()) {
+				// turn on uppercase option if it's off, but "All Caps" is on
+				if (font_values[3] !== 'on' && 'on' === $all_caps_input.val()) {
+					$uppercase_option.addClass(style_active_class);
+					font_values[3] = 'on';
+					// update the value of font option if Uppercase value was changed
+					$main_option.val(font_values.join('|')).trigger('change');
+				}
+
+				// reset the value for obsolete "all caps" option to remove it from shortcode
+				$all_caps_input.val('');
+			}
+
+			// update option value after reset
+			if (reset) {
+				$main_option.val(font_values.join('|')).trigger('et_pb_setting:change');
+			}
+		}
+
+		function get_supported_weights( selected_font ) {
+			var google_fonts_data = et_pb_options.google_fonts;
+			var user_fonts_data = et_pb_options.user_fonts;
+			var selected_font_data = _.isUndefined( user_fonts_data[ selected_font ] ) ? false : user_fonts_data[ selected_font ];
+			var supported_options = _.keys( et_pb_options.supported_font_weights );
+			var processedWeights = {};
+
+			// return list of supported weights for Default font
+			if ( 'default' === selected_font.toLowerCase() ) {
+				return ['300', '400', '600', '700', '800'];
+			}
+
+			// try to retrieve font data from google fonts if it was not retrieved from User fonts
+			if ( ! selected_font_data ) {
+				selected_font_data = _.isUndefined( google_fonts_data[ selected_font ] ) ? false : google_fonts_data[ selected_font ];
+			}
+
+			if ( ! selected_font_data || _.isUndefined( selected_font_data.styles ) ) {
+				return supported_options;
+			}
+
+			return _.intersection( _.union( ['400', '700'], selected_font_data.styles.split(',') ), supported_options );
+		}
+
+		function et_pb_update_recent_fonts( item_name, action ) {
+			// don't add default font to the recent items
+			if ( 'default' === item_name ) {
+				return;
+			}
+
+			var recent_items = wpCookies.get( 'et-pb-recent-items-font_family' );
+			recent_items = ! _.isUndefined( recent_items ) && ! _.isNull( recent_items ) ? recent_items.split('|') : [];
+
+			if ( 'remove' === action ) {
+				if ( -1 === _.indexOf( recent_items, item_name ) ) {
+					return;
+				}
+				delete recent_items[ item_name ];
+			} else if ( -1 === _.indexOf( recent_items, item_name ) ) {
+				if ( recent_items.length >= 3 ) {
+					// remove last item in array
+					recent_items = recent_items.slice(0, 2);
+				}
+				// prepend the new item at the beginning of array
+				recent_items = _.union( [ item_name ], recent_items );
+			} else {
+				return;
+			}
+
+
+			var secure = ( 'https:' === window.location.protocol );
+			var cookie_expires = 365*24*60*60*1000;
+
+			// save the list of most recent items to cookies
+			wpCookies.set( 'et-pb-recent-items-font_family', recent_items.join('|'), cookie_expires, et_pb_options.cookie_path, false, secure );
+		}
+
+		function et_pb_get_recent_fonts( $menu ) {
+			// get the list of most recent items from cookies
+			var recent_items = wpCookies.get( 'et-pb-recent-items-font_family' );
+			recent_items = ! _.isUndefined( recent_items ) && ! _.isNull( recent_items ) ? recent_items.split('|') : [];
+
+			if ( _.isEmpty( recent_items ) ) {
+				return [];
+			}
+
+			var recent_items_processed = [];
+
+			_.each( recent_items, function( item ) {
+				if ( $menu.find( '.select-option-item-' + item.replace( / /g, '_' ) ).length > 0 ) {
+					recent_items_processed.push( item );
+				}
+			});
+
+			return recent_items_processed;
 		}
 
 		function et_pb_hide_active_color_picker( container ) {
@@ -11538,7 +16882,7 @@ window.et_builder_version = '2.7.10';
 			}
 		}
 
-		function et_reinitialize_builder_layout() {
+		function et_reinitialize_builder_layout( update_global_modules, migrate_global_modules ) {
 			ET_PageBuilder_App.saveAsShortcode();
 
 			setTimeout( function(){
@@ -11553,25 +16897,682 @@ window.et_builder_version = '2.7.10';
 
 				ET_PageBuilder_App.$el.find( '.et_pb_section' ).remove();
 
-				ET_PageBuilder_App.createLayoutFromContent( et_prepare_template_content( content ), '', '', { is_reinit : 'reinit' } );
+				ET_PageBuilder_App.createLayoutFromContent( et_prepare_template_content( content ), '', '', { is_reinit : 'reinit', migrate_global_modules: migrate_global_modules } );
 
 				$builder_container.css( { 'height' : 'auto' } );
 
 				ET_PageBuilder_AB_Testing.update();
+
+				// in some cases we may need to update the content of global Rows and Section right after the layout reinit
+				if ( ! update_global_modules ) {
+					return;
+				}
+
+				// get array of global Rows and Sections on the page
+				var global_modules = _.filter( ET_PageBuilder_Modules.models, function( model ) {
+					return 'module' !== model.attributes.type && typeof model.attributes.et_pb_global_module !== 'undefined' && model.attributes.et_pb_global_module !== '';
+				} );
+
+				// update saved global template for each Section and Row
+				if ( 0 !== global_modules.length ) {
+					_.each( global_modules, function( model ) {
+						et_pb_update_global_template( model.attributes.cid );
+					});
+				}
 			}, 600 );
 		}
 
-		function et_prepare_template_content( content ) {
-			if ( -1 !== content.indexOf( '[et_pb_' ) ) {
-				if  ( -1 === content.indexOf( 'et_pb_row' ) && -1 === content.indexOf( 'et_pb_section' ) ) {
-					if ( -1 === content.indexOf( 'et_pb_fullwidth' ) ) {
-						var saved_tabs = /(\\?")(.*?)\1/.exec( content );
-						content = '[et_pb_section template_type="module" skip_module="true"][et_pb_row template_type="module" skip_module="true"][et_pb_column type="4_4" saved_tabs="' + saved_tabs[2] + '"]' + content + '[/et_pb_column][/et_pb_row][/et_pb_section]';
+		// TODO, need to put WP credits here, there is code in this function thats is based on/from WP core heartbeat.js
+		// wp-includes/js/heartbeat.js
+		function et_builder_check_for_frontend_builder_updates(){
+			var $last_post_modified = $('#et_pb_last_post_modified');
+			var last_post_modified  = $last_post_modified.val();
+			var post_id = $('#post_ID').val();
+			var blog_id = typeof window.autosaveL10n !== 'undefined' && window.autosaveL10n.blog_id;
+			var force_check = false;
+			var latest_post_content;
+			var is_builder_used;
+			var hidden;
+			var visibilityState;
+			var visibilitychange;
+			var blurred;
+			var focused;
+			var checkFocusTimer;
+			var checkFocus;
+			var hasFocus = true;
+			var force_autosave = false;
+			var secure = ( 'https:' === window.location.protocol );
+			var wp_saved_cookie = wpCookies.get( 'wp-saving-post' );
+			var hasStorage;
+			var autosaving_in_progress_cookie;
+			var cookie_expires = 5 * 60; // 5 minutes
+			var is_reloading = false;
+
+			// Check if the browser supports sessionStorage and it's not disabled
+			var checkStorage = function() {
+				var test = Math.random().toString(),
+					result = false;
+
+				try {
+					window.sessionStorage.setItem( 'wp-test', test );
+					result = window.sessionStorage.getItem( 'wp-test' ) === test;
+					window.sessionStorage.removeItem( 'wp-test' );
+				} catch(e) {}
+
+				hasStorage = result;
+				return result;
+			};
+			checkStorage();
+
+			/**
+			 * Initialize the local storage
+			 *
+			 * @return mixed False if no sessionStorage in the browser or an Object containing all postData for this blog
+			 */
+			var getStorage = function(key_prefix) {
+				var stored_obj = false;
+				key_prefix = key_prefix || 'wp';
+				// Separate local storage containers for each blog_id
+				if ( hasStorage && blog_id ) {
+					stored_obj = sessionStorage.getItem( key_prefix + '-autosave-' + blog_id );
+
+					if ( stored_obj ) {
+						stored_obj = JSON.parse( stored_obj );
 					} else {
-						var saved_tabs = /(\\?")(.*?)\1/.exec( content );
-						content = '[et_pb_section fullwidth="on" template_type="module" skip_module="true" saved_tabs="' + saved_tabs[2] + '"]' + content + '[/et_pb_section]';
+						stored_obj = {};
 					}
-				} else if ( -1 === content.indexOf( 'et_pb_section' ) ) {
+				}
+
+				return stored_obj;
+			};
+
+			/**
+			 * Set the storage for this blog
+			 *
+			 * Confirms that the data was saved successfully.
+			 *
+			 * @return bool
+			 */
+			var setStorage = function( stored_obj, key_prefix ) {
+				var key;
+				key_prefix = key_prefix || 'wp';
+
+				if ( hasStorage && blog_id ) {
+					key = key_prefix + '-autosave-' + blog_id;
+					sessionStorage.setItem( key, JSON.stringify( stored_obj ) );
+					return sessionStorage.getItem( key ) !== null;
+				}
+
+				return false;
+			};
+
+			/**
+			 * Set (save or delete) post data in the storage.
+			 *
+			 * If stored_data evaluates to 'false' the storage key for the current post will be removed
+			 *
+			 * $param stored_data The post data to store or null/false/empty to delete the key
+			 * @return bool
+			 */
+			var setData = function( stored_data, key_prefix ) {
+				var stored = getStorage(key_prefix);
+
+				if ( ! stored || ! post_id ) {
+					return false;
+				}
+
+				if ( stored_data ) {
+					stored[ 'post_' + post_id ] = stored_data;
+				} else if ( stored.hasOwnProperty( 'post_' + post_id ) ) {
+					delete stored[ 'post_' + post_id ];
+				} else {
+					return false;
+				}
+
+				return setStorage( stored, key_prefix );
+			};
+
+			if ( wp_saved_cookie === post_id + '-saved' ) {
+				// The post was saved properly, set cookie to remove old fb autosave data (if present)
+				// FB will pick this up and clear its autosave
+				wpCookies.set( 'et-saved-post-' + post_id + '-bb', 'bb', cookie_expires, et_pb_options.cookie_path, false, secure );
+				wpCookies.set( 'et-recommend-sync-post-' + post_id + '-bb', 'bb', 30, et_pb_options.cookie_path, false, secure );
+			}
+
+			wpCookies.set( 'et-editor-available-post-' + post_id + '-bb', 'bb', cookie_expires * 6, et_pb_options.cookie_path, false, secure );
+
+			function check_fb_saved() {
+				var fb_saved_cookie = wpCookies.get( 'et-saved-post-' + post_id + '-fb' );
+				if ( fb_saved_cookie ) {
+					// The post was saved properly in FB, set cookie to remove old fb autosave data (if present)
+					// FB will pick this up and clear its autosave
+					setData(false, 'wp');
+
+					var fb_editing_cookie = wpCookies.get( 'et-editing-post-' + post_id + '-fb' );
+					if ( ! fb_editing_cookie ) {
+						wpCookies.remove( 'et-saved-post-' + post_id + '-fb', et_pb_options.cookie_path, false, secure );
+					}
+				}
+			}
+
+			check_fb_saved();
+
+			is_builder_used = function(){
+				return $( '#et_pb_use_builder' ).val() === 'on';
+			};
+
+			autosaving_in_progress_cookie = function(in_progress) {
+				if ( in_progress ) {
+					wpCookies.remove( 'et-saved-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+					wpCookies.set( 'et-saving-post-' + post_id + '-bb', 'bb', cookie_expires, et_pb_options.cookie_path, false, secure );
+				} else {
+					// remove "saving" and set "saved", both are looked for in FB
+					wpCookies.remove( 'et-saving-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+					wpCookies.set( 'et-saved-post-' + post_id + '-bb', 'bb', cookie_expires, et_pb_options.cookie_path, false, secure );
+				}
+			};
+
+			// Used to check if content has changed, to be used before forcing a autosave heartbeat
+			var initialCompareString = _.isUndefined( wp.autosave ) ? '' : wp.autosave.getCompareString();
+			var lastCompareString;
+			var hasContentChanged = function() {
+				if ( _.isUndefined( wp.heartbeat ) || _.isUndefined( wp.autosave ) ) {
+					return false;
+				}
+
+				var postData = wp.autosave.getPostData('local');
+
+				var compareString = wp.autosave.getCompareString( postData );
+
+				if ( typeof lastCompareString === 'undefined' ) {
+					lastCompareString = initialCompareString;
+				}
+
+				// If the content, title and excerpt did not change since the last save, don't save again
+				if ( compareString === lastCompareString ) {
+					return false;
+				}
+
+				lastCompareString = compareString;
+
+				return true;
+			};
+
+			blurred = function(){
+				if ( !is_builder_used() ) {
+					return;
+				}
+
+				hasFocus = false;
+
+				var cookie = wpCookies.get( 'et-editing-post-' + post_id + '-bb' );
+				if ( cookie ) {
+
+					// if content has not changed, no need to force an autosave heartbeat
+					if ( !hasContentChanged() ) {
+						return false;
+					}
+
+					// fire after next js event loop tick, so that during reload this will not even fire
+					setTimeout(function(){
+						// this flag is set, adding redundency to preventing autosave during reload
+						if ( !is_reloading ) {
+							force_autosave = true;
+							autosaving_in_progress_cookie(true);
+
+							if ( ! _.isUndefined( wp.heartbeat ) && ! _.isUndefined( wp.autosave ) ) {
+								wp.autosave.server.triggerSave();
+							}
+						}
+					}, 0);
+				}
+			};
+
+			focused = function(){
+				if ( !is_builder_used() ) {
+					return false;
+				}
+				var post_id = $('#post_ID').val();
+				var secure = ( 'https:' === window.location.protocol );
+				var cookie_expires = 5 * 60; // 5 mins (in secs)
+
+				hasFocus = true;
+
+				var cookie = wpCookies.get( 'et-editing-post-' + post_id + '-fb' );
+				if ( !cookie ) {
+					return false;
+				}
+
+				if ( _.isUndefined( wp.heartbeat ) || _.isUndefined( wp.autosave ) ) {
+					return false;
+				}
+
+				var syncMaxChecks = 5;
+				var syncChecks = 0;
+				var syncCheck = function(){
+					var syncingCookieFB = wpCookies.get( 'et-syncing-post-' + post_id + '-fb' );
+					var syncingCookieBB = wpCookies.get( 'et-syncing-post-' + post_id + '-bb' );
+
+					var syncCheckedMax = syncChecks >= syncMaxChecks;
+					if ( !syncCheckedMax && ( syncingCookieFB || syncingCookieBB ) ) {
+						// bump loading state
+						ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+					} else {
+						// remove loading state
+						ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+						return false;
+					}
+
+					syncChecks++;
+
+					// check again in 1 sec (recursive)
+					setTimeout(syncCheck, 1000);
+					return true;
+				};
+
+				if (syncCheck()) {
+					return;
+				}
+
+				wpCookies.set( 'et-syncing-post-' + post_id + '-bb', 'bb', 30, et_pb_options.cookie_path, false, secure );
+
+				// external editor was in use!
+				et_builder_debug_message('external editor was in use!');
+
+				et_builder_debug_message('trigger preloader');
+				// add loading state
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+				// temp block autosave
+				wp.autosave.server.tempBlockSave();
+
+				var FBDoneFoundSavingCookie = false;
+				var FBDoneReCheckTimeout = 500;
+				var FBDoneMaxWaitTime = 15000;
+				var FBDoneMaxChecks = FBDoneMaxWaitTime / FBDoneReCheckTimeout;
+				var FBDoneChecks = 0;
+				var checkFBDoneAutosaving = function() {
+					var FBsaved = false;
+
+					// see if saved has happened
+					var savedCookie = wpCookies.get( 'et-saved-post-' + post_id + '-fb' );
+					if ( savedCookie ) {
+						FBsaved = true;
+					}
+
+					if ( FBDoneChecks > FBDoneMaxChecks ) {
+						FBsaved = true;
+					}
+
+					FBDoneChecks++;
+
+					if ( _.isUndefined( wp.heartbeat ) || _.isUndefined( wp.autosave ) ) {
+						return;
+					}
+
+					// bump temp block autosave
+					wp.autosave.server.tempBlockSave();
+
+					// bump loading state
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+					if ( FBsaved ) {
+						et_builder_debug_message('calling wp.heartbeat.connectNow()');
+
+						force_check = true;
+						// check if FB saved, and if it did, clear our local autosave data
+						check_fb_saved();
+
+						// wait .5 sec so autosave has time to settle...?
+						setTimeout(function(){
+							wp.heartbeat.connectNow();
+						}, 500);
+
+						// clean these up, since we have consumed them
+						wpCookies.remove( 'et-saving-post-' + post_id + '-fb', et_pb_options.cookie_path, false, secure );
+						wpCookies.remove( 'et-saved-post-' + post_id + '-fb', et_pb_options.cookie_path, false, secure );
+						wpCookies.remove( 'et-syncing-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+						// delete the fb-editing cookie, since the baton is in BB's hand now
+						wpCookies.remove( 'et-editing-post-' + post_id + '-fb', et_pb_options.cookie_path, false, secure );
+						return true;
+					}
+
+					// check again in .5 sec (recursive)
+					setTimeout(checkFBDoneAutosaving, FBDoneReCheckTimeout);
+				}
+
+				// kick it off
+				checkFBDoneAutosaving();
+			};
+
+			checkFocus = function() {
+				if ( hasFocus && ! document.hasFocus() ) {
+					blurred();
+				} else if ( ! hasFocus && document.hasFocus() ) {
+					focused();
+				}
+			};
+
+			if ( typeof document.hidden !== 'undefined' ) {
+				hidden = 'hidden';
+				visibilitychange = 'visibilitychange';
+				visibilityState = 'visibilityState';
+			} else if ( typeof document.msHidden !== 'undefined' ) { // IE10
+				hidden = 'msHidden';
+				visibilitychange = 'msvisibilitychange';
+				visibilityState = 'msVisibilityState';
+			} else if ( typeof document.webkitHidden !== 'undefined' ) { // Android
+				hidden = 'webkitHidden';
+				visibilitychange = 'webkitvisibilitychange';
+				visibilityState = 'webkitVisibilityState';
+			}
+
+			window.addEventListener("beforeunload", function( event ) {
+				is_reloading = true;
+				wpCookies.remove( 'et-editing-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+				wpCookies.remove( 'et-syncing-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+				wpCookies.remove( 'et-saving-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+				wpCookies.remove( 'et-editor-available-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+			});
+
+			if ( hidden ) {
+				$(document).on( visibilitychange + '.fb-heartbeat', function(e) {
+					if ( !is_builder_used() ) {
+						return;
+					}
+					if ( document[visibilityState] === 'hidden' ) {
+						blurred();
+						window.clearInterval( checkFocusTimer );
+					} else {
+						focused();
+						if ( document.hasFocus ) {
+							checkFocusTimer = window.setInterval( checkFocus, 1000 );
+						}
+					}
+				});
+			}
+
+			// Use document.hasFocus() if available.
+			if ( document.hasFocus ) {
+				checkFocusTimer = window.setInterval( checkFocus, 1000 );
+			}
+
+			// fire it right away
+			focused();
+
+			// check for save from FB, even if it refreshes right after saving
+			setInterval( function(){
+				var fb_recommend_sync_cookie = wpCookies.get( 'et-recommend-sync-post-' + post_id + '-fb' );
+				var fb_saved_cookie = wpCookies.get( 'et-saved-post-' + post_id + '-fb' );
+				if ( fb_recommend_sync_cookie && fb_saved_cookie ) {
+					if ( ! _.isUndefined( wp.heartbeat ) ) {
+						wp.heartbeat.connectNow();
+					}
+					wpCookies.remove( 'et-recommend-sync-post-' + post_id + '-fb', et_pb_options.cookie_path, false, secure );
+				}
+			}, 3000 );
+
+			// send last_post_modified with the heartbeatData sent to server
+			// php et_pb_heartbeat_post_modified() hook is looking for this key
+			$(document).on('heartbeat-send.bb-heartbeat', function(event, heartbeatData ){
+				if ( !is_builder_used() ) {
+					return;
+				}
+
+				heartbeatData.et = {
+					last_post_modified: last_post_modified,
+					built_by: 'bb',
+					post_id: post_id,
+					force_check: force_check,
+					force_autosave: force_check ? false : force_autosave // if force_check, dont let it be force_autosave at same time
+				};
+
+				// reset force check after its used
+				force_check = false;
+
+				// set the autosave payload if its not there, since we are trying to force_autosave now
+				if ( force_autosave && 'undefined' === typeof heartbeatData.wp_autosave ) {
+					heartbeatData.wp_autosave = wp.autosave.getPostData();
+
+					// Overwriting autosave's post data with the newest content change
+					heartbeatData.wp_autosave.content = et_pb_get_content( 'content' );
+					heartbeatData.wp_autosave._wpnonce = $( '#_wpnonce' ).val() || '';
+				}
+
+				if ( typeof heartbeatData.wp_autosave === 'object' ) {
+					heartbeatData.wp_autosave.builder_settings = _.mapObject( _.indexBy( $( '.et_pb_page_settings input.et_pb_value_updated' ).serializeArray(), 'name' ), function( setting, name ) {
+						return setting.value;
+					} );
+					heartbeatData.wp_autosave.et_fb_autosave_nonce = et_pb_options.et_fb_autosave_nonce;
+
+					// Remove updated marker
+					$( '.et_pb_page_settings input.et_pb_value_updated' ).removeClass('et_pb_value_updated');
+				}
+
+				// reset this flag after its used on the autosave heartbeat
+				if ( force_autosave && 'undefined' !== typeof heartbeatData.wp_autosave ) {
+					force_autosave = false;
+				}
+			});
+
+			// check recieved heartbeat response, to see if et_pb_heartbeat_post_modified() determined
+			// the post has been modified externally of this editor
+			$(document).on('heartbeat-tick.bb-heartbeat', function(event, response ){
+				if ( !is_builder_used() ) {
+					return;
+				}
+
+				if ( ! _.isEmpty( response.et ) && ! _.isEmpty( response.et.builder_settings_autosave ) ) {
+					var is_builder_settings_popup_opened = $( '.et_pb_modal_overlay.et_pb_builder_settings' ).length;
+
+					_.each( response.et.builder_settings_autosave, function( value, name ) {
+						$('#_' + name).val( value );
+
+						if ( 'et_pb_section_background_color' === name ) {
+							et_pb_options.page_section_bg_color = value;
+						}
+
+						if ( 'et_pb_page_gutter_width' === name ) {
+							et_pb_options.page_gutter_width = value;
+						}
+
+						if ( 'et_pb_color_palette' === name ) {
+							et_pb_options.page_color_palette = value;
+						}
+
+						// Live refresh for currently opened builder settings
+						if ( is_builder_settings_popup_opened ) {
+							var $field = $( '.et_pb_modal_overlay.et_pb_builder_settings div[data-id="'+ name +'"]' );
+							var dataType = $field.attr( 'data-type');
+
+							switch( dataType ) {
+								case 'range':
+									$field.find( '.range, .et-pb-range-input' ).val( value );
+									break;
+								case 'color-alpha':
+									$field.find( '.input-colorpicker' ).wpColorPicker( 'color', value );
+									break;
+								case 'textarea':
+									$field.find( 'textarea' ).val( value );
+									break
+								case 'colorpalette':
+									var paletteColors = value.split('|');
+									$field.find( '.input-colorpalette-colorpicker' ).each(function( index, palette ) {
+										if ( ! _.isUndefined( paletteColors[index] ) ) {
+											var paletteColor = paletteColors[index];
+											$(palette).val( paletteColor ).wpColorPicker( 'color', paletteColor );
+											$field.find( '.colorpalette-item-' + ( index + 1) ).css({
+												'backgroundColor' : paletteColor
+											});
+										}
+									});
+									break;
+								case 'yes_no_button':
+									var $yn_wrapper = $field.find( '.et_pb_yes_no_button_wrapper' ),
+										$yn_button  = $field.find( '.et_pb_yes_no_button' ),
+										$yn_select  = $field.find( 'select' );
+
+									$yn_select.find('option[value="'+value+'"]').prop('selected', true);
+
+									if ( value === 'on' ) {
+										$yn_button.removeClass( 'et_pb_off_state' ).addClass( 'et_pb_on_state' );
+									} else {
+										$yn_button.removeClass( 'et_pb_on_state' ).addClass( 'et_pb_off_state' );
+									}
+									break;
+								default :
+									$field.find( 'input' ).val( value );
+									break;
+							}
+						}
+					} );
+				}
+
+				// if this was a completed autosave, update our saving/saved cookie state
+				if ( response.wp_autosave ) {
+					autosaving_in_progress_cookie(false);
+				}
+
+				if ( 'undefined' === typeof response.et ) {
+					return false;
+				}
+
+				if ( 'undefined' !== typeof response.et.post_modified ) {
+					last_post_modified = response.et.post_modified;
+				}
+
+				if ( 'undefined' !== typeof response.et.post_content ) {
+					et_builder_debug_message('ext changes occured');
+					latest_post_content = response.et.post_content;
+
+					// Close currently opened settings modal
+					var $modalSettingsContainer = $('.et_pb_modal_settings_container');
+
+					if ( $modalSettingsContainer.length && $modalSettingsContainer.attr('data-open_view') === 'module_settings' ) {
+						$modalSettingsContainer.find('.et-pb-modal-close').trigger('click');
+					}
+
+					update_builder_content();
+				} else {
+					// remove loading state
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+				}
+			});
+
+			var update_builder_content = function(){
+				$last_post_modified.val(last_post_modified);
+
+				if ( !is_builder_used() ) {
+					return;
+				}
+
+				// If this is a fresh new post/page, the first attempt will be to update with blank content from db (since its not saved yet in db)
+				// so this check will skip that initial attempt
+				if ( '' == latest_post_content ) {
+					return;
+				}
+
+				// add loading state
+				ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+
+				// Set shortcode to editor
+				var shortcode = latest_post_content;
+				et_pb_set_content( 'content', shortcode, 'updating_to_latest_fb_content' );
+
+				// Rebuild the builder
+				setTimeout( function(){
+					var $builder_container = $( '#et_pb_layout' ),
+						builder_height     = $builder_container.innerHeight();
+
+					$builder_container.css( { 'height' : builder_height } );
+
+					ET_PageBuilder_App.removeAllSections();
+
+					ET_PageBuilder_App.$el.find( '.et_pb_section' ).remove();
+
+					// Ensure that no history is added for rollback
+					ET_PageBuilder_App.enable_history = false;
+
+					ET_PageBuilder_App.createLayoutFromContent( et_prepare_template_content( shortcode ), '', '', { is_reinit : 'reinit' } );
+
+					// Auto turn on AB Testing if the history has AB Testing data
+					if ( ET_PageBuilder_AB_Testing.is_active_based_on_models() ) {
+						ET_PageBuilder_AB_Testing.toggle_status( true );
+
+						et_reinitialize_builder_layout();
+					} else {
+						ET_PageBuilder_AB_Testing.toggle_status( false );
+					}
+
+					$builder_container.css( { 'height' : 'auto' } );
+
+					// remove loading state
+					ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+
+					// delete the editing cookie since the above doesnt count as dirty'ing the content
+					setTimeout(function(){
+						wpCookies.remove( 'et-editing-post-' + post_id + '-bb', et_pb_options.cookie_path, false, secure );
+					}, 500 );
+				}, 500 );
+			};
+		}
+		et_builder_check_for_frontend_builder_updates();
+
+		$( document ).on( 'tinymce-editor-init.autosave', function( event, editor ) {
+			if ( 'content' === editor.id ) {
+				$( document ).off( 'tinymce-editor-init.autosave' );
+			}
+		});
+
+		function et_pb_migrate_settings( curent_settings, module_address, shortcode_name, module_type ) {
+			var migrations    = _.isUndefined( et_pb_options.et_pb_module_settings_migrations ) ? false : et_pb_options.et_pb_module_settings_migrations;
+			var name_changes  = _.isUndefined( migrations.name_changes ) ? false : migrations.name_changes;
+			var value_changes = _.isUndefined( migrations.value_changes ) ? false : migrations.value_changes;
+
+			// BEGIN Settings Migrations
+			if ( name_changes &&  ! _.isUndefined( name_changes[shortcode_name] ) ) {
+				_.forEach( name_changes[shortcode_name], function( new_name, old_name ) {
+					if ( ! _.isUndefined( curent_settings['named'][old_name] ) && _.isUndefined( curent_settings['named'][new_name] ) ) {
+						curent_settings['named'][new_name] = curent_settings['named'][old_name];
+					}
+				} );
+			}
+
+			if ( value_changes &&  ! _.isUndefined( value_changes[module_address] ) ) {
+				_.forEach( value_changes[module_address], function( new_value, setting_name ) {
+					curent_settings['named'][setting_name] = new_value;
+				} );
+			}
+
+			// If current loop is module, look for module item's migration content. Module item value migration won't be parsed correctly on page load because module item is not visibly rendered on page layout
+			// thus, get module item based on current module's address then assign it as element to module object. This element will be fetched when module's setting modal is rendered
+			if ( 'module' === module_type ) {
+				var module_items_value_changes = {},
+					module_address_length = module_address.length;
+
+				_.forEach( value_changes, function( item_changes, item_address ) {
+					if ( module_address + '.' === String( item_address ).substr( 0, ( module_address_length + 1 ) ) ) {
+						module_items_value_changes[ item_address.substr( module_address.length + 1 ) ] = item_changes;
+					}
+				} );
+
+				if ( ! _.isEmpty( module_items_value_changes ) ) {
+					curent_settings['named']['value_changes'] = module_items_value_changes;
+				}
+			}
+
+			return curent_settings;
+		}
+
+		function et_prepare_template_content( content ) {
+			if (-1 !== content.indexOf('[et_pb_') || (et_pb_options.is_divi_library === '1' && et_pb_options.layout_type === 'module')) {
+				if  (-1 === content.indexOf('et_pb_row') && -1 === content.indexOf('et_pb_section')) {
+					if (-1 === content.indexOf('et_pb_fullwidth')) {
+						content = '[et_pb_section template_type="module" skip_module="true"][et_pb_row template_type="module" skip_module="true"][et_pb_column type="4_4"]' + content + '[/et_pb_column][/et_pb_row][/et_pb_section]';
+					} else {
+						content = '[et_pb_section fullwidth="on" template_type="module" skip_module="true"]' + content + '[/et_pb_section]';
+					}
+				} else if (-1 === content.indexOf('et_pb_section')) {
 					content = '[et_pb_section template_type="row" skip_module="true"]' + content + '[/et_pb_section]';
 				}
 			}
@@ -11668,8 +17669,8 @@ window.et_builder_version = '2.7.10';
 		}
 
 		// function to load saved layouts, it works differently than loading saved rows, sections and modules, so we need a separate function
-		function et_load_saved_layouts( layout_type, container_class, $this_el, post_type ) {
-			if ( typeof $et_pb_templates_cache[layout_type + '_layouts'] !== 'undefined' ) {
+		function et_load_saved_layouts( layout_type, container_class, $this_el, post_type, update_cache ) {
+			if ( typeof $et_pb_templates_cache[layout_type + '_layouts'] !== 'undefined' && ! update_cache ) {
 				$this_el.find( '.et-pb-main-settings.' + container_class ).append( $et_pb_templates_cache[layout_type + '_layouts'] );
 			} else {
 				$.ajax( {
@@ -11683,13 +17684,19 @@ window.et_builder_version = '2.7.10';
 						et_load_layouts_type : layout_type //'predefined' or not predefined
 					},
 					beforeSend : function() {
-						ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+						if ( ! update_cache ) {
+							ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
+						}
 					},
 					complete : function() {
-						ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+						if ( ! update_cache ) {
+							ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
+						}
 					},
 					success: function( data ){
-						$this_el.find( '.et-pb-main-settings.' + container_class ).append( data );
+						if ( ! update_cache ) {
+							$this_el.find( '.et-pb-main-settings.' + container_class ).append( data );
+						}
 						$et_pb_templates_cache[layout_type + '_layouts'] = data;
 					}
 				} );
@@ -11709,8 +17716,7 @@ window.et_builder_version = '2.7.10';
 				});
 
 				if ( typeof $clicked_button.data( 'content_loaded' ) === 'undefined' && ! $clicked_button.hasClass( 'et-pb-new-module' ) && 'layout' !== module_type ) {
-					var include_global = $clicked_button.closest( '.et_pb_modal_settings' ).hasClass( 'et_pb_no_global' ) ? 'no_global' : 'include_global';
-					generate_templates_view( include_global, '', module_type, $( '.' + $clicked_button.data( 'open_tab' ) ), module_width, specialty_columns, 'all' );
+					generate_templates_view( 'include_global', '', module_type, $( '.' + $clicked_button.data( 'open_tab' ) ), module_width, specialty_columns, 'all' );
 					$clicked_button.data( 'content_loaded', 'true' );
 				}
 			}
@@ -11721,20 +17727,27 @@ window.et_builder_version = '2.7.10';
 				return;
 			}
 
-			var tinymce_advanced_noautop = tinyMCEPreInit.mceInit.et_pb_content_new.tadv_noautop; // get the noautop option from tinyMCE advanced plugin
+			var tinymce_advanced_noautop = tinyMCEPreInit.mceInit.et_pb_content.tadv_noautop; // get the noautop option from tinyMCE advanced plugin
+
+			// do not apply autop, if such option is enabled in TinyMCE Advanced Plugin
+			if ( typeof tinymce_advanced_noautop !== 'undefined' && tinymce_advanced_noautop === true ) {
+				return;
+			}
 
 			_.each( ET_PageBuilder_App.collection.models, function( model ) {
-				var model_content = model.get( 'et_pb_content_new' );
+				var modules_with_child = $.parseJSON( et_pb_options.et_builder_modules_with_children );
+
+				// do not apply autop for the modules with child. Autop should be applied inside child module instead
+				if ( _.includes( _.keys( modules_with_child ), model.get( 'module_type' ) ) ) {
+					return;
+				}
+
+				var model_content = model.get( 'et_pb_content' );
 
 				if ( typeof model_content !== 'undefined' ) {
 					if ( editor_mode === 'tinymce' ) {
 						model_content = window.switchEditors.wpautop( model_content.replace( /<p> <\/p>/g, "<p>&nbsp;</p>" ) );
 					} else {
-						// do not remove the <p> and <br /> tags in the Text editor, if such option is enabled in TinyMCE Advanced Plugin
-						if ( typeof tinymce_advanced_noautop !== 'undefined' && tinymce_advanced_noautop === true ) {
-							return;
-						}
-
 						// do not remove <br /> tags on initial page load
 						if ( ! _.isUndefined( load ) && load === 'initial_load' ) {
 							return;
@@ -11743,7 +17756,7 @@ window.et_builder_version = '2.7.10';
 						model_content = window.switchEditors.pre_wpautop( model_content );
 					}
 
-					model.set( 'et_pb_content_new', model_content, { silent : true } );
+					model.set( 'et_pb_content', model_content, { silent : true } );
 				}
 			} );
 		}
@@ -11765,8 +17778,11 @@ window.et_builder_version = '2.7.10';
 		}
 
 		function et_builder_get_global_module( view_settings ) {
-			var modal_view,
-				shortcode_atts;
+			var modal_view;
+			var shortcode_atts;
+			var global_module_id = view_settings.model.get( 'et_pb_global_module' );
+			// autop shouldn't be applied if editor is in text mode
+			var et_global_autop = 'html' === et_get_editor_mode() ? 'skip' : 'apply';
 
 			$.ajax( {
 				type: "POST",
@@ -11776,7 +17792,8 @@ window.et_builder_version = '2.7.10';
 				{
 					action : 'et_pb_get_global_module',
 					et_admin_load_nonce : et_pb_options.et_admin_load_nonce,
-					et_global_id : view_settings.model.get( 'et_pb_global_module' )
+					et_global_id : global_module_id,
+					et_global_autop: et_global_autop
 				},
 				beforeSend : function() {
 					ET_PageBuilder_Events.trigger( 'et-pb-loading:started' );
@@ -11784,7 +17801,7 @@ window.et_builder_version = '2.7.10';
 				complete : function() {
 					ET_PageBuilder_Events.trigger( 'et-pb-loading:ended' );
 				},
-				success: function( data ){
+				success: function( data ) {
 					if ( data.error ) {
 						// if global template not found, then make module not global.
 						view_settings.model.unset( 'et_pb_global_module' );
@@ -11793,7 +17810,14 @@ window.et_builder_version = '2.7.10';
 						var et_pb_shortcodes_tags = ET_PageBuilder_App.getShortCodeParentTags(),
 							reg_exp = window.wp.shortcode.regexp( et_pb_shortcodes_tags ),
 							inner_reg_exp = ET_PageBuilder_App.wp_regexp_not_global( et_pb_shortcodes_tags ),
-							matches = data.shortcode.match( reg_exp );
+							matches = et_pb_fix_shortcodes( data.shortcode ).match( reg_exp ),
+							selective_sync_method = data.sync_status,
+							unsynced_options = 'updated' === selective_sync_method ? JSON.parse( data.excluded_options ) : [];
+						if ( 'updated' === selective_sync_method ) {
+							et_pb_all_unsynced_options[ global_module_id ] = 0 < unsynced_options.length ? unsynced_options : [];
+						} else {
+							et_pb_all_legacy_synced_options[ global_module_id ] = [];
+						}
 
 						_.each( matches, function ( shortcode ) {
 							var shortcode_element = shortcode.match( inner_reg_exp ),
@@ -11804,24 +17828,61 @@ window.et_builder_version = '2.7.10';
 								shortcode_content = shortcode_element[5],
 								module_settings,
 								found_inner_shortcodes = typeof shortcode_content !== 'undefined' && shortcode_content !== '' && shortcode_content.match( reg_exp ),
-								saved_tabs = shortcode_attributes['named']['saved_tabs'] || view_settings.model.get('et_pb_saved_tabs') || '',
-								ignore_admin_label = 'all' !== saved_tabs && -1 === saved_tabs.indexOf( 'general' ); // we should load Admin Label only if General tab is synced
+								saved_tabs = shortcode_attributes['named']['saved_tabs'] || view_settings.model.get('et_pb_saved_tabs'),
+								ignore_admin_label = 'updated' !== selective_sync_method && 'all' !== saved_tabs && -1 === saved_tabs.indexOf( 'general' ), // we should load Admin Label only if General tab is synced
+								sync_content = 'updated' === selective_sync_method ? -1 === et_pb_all_unsynced_options[ global_module_id ].indexOf( 'et_pb_content_field' ) : ( '' !== saved_tabs && ( -1 !== saved_tabs.indexOf( 'general' ) || 'all' === saved_tabs ) );
+
+								// no need to perform specific actions if module is fully global, so process it as updated module.
+								if ( 'all' === saved_tabs && 'updated' !== selective_sync_method ) {
+									et_pb_all_unsynced_options[ global_module_id ] = [];
+									selective_sync_method = 'updated';
+								}
 
 								if ( _.isObject( shortcode_attributes['named'] ) ) {
 									for ( var key in shortcode_attributes['named'] ) {
 										if ( 'template_type' !== key && ( 'admin_label' !== key || ( 'admin_label' === key && ! ignore_admin_label ) ) ) {
-											var prefixed_key = key !== 'admin_label' ? 'et_pb_' + key : key;
+											// skip unsynced options
+											if ( 'updated' === selective_sync_method && -1 !== et_pb_all_unsynced_options[ global_module_id ].indexOf( key ) ) {
+												continue;
+											}
+
+											var prefixed_key = 'admin_label' !== key ? ( 'et_pb_' + key ) : key;
 
 											if ( '' !== key ) {
 												view_settings.model.set( prefixed_key, shortcode_attributes['named'][key], { silent : true } );
+											}
+
+											// fill in array of synced legacy optoins to determine which options are not synced
+											if ( 'updated' !== selective_sync_method ) {
+												et_pb_all_legacy_synced_options[ global_module_id ].push( key );
 											}
 										}
 									}
 								}
 
-								if ( '' !== saved_tabs && ( 'general' === saved_tabs || 'all' === saved_tabs ) ) {
-									view_settings.model.set( 'et_pb_content_new', shortcode_content, { silent : true } );
+								if ( sync_content ) {
+									var content_storage = 'et_pb_content';
+									var et_pb_raw_shortcodes = ET_PageBuilder_App.getShortCodeRawContentTags();
+
+									// content storage name is different for raw shortcodes ( such as Code module ). Update the content storage name if needed.
+									if ( $.inArray( shortcode_name, et_pb_raw_shortcodes ) > -1 ) {
+										content_storage = 'et_pb_raw_content';
+
+										shortcode_content = _.unescape( shortcode_content );
+										// replace line-break placeholders with real line-breaks
+										shortcode_content = shortcode_content.replace( /<!-- \[et_pb_line_break_holder\] -->/g, '\n' );
+									}
+
+									view_settings.model.set( content_storage, shortcode_content, { silent : true } );
+
+									if ( 'updated' !== selective_sync_method ) {
+										et_pb_all_legacy_synced_options[ global_module_id ].push( 'et_pb_content_field' );
+									}
 								}
+
+							if ( 'updated' !== selective_sync_method ) {
+								view_settings.model.set( 'legacy_synced_options', et_pb_all_legacy_synced_options[ global_module_id ], { silent : true } );
+							}
 						} );
 					}
 
@@ -11833,24 +17894,19 @@ window.et_builder_version = '2.7.10';
 						$('.et-pb-modal-preview-template').trigger( 'click' );
 					}
 
-					var saved_tabs = view_settings.model.get( 'et_pb_saved_tabs' );
-
-					if ( typeof saved_tabs !== 'undefined' ) {
-						saved_tabs = 'all' === saved_tabs ? [ 'general', 'advanced', 'css' ] : saved_tabs.split( ',' );
-						_.each( saved_tabs, function( tab_name ) {
-							tab_name = 'css' === tab_name ? 'custom_css' : tab_name;
-							$( '.et_pb_options_tab_' + tab_name ).addClass( 'et_pb_saved_global_tab' );
-						});
-						$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_saved_global_modal' );
-					}
+					$( '.et_pb_modal_settings_container' ).addClass( 'et_pb_saved_global_modal et_pb_modal_selective_sync' );
+					et_pb_add_selective_sync_buttons( $( '.et_pb_modal_settings_container' ), global_module_id )
 				}
 			} );
 		}
 
-		function et_pb_load_global_row( post_id, module_cid ) {
+		function et_pb_load_global_row( post_id, module_cid, current_content, predefined_address ) {
 			if ( ! $( 'body' ).find( '.et_pb_global_loading_overlay' ).length ) {
 				$( 'body' ).append( '<div class="et_pb_global_loading_overlay"></div>' );
 			}
+			// autop shouldn't be applied if editor is in text mode
+			var et_global_autop = 'html' === et_get_editor_mode() ? 'skip' : 'apply';
+
 			$.ajax( {
 				type: "POST",
 				url: et_pb_options.ajaxurl,
@@ -11859,13 +17915,21 @@ window.et_builder_version = '2.7.10';
 				{
 					action : 'et_pb_get_global_module',
 					et_admin_load_nonce : et_pb_options.et_admin_load_nonce,
-					et_global_id : post_id
+					et_global_id : post_id,
+					et_global_autop : et_global_autop
 				},
 				success: function( data ){
+					var global_content_is_different = false;
 					if ( data.error ) {
 						// if global template not found, then make module and all child modules not global.
-						var this_view = ET_PageBuilder_Layout.getView( module_cid ),
-							$child_elements = this_view.$el.find( '[data-cid]' );
+						var this_view = ET_PageBuilder_Layout.getView( module_cid );
+
+						if ( ! this_view ) {
+							$( 'body' ).find( '.et_pb_global_loading_overlay' ).remove();
+							return;
+						}
+
+						var $child_elements = this_view.$el.find( '[data-cid]' );
 						this_view.model.unset( 'et_pb_global_module' );
 
 						if ( $child_elements.length ) {
@@ -11881,14 +17945,38 @@ window.et_builder_version = '2.7.10';
 							});
 						}
 					} else {
-						ET_PageBuilder_App.createLayoutFromContent( data.shortcode, '', '', { ignore_template_tag : 'ignore_template', current_row_cid : module_cid, global_id : post_id, is_reinit : 'reinit' } );
+						var processed_content = current_content.replace( / global_parent="\S+"/g, '' );
+						var processed_shortcode = et_pb_fix_shortcodes( data.shortcode.replace( /template_type="\S+"/, 'global_module="' + post_id + '"' ) );
+
+						// remove all the unwanted spaces and line-breaks to make sure shortcode comparison performed correctly.
+						processed_shortcode = processed_shortcode.replace( /]\s?\n\s?\n\s?/g, '] ' ).replace( /\s?\n\s?\n\s?\[/g, ' [' );
+						processed_shortcode = processed_shortcode.replace( /]\s+/g, ']' ).replace( /\s+\[/g, '[' );
+						processed_content = processed_content.replace( /]\s+/g, ']' ).replace( /\s+\[/g, '[' );
+
+						// remove line-breaks from the shortcode before comparison if editor is in Visual mode
+						if ( et_pb_is_editor_in_visual_mode( 'content' ) ) {
+							processed_shortcode = processed_shortcode.replace( /\r?\n|\r/g, '' );
+						}
+
+						// compare unescaped strings to improve the comparison accuracy
+						if ( _.unescape( processed_shortcode ) !== _.unescape( processed_content ) ) {
+							global_content_is_different = true;
+							// call createLayoutFromContent only if current_shortcode is different than received shortcode
+							ET_PageBuilder_App.createLayoutFromContent( data.shortcode, '', '', { ignore_template_tag : 'ignore_template', current_row_cid : module_cid, global_id : post_id, is_reinit : 'reinit', predefined_address: predefined_address } );
+						}
 					}
 
 					et_pb_globals_loaded++;
 
 					//make sure all global modules have been processed and reinitialize the layout
 					if ( et_pb_globals_requested === et_pb_globals_loaded ) {
-						et_reinitialize_builder_layout();
+						var migrations = _.isUndefined( et_pb_options.et_pb_module_settings_migrations ) ? false : et_pb_options.et_pb_module_settings_migrations;
+
+						// Reinitialize the layout only if global module content is different than content on page or migration should be performed
+						if ( global_content_is_different || false !== migrations ) {
+							// reinitialize the layout and update global template in DB to make sure all the attributes saved the same way as on the page.
+							et_reinitialize_builder_layout( true, 'migrate' );
+						}
 
 						setTimeout( function(){
 							$( 'body' ).find( '.et_pb_global_loading_overlay' ).remove();
@@ -11903,12 +17991,18 @@ window.et_builder_version = '2.7.10';
 				post_id                      = global_module_view.model.get( 'et_pb_global_module' ),
 				layout_type                  = global_module_view.model.get( 'type' );
 				layout_type_updated          = 'row_inner' === layout_type ? 'row' : layout_type,
-				template_shortcode           = ET_PageBuilder_App.generateCompleteShortcode( global_module_cid, layout_type_updated, 'ignore_global' );
+				template_shortcode           = ET_PageBuilder_App.generateCompleteShortcode( global_module_cid, layout_type_updated, 'ignore_global', false, true );
+				unsynced_global_options      = ! _.isEmpty( et_pb_all_unsynced_options[ post_id ] ) ? et_pb_all_unsynced_options[ post_id ] : [];
 
-				if ( 'row_inner' === layout_type ) {
-					template_shortcode = template_shortcode.replace( /et_pb_row_inner/g, 'et_pb_row' );
-					template_shortcode = template_shortcode.replace( /et_pb_column_inner/g, 'et_pb_column' );
-				}
+			// do not proceed if global post ID is not defined or empty.
+			if ( typeof post_id === 'undefined' || '' === post_id ) {
+				return;
+			}
+
+			if ( 'row_inner' === layout_type ) {
+				template_shortcode = template_shortcode.replace( /et_pb_row_inner/g, 'et_pb_row' );
+				template_shortcode = template_shortcode.replace( /et_pb_column_inner/g, 'et_pb_column' );
+			}
 
 			$.ajax( {
 				type: "POST",
@@ -11919,12 +18013,31 @@ window.et_builder_version = '2.7.10';
 					et_admin_load_nonce : et_pb_options.et_admin_load_nonce,
 					et_layout_content : template_shortcode,
 					et_template_post_id : post_id,
+					et_layout_type : layout_type,
+					et_unsynced_options : JSON.stringify( unsynced_global_options )
 				}
 			} );
 		}
 
+		function et_pb_get_global_parent_cid( module ) {
+			var global_holder_view = module;
+			var global_module_cid = '';
+
+			// check the module parents tree to find the closest global parent if exists
+			while ( ! _.isUndefined( global_holder_view.model.get( 'parent' ) ) && '' === global_module_cid ) {
+				// Refresh global holder for new loop
+				global_holder_view = ET_PageBuilder_Layout.getView( global_holder_view.model.get( 'parent' ) );
+				global_module_cid = '' === global_module_cid && ! _.isUndefined( global_holder_view.model.get( 'et_pb_global_module' ) ) ? global_holder_view.model.get( 'cid' ) : global_module_cid;
+			}
+
+			return global_module_cid;
+		}
+
 		function et_pb_open_current_tab() {
 			var $container = $( '.et_pb_modal_settings_container' );
+
+			// always open the first tab by default
+			$container.find( '.et-pb-options-tabs .et-pb-options-tab:first-child' ).css( { 'display' : 'block', opacity : 1 } );
 
 			if ( $( '.et_pb_modal_settings_container' ).hasClass( 'et_pb_hide_general_tab' ) ) {
 				$container.find( '.et-pb-options-tabs-links li' ).removeClass( 'et-pb-options-tabs-links-active' );
@@ -11940,6 +18053,19 @@ window.et_builder_version = '2.7.10';
 			} else {
 				$container.find( '.et-pb-options-tabs .et-pb-options-tab.et-pb-options-tab-general' ).css( { 'display' : 'block', opacity : 1 } );
 			}
+
+			setEmptyTabContent($container);
+		}
+
+		function setEmptyTabContent($container) {
+			// add info message for tabs with no options available
+			$container.find('.et-pb-options-tab:visible').each(function() {
+				var $this = $(this);
+
+				if (!$this.find('.et-pb-option:visible').length) {
+					$this.append('<p class="et-pb-all-options-hidden">' + et_pb_options.all_tab_options_hidden + '<p>');
+				}
+			});
 		}
 
 		/**
@@ -11981,11 +18107,90 @@ window.et_builder_version = '2.7.10';
 		 * Check whether the Yoast SEO plugin is active
 		 */
 		function et_pb_is_yoast_seo_active() {
-			if ( typeof YoastSEO !== 'undefined' && typeof YoastSEO === 'object' ) {
-				return true;
+			return ( 'object' === typeof YoastSEO && YoastSEO.hasOwnProperty( 'app' ) )
+		}
+
+		function et_pb_is_modal_opened() {
+			return 0 < $( '.et_pb_modal_overlay, .et-core-modal-overlay.et-core-active' ).length;
+		}
+
+		/**
+		 * Prepare an object from hovered module for Shortcuts
+		 */
+		function et_pb_get_hovered_module_view( hoveredObject ) {
+			if ( _.isEmpty( hoveredObject ) || et_pb_is_modal_opened() ) {
+				return false;
 			}
 
-			return false;
+			var view_settings = {
+				model      : hoveredObject.model,
+				view       : hoveredObject.$el,
+				view_event : event
+			};
+
+			var prepared_item = new ET_PageBuilder.RightClickOptionsView( view_settings, true );
+
+			return prepared_item;
+		}
+
+		function et_pb_add_selective_sync_buttons( $options_container, global_id ) {
+			if ( $options_container.length === 0 ) {
+				return;
+			}
+
+			var $options_array = $options_container.find( '.et-pb-option' );
+
+			if ( $options_container.find( '.et-pb-option-advanced-module-settings' ).length > 0 ) {
+				var disabled_class = et_pb_is_option_unsynced( 'et_pb_content_field', global_id ) ? ' et_pb_global_unsynced' : '';
+
+				$options_container.find( '.et-pb-option-advanced-module-settings' ).append( '<span class="et_pb_global_sync_switcher' + disabled_class + '" data-option_name="et_pb_content_field" data-additional_options="none"></span>' );
+			}
+
+			if ( $options_array.length === 0 ) {
+				return;
+			}
+
+			_.each( $options_array, function( $single_option ) {
+				var option_name = _.includes( ['content', 'raw_content'], $( $single_option ).data( 'option_name' ) ) ? 'et_pb_content_field' : $( $single_option ).data( 'option_name' );
+				var disabled_class = et_pb_is_option_unsynced( option_name, global_id ) ? ' et_pb_global_unsynced' : '';
+				var additional_options = $( $single_option ).find( '.et_pb_mobile_settings_tabs' ).length !== 0 ? 'mobile' : 'none';
+
+				$( $single_option ).append( '<span class="et_pb_global_sync_switcher' + disabled_class + '" data-option_name="' + option_name + '" data-additional_options="' + additional_options + '"></span>' );
+			} );
+		}
+
+		function et_pb_is_option_unsynced( option_name, global_id ) {
+			var sync_method = ! _.isUndefined( et_pb_all_unsynced_options[ global_id ] ) ? 'updated' : 'legacy';
+
+			if ( 'legacy' === sync_method ) {
+				return ( -1 === et_pb_all_legacy_synced_options[ global_id ].indexOf( option_name ) );
+			} else {
+				return ( -1 !== et_pb_all_unsynced_options[ global_id ].indexOf( option_name ) );
+			}
+		}
+
+		function et_pb_is_featured_image_background( $preview_button ) {
+			var $background_container = $preview_button.closest( '.et-pb-option-container--background' ),
+				$background_option = $preview_button.closest('.et_pb_background-option'),
+				option_name = $background_option.attr( 'data-option_name' ),
+				module_type = $preview_button.closest( '.et_pb_module_settings' ).attr( 'data-module_type' ),
+				featured_placement = $background_container.closest('.et-pb-options-tabs').find('#et_pb_featured_placement').val(),
+				is_featured_image_background = _.contains( et_pb_options.et_builder_modules_featured_image_background, module_type ) && option_name === 'background_image' && featured_placement === 'background';
+
+			return is_featured_image_background;
+		}
+
+		/**
+		 * Removes extra <p> and <br> tags from shortcode similar to et_pb_fix_shortcodes from /includes/builder/functions.php
+		 * @return {string}
+		 */
+		function et_pb_fix_shortcodes( shortcode ) {
+			shortcode = shortcode.replace( /<p>\[/g, '[' );
+			shortcode = shortcode.replace( /\]<\/p>/g, ']' );
+			shortcode = shortcode.replace( /\]<br \/>/g, ']' );
+			shortcode = shortcode.replace( /<br \/>\n\[/g, '[' );
+
+			return shortcode;
 		}
 
 		/**
@@ -11997,10 +18202,10 @@ window.et_builder_version = '2.7.10';
 			set : function( type, content ) {
 				if ( et_pb_has_storage_support() ) {
 					// Save the type of copied content
-					localStorage.setItem( this.key + 'type', type );
+					localStorage.setItem( this.key + 'type', LZString.compressToUTF16( type ) );
 
 					// Save the copied content
-					localStorage.setItem( this.key + 'content', content );
+					localStorage.setItem( this.key + 'content', LZString.compressToUTF16( content ) );
 				} else {
 					alert( et_pb_options.localstorage_unavailability_alert );
 				}
@@ -12008,8 +18213,8 @@ window.et_builder_version = '2.7.10';
 			get : function( type ) {
 				if ( et_pb_has_storage_support() ) {
 					// Get saved type and content
-					var saved_type =  localStorage.getItem( this.key + 'type' ),
-						saved_content = localStorage.getItem( this.key + 'content' );
+					var saved_type =  LZString.decompressFromUTF16( localStorage.getItem( this.key + 'type' ) ),
+						saved_content = LZString.decompressFromUTF16( localStorage.getItem( this.key + 'content' ) );
 
 					// Check for the compatibility of saved data and paste destination
 					// Return value if the supplied type equal with saved value, or if the getter doesn't care about the content's type
@@ -12024,13 +18229,105 @@ window.et_builder_version = '2.7.10';
 			}
 		};
 
+		var et_pb_reinit_layout_throttled = _.debounce( et_reinitialize_builder_layout, 2000 );
+
 		/**
 		* Builder hotkeys
 		*/
 		$(window).keydown( function( event ){
+			if ( ! et_pb_is_builder_used() ) {
+				return;
+			}
 
-			// do not override default hotkeys inside input fields
-			if ( typeof event.target !== 'undefined' && $( event.target ).is( 'input, textarea' ) ) {
+			function et_pb_close_opened_modal() {
+				var $close_button = $( '.et-pb-modal-close' );
+				var $core_close_button = $('.et-core-modal-close');
+
+				if ( $close_button.length ) {
+					// it's possible that there are 2 Modals appear on top of each other, close the one which is on top
+					if ( typeof $close_button[1] !== 'undefined' ) {
+						$close_button[1].click();
+					} else {
+						$close_button.click();
+					}
+				}
+
+				if ($core_close_button.length) {
+					$core_close_button.click();
+				}
+
+				$( 'body' ).removeClass( 'et-core-nbfc' );
+			}
+
+			// Hotkeys that should work regardless current focus state
+
+			// Handle Esc and Enter only if Modal is opened
+			if ( et_pb_is_modal_opened() || $( '.et_pb_prompt_modal' ).is( ':visible' ) ) {
+				var $save_button = $( '.et-pb-modal-save' ),
+					$proceed_button = $( '.et_pb_prompt_proceed' ),
+					$builder_buttons = $( '#et_pb_main_container a, #et_pb_toggle_builder' );
+
+				switch( event.which ) {
+					// Enter button handling
+					case 13 :
+						// do nothing if focus is in the textarea or in the map address field so enter will work as expected
+						if ( $( '.et-pb-option-container textarea, #et_pb_address, #et_pb_pin_address, .et-pb-color-picker-hex-has-preview' ).is( ':focus' ) ) {
+
+							// Close currently focused colorpicker
+							$( '.et-pb-color-picker-hex-has-preview:focus' ).wpColorPicker( 'close' );
+							return;
+						}
+						//remove focus from the builder buttons to avoid unexpected behavior
+						$builder_buttons.blur();
+
+						if ( $save_button.length || $proceed_button.length ) {
+							// it's possible that proceed button displayed above the save, we need to click only proceed button in that case
+							if ( $proceed_button.length ) {
+								$proceed_button.click();
+							} else {
+								// it's possible that there are 2 Modals appear on top of each other, save the one which is on top
+								if ( typeof $save_button[1] !== 'undefined' ) {
+									$save_button[1].click();
+								} else {
+									$save_button.click();
+								}
+							}
+						}
+						break;
+					// Escape button handling
+					case 27 :
+						// close the modal on Esc
+						et_pb_close_opened_modal();
+						break;
+				}
+			}
+
+			if ((event.keyCode === 83 && event.metaKey && event.shiftKey && !event.altKey) || (event.keyCode === 83 && event.ctrlKey && event.shiftKey && !event.altKey)) {
+				// Save as draft
+				event.preventDefault();
+
+				et_pb_close_opened_modal();
+
+				// Triggers save by draft by triggering DOM to initiate necessary animation
+				$('#save-post').trigger('click');
+
+				return;
+			} else if ( (event.keyCode === 83 && event.metaKey && !event.altKey) || (event.keyCode === 83 && event.ctrlKey && !event.altKey) ) {
+				// Save / Publish
+				event.preventDefault();
+
+				et_pb_close_opened_modal();
+
+				// Triggers publish by triggering DOM to initiate necessary animation
+				jQuery('#publish').trigger('click');
+
+				return;
+			}
+
+			var $targetEl = $(event.target);
+			// do not override default hotkeys inside input fields, contenteditable elements and elements with `et_disable_single_key_shortcuts`.
+			// `et_disable_single_key_shortcuts` can be used by 3rd party plugins to disable Divi shortcuts inside their metaboxes
+			if (!_.isUndefined($targetEl) && ($targetEl.is('input, textarea') || $targetEl.attr('contenteditable') || $targetEl.hasClass('et_disable_single_key_shortcuts'))) {
 				return;
 			}
 
@@ -12048,8 +18345,495 @@ window.et_builder_version = '2.7.10';
 				ET_PageBuilder_App.undo( event );
 
 				return false;
+			} else if ( event.keyCode === 79 ) {
+				// do not proceed if any modal is opened
+				if ( et_pb_is_modal_opened() ) {
+					return;
+				}
+
+				// Open Page Settings Modal: `o`
+				event.preventDefault();
+
+				if (!$('.et_pb_builder_settings').length) {
+					$('#et_pb_layout .et-pb-app-settings-button').trigger('click');
+				}
+			} else if (event.keyCode === 80 ) {
+
+				event.preventDefault();
+
+				// Open preview on super + `p`
+				if ( event.metaKey || event.ctrlKey ) {
+					if ( $( '.et-pb-modal-preview-template' ).length ) {
+						$( '.et-pb-modal-preview-template' ).trigger( 'click' );
+					}
+
+					return false;
+				}
+
+				// do not proceed if any modal is opened
+				if ( et_pb_is_modal_opened() ) {
+					return;
+				}
+
+				// Open Portability Tooltip: `p`
+				if (!$('div[data-et-core-portability]').hasClass('et-core-active')) {
+					$('#et_pb_layout .et-pb-app-portability-button').trigger('click');
+				}
+			} else if (event.keyCode === 72) {
+				// do not proceed if any modal is opened
+				if ( et_pb_is_modal_opened() ) {
+					return;
+				}
+
+				// Open History Modal: `h`
+				event.preventDefault();
+
+				$('#et_pb_layout .et-pb-layout-buttons-history').trigger('click');
+			} else if (event.keyCode === 9  && event.shiftKey) {
+				// Switch modal tabs on `Tab` key
+				if ( $( '.et-pb-options-tabs-links' ).length || $( '.et-pb-preview-screensize-switcher' ).length ) {
+					var isPreviewActive = $( '.et-pb-modal-preview-template' ).length && $( '.et-pb-modal-preview-template' ).hasClass( 'active' ) ? true : false;
+					var $tabsContainer = ! isPreviewActive ? $( '.et-pb-options-tabs-links' ) : $( '.et-pb-preview-screensize-switcher' );
+					var $tabLinks = $tabsContainer.find( 'li' );
+					var tabsCount = $tabLinks.length;
+					var nextTab = $tabLinks[0];
+					var counter = 0;
+
+					$tabLinks.each( function( index ) {
+						var activeClassHolder = isPreviewActive ? $( this ).find( 'a' ) : $( this );
+						var activeClass = isPreviewActive ? 'active' : 'et-pb-options-tabs-links-active';
+						// if we're not on the last tab
+						if ( activeClassHolder.hasClass( activeClass ) && index !== tabsCount - 1 ) {
+							nextTab = $tabLinks[ index + 1 ];
+						}
+					});
+
+					if ( $( nextTab ).length ) {
+						$( nextTab ).find( 'a' ).trigger( 'click' );
+					}
+				}
+			} else if (event.keyCode === 67 && ( event.metaKey || event.ctrlKey )) {
+				// Copy hovered module on super + `c`
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not copy empty columns
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					prepared_item.copy( event );
+				}
+			} else if (event.keyCode === 86 && ( event.metaKey || event.ctrlKey )) {
+				// Paste after hovered module on super + `v`
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					var $hoveredElement = et_pb_hovered_item_buffer.$el;
+
+					if ( $hoveredElement.hasClass( 'et-pb-column' ) || ( $hoveredElement.hasClass( 'et_pb_section_fullwidth' ) && ! ET_PB_Clipboard.get( 'et_pb_clipboard_section' ) && ! $hoveredElement.find( '.et_pb_module_block' ).length ) ) {
+						prepared_item.pasteColumn( event );
+					} else {
+						prepared_item.pasteAfter( event );
+					}
+
+				}
+			} else if (event.keyCode === 88 && ( event.metaKey || event.ctrlKey )) {
+				// Cut hovered module on super + `x`
+
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not copy empty columns
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					prepared_item.copy( event );
+
+					var $remove_button = et_pb_hovered_item_buffer.$el.hasClass( 'et_pb_module_block' ) ? et_pb_hovered_item_buffer.$el.find( '.et-pb-remove' ) : et_pb_hovered_item_buffer.$el.find( '> .et-pb-controls .et-pb-remove' );
+
+					// remove element after it was copied
+					if ( $remove_button.length ) {
+						$remove_button.trigger( 'click' );
+						et_pb_hovered_item_buffer = {};
+						et_reinitialize_builder_layout();
+					}
+				}
+			} else if (event.keyCode === 68 ) {
+				//Disable module `d`
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not proceed if empty column hovered
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					var history_verb = 'disabled';
+
+					if ( typeof prepared_item.model.attributes.et_pb_disabled === 'undefined' || 'on' !== prepared_item.model.attributes.et_pb_disabled ) {
+						prepared_item.model.attributes.et_pb_disabled = 'on';
+						et_pb_hovered_item_buffer.$el.addClass( 'et_pb_disabled' );
+					} else {
+						prepared_item.model.attributes.et_pb_disabled = 'off';
+						et_pb_hovered_item_buffer.$el.removeClass( 'et_pb_disabled' );
+						history_verb = 'enabled'
+					}
+
+					// Update global module
+					prepared_item.updateGlobalModule();
+
+					// Enable history saving and set meta for history
+					ET_PageBuilder_App.allowHistorySaving( history_verb, prepared_item.history_noun );
+
+					ET_PageBuilder_App.saveAsShortcode();
+				}
+			} else if (event.keyCode === 76 ) {
+				//Lock module `l`
+
+				var prepared_item = et_pb_get_hovered_module_view( et_pb_hovered_item_buffer );
+
+				if ( prepared_item ) {
+					// do not proceed if empty column hovered
+					if ( et_pb_hovered_item_buffer.$el.hasClass( 'et-pb-column' ) ) {
+						return;
+					}
+
+					if ( typeof prepared_item.model.attributes.et_pb_locked === 'undefined' || 'on' !== prepared_item.model.attributes.et_pb_locked ) {
+						prepared_item.lock( event );
+					} else {
+						prepared_item.unlockItem( event );
+					}
+
+					et_reinitialize_builder_layout();
+				}
+			} else if (event.keyCode === 83) {
+				event.preventDefault();
+
+				if ( ! _.isEmpty( et_pb_hovered_item_buffer ) && ! $( '.et_pb_modal_overlay' ).length ) {
+					// save the `s` key pressed flag
+					et_pb_key_pressed.s = true;
+				}
+			} else if ( ( event.keyCode === 49 || event.keyCode === 50 || event.keyCode === 51 ) && et_pb_key_pressed.s ) {
+				if ( $( '.et_pb_modal_overlay' ).length ) {
+					return;
+				}
+
+				var $hoveredElement = et_pb_hovered_item_buffer.$el;
+				var $hoveredSection = $hoveredElement.closest( '.et_pb_section' );
+
+				if ( $hoveredSection.length ) {
+					switch( event.keyCode ) {
+						case 49:
+							// add regular section
+							$hoveredSection.find( '.et-pb-section-add-main' ).trigger( 'click' );
+						  break;
+						case 50:
+							//add specialty section
+							$hoveredSection.find( '.et-pb-section-add-specialty' ).trigger( 'click' );
+						  break;
+						case 51:
+							//add fullwidth section
+							$hoveredSection.find( '.et-pb-section-add-fullwidth' ).trigger( 'click' );
+						  break;
+					}
+				}
+			} else if (event.keyCode === 82) {
+				if ( ! _.isEmpty( et_pb_hovered_item_buffer ) && ! $( '.et_pb_modal_overlay' ).length ) {
+					// save the `r` key pressed flag
+					et_pb_key_pressed.r = true;
+				}
+			} else if (event.keyCode === 67 && ! event.metaKey && ! event.ctrlKey ) {
+				if ( ! _.isEmpty( et_pb_hovered_item_buffer ) && ! $( '.et_pb_modal_overlay' ).length ) {
+					// save the `c` key pressed flag
+					et_pb_key_pressed.c = true;
+				}
+			}  else if ( ( event.keyCode === 49 || event.keyCode === 50 || event.keyCode === 51 || event.keyCode === 52 || event.keyCode === 53 || event.keyCode === 54 || event.keyCode === 55 || event.keyCode === 56 || event.keyCode === 57 || event.keyCode === 48 || event.keyCode === 189 ) && ( et_pb_key_pressed.r || et_pb_key_pressed.c ) ) {
+				// Add Row / Change Row Structure shortcuts
+
+				var $hoveredElement = et_pb_hovered_item_buffer.$el;
+				var $hoveredRow = $hoveredElement.closest( '.et_pb_row' );
+
+				if ( $hoveredRow.length ) {
+					var selectedLayout = '4_4';
+
+					switch( event.keyCode ) {
+						case 49:
+							selectedLayout = '4_4';
+						  break;
+						case 50:
+							selectedLayout = '1_2,1_2';
+						  break;
+						case 51:
+							selectedLayout = '1_3,1_3,1_3';
+						  break;
+						case 52:
+							selectedLayout = '1_4,1_4,1_4,1_4';
+						  break;
+						case 53:
+							selectedLayout = '2_3,1_3';
+						  break;
+						case 54:
+							selectedLayout = '1_3,2_3';
+						  break;
+						case 55:
+							selectedLayout = '1_4,3_4';
+						  break;
+						case 56:
+							selectedLayout = '3_4,1_4';
+						  break;
+						case 57:
+							selectedLayout = '1_2,1_4,1_4';
+						  break;
+						case 48:
+							selectedLayout = '1_4,1_4,1_2';
+						  break;
+						case 189:
+							selectedLayout = '1_4,1_2,1_4';
+						  break;
+					}
+
+					var row_view = ET_PageBuilder_Layout.getView( $hoveredRow.find( '.et-pb-row-content' ).data( 'cid' ) );
+
+					if ( typeof row_view !== 'undefined' ) {
+						var is_structure_change = false;
+						var skip_column_history = false;
+
+						var row_parent = ET_PageBuilder_Layout.getView( row_view.model.attributes.parent );
+
+						if ( typeof row_parent !== 'undefined' && 'column' === row_parent.model.attributes.type ) {
+							var allowed_columns = 3 === row_parent.model.attributes.specialty_columns ? [ 49, 50, 51 ] : [ 49, 50 ];
+
+							// do not insert unsupported column type into the specialty section
+							if ( -1 === $.inArray( event.keyCode, allowed_columns ) ) {
+								return;
+							}
+						}
+
+						var processed_row_view = {};
+
+						if ( et_pb_key_pressed.r ) {
+
+							if ( 'on' === row_view.model.get( 'et_pb_parent_locked' ) ) {
+								return;
+							}
+
+							// AB Testing-related action
+							if ( ET_PageBuilder_AB_Testing.is_active() ) {
+
+								// Check for user permission and module status
+								if ( ! ET_PageBuilder_AB_Testing.is_user_has_permission( row_view.model.get( 'cid' ), 'add_row' ) ) {
+									ET_PageBuilder_AB_Testing.alert( 'has_no_permission' );
+									return;
+								}
+							}
+
+							// Enable history saving and set meta for history
+							ET_PageBuilder_App.allowHistorySaving( 'added', 'row' );
+
+							skip_column_history = true;
+
+							// creating new Row
+							var module_id = ET_PageBuilder_Layout.generateNewId(),
+								global_parent = typeof row_view.model.get( 'et_pb_global_module' ) !== 'undefined' && '' !== row_view.model.get( 'et_pb_global_module' ) ? row_view.model.get( 'et_pb_global_module' ) : '',
+								global_parent_cid = '' !== global_parent ? row_view.model.get( 'cid' ) : '';
+
+							row_parent.collection.add( [ {
+								type : 'row',
+								module_type : 'row',
+								cid : module_id,
+								parent : row_parent.model.get( 'cid' ),
+								view : row_view,
+								appendAfter : row_view.$el,
+								et_pb_global_parent : global_parent,
+								global_parent_cid : global_parent_cid,
+								admin_label : et_pb_options.noun['row']
+							} ] );
+							processed_row_view = ET_PageBuilder_Layout.getView( module_id );
+						} else {
+							// structure edit is not allowed for global Rows
+							if ( ( typeof row_view.model.attributes.et_pb_global_module !== 'undefined' && '' !== row_view.model.attributes.et_pb_global_module ) || ( 'row' === et_pb_options.layout_type && 'global' === et_pb_options.is_global_template ) ) {
+								return;
+							}
+
+							// changing structure of exisitng Row
+							processed_row_view = row_view;
+							is_structure_change = true;
+						}
+
+						var column_options = {
+							'layout' : selectedLayout,
+							'is_structure_change' : is_structure_change,
+							'layout_specialty' : '',
+						};
+
+						// reset the columns layout
+						ET_PageBuilder_Layout.changeColumnStructure( processed_row_view, column_options, true, skip_column_history );
+					}
+				}
+			} else if ( ( event.keyCode === 49 || event.keyCode === 50 || event.keyCode === 51 || event.keyCode === 52 || event.keyCode === 53 || event.keyCode === 54 || event.keyCode === 55 || event.keyCode === 56 || event.keyCode === 57 || event.keyCode === 48 || event.keyCode === 189 ) ) {
+				if ( ! $( 'ul.et-pb-column-layouts' ).length ) {
+					return;
+				}
+				var layoutsList = $( 'ul.et-pb-column-layouts li' );
+				var selectedLayout = 0;
+
+				switch( event.keyCode ) {
+					case 49:
+						selectedLayout = 0;
+						break;
+					case 50:
+						selectedLayout = 1;
+						break;
+					case 51:
+						selectedLayout = 2;
+						break;
+					case 52:
+						selectedLayout = 3;
+						break;
+					case 53:
+						selectedLayout = 4;
+						break;
+					case 54:
+						selectedLayout = 5;
+						break;
+					case 55:
+						selectedLayout = 6;
+						break;
+					case 56:
+						selectedLayout = 7;
+						break;
+					case 57:
+						selectedLayout = 8;
+						break;
+					case 48:
+						selectedLayout = 9;
+						break;
+					case 189:
+						selectedLayout = 10;
+						break;
+				}
+
+				if ( layoutsList.length && layoutsList[ selectedLayout ] ) {
+					$( layoutsList[ selectedLayout ] ).trigger( 'click' );
+				}
+			} else if (event.key === '?' || event.keyCode === 191) {
+				var isHelpModal = $('.et_pb_modal_settings_container').attr('data-open_view') === 'help';
+				// Help : `?`
+				if ( $('.et-pb-modal-close').length ) {
+					$('.et-pb-modal-close').click();
+				}
+
+				if (isHelpModal) {
+					return;
+				}
+
+				et_pb_close_opened_modal();
+
+				view = new ET_PageBuilder.ModalView( {
+					attributes : {
+						'data-open_view' : 'help'
+					},
+					view : this
+				} );
+
+				$('body').append( view.render().el );
 			}
 		});
+
+		$(window).keyup( function( event ) {
+			if (event.keyCode === 83) {
+				// reset the `s` key pressed flag
+				et_pb_key_pressed.s = false;
+			} else if ( event.keyCode === 82 ) {
+				// reset the `r` key pressed flag
+				et_pb_key_pressed.r = false;
+			} else if ( event.keyCode === 67 && et_pb_key_pressed.c ) {
+				// reset the `c` key pressed flag
+				et_pb_key_pressed.c = false;
+				et_pb_reinit_layout_throttled();
+			}
+		});
+
+		$( 'body' ).on( 'mouseover', '.et-pb-right-click-trigger-overlay, .et-pb-controls, .et_pb_module_block, .et-pb-insert-module, .et-pb-row-add', function( event ) {
+			var $hoveredItem = $( event.target );
+			var $hoveredElement = $hoveredItem.closest( '.et_pb_module_block' );
+
+			if ( ! $hoveredElement.length ) {
+				// if empty Column or Row hovered
+				if ( $hoveredItem.closest( '.et-pb-insert-module' ).length || $hoveredItem.closest( '.et-pb-row-add' ).length ) {
+
+					$hoveredElement = $hoveredItem.closest( 'div' );
+
+					if ( $hoveredItem.closest( '.et-pb-row-add' ).length ) {
+						$hoveredElement = $hoveredElement.find( '.et-pb-row-content' );
+					}
+				} else {
+					var $hoveredRightClickArea = $hoveredItem.closest( '.et-pb-right-click-trigger-overlay' ).length ? $hoveredItem.closest( '.et-pb-right-click-trigger-overlay' ) : $hoveredItem.closest( '.et-pb-controls' );
+
+					// do not proceed if no Divi Module hovered and reset hovered element
+					if ( ! $hoveredRightClickArea.length ) {
+						et_pb_hovered_item_buffer = {};
+						return;
+					}
+
+					var $hoveredRow = $hoveredRightClickArea.closest( '.et_pb_row' );
+
+					if ( $hoveredRow.length ) {
+						$hoveredElement = $hoveredRow.find( '.et-pb-row-content' );
+					} else {
+						var $hoveredSection = $hoveredRightClickArea.closest( '.et_pb_section' );
+						$hoveredElement = $hoveredSection.find( '.et-pb-section-content' );
+					}
+				}
+			}
+
+			if ( $hoveredElement.length ) {
+				var hoveredElementObject = ET_PageBuilder_Layout.getView( $hoveredElement.data( 'cid' ) );
+				et_pb_hovered_item_buffer = hoveredElementObject;
+			}
+		} );
+
+		// open module settings on double click
+		$( 'body' ).on( 'dblclick', '.et-pb-right-click-trigger-overlay, .et-pb-controls, .et_pb_module_block', function( event) {
+			var $clickedItem = $( event.target );
+
+			// do not proceed if clicked on buttons
+			if ( $clickedItem.closest( 'a' ).length ) {
+				return;
+			}
+
+			var $clickedModule = $clickedItem.closest( '.et_pb_module_block' );
+
+			if ( $clickedModule.length ) {
+				// Open module settings
+				$clickedModule.find( '.et-pb-settings' ).trigger( 'click' );
+				return;
+			}
+
+			if ( $clickedItem.closest( '.et-pb-controls' ).length ) {
+				// Open settings of Row or Section if clicked inside the controls panel
+				$clickedItem.closest( '.et-pb-controls' ).find( '.et-pb-settings' ).trigger( 'click' );
+			}
+
+			var $clickedRightClickArea = $clickedItem.closest( '.et-pb-right-click-trigger-overlay' );
+
+			if ( ! $clickedRightClickArea.length ) {
+				return;
+			}
+
+			var $clickedRow = $clickedRightClickArea.closest( '.et_pb_row' );
+
+			if ( $clickedRow.length ) {
+				// Open Row Settings
+				$clickedRow.find( '> .et-pb-controls .et-pb-settings' ).trigger( 'click' );
+			} else {
+				var $clickedSection = $clickedRightClickArea.closest( '.et_pb_section' );
+				// Open Section Settings
+				$clickedSection.find( '> .et-pb-controls .et-pb-settings' ).trigger( 'click' );
+			}
+		} );
 
 
 		/**
@@ -12126,6 +18910,11 @@ window.et_builder_version = '2.7.10';
 
 				$( '#et_pb_layout_controls .et-pb-layout-buttons-settings' ).trigger( 'click' );
 			} );
+		} else {
+			// We're editing a layout directly from the Divi Library. Mark the Divi Library menu link as active.
+			$( '#toplevel_page_et_divi_options, #toplevel_page_et_divi_options > a' )
+				.addClass( 'wp-has-current-submenu wp-menu-open' )
+				.removeClass( 'wp-not-current-submenu' );
 		}
 
 		// set the correct content for Yoast SEO plugin if it's activated
@@ -12162,6 +18951,27 @@ window.et_builder_version = '2.7.10';
 			if ( $et_pb_prompt_modal.length ) {
 				$et_pb_prompt_modal.removeAttr( 'style' );
 				window.et_pb_align_vertical_modal( $et_pb_prompt_modal, '.et_pb_prompt_buttons' );
+			}
+		} );
+
+		$(window).on( 'load', function() {
+			setTimeout( function() {
+				var $et_toggle_builder_button = $( '#et_pb_toggle_builder' );
+				var $et_pb_fb_cta = $( '#et_pb_fb_cta' );
+
+				$et_toggle_builder_button.addClass( 'et_pb_ready' );
+
+				if ( $et_toggle_builder_button.hasClass( 'et_pb_builder_is_used' ) ) {
+					$et_pb_fb_cta.addClass( 'et_pb_ready' );
+				}
+			}, 250 );
+		} );
+
+		$(window).on( 'mousedown', function( event ) {
+			var $opened_custom_menu = $( '.et-pb-settings-option-select-advanced.et_pb_menu_active' );
+			// close opened menu if exist
+			if ( $( event.target ).closest('.et-pb-settings-option-select-advanced').length < 1 && $opened_custom_menu.length > 0 ) {
+				et_pb_close_advanced_menu( $opened_custom_menu );
 			}
 		} );
 	} );
@@ -12206,8 +19016,19 @@ window.et_builder_version = '2.7.10';
 				tabs: {},
 				padding: {},
 				yes_no_button: {},
-				font_buttons: {}
-			};
+				multiple_buttons: {},
+				font_buttons: {},
+				text_align_buttons: {},
+				select: {},
+				font_line_styles: {},
+				animation_buttons: {},
+				user_fonts: et_pb_options.user_fonts,
+				font_weights: et_pb_options.supported_font_weights,
+				options_icons: et_pb_options.all_svg_icons,
+				background_tabs_nav: {},
+				background_gradient_buttons: {},
+				option_preview_buttons: {}
+		};
 
 		window.et_builder_template_options = et_builder_template_options;
 
@@ -12229,10 +19050,17 @@ window.et_builder_version = '2.7.10';
 		ET_PageBuilder.Events.on('et-advanced-module-settings:render', adv_setting_form_category_select_update_hidden );
 
 		et_builder = {
-			fonts_template: function() {
-				var template = $('#et-builder-google-fonts-options-items').html();
+			fonts_template: function( options ) {
+				var template = _.template( $('#et-builder-google-fonts-options-items').html() );
+				template_processed = template( window.et_builder_template_options.user_fonts );
 
-				return template;
+				return template_processed;
+			},
+			fonts_weight_template: function( options ) {
+				var template = _.template( $('#et-builder-font-weight-items').html() );
+				template_processed = template( window.et_builder_template_options.font_weights );
+
+				return template_processed;
 			},
 			font_icon_list_template: function(){
 				var template = $('#et-builder-font-icon-list-items').html();
@@ -12249,7 +19077,7 @@ window.et_builder_version = '2.7.10';
 
 				return template;
 			},
-			options_tabs_output: function( options ){
+			settings_tabs_output: function( options ){
 				var template = _.template( $('#et-builder-options-tabs-links-template').html() ),
 					options_filtered = {},
 					options_filtered_index = 1,
@@ -12266,33 +19094,29 @@ window.et_builder_version = '2.7.10';
 
 				return template;
 			},
-			options_padding_output: function( options ){
-				var template = _.template( $('#et-builder-padding-inputs-template').html() ),
+
+			options_template_output: function( option_type, options, data ) {
+				var template = _.template( $('#et-builder-' + option_type + '-option-template').html() ),
 					template_processed;
 
-				window.et_builder_template_options['padding']['options'] = $.extend( {}, options );
+				window.et_builder_template_options[ option_type ]['options'] = $.extend( {}, options );
 
-				template_processed = template( window.et_builder_template_options.padding );
+				if ( !_.isUndefined( data ) ) {
+					window.et_builder_template_options[ option_type ]['data'] = $.extend( {}, data );
+				}
+
+				template_processed = template( window.et_builder_template_options[ option_type ] );
 
 				return template_processed;
 			},
-			options_yes_no_button_output: function( options ){
-				var template = _.template( $('#et-builder-yes-no-button-template').html() ),
+			options_text_align_buttons_output: function( options, type ){
+				var template = _.template( $('#et-builder-text-align-buttons-option-template').html() ),
 					template_processed;
 
-				window.et_builder_template_options['yes_no_button']['options'] = $.extend( {}, options );
+				window.et_builder_template_options['text_align_buttons']['options'] = $.extend( {}, options );
+				window.et_builder_template_options['text_align_buttons']['type'] = type;
 
-				template_processed = template( window.et_builder_template_options.yes_no_button );
-
-				return template_processed;
-			},
-			options_font_buttons_output: function( options ){
-				var template = _.template( $('#et-builder-font-buttons-option-template').html() ),
-					template_processed;
-
-				window.et_builder_template_options['font_buttons']['options'] = $.extend( {}, options );
-
-				template_processed = template( window.et_builder_template_options.font_buttons );
+				template_processed = template( window.et_builder_template_options.text_align_buttons );
 
 				return template_processed;
 			}
@@ -12323,57 +19147,6 @@ window.et_builder_version = '2.7.10';
 		// recalculate sizes of tinymce iframe when window resized
 		$( window ).resize( function() {
 			et_pb_adjust_fullscreen_mode();
-		});
-
-		// handle Escape and Enter buttons in the builder
-		$( document ).keydown( function(e) {
-			// Do nothing if focus is not in the Settings Container and no Prompt Modal opened
-			if ( ! $( '.et_pb_modal_settings_container' ).is( ':focus' ) && ! $( '.et_pb_modal_settings_container *' ).is( ':focus' ) && ! $( '.et_pb_prompt_modal' ).is( ':visible' ) ) {
-				return;
-			}
-
-			var $save_button = $( '.et-pb-modal-save' ),
-				$proceed_button = $( '.et_pb_prompt_proceed' ),
-				$close_button = $( '.et-pb-modal-close' ),
-				$builder_buttons = $( '#et_pb_main_container a, #et_pb_toggle_builder' );
-
-			switch( e.which ) {
-				// Enter button handling
-				case 13 :
-					// do nothing if focus is in the textarea or in the map address field so enter will work as expected
-					if ( $( '.et-pb-option-container textarea, #et_pb_address, #et_pb_pin_address' ).is( ':focus' ) ) {
-						return;
-					}
-					//remove focus from the builder buttons to avoid unexpected behavior
-					$builder_buttons.blur();
-
-					if ( $save_button.length || $proceed_button.length ) {
-						// it's possible that proceed button displayed above the save, we need to click only proceed button in that case
-						if ( $proceed_button.length ) {
-							$proceed_button.click();
-						} else {
-							// it's possible that there are 2 Modals appear on top of each other, save the one which is on top
-							if ( typeof $save_button[1] !== 'undefined' ) {
-								$save_button[1].click();
-							} else {
-								$save_button.click();
-							}
-						}
-					}
-					break;
-				// Escape button handling
-				case 27 :
-					// click close button if it exist on the screen
-					if ( $close_button.length ) {
-						// it's possible that there are 2 Modals appear on top of each other, close the one which is on top
-						if ( typeof $close_button[1] !== 'undefined' ) {
-							$close_button[1].click();
-						} else {
-							$close_button.click();
-						}
-					}
-					break;
-			}
 		});
 
 		// Fixing fullscreen editor inside builder ModalView height in Firefox. Firefox is too fast in calculating modal weight
