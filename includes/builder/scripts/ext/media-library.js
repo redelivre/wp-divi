@@ -43,6 +43,7 @@ wp.media.view.MediaFrame.ETSelect = wp.media.view.MediaFrame.Select.extend({
     _.defaults( this.options, {
       multiple: true,
       editing: false,
+      embed: true,
       state: 'insert',
       metadata: {},
       title: l10n.insertMediaTitle,
@@ -62,7 +63,7 @@ wp.media.view.MediaFrame.ETSelect = wp.media.view.MediaFrame.Select.extend({
   createStates: function() {
     var options = this.options;
 
-    this.states.add([
+    var states = [
       // Main states.
       new Library({
         id:         'insert',
@@ -77,10 +78,12 @@ wp.media.view.MediaFrame.ETSelect = wp.media.view.MediaFrame.Select.extend({
         displaySettings: true,
         displayUserSettings: true
       }),
-
+    ];
+    if (options.embed) {
       // Embed states.
-      new wp.media.controller.Embed( { metadata: options.metadata } ),
-    ]);
+      states.push(new wp.media.controller.Embed( { metadata: options.metadata } ))
+	}
+	this.states.add(states);
   },
 
   bindHandlers: function() {
@@ -152,5 +155,3 @@ wp.media.view.MediaFrame.ETSelect = wp.media.view.MediaFrame.Select.extend({
     });
   }
 });
-
-// export default wp.media.view.MediaFrame.ETSelect;

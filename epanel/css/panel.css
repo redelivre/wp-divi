@@ -61,6 +61,8 @@
 	font-size: 100%;
 	font-family: inherit;
 	vertical-align: baseline;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #epanel pre,
@@ -71,10 +73,14 @@
 	padding: 0;
 	border: 0;
 	outline: 0;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #epanel button {
 	box-shadow: none;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* remember to define focus styles! */
@@ -84,10 +90,14 @@
 
 #epanel ol, #epanel ul {
 	list-style: none;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #epanel a {
 	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /**
@@ -95,16 +105,19 @@
  */
 #panel-wrap, #custom-lbox {
 	font-family: 'Open Sans', sans-serif;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #wrapper {
-	margin: 35px 50px 30px 30px;
+	margin: 30px 30px 0 20px;
 }
 
 #epanel-wrapper {
 	background: white;
-	box-shadow: 0px 1px 3px 0px rgba( 0, 0, 0, 0.06 );
-	border-radius: 4px;
+	border: none;
+    box-shadow: 0 5px 30px rgba(0,0,0,.1);
+	border-radius: 3px;
 	color: #32373c;
 }
 
@@ -112,18 +125,18 @@
  * ePanel Header
  */
 #epanel-header {
-	background: rgb(108, 46, 185);
-	padding: 25px 28px;
+	background: #6c2eb9;
+	padding: 20px 26px 20px;
 	line-height: .8;
 	position: relative;
-	border-radius: 4px 4px 0 0;
+	border-radius: 3px 3px 0 0;
 }
 
 h1#epanel-title {
-	font-weight: 300;
-	font-size: 22px;
+	font-weight: 600;
+	font-size: 18px;
 	color: rgb(255, 255, 255);
-	background-color: rgb(108, 46, 185);
+	background-color: #6c2eb9;
 	border-bottom: 0px;
 	line-height: 18px;
 	margin-bottom: 0px;
@@ -144,6 +157,7 @@ h1#epanel-title {
 	text-transform: none;
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 	content: "<";
 	display: none;
 	position: absolute;
@@ -175,18 +189,18 @@ h1#epanel-title {
  * Reset Buttons
  */
 #epanel-header .et-defaults-button {
-	width: 60px;
-	height: 58px;
-	padding: 0;
-	text-align: center;
-	line-height: 58px;
-	position: absolute;
-	bottom: -58px;
-	right: 20px;
-	z-index: 50;
-	color: white;
-	background-color: #7e3bd0;
-	transition: all 0.3s;
+	width: 40px;
+    height: 40px;
+    padding: 0;
+    text-align: center;
+    line-height: 40px;
+    position: absolute;
+    bottom: -40px;
+    right: 10px;
+    z-index: 50;
+    color: white;
+    background-color: #7e3bd0;
+    transition: all 0.3s;
 }
 
 .rtl #epanel-header .et-defaults-button {
@@ -207,6 +221,8 @@ h1#epanel-title {
 	content: '\4d';
 	font-size: 16px;
 	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
 }
 
 #epanel-header .et-defaults-button .label {
@@ -224,33 +240,42 @@ h1#epanel-title {
 }
 
 #epanel #epanel-mainmenu {
-	padding-right: 140px;
+	padding-right: 100px;
+}
+
+.rtl #epanel #epanel-mainmenu {
+	padding-left: 100px;
+	padding-right: 0;
 }
 
 #epanel-mainmenu li {
 	float: left;
 	display: inline-block;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 18px;
-	font-weight: 400;
+	font-weight: 600;
 }
 
 .rtl #epanel-mainmenu li {
 	float: right;
 }
 
-#epanel-mainmenu a:hover,
 #epanel-mainmenu li.ui-state-active a {
 	background-color: #8F42ED;
+}
+
+#epanel-mainmenu a:hover{
+	background-color: #7435c1;
 }
 
 #epanel-mainmenu a {
 	box-sizing: border-box;
 	color: white;
-	padding: 20px;
+	padding: 13px 26px;
 	display: inline-block;
 	transition: all 0.3s;
 	outline: 0;
+	font-size: 14px;
+	line-height: 14px;
 }
 
 #epanel-mainmenu a:focus {
@@ -288,8 +313,9 @@ h1#epanel-title {
 	display: block;
 	clear: both;
 	position: relative;
-	padding: 20px;
-	font-size: 16px;
+	padding: 13px 26px;
+	font-size: 14px;
+	line-height: 14px;
 	font-weight: 600;
 	transition: all 0.3s;
 	-webkit-transition: all 0.3s;
@@ -309,7 +335,7 @@ h1#epanel-title {
 }
 
 #epanel-content ul.et-id-tabs a:hover {
-	background-color: #fff;
+	background-color: #e6ecf2;
 }
 
 #epanel-content ul.et-id-tabs .ui-tabs-active a {
@@ -334,6 +360,7 @@ h1#epanel-title {
 #epanel-content-wrap {
 	display: block;
 	position: relative;
+	
 }
 
 #epanel-content {
@@ -362,11 +389,11 @@ h1#epanel-title {
 
 #epanel-content .et-tab-content {
 	clear: both;
-	padding: 50px 40px 40px;
+	padding: 30px;
 }
 
 #epanel-content .et-epanel-box {
-	margin-bottom: 30px;
+	margin-bottom: 20px;
 	position: relative;
 }
 
@@ -409,6 +436,7 @@ h1#epanel-title {
 	content: 't';
 	font-family: 'ETmodules';
 	font-size: 16px;
+	color: rgb(43, 135, 218);
 }
 
 #epanel .et-epanel-box:hover .et-box-description {
@@ -419,7 +447,8 @@ h1#epanel-title {
 	word-wrap: break-word;
 	display: block;
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 14px;
+	color: #32373c;
 }
 
 #epanel-content .et-epanel-box .et-box-title {
@@ -439,7 +468,24 @@ h1#epanel-title {
 
 #epanel-content .et-epanel-box-small-1:not(.et-hidden-option) .et-box-content,
 #epanel-content .et-epanel-box-small-2:not(.et-hidden-option) .et-box-content {
-	width: 225px;
+	width: 200px;
+}
+
+#epanel-content .et-box-content--list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-gap: 10px;
+}
+
+#epanel-content .et-box-content .et-box-content--list > * {
+	padding-left: 0;
+	margin: 0;
+}
+
+#epanel-content .et-panel-box__checkbox-list-label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
 }
 
 #epanel-content .et-epanel-box .et-box-content input,
@@ -458,44 +504,43 @@ h1#epanel-title {
 .et-epanel-box input[type="password"],
 .et-epanel-box textarea {
 	margin-left: 0;
-	border-radius: 4px;
+	border-radius: 3px;
 	border: none;
 	box-shadow: none;
 	background: #F1F5F9;
 	padding: 13px;
-	font-size: 14px;
-	color: #32373C;
+	font-size: 13px;
+	color: #4c5866;
 	height: auto;
 	width: auto;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 14px;
 	width: 100%;
 	margin-bottom: 0;
 	-webkit-transition: background .5s;
 	-moz-transition: background .5s;
 	transition: background .5s;
+	font-weight: 600;
 }
 
 /* Firefox fix */
 .et-epanel-box select {
-	padding: 10px 13px;
+	padding: 5px 13px;
 }
 
 .et-epanel-box input[type="text"]:focus,
 .et-epanel-box input[type="password"]:focus,
 .et-epanel-box textarea:focus {
-	background: #E0E5EA;
+	background: #e6ecf2;
 }
 
 .et-epanel-box select,
 .et-epanel-box input[type="text"],
 .et-epanel-box input[type="password"] {
-	height: 39px;
+	height: 30px;
 }
 
 .et-epanel-box select {
 	width: 55%;
-	font-size: 14px !important;
 }
 
 /**
@@ -513,9 +558,10 @@ input.et-checkbox.yes_no_button {
 	-moz-transition: all 0.3s;
 	-webkit-transition: all 0.3s;
 	transition: all 0.3s;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	font-size: 12px;
 }
 
 #epanel .et_pb_yes_no_button.et_pb_off_state {
@@ -530,7 +576,7 @@ input.et-checkbox.yes_no_button {
 	position: absolute;
 	background: #FFF;
 	width: 50%;
-	height: 30px;
+	height: 20px;
 	margin: 5px 0;
 	background: #FFF;
 	-webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.25);
@@ -575,11 +621,11 @@ input.et-checkbox.yes_no_button {
 }
 
 #epanel .et_pb_yes_no_button span.et_pb_value_text {
-	padding: 11px;
+	padding: 6px;
 	float: left;
 	width: 50%;
 	text-align: center;
-	font-weight: 600;
+	font-weight: 700;
 	text-transform: uppercase;
 	-moz-transition: all 0.3s;
 	-webkit-transition: all 0.3s;
@@ -638,56 +684,35 @@ input.et-checkbox.yes_no_button {
  * Save Buttons Wrapper
  */
 #epanel-top {
-	padding-bottom: 35px;
+	padding-bottom: 30px;
 }
 
 #epanel-bottom {
-	padding: 35px 0;
-}
-
-#epanel-save {
-	margin: 4px 10px 12px 0;
-}
-
-.et-save-button:before{
-	content: '\l';
-	font-family: 'ETmodules';
-	left: 14px;
-	top:-2px;
-	font-size: 28px;
-	display: block;
-	position: absolute;
-	text-shadow: none !important;
-	font-weight: 300 !important;
-}
-
-.rtl .et-save-button:before {
-	left: auto;
-	right: 14px;
+	padding-top: 30px;
 }
 
 .et-save-button {
 	-webkit-transition: background .5s;
-	-moz-transition: background .5s;
-	transition: background .5s;
-	color: #FFF;
-	cursor: pointer;
-	background-color: #00C3AA;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-	border: none;
-	padding: 0 20px 0 58px;
-	font-size: 18px;
-	font-weight: 300;
-	height: 53px;
-	line-height: 53px;
-	display: inline-block;
-	text-decoration: none;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	position: relative;
+    -moz-transition: background .5s;
+    transition: background .5s;
+    color: #FFF;
+    cursor: pointer;
+    background-color: #00C3AA;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: none;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+    text-decoration: none;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    position: relative;
 }
 
 .rtl .et-save-button {
@@ -726,12 +751,12 @@ input.et-checkbox.yes_no_button {
 }
 
 .reset-popup-header {
-	font-weight: 300;
-	font-size: 22px;
+	font-weight: 600;
+	font-size: 18px;
 	color: rgb(255, 255, 255);
-	background-color: rgb(108, 46, 185);
+	background-color: #6c2eb9;
 	margin: 0px;
-	padding: 25px 40px;
+	padding: 19px 26px 18px;
 	box-sizing: border-box;
 	display: block;
 	position: absolute;
@@ -744,7 +769,7 @@ input.et-checkbox.yes_no_button {
 	display: none;
 	z-index: 10000;
 	overflow: auto;
-	min-height: 340px;
+	min-height: 213px;
 	position: fixed;
 	left: 50%;
 	width: 400px;
@@ -752,18 +777,23 @@ input.et-checkbox.yes_no_button {
 	margin-left: -200px;
 	box-sizing: border-box;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 100px;
-	padding: 113px 40px 40px;
-	color: #32373c;
+	padding: 86px 30px 70px;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box; box-sizing: border-box;
 	-moz-box-shadow: 0px 0px 100px rgba(0, 160, 210, 0.20);
 	-webkit-box-shadow: 0px 0px 100px rgba(0, 160, 210, 0.20);
 	box-shadow: 0px 0px 100px rgba(0, 160, 210, 0.20);
-	border-radius: 4px; -moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+	border-radius: 3px; -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 	overflow: hidden;
-	font-size: 14px;
-	line-height: 1.5em;
+	font-weight: 600;
+    color: #4c5866;
+    line-height: 1.5em;
+    font-size: 13px;
+}
+
+.et-box-desc {
+	padding-bottom: 30px;
 }
 
 .defaults-hover.active {
@@ -790,18 +820,19 @@ input.et-checkbox.yes_no_button {
 	bottom: 0;
 	display: block;
 	color: white;
-	font-size: 18px;
-	height: 68px;
+	font-size: 14px;
+	height: 40px;
 	width: 50%;
 	border: none;
 	font-family: 'Open Sans', sans-serif;
-	font-weight: 600;
+	font-weight: 700;
 	box-sizing: border-box;
 	text-align: center;
-	line-height: 68px;
+	line-height: 40px;
 	margin: 0;
 	cursor: pointer;
 	transition: background .5s;
+	padding: 0;
 }
 
 .no {
@@ -847,12 +878,12 @@ input.et-checkbox.yes_no_button {
 }
 
 .et-box-desc-top {
-	font-weight: 300;
-	font-size: 22px;
+	font-weight: 600;
+	font-size: 18px;
 	color: rgb(255, 255, 255);
-	background-color: rgb(108, 46, 185);
+	background-color: #6c2eb9;
 	margin: 0px;
-	padding: 25px 40px;
+	padding: 20px 26px 19px;
 	box-sizing: border-box;
 	display: block;
 	width: 100%;
@@ -866,13 +897,16 @@ input.et-checkbox.yes_no_button {
 .et-box-desc-content {
 	display: block;
 	position: relative;
+	font-weight: 600;
+    color: #4c5866;
 }
 
 .et-box-desc-content h3 {
-	font-size: 16px;
+	font-size: 15px;
 	line-height: 25px;
 	margin: 0px 0px 15px;
 	width: 320px;
+	color: #32373c;
 	font-weight: 600;
 }
 
@@ -883,20 +917,16 @@ input.et-checkbox.yes_no_button {
 
 .et-box-desc-content .et-lightbox-close {
 	position: absolute;
-	top: -113px;
-	right: -40px;
-	width: 20px;
-	height: 20px;
-	background: none;
-	text-align: center;
-	width: 68px;
-	height: 68px;
-	box-sizing: border-box;
-	font-size: 23px;
-	color: rgb(255, 255, 255);
-	background-color: rgb(98, 42, 169);
-	transition: background 0.5s;
-	cursor: pointer;
+    top: -86px;
+    right: -30px;
+    background: none;
+    text-align: center;
+    width: 58px;
+    height: 58px;
+    box-sizing: border-box;
+    font-size: 23px;
+    color: #fff;
+    cursor: pointer;
 }
 
 .rtl .et-box-desc-content .et-lightbox-close {
@@ -907,11 +937,8 @@ input.et-checkbox.yes_no_button {
 .et-box-desc-content .et-lightbox-close:before {
 	content: 'M';
 	font: 23px 'ETmodules';
-	line-height: 68px;
-}
-
-.et-box-desc-content .et-lightbox-close:hover {
-	background-color: rgb(85, 37, 146);
+	line-height: 58px;
+	font-weight: 600;
 }
 
 .ui-tabs-hide,
@@ -944,14 +971,14 @@ input.et-checkbox.yes_no_button {
 	float: left;
 	box-sizing: border-box;
 	color: #FFF;
-	background-color: #32373C;
+	background-color: #4c5866;
 	padding: 0 20px;
 	margin: 0;
 	font-size: 12px;
-	line-height: 40px;
+	line-height: 30px;
 	text-transform: uppercase;
-	font-weight: 600;
-	height: 40px;
+	font-weight: 700;
+	height: 30px;
 	margin-right: 0;
 	margin-left: 7px;
 	cursor: pointer;
@@ -986,7 +1013,7 @@ input.et-checkbox.yes_no_button {
 #epanel-content .et-epanel-box .et-upload-image-button:hover,
 #epanel-content .et-epanel-box .et-upload-image-reset:hover,
 #epanel-content .et-epanel-box .et-button:hover {
-	background: #4D565F;
+	background: #343c46;
 }
 
 #epanel-content .et-epanel-box .et-upload-buttons {
@@ -999,6 +1026,10 @@ input.et-checkbox.yes_no_button {
 	width: 47.5%;
 	margin: 0 0 0 5%;
 	padding: 0;
+}
+
+.rtl #epanel-content .et-epanel-box .et-upload-image-button {
+	margin: 0 5% 0 0;
 }
 
 #epanel-content .et-epanel-box .et-upload-image-reset {
@@ -1045,6 +1076,8 @@ input.et-checkbox.yes_no_button {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	font-weight: 600;
+	color: #4c5866;
 }
 
 #epanel p.inputs .jquery-checkbox img {
@@ -1068,6 +1101,7 @@ input.et-checkbox.yes_no_button {
 	content: 'M';
 	color: #FF5600;
 	font-size: 23px;
+	font-weight: 600;
 }
 
 #epanel p.inputs  span.jquery-checkbox {
@@ -1091,6 +1125,8 @@ input.et-checkbox.yes_no_button {
 	text-transform: capitalize;
 	margin-top: 10px;
 	cursor: pointer;
+	font-weight: 600;
+	color: #4c5866;
 }
 
 .rtl #epanel p.postinfo {
@@ -1480,12 +1516,12 @@ left: 0px;
 
 /* Portability Integration */
 #epanel-header .epanel-portability {
-	right: 80px;
+	right: 50px;
 }
 
 .rtl #epanel-header .epanel-portability {
 	right: auto;
-	left: 80px;
+	left: 50px;
 }
 
 /* Clear Static CSS Button */
@@ -1541,6 +1577,7 @@ left: 0px;
 	text-transform: none;
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 	content: "N";
 	color: rgb(255, 255, 255);
 	font-size: 22px;
@@ -1790,7 +1827,7 @@ Copyright (c) 2015 Daniel Eden
 
 #epanel .CodeMirror {
 	padding: 13px 13px 13px 0px;
-	border-radius: 4px;
+	border-radius: 3px;
 }
 
 #epanel .CodeMirror-dialog-top {
@@ -1819,7 +1856,7 @@ Copyright (c) 2015 Daniel Eden
   display: none;
 }
 
-#epanel .CodeMirror.cm-s-et {
+.CodeMirror.cm-s-et {
 	/*
 		Based on CodeMirror Material Theme
 
@@ -1829,85 +1866,85 @@ Copyright (c) 2015 Daniel Eden
 	background-color: #4C5866;
 	color: #ffffff;
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-gutters {
+.CodeMirror.cm-s-et .CodeMirror-gutters {
 	background: #4C5866;
 	color: #537f7e;
 	border: none;
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-guttermarker, #epanel .CodeMirror.cm-s-et .CodeMirror-guttermarker-subtle, #epanel .CodeMirror.cm-s-et .CodeMirror-linenumber {
+.CodeMirror.cm-s-et .CodeMirror-guttermarker, .CodeMirror.cm-s-et .CodeMirror-guttermarker-subtle, .CodeMirror.cm-s-et .CodeMirror-linenumber {
 	color: #8393a5;
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-cursor {
+.CodeMirror.cm-s-et .CodeMirror-cursor {
 	border-left: 1px solid #fff;
 }
-#epanel .CodeMirror.cm-s-et div.CodeMirror-selected {
+.CodeMirror.cm-s-et div.CodeMirror-selected {
 	background: rgba(145, 203, 255, 0.2);
 }
-#epanel .CodeMirror.cm-s-et .cm-s-material.CodeMirror-focused div.CodeMirror-selected {
+.CodeMirror.cm-s-et .cm-s-material.CodeMirror-focused div.CodeMirror-selected {
 	background: rgba(0, 0, 0, 0.1);
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-line::selection, #epanel .CodeMirror.cm-s-et .CodeMirror-line > span::selection, #epanel .CodeMirror.cm-s-et .CodeMirror-line > span > span::selection {
+.CodeMirror.cm-s-et .CodeMirror-line::selection, .CodeMirror.cm-s-et .CodeMirror-line > span::selection, .CodeMirror.cm-s-et .CodeMirror-line > span > span::selection {
 	background: rgba(0, 0, 0, 0.1);
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-line::-moz-selection, #epanel .CodeMirror.cm-s-et .CodeMirror-line > span::-moz-selection, #epanel .CodeMirror.cm-s-et .CodeMirror-line > span > span::-moz-selection {
+.CodeMirror.cm-s-et .CodeMirror-line::-moz-selection, .CodeMirror.cm-s-et .CodeMirror-line > span::-moz-selection, .CodeMirror.cm-s-et .CodeMirror-line > span > span::-moz-selection {
 	background: rgba(0, 0, 0, 0.1);
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-activeline-background {
+.CodeMirror.cm-s-et .CodeMirror-activeline-background {
 	background: rgba(0, 0, 0, 0.1);
 }
-#epanel .CodeMirror.cm-s-et .cm-keyword {
+.CodeMirror.cm-s-et .cm-keyword {
 	color: #88c2f8;
 }
-#epanel .CodeMirror.cm-s-et .cm-operator {
+.CodeMirror.cm-s-et .cm-operator {
 	color: #ffffff;
 }
-#epanel .CodeMirror.cm-s-et .cm-variable-2,
-#epanel .CodeMirror.cm-s-et .cm-string-2,
-#epanel .CodeMirror.cm-s-et .cm-meta {
+.CodeMirror.cm-s-et .cm-variable-2,
+.CodeMirror.cm-s-et .cm-string-2,
+.CodeMirror.cm-s-et .cm-meta {
 	color: #fff;
 }
-#epanel .CodeMirror.cm-s-et .cm-variable-3, #epanel .CodeMirror.cm-s-et .cm-type {
+.CodeMirror.cm-s-et .cm-variable-3, .CodeMirror.cm-s-et .cm-type {
 	color: #88c2f8;
 }
-#epanel .CodeMirror.cm-s-et .cm-builtin,
-#epanel .CodeMirror.cm-s-et .cm-qualifier,
-#epanel .CodeMirror.cm-s-et .cm-variable-3,
-#epanel .CodeMirror.cm-s-et .cm-type {
+.CodeMirror.cm-s-et .cm-builtin,
+.CodeMirror.cm-s-et .cm-qualifier,
+.CodeMirror.cm-s-et .cm-variable-3,
+.CodeMirror.cm-s-et .cm-type {
 	color: #fe9c47;
 }
-#epanel .CodeMirror.cm-s-et .cm-atom {
+.CodeMirror.cm-s-et .cm-atom {
 	color: #88c2f8;
 }
-#epanel .CodeMirror.cm-s-et .cm-number {
+.CodeMirror.cm-s-et .cm-number {
 	color: #fe9c47;
 }
-#epanel .CodeMirror.cm-s-et .cm-def {
+.CodeMirror.cm-s-et .cm-def {
 	color: #ffffff;
 }
-#epanel .CodeMirror.cm-s-et .cm-string {
+.CodeMirror.cm-s-et .cm-string {
 	color: #fe9c47;
 }
-#epanel .CodeMirror.cm-s-et .cm-comment {
+.CodeMirror.cm-s-et .cm-comment {
 	color: #8393a5;
 }
-#epanel .CodeMirror.cm-s-et .cm-variable {
+.CodeMirror.cm-s-et .cm-variable {
 	color: #88c2f8;
 }
-#epanel .CodeMirror.cm-s-et .cm-attribute {
+.CodeMirror.cm-s-et .cm-attribute {
 	color: #88c2f8;
 }
-#epanel .CodeMirror.cm-s-et .cm-property {
+.CodeMirror.cm-s-et .cm-property {
 	color: #88dfbe;
 }
-#epanel .CodeMirror.cm-s-et .cm-tag {
+.CodeMirror.cm-s-et .cm-tag {
 	color: #88dfbe;
 }
-#epanel .CodeMirror.cm-s-et .cm-searching {
+.CodeMirror.cm-s-et .cm-searching {
 	background: none;
 	border-bottom: 1px solid white;
 	color: white;
 }
-#epanel .CodeMirror.cm-s-et .CodeMirror-matchingbracket {
+.CodeMirror.cm-s-et .CodeMirror-matchingbracket {
 	text-decoration: underline;
 	color: white !important;
 }

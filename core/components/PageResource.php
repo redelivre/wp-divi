@@ -338,6 +338,10 @@ class ET_Core_PageResource {
 				@self::$wpfs->delete( $temp_directory, true );
 			}
 		}
+
+		// Reset $_resources property; Mostly useful for unit test big request which needs to make
+		// each test*() method act like it is different page request
+		self::$_resources = null;
 	}
 
 	protected static function _assign_output_location( $location, $resource ) {
@@ -363,7 +367,7 @@ class ET_Core_PageResource {
 			wp_enqueue_script( $resource->slug, set_url_scheme( $resource->URL ), array(), ET_CORE_VERSION, true );
 		} else {
 			printf(
-				'<script id="%1$s" src="%2$s"></script>',
+				'<script id="%1$s" src="%2$s"></script>', // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 				esc_attr( $resource->slug ),
 				esc_url( set_url_scheme( $resource->URL ) )
 			);
@@ -388,11 +392,11 @@ class ET_Core_PageResource {
 			wp_enqueue_style( $resource->slug, set_url_scheme( $resource->URL ) );
 		} else {
 			printf(
-				'<link rel="stylesheet" id="%1$s" href="%2$s" onerror="%3$s" onload="%4$s" />',
+				'<link rel="stylesheet" id="%1$s" href="%2$s" onerror="%3$s" onload="%4$s" />', // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
 				esc_attr( $resource->slug ),
 				esc_url( set_url_scheme( $resource->URL ) ),
-				self::$_onerror,
-				self::$_onload
+				et_core_esc_previously( self::$_onerror ),
+				et_core_esc_previously( self::$_onload )
 			);
 		}
 
@@ -573,7 +577,7 @@ class ET_Core_PageResource {
 					'<%1$s id="%2$s">%3$s</%1$s>',
 					esc_html( $resource->type ),
 					esc_attr( $resource->slug ),
-					wp_strip_all_tags( $data )
+					et_core_esc_previously( wp_strip_all_tags( $data ) )
 				);
 
 				if ( $same_write_file_location ) {
@@ -801,6 +805,11 @@ class ET_Core_PageResource {
 			return $tag;
 		}
 
+		/** @see ET_Support_Center::toggle_safe_mode */
+		if ( et_core_is_safe_mode_active() ) {
+			return $tag;
+		}
+
 		$existing_onerror = "/(?<=onerror=')(.*?)(;?')/";
 		$existing_onload  = "/(?<=onload=')(.*?)(;?')/"; // Internet Explorer :face_with_rolling_eyes:
 
@@ -845,17 +854,11 @@ class ET_Core_PageResource {
 	 * @param bool    $update
 	 */
 	public static function save_post_cb( $post_id, $post, $update ) {
-		if ( ! $update ) {
+		if ( ! $update || ! function_exists( 'et_builder_enabled_for_post' ) ) {
 			return;
 		}
 
-		$post_types = array( 'post', 'page', 'project' );
-
-		if ( function_exists( 'et_builder_get_builder_post_types' ) ) {
-			$post_types = array_merge( $post_types, et_builder_get_builder_post_types() );
-		}
-
-		if ( ! in_array( $post->post_type, $post_types ) ) {
+		if ( ! et_builder_enabled_for_post( $post_id ) ) {
 			return;
 		}
 

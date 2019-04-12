@@ -40,7 +40,7 @@ final class ET_Core_Cache {
 	 * @param string     $group  Optional. Where to group the cache contents. Default 'default'.
 	 * @return bool False if cache key and group already exist, true on success
 	 */
-	public static function add( $key, $data, $group = 'group' ) {
+	public static function add( $key, $data, $group = 'default' ) {
 		if ( empty( $group ) ) {
 			$group = 'default';
 		}
@@ -160,7 +160,7 @@ final class ET_Core_Cache {
 			$group = 'default';
 		}
 
-		if ( ! self::$_exists( $key, $group ) ) {
+		if ( ! self::_exists( $key, $group ) ) {
 			return false;
 		}
 

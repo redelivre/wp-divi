@@ -3,6 +3,7 @@
 class ET_Builder_Module_Fullwidth_Slider extends ET_Builder_Module {
 	function init() {
 		$this->name            = esc_html__( 'Fullwidth Slider', 'et_builder' );
+		$this->plural          = esc_html__( 'Fullwidth Sliders', 'et_builder' );
 		$this->slug            = 'et_pb_fullwidth_slider';
 		$this->vb_support      = 'on';
 		$this->fullwidth       = true;
@@ -15,7 +16,6 @@ class ET_Builder_Module_Fullwidth_Slider extends ET_Builder_Module {
 			'general'  => array(
 				'toggles' => array(
 					'elements'   => esc_html__( 'Elements', 'et_builder' ),
-					'background' => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -39,7 +39,7 @@ class ET_Builder_Module_Fullwidth_Slider extends ET_Builder_Module {
 					'label'    => esc_html__( 'Title', 'et_builder' ),
 					'css'      => array(
 						'main' => "{$this->main_css_element} .et_pb_slide_description .et_pb_slide_title",
-						'plugin_main' => "{$this->main_css_element} .et_pb_slide_description .et_pb_slide_title, {$this->main_css_element} .et_pb_slide_description .et_pb_slide_title a",
+						'limited_main' => "{$this->main_css_element} .et_pb_slide_description .et_pb_slide_title, {$this->main_css_element} .et_pb_slide_description .et_pb_slide_title a",
 						'important' => array(
 							'color',
 							'size',
@@ -63,7 +63,7 @@ class ET_Builder_Module_Fullwidth_Slider extends ET_Builder_Module {
 			'box_shadow'            => array(
 				'default' => array(
 					'css' => array(
-						'custom_style' => true,
+						'overlay' => 'inset',
 					),
 				),
 			),
@@ -71,7 +71,8 @@ class ET_Builder_Module_Fullwidth_Slider extends ET_Builder_Module {
 				'button' => array(
 					'label' => esc_html__( 'Button', 'et_builder' ),
 					'css' => array(
-						'plugin_main' => "{$this->main_css_element} .et_pb_more_button.et_pb_button",
+						'main' => "{$this->main_css_element} .et_pb_more_button.et_pb_button",
+						'linited_main' => "{$this->main_css_element} .et_pb_more_button.et_pb_button",
 						'alignment' => "{$this->main_css_element} .et_pb_button_wrapper",
 					),
 					'use_alignment' => true,
@@ -276,6 +277,13 @@ class ET_Builder_Module_Fullwidth_Slider extends ET_Builder_Module {
 			'background_video_height'                    => $this->props['background_video_height'],
 			'header_level'                               => $this->props['header_level'],
 		);
+
+		// Hover Options attribute doesn't have field definition and rendered on the fly, thus the use of array_get()
+		$background_hover_enabled_key = et_pb_hover_options()->get_hover_enabled_field( 'background' );
+		$background_color_hover_key   = et_pb_hover_options()->get_hover_field( 'background_color' );
+
+		$et_pb_slider[ $background_hover_enabled_key ] = self::$_->array_get( $this->props, $background_hover_enabled_key, '' );
+		$et_pb_slider[ $background_color_hover_key ]   = self::$_->array_get( $this->props, $background_color_hover_key, '' );
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {

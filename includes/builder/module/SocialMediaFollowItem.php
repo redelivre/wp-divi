@@ -3,6 +3,7 @@
 class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 	function init() {
 		$this->name                        = esc_html__( 'Social Network', 'et_builder' );
+		$this->plural                      = esc_html__( 'Social Networks', 'et_builder' );
 		$this->slug                        = 'et_pb_social_media_follow_network';
 		$this->vb_support                  = 'on';
 		$this->type                        = 'child';
@@ -89,6 +90,7 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 			'text'                  => false,
 			'max_width'             => false,
 			'button'                => false,
+			'link_options'          => false,
 		);
 	}
 
@@ -175,7 +177,7 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 				'toggle_slug' => 'main_content',
 			),
 			'url' => array(
-				'label'               => esc_html__( 'Account URL', 'et_builder' ),
+				'label'               => esc_html__( 'Account Link URL', 'et_builder' ),
 				'type'                => 'text',
 				'option_category'     => 'basic_option',
 				'description'         => esc_html__( 'The URL for this social network link.', 'et_builder' ),
@@ -184,7 +186,8 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 					'social_network'
 				),
 				'toggle_slug'         => 'link',
-				'default_on_front' => '#',
+				'default_on_front'    => '#',
+				'dynamic_content'     => 'url',
 			),
 			'skype_url' => array(
 				'label'           => esc_html__( 'Account Name', 'et_builder' ),
@@ -246,8 +249,9 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 		$custom_padding        = $this->props['custom_padding'];
 		$custom_padding_tablet = $this->props['custom_padding_tablet'];
 		$custom_padding_phone  = $this->props['custom_padding_phone'];
-		$follow_button  = '';
-		$is_skype       = false;
+		$follow_button         = '';
+		$is_skype              = false;
+		$network_name          = esc_attr( $this->get_network_name( trim( wp_strip_all_tags( $content ) ) ) );
 
 		if ( 'skype' === $social_network ) {
 			$skype_url = sprintf(
@@ -262,7 +266,7 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 			$follow_button = sprintf(
 				'<a href="%1$s" class="follow_button" title="%2$s"%3$s>%4$s</a>',
 				! $is_skype ? esc_url( $url ) : $skype_url,
-				esc_attr( $this->get_network_name( trim( wp_strip_all_tags( $content ) ) ) ),
+				$network_name,
 				( 'on' === $et_pb_social_media_follow_link['url_new_window'] ? ' target="_blank"' : '' ),
 				esc_html__( 'Follow', 'et_builder' )
 			);
@@ -275,9 +279,11 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 			) );
 		}
 
-		$social_network            = ET_Builder_Element::add_module_order_class( $social_network, $render_slug );
-		$video_background          = $this->video_background();
-		$parallax_image_background = $this->get_parallax_image_background();
+		$social_network             = ET_Builder_Element::add_module_order_class( $social_network, $render_slug );
+		$video_background           = $this->video_background();
+		$parallax_image_background  = $this->get_parallax_image_background();
+		$social_network_link_url    = ! $is_skype ? esc_url( $url ) : $skype_url;
+		$social_network_link_target = 'on' === $et_pb_social_media_follow_link['url_new_window'] ? ' target="_blank"' : '';
 
 		// Get custom borders, if any
 		$attrs = $this->props;
@@ -301,21 +307,40 @@ class ET_Builder_Module_Social_Media_Follow_Item extends ET_Builder_Module {
 			'et_pb_section_parallax',
 		) );
 
-		$output = sprintf(
-			'<li class="%1$s">
-				<a href="%2$s" class="icon et_pb_with_border%7$s%8$s" title="%3$s"%5$s>%10$s%9$s<span class="et_pb_social_media_follow_network_name">%4$s</span></a>%6$s
-			</li>',
-			$this->module_classname( $render_slug ),
-			! $is_skype ? esc_url( $url ) : $skype_url,
-			esc_attr( $this->get_network_name( trim( wp_strip_all_tags( $content ) ) ) ),
-			sanitize_text_field( $this->get_network_name( $content ) ),
-			( 'on' === $et_pb_social_media_follow_link['url_new_window'] ? ' target="_blank"' : '' ),
-			$follow_button,
-			'' !== $video_background ? ' et_pb_section_video et_pb_preload' : '',
-			$video_background,
-			'' !== $parallax_image_background ? ' et_pb_section_parallax' : '',
-			$parallax_image_background
+		// Format i18n link title
+		$social_network_link_title = sprintf(
+			esc_html__( 'Follow on %s', 'et_builder' ),
+			$network_name
 		);
+
+		// Format i18n link text (visible, but ignored by screen readers)
+		$social_network_link_text = esc_html__( 'Follow', 'et_builder' );
+
+		// Prepare CSS classes for the link
+		$social_network_link_classes = array( 'icon', 'et_pb_with_border' );
+		if ( '' !== $video_background ) {
+			array_push( $social_network_link_classes,
+				'et_pb_section_video',
+				'et_pb_preload',
+				$video_background
+			);
+		}
+		if ( '' !== $parallax_image_background ) {
+			array_push( $social_network_link_classes,
+				'et_pb_section_parallax'
+			);
+		}
+		$social_network_link_classes = implode( ' ', $social_network_link_classes );
+
+		$output = "<li
+            class='{$this->module_classname( $render_slug )}'><a
+              href='{$social_network_link_url}'
+              class='{$social_network_link_classes}'
+              title='{$social_network_link_title}'
+              {$social_network_link_target}>{$parallax_image_background}<span
+                class='et_pb_social_media_follow_network_name'
+                aria-hidden='true'
+                >{$social_network_link_text}</span></a>{$follow_button}</li>";
 
 		return $output;
 	}

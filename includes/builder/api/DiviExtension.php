@@ -160,7 +160,7 @@ class DiviExtension {
 	 */
 	protected function _set_bundle_dependencies() {
 		$this->_bundle_dependencies = array(
-			'builder'  => array( "{$this->name}-frontend-bundle", 'react', 'react-dom' ),
+			'builder'  => array( 'react-dom', "{$this->name}-frontend-bundle" ),
 			'frontend' => array( 'jquery', 'et-builder-modules-script' ),
 		);
 	}

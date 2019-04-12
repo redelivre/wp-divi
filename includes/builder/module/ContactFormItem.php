@@ -6,6 +6,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 
 	function init() {
 		$this->name            = esc_html__( 'Field', 'et_builder' );
+		$this->plural          = esc_html__( 'Fields', 'et_builder' );
 		$this->slug            = 'et_pb_contact_field';
 		$this->vb_support      = 'on';
 		$this->type            = 'child';
@@ -20,7 +21,6 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 					'main_content'      => esc_html__( 'Text', 'et_builder' ),
 					'field_options'     => esc_html__( 'Field Options', 'et_builder' ),
 					'conditional_logic' => esc_html__( 'Conditional Logic', 'et_builder' ),
-					'background'        => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -60,15 +60,16 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				'form_field' => array(
 					'label' => esc_html__( 'Field', 'et_builder' ),
 					'css'   => array(
-						'main'      => array(
+						'main'      => implode( ',', array(
 							"%%order_class%%.et_pb_contact_field .et_pb_contact_field_options_title",
 							"{$this->main_css_element} .input",
+							"{$this->main_css_element} .input::placeholder",
 							"{$this->main_css_element} .input::-webkit-input-placeholder",
 							"{$this->main_css_element} .input::-moz-placeholder",
 							"{$this->main_css_element} .input:-ms-input-placeholder",
 							"{$this->main_css_element} .input[type=checkbox] + label",
 							"{$this->main_css_element} .input[type=radio] + label",
-						),
+						) ),
 						'important' => 'plugin_only',
 					),
 				),
@@ -302,8 +303,22 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'toggle_slug'       => 'form_field',
+				'hover'             => 'tabs',
 				'tab_slug'          => 'advanced',
 			),
+		);
+
+		return $fields;
+	}
+
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['field_background_color'] = array(
+			'background' => implode( ', ', array(
+				'%%order_class%%.et_pb_contact_field .input',
+				'%%order_class%%.et_pb_contact_field .input + label:hover i'
+			) )
 		);
 
 		return $fields;
@@ -312,6 +327,8 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 	function render( $attrs, $content = null, $render_slug ) {
 		global $et_pb_half_width_counter, $et_pb_contact_form_num;
 
+		et_core_nonce_verified_previously();
+
 		$field_title                = $this->props['field_title'];
 		$field_type                 = $this->props['field_type'];
 		$field_id                   = $this->props['field_id'];
@@ -319,6 +336,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 		$fullwidth_field            = $this->props['fullwidth_field'];
 		$form_field_text_color      = $this->props['form_field_text_color'];
 		$field_background_color     = $this->props['field_background_color'];
+		$field_bg_color_hover       = et_pb_hover_options()->get_value( 'field_background_color', $this->props );
 		$checkbox_checked           = $this->props['checkbox_checked'];
 		$checkbox_options           = $this->props['checkbox_options'];
 		$radio_options              = $this->props['radio_options'];
@@ -330,7 +348,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 		$conditional_logic_rules    = $this->props['conditional_logic_rules'];
 		$allowed_symbols            = $this->props['allowed_symbols'];
 		$render_count               = $this->render_count();
-		$current_module_num         = '' === $et_pb_contact_form_num ? 0 : intval( $et_pb_contact_form_num ) + 1;
+		$current_module_num         = null === $et_pb_contact_form_num ? 0 : intval( $et_pb_contact_form_num ) + 1;
 
 		// set a field ID.
 		if ( '' === $field_id ) {
@@ -388,10 +406,10 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 		}
 
 		if ( '' !== $field_background_color ) {
-			$input_selector = '%%order_class%% .input';
+			$input_selector = '%%order_class%%.et_pb_contact_field .input';
 
 			if ( in_array( $field_type, array( 'checkbox', 'radio' ) ) ) {
-				$input_selector = '%%order_class%% .input + label i';
+				$input_selector = '%%order_class%%.et_pb_contact_field .input + label i';
 			}
 
 			ET_Builder_Element::set_style( $render_slug, array(
@@ -399,6 +417,22 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				'declaration' => sprintf(
 					'background-color: %1$s !important;',
 					esc_html( $field_background_color )
+				),
+			) );
+		}
+
+		if ( !empty( $field_bg_color_hover ) && et_pb_hover_options()->is_enabled( 'field_background_color', $this->props ) ) {
+			$input_selector = '%%order_class%% .input:hover';
+
+			if ( in_array( $field_type, array( 'checkbox', 'radio' ) ) ) {
+				$input_selector = '%%order_class%% .input + label:hover i';
+			}
+
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $input_selector,
+				'declaration' => sprintf(
+					'background-color: %1$s !important;',
+					esc_html( $field_bg_color_hover )
 				),
 			) );
 		}

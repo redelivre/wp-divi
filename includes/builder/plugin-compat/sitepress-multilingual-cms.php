@@ -128,11 +128,11 @@ class ET_Builder_Plugin_Compat_WPML_Multilingual_CMS extends ET_Builder_Plugin_C
 	 **/
 	public function _filter_traslate_shop_module_categories_ids( $shortcode_atts, $atts, $slug, $address ) {
 		if (
-			! is_admin() && $slug == 'et_pb_shop'
+			! is_admin() && $slug === 'et_pb_shop'
 			&&
 			! empty( $shortcode_atts['type'] )
 			&&
-			$shortcode_atts['type'] == 'product_category'
+			$shortcode_atts['type'] === 'product_category'
 			&&
 			! empty( $shortcode_atts['include_categories'] )
 		) {

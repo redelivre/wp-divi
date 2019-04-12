@@ -3,8 +3,18 @@
 // Register assets that need to be fired at head
 function et_fb_enqueue_assets_head() {
 	// Setup WP media.
+	// Around 5.2-alpha, `wp_enqueue_media` started using a function defined in a file
+	// which is only included in admin. Unfortunately there's no safe/reliable way to conditionally
+	// load this other than checking the WP version.
+	if ( version_compare( $GLOBALS['wp_version'], '5.2-alpha-44947', '>=' ) ) {
+		require_once( ABSPATH . 'wp-admin/includes/post.php' );
+	}
 	wp_enqueue_media();
+
+	// Setup Builder Media Library
+	wp_enqueue_script( 'et_pb_media_library', ET_BUILDER_URI . '/scripts/ext/media-library.js', array( 'media-editor' ), ET_BUILDER_PRODUCT_VERSION, true );
 }
+
 add_action( 'wp_enqueue_scripts', 'et_fb_enqueue_assets_head' );
 
 // TODO, make this fire late enough, so that the_content has fired and ET_Builder_Element::get_computed_vars() is ready
@@ -16,26 +26,34 @@ function et_fb_enqueue_main_assets() {
 	$assets = ET_FB_ASSETS_URI;
 
 	wp_register_style( 'et_pb_admin_date_css', "{$root}/styles/jquery-ui-1.10.4.custom.css", array(), $ver );
+	wp_register_style( 'et-fb-top-window', "{$assets}/css/fb-top-window.css", array(), $ver );
 
-	// Enqueue styles if the Divi Builder plugin is not active.
-	if ( ! et_is_builder_plugin_active() ) {
-		wp_enqueue_style( 'et-frontend-builder', "{$assets}/css/style.css", array(
-			'et_pb_admin_date_css',
-			'wp-mediaelement',
-			'wp-color-picker',
-			'et-core-admin',
-		), $ver );
+	$conditional_deps = array();
+
+	if ( ! et_builder_bfb_enabled() ) {
+		$conditional_deps[] = 'et-fb-top-window';
 	}
+
+	// Enqueue the appropriate bundle CSS (hot/start/build)
+	et_fb_enqueue_bundle( 'et-frontend-builder', 'bundle.css', array_merge( array(
+		'et_pb_admin_date_css',
+		'wp-mediaelement',
+		'wp-color-picker',
+		'et-core-admin',
+	), $conditional_deps ) );
 
 	// Load Divi Builder style.css file with hardcore CSS resets and Full Open Sans font if the Divi Builder plugin is active
 	if ( et_is_builder_plugin_active() ) {
+		// `bundle.css` was removed from `divi-builder-style.css` and is now enqueued separately for the DBP as well.
 		wp_enqueue_style(
 			'et-builder-divi-builder-styles',
 			"{$assets}/css/divi-builder-style.css",
-			array( 'et-core-admin', 'wp-color-picker' ),
+			array_merge( array( 'et-core-admin', 'wp-color-picker' ), $conditional_deps ),
 			$ver
 		);
 	}
+
+	wp_enqueue_script( 'mce-view' );
 
 	if ( ! et_core_use_google_fonts() || et_is_builder_plugin_active() ) {
 		et_fb_enqueue_open_sans();
@@ -45,16 +63,6 @@ function et_fb_enqueue_main_assets() {
 	wp_enqueue_style( 'et-frontend-builder-notification-modal', "{$root}/styles/notification_popup_styles.css", array(), $ver );
 }
 add_action( 'wp_enqueue_scripts', 'et_fb_enqueue_main_assets' );
-
-function et_fb_enqueue_open_sans() {
-	$protocol = is_ssl() ? 'https' : 'http';
-	$query_args = array(
-		'family' => 'Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800',
-		'subset' => 'latin,latin-ext',
-	);
-
-	wp_enqueue_style( 'et-fb-fonts', esc_url_raw( add_query_arg( $query_args, "$protocol://fonts.googleapis.com/css" ) ), array(), null );
-}
 
 function et_fb_enqueue_google_maps_dependency( $dependencies ) {
 
@@ -78,6 +86,87 @@ function et_fb_load_portability() {
 	) );
 }
 
+function et_fb_get_dynamic_asset( $prefix, $post_type = false, $update = false ) {
+
+	if ( false === $post_type ) {
+		global $post;
+		$post_type = isset( $post->post_type ) ? $post->post_type : 'post';
+	}
+
+	$post_type = sanitize_text_field( $post_type );
+
+	if ( ! in_array( $prefix, array( 'helpers', 'definitions' ) ) ) {
+		$prefix = '';
+	}
+
+	// Per language Cache due to definitions/helpers being localized.
+	$lang   = get_user_locale();
+	$cache  = sprintf( '%s/%s', ET_Core_PageResource::get_cache_directory(), $lang );
+	$files  = glob( sprintf( '%s/%s-%s-*.js', $cache, $prefix, $post_type ) );
+	$exists = is_array( $files ) && count( $files ) > 0;
+
+	if ( $exists ) {
+		$file = $files[0];
+		$uniq = array_reverse( explode( '-', basename( $file, '.js' ) ) );
+		$uniq = $uniq[0];
+	}
+
+	$updated = false;
+
+	if ( $update || ! $exists ) {
+		// Make sure cache folder exists
+		wp_mkdir_p( $cache );
+
+		// We (currently) use just 2 prefixes: 'helpers' and 'definitions'.
+		// Each prefix has its content generated via a custom function called via the hook system:
+		// add_filter( 'et_fb_get_asset_definitions', 'et_fb_get_asset_definitions', 10, 2 );
+		// add_filter( 'et_fb_get_asset_helpers', 'et_fb_get_asset_helpers', 10, 2 );
+		$content = apply_filters( "et_fb_get_asset_$prefix", false, $post_type );
+		if ( $exists && $update ) {
+			// Compare with old one (when a previous version exists)
+			$update = file_get_contents( $file ) !== $content;
+		}
+		if ( ( $update || ! $exists ) ) {
+
+			if ( ET_BUILDER_KEEP_OLDEST_CACHED_ASSETS && count( $files ) > 0 ) {
+				// Files are ordered by timestamp, first one is always the oldest
+				array_shift( $files );
+			}
+
+			if ( ET_BUILDER_PURGE_OLD_CACHED_ASSETS ) {
+				foreach ( $files as $file ) {
+					// Delete old version.
+					@unlink( $file );
+				}
+			}
+
+			// Write the file only if it did not exist or its content changed
+			$uniq = str_replace( '.', '', (string) microtime( true ) );
+			$file = sprintf( '%s/%s-%s-%s.js', $cache, $prefix, $post_type, $uniq );
+
+			if ( is_writable( dirname( $file ) ) && file_put_contents( $file, $content ) ) {
+				$updated = true;
+				$exists  = true;
+			}
+		}
+	}
+
+	$url = ! $exists ? false : sprintf(
+		'%s/%s/%s-%s-%s.js',
+		content_url( ET_Core_PageResource::get_cache_directory( 'relative' ) ),
+		$lang,
+		$prefix,
+		$post_type,
+		$uniq
+	);
+
+	return array(
+		'url'     => $url,
+		'updated' => $updated,
+	);
+}
+
+
 function et_fb_enqueue_assets() {
 	global $wp_version;
 
@@ -91,12 +180,7 @@ function et_fb_enqueue_assets() {
 	// Get WP major version
 	$wp_major_version = substr( $wp_version, 0, 3 );
 
-	// Register styles.
-	// wp_enqueue_style( 'et-frontend-builder', "{$assets}/css/frontend-builder.css", null, $ver );
-
 	// Register scripts.
-	// wp_register_script( 'minicolors', "{$root}/scripts/ext/jquery.minicolors.js" );
-
 	wp_register_script( 'iris', admin_url( 'js/iris.min.js' ), array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), false, 1 );
 	wp_register_script( 'wp-color-picker', admin_url( 'js/color-picker.min.js' ), array( 'iris' ), false, 1 );
 
@@ -126,11 +210,15 @@ function et_fb_enqueue_assets() {
 
 	wp_register_script( 'et_pb_admin_date_addon_js', "{$root}/scripts/ext/jquery-ui-timepicker-addon.js", array( $jQuery_ui ), $ver, true );
 
-	wp_register_script( 'wp-shortcode', includes_url() . 'js/shortcode.js', array(), $wp_version );
+	// `wp-shortcode` script handle is used by Gutenberg
+	wp_register_script( 'et-wp-shortcode', includes_url() . 'js/shortcode.js', array(), $wp_version );
 
 	wp_register_script( 'jquery-tablesorter', ET_BUILDER_URI . '/scripts/ext/jquery.tablesorter.min.js', array( 'jquery' ), ET_BUILDER_VERSION, true );
 
 	wp_register_script( 'chart', ET_BUILDER_URI . '/scripts/ext/chart.min.js', array(), ET_BUILDER_VERSION, true );
+
+	/** This filter is documented in includes/builder/framework.php */
+	$builder_modules_script_handle = apply_filters( 'et_builder_modules_script_handle', 'et-builder-modules-script' );
 
 	$dependencies_list = array(
 		'jquery',
@@ -143,15 +231,16 @@ function et_fb_enqueue_assets() {
 		'iris',
 		'wp-color-picker',
 		'wp-color-picker-alpha',
-		'react-tiny-mce',
 		'et_pb_admin_date_addon_js',
-		'wp-shortcode',
+		'et-wp-shortcode',
 		'heartbeat',
 		'wp-mediaelement',
 		'jquery-tablesorter',
 		'chart',
 		'react',
 		'react-dom',
+		'react-tiny-mce',
+		$builder_modules_script_handle,
 	);
 
 	// Add dependency on et-shortcode-js only if Divi Theme is used or ET Shortcodes plugin activated
@@ -159,11 +248,31 @@ function et_fb_enqueue_assets() {
 		$dependencies_list[] = 'et-shortcodes-js';
 	}
 
+	if ( defined( 'ET_BUILDER_CACHE_ASSETS' ) && ET_BUILDER_CACHE_ASSETS ) {
+		// Use cached files for helpers and definitions
+		foreach ( array( 'helpers', 'definitions' ) as $asset ) {
+			if ( $url = et_()->array_get( et_fb_get_dynamic_asset( $asset ), 'url' ) ) {
+				// The asset exists, we can add it to bundle's dependencies
+				$key = "et-dynamic-asset-$asset";
+				wp_register_script( $key, $url, array(), ET_BUILDER_VERSION );
+				$dependencies_list[] = $key;
+			}
+		}
+	}
+
 	$fb_bundle_dependencies = apply_filters( 'et_fb_bundle_dependencies', $dependencies_list );
 
 	// Adding concatenated script as dependencies for script debugging
 	if ( et_load_unminified_scripts() ) {
-		array_push( $fb_bundle_dependencies, 'easypiechart', 'salvattore', 'hashchange' );
+		array_push( $fb_bundle_dependencies,
+			'easypiechart',
+			'salvattore',
+			'hashchange'
+		);
+	}
+
+	if ( et_pb_enqueue_google_maps_script() ) {
+		wp_enqueue_script( 'google-maps-api', esc_url( add_query_arg( array( 'key' => et_pb_get_google_api_key(), 'callback' => 'initMap' ), is_ssl() ? 'https://maps.googleapis.com/maps/api/js' : 'http://maps.googleapis.com/maps/api/js' ) ), array(), '3', true );
 	}
 
 	// enqueue the Avada script before 'et-frontend-builder' to make sure easypiechart ( and probably some others ) override the scripts from Avada.
@@ -174,49 +283,28 @@ function et_fb_enqueue_assets() {
 		wp_enqueue_script( 'avada' );
 	}
 
-	$DEBUG        = defined( 'ET_DEBUG' ) && ET_DEBUG;
-	$core_scripts = ET_CORE_URL . '/admin/js';
+	et_fb_enqueue_react();
 
-	if ( $DEBUG || DiviExtensions::is_debugging_extension() ) {
-		wp_enqueue_script( 'react', 'https://cdn.jsdelivr.net/npm/react@16.2/umd/react.development.js', array(), '16.2', true );
-		wp_enqueue_script( 'react-dom', 'https://cdn.jsdelivr.net/npm/react-dom@16.2/umd/react-dom.development.js', array( 'react' ), '16.2', true );
-		add_filter( 'script_loader_tag', 'et_core_add_crossorigin_attribute', 10, 3 );
-	} else {
-		wp_enqueue_script( 'react', "{$core_scripts}/react.production.min.js", array(), '16.2', true );
-		wp_enqueue_script( 'react-dom', "{$core_scripts}/react-dom.production.min.js", array( 'react' ), '16.2', true );
-	}
-
-	// Enqueue scripts.
-	$bundle = "{$app}/bundle.js";
-	if ( $DEBUG ) {
-		$site_url       = wp_parse_url( get_site_url() );
-		$hot_bundle_url = "{$site_url['scheme']}://{$site_url['host']}:31495/bundle.js";
-
-		wp_enqueue_script( 'et-frontend-builder', $hot_bundle_url, $fb_bundle_dependencies, $ver, true );
-
-		// Add the bundle as fallback in case webpack-dev-server is not running
-		wp_add_inline_script(
-			'et-frontend-builder',
-			sprintf( 'window.ET_FB || document.write(\'<script src="%s">\x3C/script>\')', "$bundle?ver={$ver}" ),
-			'after'
-		);
-	} else {
-		wp_enqueue_script( 'et-frontend-builder', $bundle, $fb_bundle_dependencies, $ver, true );
-	}
+	// Enqueue the appropriate bundle js (hot/start/build)
+	et_fb_enqueue_bundle( 'et-frontend-builder', 'bundle.js', $fb_bundle_dependencies );
 
 	// Search for additional bundles
 	$additional_bundles = array();
-	foreach ( glob( ET_BUILDER_DIR . 'frontend-builder/bundle.*.js' ) as $chunk ) {
-		$additional_bundles[] = "{$app}/" . basename( $chunk );
+	// CSS is now splitted as well.
+	foreach ( array_merge(
+		glob( ET_BUILDER_DIR . 'frontend-builder/build/bundle.*.css' ),
+		glob( ET_BUILDER_DIR . 'frontend-builder/build/bundle.*.js' )
+	) as $chunk ) {
+		$additional_bundles[] = "{$app}/build/" . basename( $chunk );
 	}
 	// Pass bundle path and additional bundles to preload
 	wp_localize_script( 'et-frontend-builder', 'et_webpack_bundle', array(
-		'path'    => "{$app}/",
+		'path'    => "{$app}/build/",
 		'preload' => $additional_bundles,
 	));
 
 	// Enqueue failure notice script.
-	wp_enqueue_script( 'et-frontend-builder-failure', "{$assets}/scripts/failure_notice.js", array(), $ver, true );
+	wp_enqueue_script( 'et-frontend-builder-failure', "{$assets}/scripts/failure_notice.js", array(), ET_BUILDER_PRODUCT_VERSION, true );
 	wp_localize_script( 'et-frontend-builder-failure', 'et_fb_options', array(
 		'ajaxurl'                    => admin_url( 'admin-ajax.php' ),
 		'et_admin_load_nonce'        => wp_create_nonce( 'et_admin_load_nonce' ),
@@ -232,6 +320,20 @@ function et_fb_enqueue_assets() {
 	do_action( 'et_fb_enqueue_assets' );
 }
 
+
+/**
+ * Disable admin bar styling for HTML in VB. BFB doesn't loaded admin bar and  VB loads admin bar
+ * on top window which makes built-in admin bar styling irrelevant because admin bar is affected by
+ * top window width instead of app window width (while app window width changes based on preview mode)
+ *
+ * @see _admin_bar_bump_cb()
+ */
+function et_fb_disable_admin_bar_style() {
+	add_theme_support( 'admin-bar', array( 'callback' => '__return_false' ) );
+}
+add_action( 'wp', 'et_fb_disable_admin_bar_style', 15 );
+
+
 function et_fb_output_wp_auth_check_html() {
 	// A <button> element is used for the close button which looks ugly in Chrome. Use <a> element instead.
 	ob_start();
@@ -245,8 +347,9 @@ function et_fb_output_wp_auth_check_html() {
 		$output
 	);
 
-	echo $output;
+	echo et_core_intentionally_unescaped( $output, 'html' );
 }
+
 
 function et_fb_set_editor_available_cookie() {
 	global $post;
@@ -256,3 +359,26 @@ function et_fb_set_editor_available_cookie() {
 	}
 }
 add_action( 'et_fb_framework_loaded', 'et_fb_set_editor_available_cookie' );
+
+
+if ( ! function_exists( 'et_fb_enqueue_react' ) ):
+function et_fb_enqueue_react() {
+	$DEBUG         = defined( 'ET_DEBUG' ) && ET_DEBUG;
+	$core_scripts  = ET_CORE_URL . 'admin/js';
+	$react_version = '16.7.0';
+
+	wp_dequeue_script( 'react' );
+	wp_dequeue_script( 'react-dom' );
+	wp_deregister_script( 'react' );
+	wp_deregister_script( 'react-dom' );
+
+	if ( $DEBUG || DiviExtensions::is_debugging_extension() ) {
+		wp_enqueue_script( 'react', 'https://cdn.jsdelivr.net/npm/react@16/umd/react.development.js', array(), $react_version, true );
+		wp_enqueue_script( 'react-dom', 'https://cdn.jsdelivr.net/npm/react-dom@16/umd/react-dom.development.js', array( 'react' ), $react_version, true );
+		add_filter( 'script_loader_tag', 'et_core_add_crossorigin_attribute', 10, 3 );
+	} else {
+		wp_enqueue_script( 'react', "{$core_scripts}/react.production.min.js", array(), $react_version, true );
+		wp_enqueue_script( 'react-dom', "{$core_scripts}/react-dom.production.min.js", array( 'react' ), $react_version, true );
+	}
+}
+endif;

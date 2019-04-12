@@ -43,7 +43,7 @@
 		<?php endif; ?>
 	<?php else : // this is displayed if there are no comments so far ?>
 	   <div id="comment-section" class="nocomments">
-		  <?php if ('open' == $post->comment_status) : ?>
+		  <?php if ('open' === $post->comment_status) : ?>
 			 <!-- If comments are open, but there are no comments. -->
 
 		  <?php else : // comments are closed ?>
@@ -52,7 +52,7 @@
 		  <?php endif; ?>
 	   </div>
 	<?php endif; ?>
-	<?php if ('open' == $post->comment_status) : ?>
+	<?php if ('open' === $post->comment_status) : ?>
 		<?php comment_form( array('label_submit' => esc_attr__( 'Submit Comment', 'Divi' ), 'title_reply' => '<span>' . esc_attr__( 'Submit a Comment', 'Divi' ) . '</span>', 'title_reply_to' => esc_attr__( 'Leave a Reply to %s', 'Divi' ), 'class_submit' => 'submit et_pb_button' ) ); ?>
 	<?php else: ?>
 

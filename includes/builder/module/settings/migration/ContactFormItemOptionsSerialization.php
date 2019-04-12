@@ -2,7 +2,7 @@
 /**
  * Migration for the ContactFormItem module which fixes quote serialization for checkbox, radio and select field options.
  *
- * @since ??
+ * @since 3.10
  */
 class ET_Builder_Module_Settings_Migration_ContactFormItemOptionsSerialization extends ET_Builder_Module_Settings_Migration {
 	public function get_modules() {

@@ -15,8 +15,14 @@ add_theme_support( 'automatic-feed-links' );
 
 add_action( 'init', 'et_activate_features' );
 
-function et_activate_features(){
-	define( 'ET_SHORTCODES_VERSION', et_get_theme_version() );
+function et_activate_features() {
+	if ( ! defined( 'ET_SHORTCODES_VERSION' ) ) {
+		define( 'ET_SHORTCODES_VERSION', et_get_theme_version() );
+	}
+
+	if ( ! defined( 'ET_SHORTCODES_DIR' ) ) {
+		define( 'ET_SHORTCODES_DIR', get_template_directory_uri() . '/epanel/shortcodes' );
+	}
 
 	/* activate shortcodes */
 	require_once TEMPLATEPATH . '/epanel/shortcodes/shortcodes.php';
@@ -134,18 +140,23 @@ if ( ! function_exists( 'et_epanel_handle_custom_css_output' ) ):
 function et_epanel_handle_custom_css_output( $css, $stylesheet ) {
 	global $wp_current_filter, $shortname;
 
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
+		return $css;
+	}
+
 	if ( ! $css || ! in_array( 'wp_head', $wp_current_filter ) || is_admin() && ! is_customize_preview() ) {
 		return $css;
 	}
 
 	$post_id        = et_core_page_resource_get_the_ID();
-	$is_preview     = is_preview() || isset( $_GET['et_pb_preview_nonce'] ) || is_customize_preview();
+	$is_preview     = is_preview() || isset( $_GET['et_pb_preview_nonce'] ) || is_customize_preview(); // phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
 	$is_singular    = et_core_page_resource_is_singular();
 
 	$disabled_global = 'off' === et_get_option( 'et_pb_static_css_file', 'on' );
 	$disabled_post   = $disabled_global || ( $is_singular && 'off' === get_post_meta( $post_id, '_et_pb_static_css_file', true ) );
 
-	$forced_inline     = $is_preview || $disabled_global || $disabled_post;
+	$forced_inline     = $is_preview || $disabled_global || $disabled_post || post_password_required();
 	$builder_in_footer = 'on' === et_get_option( 'et_pb_css_in_footer', 'off' );
 
 	$unified_styles = $is_singular && ! $forced_inline && ! $builder_in_footer && et_core_is_builder_used_on_current_request();
@@ -213,15 +224,15 @@ if ( ! function_exists( 'et_get_option' ) ) {
 
 			$et_one_row_option_name = $et_theme_options_name . '_' . $option_name;
 		} else {
-			$option_value = get_option( $option_name );
+			$option_value = $force_default_value ? get_option( $option_name, $default_value ) : get_option( $option_name );
 		}
 
 		// option value might be equal to false, so check if the option is not set in the database
-		if ( et_options_stored_in_one_row() && ! isset( $et_theme_options[ $option_name ] ) && ( '' != $default_value || $force_default_value ) ) {
+		if ( et_options_stored_in_one_row() && ! isset( $et_theme_options[ $option_name ] ) && ( ! empty( $default_value ) || $force_default_value ) ) {
 			$option_value = $default_value;
 		}
 
-		if ( '' != $used_for_object && in_array( $used_for_object, array( 'page', 'category' ) ) && is_array( $option_value ) )
+		if ( ! empty( $used_for_object ) && in_array( $used_for_object, array( 'page', 'category' ) ) && is_array( $option_value ) )
 			$option_value = et_generate_wpml_ids( $option_value, $used_for_object );
 
 		if ( ! empty( $et_one_row_option_name ) ) {
@@ -240,6 +251,12 @@ if ( ! function_exists( 'et_update_option' ) ) {
 
 		if ( $is_new_global_setting && '' !== $global_setting_main_name && '' !== $global_setting_sub_name ) {
 			$global_setting = get_option( $global_setting_main_name, array() );
+
+			// $global_setting has to be array otherwise setting can't be saved so it needs
+			// to be treated as empty array
+			if ( ! is_array( $global_setting ) ) {
+				$global_setting = array();
+			}
 
 			$global_setting[ $global_setting_sub_name ] = $new_value;
 
@@ -287,13 +304,13 @@ if ( ! function_exists( 'truncate_post' ) ) {
 	function truncate_post( $amount, $echo = true, $post = '', $strip_shortcodes = false ) {
 		global $shortname;
 
-		if ( '' == $post ) global $post;
+		if ( empty( $post ) ) global $post;
 
 		if ( post_password_required( $post ) ) {
 			$post_excerpt = get_the_password_form();
 
 			if ( $echo ) {
-				echo $post_excerpt;
+				echo et_core_intentionally_unescaped( $post_excerpt, 'html' );
 				return;
 			}
 
@@ -302,9 +319,12 @@ if ( ! function_exists( 'truncate_post' ) ) {
 
 		$post_excerpt = apply_filters( 'the_excerpt', $post->post_excerpt );
 
-		if ( 'on' == et_get_option( $shortname . '_use_excerpt' ) && '' != $post_excerpt ) {
-			if ( $echo ) echo $post_excerpt;
-			else return $post_excerpt;
+		if ( 'on' === et_get_option( $shortname . '_use_excerpt' ) && ! empty( $post_excerpt ) ) {
+			if ( $echo ) {
+				echo et_core_intentionally_unescaped( $post_excerpt, 'html' );
+			} else {
+				return $post_excerpt;
+			}
 		} else {
 			// get the post content
 			$truncate = $post->post_content;
@@ -322,15 +342,27 @@ if ( ! function_exists( 'truncate_post' ) ) {
 			// Remove embed shortcode from post content
 			$truncate = preg_replace( '@\[embed[^\]]*?\].*?\[\/embed]@si', '', $truncate );
 
-			// Remove scripts from the post content
-			$truncate = preg_replace( '@\<script(.*?)>(.*?)</script>@si', '', html_entity_decode( $truncate ) );
+			// Remove script and style tags from the post content
+			$truncate = wp_strip_all_tags( $truncate );
 
 			if ( $strip_shortcodes ) {
 				$truncate = et_strip_shortcodes( $truncate );
 			} else {
+				// Check if content should be overridden with a custom value.
+				$custom = apply_filters( 'et_truncate_post_use_custom_content', false, $truncate, $post );
 				// apply content filters
-				$truncate = apply_filters( 'the_content', $truncate );
+				$truncate = false === $custom ? apply_filters( 'the_content', $truncate ) : $custom;
 			}
+
+			/**
+			 * Filter automatically generated post excerpt before it gets truncated.
+			 *
+			 * @since 3.17.2
+			 *
+			 * @param string $excerpt
+			 * @param integer $post_id
+			 */
+			$truncate = apply_filters( 'et_truncate_post', $truncate, $post->ID );
 
 			// decide if we need to append dots at the end of the string
 			if ( strlen( $truncate ) <= $amount ) {
@@ -344,7 +376,7 @@ if ( ! function_exists( 'truncate_post' ) ) {
 			$truncate = rtrim( et_wp_trim_words( $truncate, $amount, '' ) );
 
 			// remove the last word to make sure we display all words correctly
-			if ( '' != $echo_out ) {
+			if ( ! empty( $echo_out ) ) {
 				$new_words_array = (array) explode( ' ', $truncate );
 				array_pop( $new_words_array );
 
@@ -354,8 +386,11 @@ if ( ! function_exists( 'truncate_post' ) ) {
 				$truncate .= $echo_out;
 			}
 
-			if ( $echo ) echo $truncate;
-			else return $truncate;
+			if ( $echo ) {
+				echo et_core_intentionally_unescaped( $truncate, 'html' );
+			} else {
+				return $truncate;
+			}
 		};
 	}
 
@@ -392,7 +427,7 @@ if ( ! function_exists( 'et_wp_trim_words' ) ) {
 if ( ! function_exists( 'truncate_title' ) ) {
 
 	function truncate_title( $amount, $echo = true, $post = '' ) {
-		if ( $post == '' ) $truncate = get_the_title();
+		if ( empty( $post ) ) $truncate = get_the_title();
 		else $truncate = $post->post_title;
 
 		if ( strlen( $truncate ) <= $amount ) $echo_out = '';
@@ -400,10 +435,10 @@ if ( ! function_exists( 'truncate_title' ) ) {
 
 		$truncate = et_wp_trim_words( $truncate, $amount, '' );
 
-		if ( '' != $echo_out ) $truncate .= $echo_out;
+		if ( ! empty( $echo_out ) ) $truncate .= $echo_out;
 
 		if ( $echo )
-			echo $truncate;
+			echo et_core_intentionally_unescaped( $truncate, 'html' );
 		else
 			return $truncate;
 	}
@@ -429,8 +464,10 @@ if ( ! function_exists( 'et_first_image' ) ) {
 			$unprocessed_content = et_strip_shortcodes( $post->post_content, true );
 		}
 
+		// Check if content should be overridden with a custom value.
+		$custom = apply_filters( 'et_first_image_use_custom_content', false, $unprocessed_content, $post );
 		// apply the_content filter to execute all shortcodes and get the correct image from the processed content
-		$processed_content = apply_filters( 'the_content', $unprocessed_content );
+		$processed_content = false === $custom ? apply_filters( 'the_content', $unprocessed_content ) : $custom;
 
 		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $processed_content, $matches );
 		if ( isset( $matches[1][0] ) ) $img = $matches[1][0];
@@ -445,7 +482,7 @@ if ( ! function_exists( 'et_first_image' ) ) {
 if ( ! function_exists( 'get_thumbnail' ) ) {
 
 	function get_thumbnail($width=100, $height=100, $class='', $alttext='', $titletext='', $fullpath=false, $custom_field='', $post='') {
-		if ( $post == '' ) global $post;
+		if ( empty( $post ) ) global $post;
 		global $shortname;
 
 		$thumb_array['thumb'] = '';
@@ -462,11 +499,11 @@ if ( ! function_exists( 'get_thumbnail' ) ) {
 			$thumb_array['thumb'] = $thumb_array['fullpath'];
 		}
 
-		if ($thumb_array['thumb'] == '') {
-			if ($custom_field == '') $thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) );
+		if ( empty( $thumb_array['thumb'] ) ) {
+			if ( empty( $custom_field ) ) $thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) );
 			else {
 				$thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, $custom_field, $single = true ) );
-				if ($thumb_array['thumb'] == '') $thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) );
+				if ( empty( $thumb_array['thumb'] ) ) $thumb_array['thumb'] = esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) );
 			}
 
 			if ( '' === $thumb_array['thumb'] && et_grab_image_setting() ) {
@@ -477,8 +514,8 @@ if ( ! function_exists( 'get_thumbnail' ) ) {
 			#if custom field used for small pre-cropped image, open Thumbnail custom field image in lightbox
 			if ($fullpath) {
 				$thumb_array['fullpath'] = $thumb_array['thumb'];
-				if ($custom_field == '') $thumb_array['fullpath'] = apply_filters( 'et_fullpath', et_path_reltoabs( esc_attr( $thumb_array['thumb'] ) ) );
-				elseif ( $custom_field <> '' && get_post_meta( $post->ID, 'Thumbnail', $single = true ) ) $thumb_array['fullpath'] = apply_filters( 'et_fullpath', et_path_reltoabs( esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) ) ) );
+				if ( empty( $custom_field ) ) $thumb_array['fullpath'] = apply_filters( 'et_fullpath', et_path_reltoabs( esc_attr( $thumb_array['thumb'] ) ) );
+				elseif ( ! empty( $custom_field ) && get_post_meta( $post->ID, 'Thumbnail', $single = true ) ) $thumb_array['fullpath'] = apply_filters( 'et_fullpath', et_path_reltoabs( esc_attr( get_post_meta( $post->ID, 'Thumbnail', $single = true ) ) ) );
 			}
 		}
 
@@ -515,11 +552,12 @@ if ( ! function_exists( 'print_thumbnail' ) ) {
 			extract( $thumbnail );
 		}
 
-		if ( $post == '' ) global $post, $et_theme_image_sizes;
+		if ( empty( $post ) ) global $post, $et_theme_image_sizes;
 
 		$output = '';
+		$raw = false;
 
-		$et_post_id = '' != $et_post_id ? (int) $et_post_id : $post->ID;
+		$et_post_id = ! empty( $et_post_id ) ? (int) $et_post_id : $post->ID;
 
 		if ( has_post_thumbnail( $et_post_id ) ) {
 			$thumb_array['use_timthumb'] = false;
@@ -542,21 +580,29 @@ if ( ! function_exists( 'print_thumbnail' ) ) {
 			$new_method_thumb = '';
 			$external_source = false;
 
-			$allow_new_thumb_method = !$external_source && $new_method && $cropPosition == '';
+			$allow_new_thumb_method = !$external_source && $new_method && empty( $cropPosition );
 
-			if ( $allow_new_thumb_method && $thumbnail <> '' ) {
-				$et_crop = get_post_meta( $post->ID, 'et_nocrop', true ) == '' ? true : false;
-				$new_method_thumb = et_resize_image( et_path_reltoabs( $thumbnail ), $width, $height, $et_crop );
-				if ( is_wp_error( $new_method_thumb ) ) $new_method_thumb = '';
+			if ( $allow_new_thumb_method && !empty( $thumbnail ) ) {
+				if ( 'data:image' === substr( $thumbnail, 0, 10 ) ) {
+					$new_method_thumb = $thumbnail;
+					$raw              = true;
+				} else {
+					$et_crop          = get_post_meta( $post->ID, 'et_nocrop', true );
+					$et_crop          = empty( $et_crop ) ? true : false;
+					$new_method_thumb = et_resize_image( et_path_reltoabs( $thumbnail ), $width, $height, $et_crop );
+					if ( is_wp_error( $new_method_thumb ) ) {
+						$new_method_thumb = '';
+					}
+				}
 			}
 
 			$thumbnail = $new_method_thumb;
 		}
 
 		if ( false === $forstyle ) {
-			$output = '<img src="' . esc_url( $thumbnail ) . '"';
+			$output = '<img src="' . ( $raw ? $thumbnail : esc_url( $thumbnail ) ) . '"';
 
-			if ($class <> '') $output .= " class='" . esc_attr( $class ) . "' ";
+			if ( ! empty( $class ) ) $output .= " class='" . esc_attr( $class ) . "' ";
 
 			$dimensions = apply_filters( 'et_print_thumbnail_dimensions', " width='" . esc_attr( $width ) . "' height='" .esc_attr( $height ) . "'" );
 
@@ -567,7 +613,7 @@ if ( ! function_exists( 'print_thumbnail' ) ) {
 			$output = $thumbnail;
 		}
 
-		if ($echoout) echo $output;
+		if ($echoout) echo et_core_intentionally_unescaped( $output, 'html' );
 		else return $output;
 	}
 
@@ -584,7 +630,7 @@ if ( ! function_exists( 'et_new_thumb_resize' ) ) {
 
 		$allow_new_thumb_method = !$external_source && $new_method;
 
-		if ( $allow_new_thumb_method && $thumbnail <> '' ) {
+		if ( $allow_new_thumb_method && ! empty( $thumbnail ) ) {
 			$et_crop = true;
 			$new_method_thumb = et_resize_image( $thumbnail, $width, $height, $et_crop );
 			if ( is_wp_error( $new_method_thumb ) ) $new_method_thumb = '';
@@ -622,13 +668,13 @@ if ( ! function_exists( 'et_multisite_thumbnail' ) ) {
 if ( ! function_exists( 'et_is_portrait' ) ) {
 
 	function et_is_portrait($imageurl, $post='', $ignore_cfields = false){
-		if ( $post == '' ) global $post;
+		if ( empty( $post ) ) global $post;
 
-		if ( get_post_meta( $post->ID, 'et_disable_portrait', true ) == 1 ) return false;
+		if ( get_post_meta( $post->ID, 'et_disable_portrait', true ) === '1' ) return false;
 
 		if ( !$ignore_cfields ) {
-			if ( get_post_meta( $post->ID, 'et_imagetype', true ) == 'l' ) return false;
-			if ( get_post_meta( $post->ID, 'et_imagetype', true ) == 'p' ) return true;
+			if ( get_post_meta( $post->ID, 'et_imagetype', true ) === 'l' ) return false;
+			if ( get_post_meta( $post->ID, 'et_imagetype', true ) === 'p' ) return true;
 		}
 
 		$imageurl = et_path_reltoabs( et_multisite_thumbnail( $imageurl ) );
@@ -669,7 +715,7 @@ if ( ! function_exists( 'in_subcat' ) ) {
 	function in_subcat($blogcat,$current_cat='') {
 		$in_subcategory = false;
 
-		if (cat_is_ancestor_of( $blogcat, $current_cat ) || $blogcat == $current_cat) $in_subcategory = true;
+		if (cat_is_ancestor_of( $blogcat, $current_cat ) || $blogcat === $current_cat) $in_subcategory = true;
 
 		return $in_subcategory;
 	}
@@ -682,17 +728,17 @@ if ( ! function_exists( 'show_page_menu' ) ) {
 		global $shortname, $themename, $exclude_pages, $strdepth, $page_menu, $is_footer;
 
 		//excluded pages
-		if ( et_get_option( $shortname.'_menupages' ) <> '' ) {
-			$exclude_pages = implode( ",", et_get_option( $shortname.'_menupages' ) );
+		if ( $menupages = et_get_option( $shortname.'_menupages' ) ) {
+			$exclude_pages = implode( ",", $menupages );
 		}
 
 		//dropdown for pages
 		$strdepth = '';
-		if ( et_get_option( $shortname.'_enable_dropdowns' ) == 'on' ) {
+		if ( et_get_option( $shortname.'_enable_dropdowns' ) === 'on' ) {
 			$strdepth = "depth=".et_get_option( $shortname.'_tiers_shown_pages' );
 		}
 
-		if ( $strdepth == '' ) {
+		if ( empty( $strdepth ) ) {
 			$strdepth = "depth=1";
 		}
 
@@ -703,12 +749,12 @@ if ( ! function_exists( 'show_page_menu' ) ) {
 
 		$page_menu = wp_list_pages( "sort_column=".et_get_option( $shortname.'_sort_pages' )."&sort_order=".et_get_option( $shortname.'_order_page' )."&".$strdepth."&exclude=".$exclude_pages."&title_li=&echo=0" );
 
-		if ( $addUlContainer ) echo '<ul class="'.$customClass.'">';
-		if (et_get_option( $shortname . '_home_link' ) == 'on' && $addHomeLink) { ?>
+		if ( $addUlContainer ) echo '<ul class="' . esc_attr( $customClass ) . '">';
+		if (et_get_option( $shortname . '_home_link' ) === 'on' && $addHomeLink) { ?>
 				<li <?php if ( is_front_page() || is_home() ) echo 'class="current_page_item"' ?>><a href="<?php echo esc_url( home_url() ); ?>"><?php esc_html_e( 'Home', $themename ); ?></a></li>
 			<?php };
 
-			echo $page_menu;
+			echo et_core_esc_wp( $page_menu );
 		if ( $addUlContainer ) echo '</ul>';
 	}
 
@@ -720,16 +766,18 @@ if ( ! function_exists( 'show_categories_menu' ) ) {
 		global $shortname, $themename, $category_menu, $exclude_cats, $hide, $strdepth2, $projects_cat;
 
 		//excluded categories
-		if (et_get_option( $shortname.'_menucats' ) <> '') $exclude_cats = implode( ",", et_get_option( $shortname.'_menucats' ) );
+		if ( $menucats = et_get_option( $shortname.'_menucats' ) ) {
+			$exclude_cats = implode( ",", $menucats );
+		}
 
 		//hide empty categories
-		if (et_get_option( $shortname.'_categories_empty' ) == 'on') $hide = '1';
+		if (et_get_option( $shortname.'_categories_empty' ) === 'on') $hide = '1';
 		else $hide = '0';
 
 		//dropdown for categories
 		$strdepth2 = '';
-		if ( et_get_option( $shortname.'_enable_dropdowns_categories' ) == 'on' ) $strdepth2 = "depth=".et_get_option( $shortname.'_tiers_shown_categories' );
-		if ( $strdepth2 == '' ) $strdepth2 = "depth=1";
+		if ( et_get_option( $shortname.'_enable_dropdowns_categories' ) === 'on' ) $strdepth2 = "depth=".et_get_option( $shortname.'_tiers_shown_categories' );
+		if ( empty( $strdepth2 ) ) $strdepth2 = "depth=1";
 
 		$args = "orderby=".et_get_option( $shortname.'_sort_cat' )."&order=".et_get_option( $shortname.'_order_cat' )."&".$strdepth2."&exclude=".$exclude_cats."&hide_empty=".$hide."&title_li=&echo=0";
 
@@ -743,8 +791,8 @@ if ( ! function_exists( 'show_categories_menu' ) ) {
 			}
 
 			$category_menu = wp_list_categories( $args_array );
-			if ( $addUlContainer ) echo '<ul class="'.$customClass.'">';
-				echo $category_menu;
+			if ( $addUlContainer ) echo '<ul class="' . esc_attr( $customClass ) . '">';
+				echo et_core_esc_wp( $category_menu );
 			if ( $addUlContainer ) echo '</ul>';
 		}
 	}
@@ -754,27 +802,40 @@ if ( ! function_exists( 'show_categories_menu' ) ) {
 function head_addons(){
 	global $shortname, $default_colorscheme;
 
-	if ( apply_filters( 'et_get_additional_color_scheme', et_get_option( $shortname.'_color_scheme' ) ) <> $default_colorscheme ) { ?>
+	// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+	$color_scheme = apply_filters( 'et_get_additional_color_scheme', et_get_option( $shortname.'_color_scheme' ) );
+	if ( !empty( $color_scheme ) && $color_scheme !== $default_colorscheme ) { ?>
 		<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/style-' . et_get_option( $shortname.'_color_scheme' ) . '.css' ); ?>" type="text/css" media="screen" />
-	<?php };
+	<?php }
 
-	if ( et_get_option( $shortname.'_child_css' ) == 'on' && et_get_option( $shortname.'_child_cssurl' ) <> '' ) { //Enable child stylesheet  ?>
-		<link rel="stylesheet" href="<?php echo esc_url( et_get_option( $shortname.'_child_cssurl' ) ); ?>" type="text/css" media="screen" />
-	<?php };
+	$child_cssurl = et_get_option( $shortname.'_child_cssurl' );
+	if ( et_get_option( $shortname.'_child_css' ) === 'on' && ! empty( $child_cssurl ) ) { //Enable child stylesheet  ?>
+		<link rel="stylesheet" href="<?php echo esc_url( $child_cssurl ); ?>" type="text/css" media="screen" />
+	<?php }
 
 	//prints the theme name, version in meta tag
 	$theme_info = wp_get_theme();
 	echo '<meta content="' . esc_attr( $theme_info->display( 'Name' ) . ' v.' . $theme_info->display( 'Version' ) ) . '" name="generator"/>';
 
-	if ( et_get_option( $shortname . '_custom_colors' ) == 'on' ) et_epanel_custom_colors_css();
+	if ( et_get_option( $shortname . '_custom_colors' ) === 'on' ) et_epanel_custom_colors_css();
+	// phpcs:enable
 }// end function head_addons()
 
 add_action( 'wp_head', 'head_addons', 7 );
 
 function integration_head(){
 	global $shortname;
-	if ( et_get_option( $shortname . '_integration_head' ) <> '' && et_get_option( $shortname . '_integrate_header_enable' ) == 'on' ) {
-		echo et_get_option( $shortname . '_integration_head' );
+
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
+		return;
+	}
+
+	$integration_head = et_get_option( $shortname . '_integration_head' );
+	if ( ! empty( $integration_head ) && et_get_option( $shortname . '_integrate_header_enable' ) === 'on' ) {
+
+		$integration_head = et_core_fix_unclosed_html_tags( $integration_head );
+		echo et_core_intentionally_unescaped( $integration_head, 'html' );
 	}
 }
 
@@ -782,8 +843,17 @@ add_action( 'wp_head', 'integration_head', 12 );
 
 function integration_body(){
 	global $shortname;
-	if ( et_get_option( $shortname . '_integration_body' ) <> '' && et_get_option( $shortname . '_integrate_body_enable' ) == 'on' ) {
-		echo et_get_option( $shortname . '_integration_body' );
+
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
+		return;
+	}
+
+	$integration_body = et_get_option( $shortname . '_integration_body' );
+	if ( ! empty( $integration_body ) && et_get_option( $shortname . '_integrate_body_enable' ) === 'on' ) {
+
+		$integration_body = et_core_fix_unclosed_html_tags( $integration_body );
+		echo et_core_intentionally_unescaped( $integration_body, 'html' );
 	}
 }
 
@@ -791,8 +861,17 @@ add_action( 'wp_footer', 'integration_body', 12 );
 
 function integration_single_top(){
 	global $shortname;
-	if ( et_get_option( $shortname . '_integration_single_top' ) <> '' && et_get_option( $shortname . '_integrate_body_enable' ) == 'on' ) {
-		echo et_get_option( $shortname . '_integration_single_top' );
+
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
+		return;
+	}
+
+	$integration_single_top = et_get_option( $shortname . '_integration_single_top' );
+	if ( ! empty( $integration_single_top ) && et_get_option( $shortname . '_integrate_body_enable' ) === 'on' ) {
+
+		$integration_single_top = et_core_fix_unclosed_html_tags( $integration_single_top );
+		echo et_core_intentionally_unescaped( $integration_single_top, 'html' );
 	}
 }
 
@@ -800,8 +879,17 @@ add_action( 'et_before_post', 'integration_single_top', 12 );
 
 function integration_single_bottom(){
 	global $shortname;
-	if ( et_get_option( $shortname . '_integration_single_bottom' ) <> '' && et_get_option( $shortname . '_integrate_body_enable' ) == 'on' ) {
-		echo et_get_option( $shortname . '_integration_single_bottom' );
+
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
+		return;
+	}
+
+	$integration_single_bottom = et_get_option( $shortname . '_integration_single_bottom' );
+	if ( ! empty( $integration_single_bottom ) && et_get_option( $shortname . '_integrate_body_enable' ) === 'on' ) {
+
+		$integration_single_bottom = et_core_fix_unclosed_html_tags( $integration_single_bottom );
+		echo et_core_intentionally_unescaped( $integration_single_bottom, 'html' );
 	}
 }
 
@@ -919,7 +1007,7 @@ if ( ! function_exists( 'elegant_titles' ) ) {
 		if ( ! function_exists( 'wp_get_document_title' ) ) {
 			wp_title();
 		} else {
-			echo wp_get_document_title();
+			echo et_core_esc_wp( wp_get_document_title() );
 		}
 	}
 
@@ -956,13 +1044,13 @@ if ( ! function_exists( 'elegant_titles_filter' ) ) {
 			} else {
 				$seo_home_type = et_get_option( $shortname . '_seo_home_type' );
 				$seo_home_separate = et_get_option( $shortname . '_seo_home_separate' );
-				if ( $seo_home_type == 'BlogName | Blog description' ) {
+				if ( $seo_home_type === 'BlogName | Blog description' ) {
 					$custom_title = $sitename . esc_html( $seo_home_separate ) . $site_description;
 				}
-				if ( $seo_home_type == 'Blog description | BlogName') {
+				if ( $seo_home_type === 'Blog description | BlogName') {
 					$custom_title = $site_description . esc_html( $seo_home_separate ) . $sitename;
 				}
-				if ( $seo_home_type == 'BlogName only') {
+				if ( $seo_home_type === 'BlogName only') {
 					$custom_title = $sitename;
 				}
 			}
@@ -979,13 +1067,13 @@ if ( ! function_exists( 'elegant_titles_filter' ) ) {
 				$seo_single_type = et_get_option( $shortname . '_seo_single_type' );
 				$seo_single_separate = et_get_option( $shortname . '_seo_single_separate' );
 				$page_title = single_post_title( '', false );
-				if ( $seo_single_type == 'BlogName | Post title' ) {
+				if ( $seo_single_type === 'BlogName | Post title' ) {
 					$custom_title = $sitename . esc_html( $seo_single_separate ) . $page_title;
 				}
-				if ( $seo_single_type == 'Post title | BlogName' ) {
+				if ( $seo_single_type === 'Post title | BlogName' ) {
 					$custom_title = $page_title . esc_html( $seo_single_separate ) . $sitename;
 				}
-				if ( $seo_single_type == 'Post title only' ) {
+				if ( $seo_single_type === 'Post title only' ) {
 					$custom_title = $page_title;
 				}
 			}
@@ -1008,13 +1096,13 @@ if ( ! function_exists( 'elegant_titles_filter' ) ) {
 			} else if ( is_404() ) {
 				$page_title = esc_html__( '404 Not Found', $themename );
 			}
-			if ( $seo_index_type == 'BlogName | Category name' ) {
+			if ( $seo_index_type === 'BlogName | Category name' ) {
 				$custom_title = $sitename . esc_html( $seo_index_separate ) . $page_title;
 			}
-			if ( $seo_index_type == 'Category name | BlogName') {
+			if ( $seo_index_type === 'Category name | BlogName') {
 				$custom_title = $page_title . esc_html( $seo_index_separate ) . $sitename;
 			}
-			if ( $seo_index_type == 'Category name only') {
+			if ( $seo_index_type === 'Category name only') {
 				$custom_title = $page_title;
 			}
 		}
@@ -1037,12 +1125,12 @@ if ( ! function_exists( 'elegant_description' ) ) {
 		global $shortname, $themename;
 
 		#homepage descriptions
-		if ( et_get_option( $shortname.'_seo_home_description' ) == 'on' && ( ( is_home() || is_front_page() ) && ! elegant_is_blog_posts_page() ) ) {
+		if ( et_get_option( $shortname.'_seo_home_description' ) === 'on' && ( ( is_home() || is_front_page() ) && ! elegant_is_blog_posts_page() ) ) {
 			echo '<meta name="description" content="' . esc_attr( et_get_option( $shortname.'_seo_home_descriptiontext' ) ) .'" />';
 		}
 
 		#single page descriptions
-		if ( et_get_option( $shortname.'_seo_single_description' ) == 'on' && ( is_single() || is_page() || elegant_is_blog_posts_page() ) ) {
+		if ( et_get_option( $shortname.'_seo_single_description' ) === 'on' && ( is_single() || is_page() || elegant_is_blog_posts_page() ) ) {
 			global $wp_query;
 
 			if ( isset( $wp_query->post->ID ) || elegant_is_blog_posts_page() ) {
@@ -1060,7 +1148,7 @@ if ( ! function_exists( 'elegant_description' ) ) {
 
 		#index descriptions
 		$seo_index_description = et_get_option( $shortname.'_seo_index_description' );
-		if ( $seo_index_description == 'on' ) {
+		if ( $seo_index_description === 'on' ) {
 			$is_pre_4_4 = version_compare( $GLOBALS['wp_version'], '4.4', '<' );
 			$description_added = false;
 
@@ -1113,12 +1201,12 @@ if ( ! function_exists( 'elegant_keywords' ) ) {
 		global $shortname;
 
 		#homepage keywords
-		if ( et_get_option( $shortname.'_seo_home_keywords' ) == 'on' && ( ( is_home() || is_front_page() ) && ! elegant_is_blog_posts_page() ) ) {
+		if ( et_get_option( $shortname.'_seo_home_keywords' ) === 'on' && ( ( is_home() || is_front_page() ) && ! elegant_is_blog_posts_page() ) ) {
 			echo '<meta name="keywords" content="' . esc_attr( et_get_option( $shortname.'_seo_home_keywordstext' ) ) . '" />';
 		}
 
 		#single page keywords
-		if ( et_get_option( $shortname.'_seo_single_keywords' ) == 'on' ) {
+		if ( et_get_option( $shortname.'_seo_single_keywords' ) === 'on' ) {
 			global $wp_query;
 			if ( isset( $wp_query->post->ID ) || elegant_is_blog_posts_page() ) {
 				$postid = elegant_is_blog_posts_page() ? intval( get_option( 'page_for_posts' ) ) : $wp_query->post->ID;
@@ -1148,12 +1236,12 @@ if ( ! function_exists( 'elegant_canonical' ) ) {
 		global $shortname;
 
 		#homepage urls
-		if ( et_get_option( $shortname.'_seo_home_canonical' ) == 'on' && is_home() && ! elegant_is_blog_posts_page() ) {
+		if ( et_get_option( $shortname.'_seo_home_canonical' ) === 'on' && is_home() && ! elegant_is_blog_posts_page() ) {
 			echo '<link rel="canonical" href="'. esc_url( home_url() ).'" />';
 		}
 
 		#single page urls
-		if ( et_get_option( $shortname.'_seo_single_canonical' ) == 'on' ) {
+		if ( et_get_option( $shortname.'_seo_single_canonical' ) === 'on' ) {
 			global $wp_query;
 			if ( isset( $wp_query->post->ID ) || elegant_is_blog_posts_page() ) {
 				$postid = elegant_is_blog_posts_page() ? intval( get_option( 'page_for_posts' ) ) : $wp_query->post->ID;
@@ -1165,7 +1253,7 @@ if ( ! function_exists( 'elegant_canonical' ) ) {
 		}
 
 		#index page urls
-		if ( et_get_option( $shortname.'_seo_index_canonical' ) == 'on' ) {
+		if ( et_get_option( $shortname.'_seo_index_canonical' ) === 'on' ) {
 			$current_page_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			if ( is_archive() || is_category() || is_search() ) echo '<link rel="canonical" href="'. esc_url( $current_page_url ).'" />';
 		}
@@ -1179,21 +1267,29 @@ function add_favicon(){
 	global $shortname;
 
 	$faviconUrl = et_get_option( $shortname.'_favicon' );
-	if ( $faviconUrl <> '' ) {
-		echo '<link rel="shortcut icon" href="'.esc_url( $faviconUrl ).'" />';
+
+	// If the `has_site_icon` function doesn't exist (ie we're on < WP 4.3) or if the site icon has not been set,
+	// and when we have a icon URL from theme option
+	if ( ( ! function_exists( 'has_site_icon' ) || ! has_site_icon() ) && '' !== $faviconUrl ) {
+		echo '<link rel="shortcut icon" href="' . esc_url( $faviconUrl ) . '" />';
+	} elseif ( function_exists( 'has_site_icon' ) && has_site_icon() ) {
+		et_update_option( $shortname . '_favicon', '' );
 	}
 }
 
 add_action( 'init', 'et_create_images_temp_folder' );
 
 function et_create_images_temp_folder(){
+	$et_images_temp_folder = get_option( 'et_images_temp_folder' );
+
 	#clean et_temp folder once per week
 	if ( false !== $last_time = get_option( 'et_schedule_clean_images_last_time' ) ) {
 		$timeout = 86400 * 7;
-		if ( ( $timeout < ( time() - $last_time ) ) && '' != get_option( 'et_images_temp_folder' ) ) et_clean_temp_images( get_option( 'et_images_temp_folder' ) );
+
+		if ( ( $timeout < ( time() - $last_time ) ) && ! empty( $et_images_temp_folder ) ) et_clean_temp_images( $et_images_temp_folder );
 	}
 
-	if ( false !== get_option( 'et_images_temp_folder' ) ) return;
+	if ( false !== $et_images_temp_folder ) return;
 
 	$uploads_dir = wp_upload_dir();
 	$destination_dir = ( false === $uploads_dir['error'] ) ? path_join( $uploads_dir['basedir'], 'et_temp' ) : null;
@@ -1212,7 +1308,7 @@ if ( ! function_exists( 'et_clean_temp_images' ) ) {
 
 		if ( $dir_to_clean ) {
 			while (($file = readdir( $dir_to_clean ) ) !== false ) {
-				if ( substr( $file, 0, 1 ) == '.' )
+				if ( substr( $file, 0, 1 ) === '.' )
 					continue;
 				if ( is_dir( $directory.'/'.$file ) )
 					et_clean_temp_images( path_join( $directory, $file ) );
@@ -1281,7 +1377,7 @@ if ( ! function_exists( 'et_resize_image' ) ) {
 		if ( false === strpos( $thumb, $site_uri ) )
 			return $thumb;
 
-		if ( 'jpeg' == $ext ) {
+		if ( 'jpeg' === $ext ) {
 			$ext = 'jpg';
 			$name = preg_replace( '#.jpeg$#', '', $name );
 			$is_jpeg = true;
@@ -1289,7 +1385,8 @@ if ( ! function_exists( 'et_resize_image' ) ) {
 
 		$suffix = "{$new_width}x{$new_height}";
 
-		$destination_dir = '' != get_option( 'et_images_temp_folder' ) ? preg_replace( '#\/\/#', '/', get_option( 'et_images_temp_folder' ) ) : null;
+		$et_images_temp_folder = get_option( 'et_images_temp_folder' );
+		$destination_dir = ! empty( $et_images_temp_folder ) ? preg_replace( '#\/\/#', '/', $et_images_temp_folder ) : null;
 
 		$matches = apply_filters( 'et_resize_image_site_dir', array(), $site_dir );
 		if ( !empty( $matches ) ) {
@@ -1312,7 +1409,7 @@ if ( ! function_exists( 'et_resize_image' ) ) {
 		$suffix = $add_to_suffix . $suffix;
 		$destfilename_attributes = '-' . $suffix . '.' . strtolower( $ext );
 
-		$checkfilename = ( '' != $destination_dir && null !== $destination_dir ) ? path_join( $destination_dir, $name ) : path_join( dirname( $localfile ), $name );
+		$checkfilename = ( ! empty( $destination_dir ) && null !== $destination_dir ) ? path_join( $destination_dir, $name ) : path_join( dirname( $localfile ), $name );
 		$checkfilename .= $destfilename_attributes;
 
 		if ( $is_jpeg ) $checkfilename = preg_replace( '#.jpg$#', '.jpeg', $checkfilename );
@@ -1320,7 +1417,7 @@ if ( ! function_exists( 'et_resize_image' ) ) {
 		$uploads_dir = wp_upload_dir();
 		$uploads_dir['basedir'] = preg_replace( '#\/\/#', '/', $uploads_dir['basedir'] );
 
-		if ( null !== $destination_dir && '' != $destination_dir && apply_filters( 'et_enable_uploads_detection', true ) ) {
+		if ( null !== $destination_dir && ! empty( $destination_dir ) && apply_filters( 'et_enable_uploads_detection', true ) ) {
 			$site_dir = trailingslashit( preg_replace( '#\/\/#', '/', $uploads_dir['basedir'] ) );
 			$site_uri = trailingslashit( $uploads_dir['baseurl'] );
 		}
@@ -1344,7 +1441,7 @@ if ( ! function_exists( 'et_resize_image' ) ) {
 				$suffix = "{$add_to_suffix}{$new_width}x{$new_height}";
 				$destfilename_attributes = '-' . $suffix . '.' . $ext;
 
-				$checkfilename = ( '' != $destination_dir && null !== $destination_dir ) ? path_join( $destination_dir, $name ) : path_join( dirname( $localfile ), $name );
+				$checkfilename = ( ! empty( $destination_dir ) && null !== $destination_dir ) ? path_join( $destination_dir, $name ) : path_join( dirname( $localfile ), $name );
 				$checkfilename .= $destfilename_attributes;
 
 				#check if we have an image with new calculated width and height parameters
@@ -1396,7 +1493,7 @@ add_action( 'pre_get_posts', 'et_custom_posts_per_page' );
 
 function et_custom_posts_per_page( $query = false ) {
 	global $shortname;
-
+	// phpcs:disable WordPress.Security.NonceVerification.NoNonceVerification
 	if ( is_admin() ) {
 		return;
 	}
@@ -1417,7 +1514,7 @@ function et_custom_posts_per_page( $query = false ) {
 			if ( isset( $_GET['et-inc-posts'] ) ) $postTypes[] = 'post';
 			$query->set( 'post_type', $postTypes );
 
-			if ( isset( $_GET['et-month-choice'] ) && $_GET['et-month-choice'] != 'no-choice' ) {
+			if ( isset( $_GET['et-month-choice'] ) && $_GET['et-month-choice'] !== 'no-choice' ) {
 				$et_year = substr( $_GET['et-month-choice'], 0, 4 );
 				$et_month = substr( $_GET['et-month-choice'], 4, strlen( $_GET['et-month-choice'] ) - 4 );
 
@@ -1425,7 +1522,7 @@ function et_custom_posts_per_page( $query = false ) {
 				$query->set( 'monthnum', absint( $et_month ) );
 			}
 
-			if ( isset( $_GET['et-cat'] ) && $_GET['et-cat'] != 0 )
+			if ( isset( $_GET['et-cat'] ) && $_GET['et-cat'] !== '0' )
 				$query->set( 'cat', absint( $_GET['et-cat'] ) );
 		}
 		$query->set( 'posts_per_page', (int) et_get_option( $shortname . '_searchnum_posts', '5' ) );
@@ -1438,13 +1535,14 @@ function et_custom_posts_per_page( $query = false ) {
 
 		$query->set( 'posts_per_page', $posts_number );
 	}
+	// phpcs:enable
 }
 
 add_filter( 'default_hidden_meta_boxes', 'et_show_hidden_metaboxes', 10, 2 );
 
 function et_show_hidden_metaboxes( $hidden, $screen ){
 	# make custom fields and excerpt meta boxes show by default
-	if ( 'post' == $screen->base || 'page' == $screen->base )
+	if ( 'post' === $screen->base || 'page' === $screen->base )
 		$hidden = array(
 			'slugdiv',
 			'trackbacksdiv',
@@ -1461,7 +1559,7 @@ add_filter( 'widget_title', 'et_widget_force_title' );
 
 function et_widget_force_title( $title ){
 	#add an empty title for widgets ( otherwise it might break the sidebar layout )
-	if ( $title == '' ) $title = ' ';
+	if ( empty( $title ) ) $title = ' ';
 
 	return $title;
 }
@@ -1494,8 +1592,8 @@ if ( ! function_exists( 'et_theme_epanel_reminder' ) ) {
 	function et_theme_epanel_reminder(){
 		global $shortname, $themename, $current_screen;
 
-		if ( false === et_get_option( $shortname . '_logo' ) && 'appearance_page_core_functions' != $current_screen->id ) {
-			printf( et_get_safe_localization( __( '<div class="updated"><p>This is a fresh installation of %1$s theme. Don\'t forget to go to <a href="%2$s">ePanel</a> to set it up. This message will disappear once you have clicked the Save button within the <a href="%2$s">theme\'s options page</a>.</p></div>', $themename ) ), wp_get_theme(), admin_url( 'themes.php?page=core_functions.php' ) );
+		if ( false === et_get_option( $shortname . '_logo' ) && 'appearance_page_core_functions' !== $current_screen->id ) {
+			printf( et_get_safe_localization( __( '<div class="updated"><p>This is a fresh installation of %1$s theme. Don\'t forget to go to <a href="%2$s">ePanel</a> to set it up. This message will disappear once you have clicked the Save button within the <a href="%2$s">theme\'s options page</a>.</p></div>', $themename ) ), esc_html( wp_get_theme() ), esc_url( admin_url( 'themes.php?page=core_functions.php' ) ) );
 		}
 	}
 
@@ -1515,17 +1613,17 @@ function et_add_fullwidth_body_class( $classes ){
 		if ( $fullwidth ) $fullwidth_view = true;
 	}
 
-	if ( is_single() && 'on' == get_post_meta( get_queried_object_id(), '_et_full_post', true ) ) $fullwidth_view = true;
+	if ( is_single() && 'on' === get_post_meta( get_queried_object_id(), '_et_full_post', true ) ) $fullwidth_view = true;
 
 	$classes[] = apply_filters( 'et_fullwidth_view_body_class', $fullwidth_view ) ? 'et_fullwidth_view' : 'et_includes_sidebar';
 
 	return $classes;
 }
 
-function et_add_responsive_shortcodes_css(){
+function et_add_responsive_shortcodes_css() {
 	global $shortname;
 
-	if ( 'on' == et_get_option( $shortname . '_responsive_shortcodes', 'on' ) )
+	if ( 'on' === et_get_option( $shortname . '_responsive_shortcodes', 'on' ) )
 		wp_enqueue_style( 'et-shortcodes-responsive-css', ET_SHORTCODES_DIR . '/css/shortcodes_responsive.css', false, ET_SHORTCODES_VERSION, 'all' );
 }
 
@@ -1557,13 +1655,13 @@ function et_add_custom_css() {
 
 	$custom_css = et_get_option( "{$shortname}_custom_css" );
 
-	if ( false === $custom_css || '' == $custom_css ) return;
+	if ( empty( $custom_css ) ) return;
 
 	/**
 	 * The theme doesn't strip slashes from custom css, when saving to the database,
 	 * so it does that before outputting the code on front-end
 	 */
-	echo '<style type="text/css" id="et-custom-css">' . "\n" . stripslashes( $custom_css ) . "\n" . '</style>';
+	echo '<style type="text/css" id="et-custom-css">' . "\n" . et_core_intentionally_unescaped( stripslashes( $custom_css ), 'html' ) . "\n" . '</style>';
 }
 
 add_action( 'wp_head', 'et_add_custom_css', 100 );
@@ -2051,7 +2149,7 @@ if ( ! function_exists( 'et_gf_attach_font' ) ) :
 		printf( '%s { font-family: \'%s\', %s; }',
 			esc_html( $elements ),
 			esc_html( $et_gf_font_name ),
-			et_get_websafe_font_stack( $google_fonts[$et_gf_font_name]['type'] )
+			et_core_esc_previously( et_get_websafe_font_stack( $google_fonts[$et_gf_font_name]['type'] ) )
 		);
 	}
 
@@ -2077,7 +2175,7 @@ if ( ! function_exists( 'et_gf_enqueue_fonts' ) ) :
 			$google_font_character_set = $google_fonts[$et_gf_font_name]['character_set'];
 
 			// By default, only latin and latin-ext subsets are loaded, all available subsets can be enabled in ePanel
-			if ( 'false' == et_get_option( "{$shortname}_gf_enable_all_character_sets", 'false' ) ) {
+			if ( 'false' === et_get_option( "{$shortname}_gf_enable_all_character_sets", 'false' ) ) {
 				$latin_ext = '';
 				if ( false !== strpos( $google_fonts[$et_gf_font_name]['character_set'], 'latin-ext' ) )
 				$latin_ext = ',latin-ext';
@@ -2116,7 +2214,8 @@ if ( ! function_exists( 'et_uc_theme_name' ) ) :
  * when an update is being performed via Themes page
  */
 function et_uc_theme_name( $key, $raw_key ) {
-	if ( ! ( is_admin() && isset( $_REQUEST['action'] ) && 'update-theme' === $_REQUEST['action'] ) ) {
+
+	if ( ! ( is_admin() && isset( $_REQUEST['action'] ) && 'update-theme' === $_REQUEST['action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
 		return $key;
 	}
 

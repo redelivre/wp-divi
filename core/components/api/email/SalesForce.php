@@ -138,31 +138,30 @@ class ET_Core_API_Email_SalesForce extends ET_Core_API_Email_Provider {
 	 * @inheritDoc
 	 */
 	public function get_account_fields() {
-		// SalesForce supports OAuth for SSL websites so generate different fields in this case
-		if ( is_ssl() ) {
-			return array(
-				'organization_id' => array(
-					'label'        => esc_html__( 'Organization ID', 'et_core' ),
-					'not_required' => true,
-				),
-				'login_url'       => array(
-					'label' => esc_html__( 'Instance URL', 'et_core' ),
-				),
-				'api_key'         => array(
-					'label' => esc_html__( 'Consumer Key', 'et_core' ),
-				),
-				'client_secret'   => array(
-					'label' => esc_html__( 'Consumer Secret', 'et_core' ),
-				),
-			);
-
-		} else {
-			return array(
-				'organization_id' => array(
-					'label' => esc_html__( 'Organization ID', 'et_core' ),
-				),
-			);
-		}
+		return array(
+			// SalesForce supports OAuth for SSL websites so generate different fields in this case
+			'login_url'       => array(
+				'label'    => esc_html__( 'Instance URL', 'et_core' ),
+				'required' => 'https',
+				'show_if'  => array( 'function.protocol' => 'https' ),
+			),
+			'api_key'         => array(
+				'label'    => esc_html__( 'Consumer Key', 'et_core' ),
+				'required' => 'https',
+				'show_if'  => array( 'function.protocol' => 'https' ),
+			),
+			'client_secret'   => array(
+				'label'    => esc_html__( 'Consumer Secret', 'et_core' ),
+				'required' => 'https',
+				'show_if'  => array( 'function.protocol' => 'https' ),
+			),
+			// This has to be the last field because is the only one shown in both cases and
+			// CANCEL / SUBMIT buttons will be attached to it.
+			'organization_id' => array(
+				'label'        => esc_html__( 'Organization ID', 'et_core' ),
+				'required' => 'http',
+			),
+		);
 	}
 
 	/**

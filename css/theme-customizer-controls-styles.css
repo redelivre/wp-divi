@@ -161,6 +161,56 @@ li#customize-control-et_divi-et_pb_sidebar-remove_border{ margin-top: 20px !impo
   background: url( ../images/footer-layouts.png ) center -460px no-repeat;
 }
 
+.et_filter_text.et_si_1_5__3_5_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_1_5__3_5_column{
+  background: url( ../images/footer-layouts.png ) center -510px no-repeat;
+}
+
+.et_filter_text.et_si_3_5__1_5_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_3_5__1_5_column{
+  background: url( ../images/footer-layouts.png ) center -560px no-repeat;
+}
+
+.et_filter_text.et_si_5_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_5_column{
+  background: url( ../images/footer-layouts.png ) center -610px no-repeat;
+}
+
+.et_filter_text.et_si_3_5__2_5_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_3_5__2_5_column{
+  background: url( ../images/footer-layouts.png ) center -660px no-repeat;
+}
+
+.et_filter_text.et_si_2_5__3_5_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_2_5__3_5_column{
+  background: url( ../images/footer-layouts.png ) center -710px no-repeat;
+}
+
+.et_filter_text.et_si_6_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_6_column{
+  background: url( ../images/footer-layouts.png ) center -760px no-repeat;
+}
+
+.et_filter_text.et_si_1_2__1_6_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_1_2__1_6_column{
+  background: url( ../images/footer-layouts.png ) center -810px no-repeat;
+}
+
+.et_filter_text.et_si_1_6__1_2_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_1_6__1_2_column{
+  background: url( ../images/footer-layouts.png ) center -860px no-repeat;
+}
+
+.et_filter_text.et_si_1_4_1_2_1_4_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_1_4_1_2_1_4_column{
+  background: url( ../images/footer-layouts.png ) center -910px no-repeat;
+}
+
+.et_filter_text.et_si_1_5_3_5_1_5_column,
+.et_select_image_options.et_si_et_divi_footer_columns_ .et_si_1_5_3_5_1_5_column{
+  background: url( ../images/footer-layouts.png ) center -960px no-repeat;
+}
+
 .et_select_image_options.et_si_et_divi_footer_columns_ li:hover{
   background-color: #effbff;
 }

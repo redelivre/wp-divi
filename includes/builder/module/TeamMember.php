@@ -3,6 +3,7 @@
 class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Person', 'et_builder' );
+		$this->plural     = esc_html__( 'Persons', 'et_builder' );
 		$this->slug       = 'et_pb_team_member';
 		$this->vb_support = 'on';
 
@@ -105,8 +106,16 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'options' => array(
 					'background_layout' => array(
 						'default' => 'light',
+						'hover'   => 'tabs',
 					),
 				),
+				'css' => array(
+					'main' => implode(', ', array(
+						'%%order_class%% .et_pb_module_header',
+						'%%order_class%% .et_pb_member_position',
+						'%%order_class%% .et_pb_team_member_description p',
+					))
+				)
 			),
 			'filters'               => array(
 				'css' => array(
@@ -164,6 +173,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input the name of the person', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'position' => array(
 				'label'           => esc_html__( 'Position', 'et_builder' ),
@@ -171,6 +181,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( "Input the person's position.", 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'image_url' => array(
 				'label'              => esc_html__( 'Image URL', 'et_builder' ),
@@ -181,6 +192,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'update_text'        => esc_attr__( 'Set As Image', 'et_builder' ),
 				'description'        => esc_html__( 'Upload your desired image, or type in the URL to the image you would like to display.', 'et_builder' ),
 				'toggle_slug'        => 'image',
+				'dynamic_content'    => 'image',
 			),
 			'facebook_url' => array(
 				'label'           => esc_html__( 'Facebook Profile Url', 'et_builder' ),
@@ -188,6 +200,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input Facebook Profile Url.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'url',
 			),
 			'twitter_url' => array(
 				'label'           => esc_html__( 'Twitter Profile Url', 'et_builder' ),
@@ -195,6 +208,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input Twitter Profile Url', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'url',
 			),
 			'google_url' => array(
 				'label'           => esc_html__( 'Google+ Profile Url', 'et_builder' ),
@@ -202,6 +216,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input Google+ Profile Url', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'url',
 			),
 			'linkedin_url' => array(
 				'label'           => esc_html__( 'LinkedIn Profile Url', 'et_builder' ),
@@ -209,6 +224,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input LinkedIn Profile Url', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'url',
 			),
 			'content' => array(
 				'label'           => esc_html__( 'Description', 'et_builder' ),
@@ -216,6 +232,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input the main text content for your module here.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'icon_color' => array(
 				'label'             => esc_html__( 'Icon Color', 'et_builder' ),
@@ -223,32 +240,36 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'icon',
-			),
-			'icon_hover_color' => array(
-				'label'             => esc_html__( 'Icon Hover Color', 'et_builder' ),
-				'type'              => 'color-alpha',
-				'custom_color'      => true,
-				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'icon',
+				'hover'             => 'tabs',
 			),
 		);
 
 		return $fields;
 	}
 
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['icon_color'] = array( 'color' => '%%order_class%% .et_pb_member_social_links a' );
+
+		return $fields;
+	}
+
 	function render( $attrs, $content = null, $render_slug ) {
-		$name              = $this->props['name'];
-		$position          = $this->props['position'];
-		$image_url         = $this->props['image_url'];
-		$animation         = $this->props['animation'];
-		$facebook_url      = $this->props['facebook_url'];
-		$twitter_url       = $this->props['twitter_url'];
-		$google_url        = $this->props['google_url'];
-		$linkedin_url      = $this->props['linkedin_url'];
-		$background_layout = $this->props['background_layout'];
-		$icon_color        = $this->props['icon_color'];
-		$icon_hover_color  = $this->props['icon_hover_color'];
-		$header_level      = $this->props['header_level'];
+		$name                            = $this->_esc_attr( 'name' );
+		$position                        = $this->_esc_attr( 'position' );
+		$image_url                       = $this->props['image_url'];
+		$animation                       = $this->props['animation'];
+		$facebook_url                    = $this->props['facebook_url'];
+		$twitter_url                     = $this->props['twitter_url'];
+		$google_url                      = $this->props['google_url'];
+		$linkedin_url                    = $this->props['linkedin_url'];
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$icon_color                      = $this->props['icon_color'];
+		$header_level                    = $this->props['header_level'];
+		$hover                           = et_pb_hover_options();
 
 		$image = $social_links = '';
 
@@ -262,14 +283,15 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 			) );
 		}
 
-		if ( '' !== $icon_hover_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% .et_pb_member_social_links a:hover',
-				'declaration' => sprintf(
-					'color: %1$s !important;',
-					esc_html( $icon_hover_color )
-				),
-			) );
+		if ( $hover->is_enabled( 'icon_color', $this->props ) && $hover->get_value( 'icon_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug,
+				array(
+					'selector'    => '%%order_class%% .et_pb_member_social_links a:hover',
+					'declaration' => sprintf(
+						'color: %1$s !important;',
+						esc_html( $hover->get_value( 'icon_color', $this->props ) )
+					),
+				) );
 		}
 
 		if ( '' !== $facebook_url ) {
@@ -315,6 +337,7 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 
 		if ( '' !== $image_url ) {
 			// Images: Add CSS Filters and Mix Blend Mode rules (if set)
+			$generate_css_filters_image = '';
 			if ( array_key_exists( 'image', $this->advanced_fields ) && array_key_exists( 'css', $this->advanced_fields['image'] ) ) {
 				$generate_css_filters_image = $this->generate_css_filters(
 					$render_slug,
@@ -352,8 +375,21 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 			$this->add_classname( 'et_pb_team_member_no_image' );
 		}
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
+
 		$output = sprintf(
-			'<div%3$s class="%4$s">
+			'<div%3$s class="%4$s"%10$s%11$s>
 				%9$s
 				%8$s
 				%2$s
@@ -368,11 +404,13 @@ class ET_Builder_Module_Team_Member extends ET_Builder_Module {
 			( '' !== $image ? $image : '' ),
 			$this->module_id(),
 			$this->module_classname( $render_slug ),
-			( '' !== $name ? sprintf( '<%1$s class="et_pb_module_header">%2$s</%1$s>', et_pb_process_header_level( $header_level, 'h4' ), esc_html( $name ) ) : '' ),
-			( '' !== $position ? sprintf( '<p class="et_pb_member_position">%1$s</p>', esc_html( $position ) ) : '' ),
+			( '' !== $name ? sprintf( '<%1$s class="et_pb_module_header">%2$s</%1$s>', et_pb_process_header_level( $header_level, 'h4' ), et_core_esc_previously( $name ) ) : '' ), // #5
+			( '' !== $position ? sprintf( '<p class="et_pb_member_position">%1$s</p>', et_core_esc_previously( $position ) ) : '' ),
 			$social_links,
 			$video_background,
-			$parallax_image_background
+			$parallax_image_background,
+			et_core_esc_previously( $data_background_layout ), // #10
+			et_core_esc_previously( $data_background_layout_hover )
 		);
 
 		return $output;

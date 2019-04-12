@@ -44,5 +44,23 @@ function et_widgets_init() {
 		'before_title' => '<h4 class="title">',
 		'after_title' => '</h4>',
 	) );
+
+	register_sidebar( array(
+		'name' => esc_html__( 'Footer Area', 'Divi' ) . ' #5',
+		'id' => 'sidebar-6',
+		'before_widget' => '<div id="%1$s" class="fwidget et_pb_widget %2$s">',
+		'after_widget' => '</div> <!-- end .fwidget -->',
+		'before_title' => '<h4 class="title">',
+		'after_title' => '</h4>',
+	) );
+
+	register_sidebar( array(
+		'name' => esc_html__( 'Footer Area', 'Divi' ) . ' #6',
+		'id' => 'sidebar-7',
+		'before_widget' => '<div id="%1$s" class="fwidget et_pb_widget %2$s">',
+		'after_widget' => '</div> <!-- end .fwidget -->',
+		'before_title' => '<h4 class="title">',
+		'after_title' => '</h4>',
+	) );
 }
 add_action( 'widgets_init', 'et_widgets_init' );

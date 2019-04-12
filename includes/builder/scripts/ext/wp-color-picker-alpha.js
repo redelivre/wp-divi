@@ -111,7 +111,7 @@
 				.css( { backgroundColor: self.initialValue } )
 				.attr( 'title', wpColorPickerL10n.pick )
 				.addClass( 'et-wp-color-result-updated');
-			
+
 			// some strings were changed in recent colorpicker update, but we still need to use legacy strings in some places
 			if ( typeof et_pb_color_picker_strings !== 'undefined' ) {
 				self.toggler.attr( 'data-legacy_title', et_pb_color_picker_strings.legacy_pick ).attr( 'data-current', et_pb_color_picker_strings.legacy_current );

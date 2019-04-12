@@ -46,6 +46,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		$additional_options["border_radii{$suffix}"] = array(
 			'label'           => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Rounded Corners', 'et_builder' ) ),
 			'type'            => 'border-radius',
+			'hover'           => 'tabs',
 			'validate_input'  => true,
 			'default'         => $settings['defaults']['border_radii'],
 			'tab_slug'        => $settings['tab_slug'],
@@ -71,6 +72,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 						"border_width_all{$suffix}" => array(
 							'label'          => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Border Width', 'et_builder' ) ),
 							'type'           => 'range',
+							'hover'          => 'tabs',
 							'default'        => $defaults['width'],
 							'default_unit'    => $defaultUnit,
 							'range_settings' => array(
@@ -78,17 +80,21 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 								'max'  => 50,
 								'step' => 1,
 							),
+							'context' => "border_styles{$suffix}",
 						),
 						"border_color_all{$suffix}" => array(
 							'label'   => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Border Color', 'et_builder' ) ),
 							'type'    => $settings['color_type'],
+							'hover'   => 'tabs',
 							'default' => $defaults['color'],
+							'context' => "border_styles{$suffix}",
 						),
 						"border_style_all{$suffix}" => array(
 							'label'   => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Border Style', 'et_builder' ) ),
 							'type'    => 'select',
 							'options' => et_builder_get_border_styles(),
 							'default' => $defaults['style'],
+							'context' => "border_styles{$suffix}",
 						),
 					),
 				),
@@ -98,6 +104,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 						"border_width_top{$suffix}" => array(
 							'label'          => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Top Border Width', 'et_builder' ) ),
 							'type'           => 'range',
+							'hover'          => 'tabs',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
 							'default_unit'    => $defaultUnit,
@@ -106,17 +113,21 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 								'max'  => 50,
 								'step' => 1,
 							),
+							'context' => "border_styles{$suffix}",
 						),
 						"border_color_top{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Top Border Color', 'et_builder' ) ),
 							'type'         => $settings['color_type'],
+							'hover'        => 'tabs',
 							'default_from' => "border_all.controls.border_color_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 						"border_style_top{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Top Border Style', 'et_builder' ) ),
 							'type'         => 'select',
 							'options'      => et_builder_get_border_styles(),
 							'default_from' => "border_all.controls.border_style_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 					),
 				),
@@ -126,6 +137,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 						"border_width_right{$suffix}" => array(
 							'label'          => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Right Border Width', 'et_builder' ) ),
 							'type'           => 'range',
+							'hover'          => 'tabs',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
 							'default_unit'    => $defaultUnit,
@@ -134,17 +146,21 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 								'max'  => 50,
 								'step' => 1,
 							),
+							'context' => "border_styles{$suffix}",
 						),
 						"border_color_right{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Right Border Color', 'et_builder' ) ),
 							'type'         => $settings['color_type'],
+							'hover'        => 'tabs',
 							'default_from' => "border_all.controls.border_color_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 						"border_style_right{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Right Border Style', 'et_builder' ) ),
 							'type'         => 'select',
 							'options'      => et_builder_get_border_styles(),
 							'default_from' => "border_all.controls.border_style_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 					),
 				),
@@ -154,6 +170,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 						"border_width_bottom{$suffix}" => array(
 							'label'          => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Bottom Border Width', 'et_builder' ) ),
 							'type'           => 'range',
+							'hover'          => 'tabs',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
 							'default_unit'    => $defaultUnit,
@@ -162,17 +179,21 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 								'max'  => 50,
 								'step' => 1,
 							),
+							'context' => "border_styles{$suffix}",
 						),
 						"border_color_bottom{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Bottom Border Color', 'et_builder' ) ),
 							'type'         => $settings['color_type'],
+							'hover'        => 'tabs',
 							'default_from' => "border_all.controls.border_color_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 						"border_style_bottom{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Bottom Border Style', 'et_builder' ) ),
 							'type'         => 'select',
 							'options'      => et_builder_get_border_styles(),
 							'default_from' => "border_all.controls.border_style_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 					),
 				),
@@ -182,6 +203,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 						"border_width_left{$suffix}" => array(
 							'label'          => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Left Border Width', 'et_builder' ) ),
 							'type'           => 'range',
+							'hover'          => 'tabs',
 							'allow_empty'    => true,
 							'default_from'   => "border_all.controls.border_width_all{$suffix}",
 							'default_unit'    => $defaultUnit,
@@ -190,17 +212,21 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 								'max'  => 50,
 								'step' => 1,
 							),
+							'context' => "border_styles{$suffix}",
 						),
 						"border_color_left{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Left Border Color', 'et_builder' ) ),
 							'type'         => $settings['color_type'],
+							'hover'        => 'tabs',
 							'default_from' => "border_all.controls.border_color_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 						"border_style_left{$suffix}" => array(
 							'label'        => sprintf( '%1$s%2$s', '' !== $settings['label_prefix'] ? sprintf( '%1$s ', $settings['label_prefix'] ) : '', esc_html__( 'Left Border Style', 'et_builder' ) ),
 							'type'         => 'select',
 							'options'      => et_builder_get_border_styles(),
 							'default_from' => "border_all.controls.border_style_all{$suffix}",
+							'context'      => "border_styles{$suffix}",
 						),
 					),
 				),
@@ -218,30 +244,37 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		return $additional_options;
 	}
 
-	public function get_radii_style( array $atts, array $advanced_fields, $suffix = '', $overflow = true ) {
+	public function get_radii_style( array $atts, array $advanced_fields, $suffix = '', $overflow = true, $is_hover = false ) {
 		$style = '';
 
 		$important = '';
+
 		if ( isset( $advanced_fields['border']['css']['important'] ) ) {
 			if ( 'plugin_only' === $advanced_fields['border']['css']['important'] ) {
-				$important = et_is_builder_plugin_active() ? '!important' : '';
+				$important = et_builder_has_limitation( 'force_use_global_important' ) ? '!important' : '';
 			} else {
 				$important = '!important';
 			}
 		}
 
 		// Border Radius CSS
-		$settings = $advanced_fields["border{$suffix}"]["border_radii{$suffix}"];
-		$radii    = $atts["border_radii{$suffix}"];
-		if ( isset( $settings['default'] ) && ( $settings['default'] != $radii ) ) {
+		$value_suffix = true === $is_hover ? et_pb_hover_options()->get_suffix() : '';
+		$settings     = $advanced_fields["border{$suffix}"]["border_radii{$suffix}"];
+		$radii        = isset( $atts["border_radii{$suffix}{$value_suffix}"] ) ? $atts["border_radii{$suffix}{$value_suffix}"] : false;
+
+		if ( true === $is_hover && false === $radii ) {
+			return '';
+		}
+
+		if ( isset( $settings['default'] ) && ( $settings['default'] !== $radii ) ) {
 			$radii = explode( '|', $radii );
-			if ( count( $radii ) == 5 ) {
+			if ( count( $radii ) === 5 ) {
 				$top_left_radius     = empty( $radii[1] ) ? '0' : esc_html( $radii[1] );
 				$top_right_radius    = empty( $radii[2] ) ? '0' : esc_html( $radii[2] );
 				$bottom_right_radius = empty( $radii[3] ) ? '0' : esc_html( $radii[3] );
 				$bottom_left_radius  = empty( $radii[4] ) ? '0' : esc_html( $radii[4] );
 
-				$important = et_intentionally_unescaped( $important, 'fixed_string' );
+				$important = et_core_intentionally_unescaped( $important, 'fixed_string' );
 				$style = "border-radius: {$top_left_radius} {$top_right_radius} {$bottom_right_radius} {$bottom_left_radius}{$important};";
 				if ( true === $overflow ) {
 					$style .= "overflow: hidden{$important};";
@@ -252,9 +285,10 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		return $style;
 	}
 
-	public function get_borders_style( array $attrs, array $advanced_fields, $suffix = '' ) {
+	public function get_borders_style( array $attrs, array $advanced_fields, $suffix = '', $is_hover = false ) {
 		$style     = '';
 		$important = '';
+		$hover = et_pb_hover_options();
 
 		if ( is_null( self::$_ ) ) {
 			self::$_ = ET_Core_Data_Utils::instance();
@@ -264,7 +298,7 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 
 		if ( isset( $advanced_fields['border']['css']['important'] ) ) {
 			if ( 'plugin_only' === $advanced_fields['border']['css']['important'] ) {
-				$important = et_is_builder_plugin_active() ? '!important' : '';
+				$important = et_builder_has_limitation( 'force_use_global_important' ) ? '!important' : '';
 			} else {
 				$important = '!important';
 			}
@@ -284,17 +318,23 @@ class ET_Builder_Module_Field_Border extends ET_Builder_Module_Field_Base {
 		// Individual edge tabs get their default values from the all edges tab. If a value in
 		// the all edges tab has been changed from the default, that value will be used as the
 		// default for the individual edge tabs, otherwise the all edges default value is used.
+		$value_suffix = true === $is_hover ? et_pb_hover_options()->get_suffix() : '';
+
 		foreach ( $border_edges as $edge ) {
+			$edge = "{$edge}";
+
 			foreach ( $properties as $property ) {
 				$all_edges_key = "border_{$property}_all{$suffix}";
 				$edge_key      = "border_{$property}_{$edge}{$suffix}";
 
 				// Don't output styles for default values unless the default value is actually
 				// a custom value from the all edges tab.
-				if ( ! $value = self::$_->array_get( $attrs, $edge_key, '' ) ) {
-					if ( ! $value = self::$_->array_get( $attrs, $all_edges_key, '' ) ) {
-						self::$_is_default[] = $edge_key;
-						self::$_is_default[] = $all_edges_key;
+				$value = $is_hover ? $hover->get_value( $edge_key, $attrs ) : self::$_->array_get( $attrs, $edge_key, '' );
+				if ( ! $value ) {
+					$value = $is_hover ? $hover->get_value( $all_edges_key, $attrs ) : self::$_->array_get( $attrs, $all_edges_key, '' );
+					if ( ! $value ) {
+						self::$_is_default[] = "{$edge_key}{$value_suffix}";
+						self::$_is_default[] = "{$all_edges_key}{$value_suffix}";
 
 						continue;
 					}

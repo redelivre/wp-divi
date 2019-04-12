@@ -3,6 +3,7 @@
 class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 	function init() {
 		$this->name             = esc_html__( 'Post Title', 'et_builder' );
+		$this->plural           = esc_html__( 'Post Titles', 'et_builder' );
 		$this->slug             = 'et_pb_post_title';
 		$this->vb_support       = 'on';
 		$this->defaults         = array();
@@ -14,7 +15,6 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 			'general'  => array(
 				'toggles' => array(
 					'elements'   => esc_html__( 'Elements', 'et_builder' ),
-					'background' => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -59,7 +59,7 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 					'label'    => esc_html__( 'Meta', 'et_builder' ),
 					'css'      => array(
 						'main' => "{$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container, {$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container a",
-						'plugin_main' => "{$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container, {$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container a, {$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container span",
+						'limited_main' => "{$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container, {$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container a, {$this->main_css_element} .et_pb_title_container .et_pb_title_meta_container span",
 					),
 				),
 			),
@@ -79,6 +79,12 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 						'default'          => 'left',
 					),
 				),
+				'css' => array(
+					'main' => implode(', ', array(
+						'%%order_class%% .entry-title',
+						'%%order_class%% .et_pb_title_meta_container',
+					))
+				)
 			),
 			'button'                => false,
 		);
@@ -242,6 +248,7 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 				'default_on_front'  => 'dark',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
+				'hover'             => 'tabs',
 				'description'       => esc_html__( 'Here you can choose the color for the Title/Meta text', 'et_builder' ),
 			),
 			'text_background' => array(
@@ -267,8 +274,21 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
+				'hover'             => 'tabs',
 			),
 		);
+
+		return $fields;
+	}
+
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['text_color'] = array( 'color' => implode(', ', array(
+			'%%order_class%% .entry-title',
+			'%%order_class%% .et_pb_title_meta_container',
+		)) );
+		$fields['text_bg_color'] = array( 'background-color' => '%%order_class%% .et_pb_title_container' );
 
 		return $fields;
 	}
@@ -284,6 +304,7 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 		$featured_image     = $this->props['featured_image'];
 		$featured_placement = $this->props['featured_placement'];
 		$text_color         = $this->props['text_color'];
+		$text_color_hover   = et_pb_hover_options()->get_value( 'text_color', $this->props );
 		$text_background    = $this->props['text_background'];
 		$text_bg_color      = $this->props['text_bg_color'];
 		$header_level       = $this->props['title_level'];
@@ -339,11 +360,28 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 					esc_html( $text_bg_color )
 				),
 			) );
+
+			if ( et_pb_hover_options()->is_enabled( 'text_bg_color', $this->props ) ) {
+				ET_Builder_Element::set_style( $render_slug, array(
+					'selector'    => '%%order_class%%:hover .et_pb_title_container',
+					'declaration' => sprintf(
+						'background-color: %1$s; padding: 1em 1.5em;',
+						esc_html( et_pb_hover_options()->get_value( 'text_bg_color', $this->props ) )
+					),
+				) );
+			}
 		}
 
 		$video_background = $this->video_background();
 
 		$background_layout = 'dark' === $text_color ? 'light' : 'dark';
+		$data_background_layout = '';
+		$data_background_layout_hover = '';
+
+		if ( et_pb_hover_options()->is_enabled( 'text_color', $this->props ) && !empty( $text_color_hover ) && $text_color !== $text_color_hover ) {
+			$data_background_layout = sprintf( ' data-background-layout="%1$s"', esc_attr( $text_color_hover ) );
+			$data_background_layout_hover = sprintf( ' data-background-layout-hover="%1$s"', esc_attr( $text_color ) );
+		}
 
 		// Module classnames
 		$this->add_classname( array(
@@ -356,7 +394,7 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 		}
 
 		$output = sprintf(
-			'<div%3$s class="%2$s">
+			'<div%3$s class="%2$s" %8$s %9$s>
 				%4$s
 				%7$s
 				%5$s
@@ -371,7 +409,9 @@ class ET_Builder_Module_Post_Title extends ET_Builder_Module {
 			$parallax_image_background,
 			'on' === $featured_image && 'above' === $featured_placement ? $featured_image_output : '',
 			'on' === $featured_image && 'below' === $featured_placement ? $featured_image_output : '',
-			$video_background
+			$video_background,
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover )
 		);
 
 		return $output;

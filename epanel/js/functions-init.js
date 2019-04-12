@@ -124,9 +124,11 @@
 
 		$('.et-box-content').on( 'click', '.et_pb_yes_no_button', function(e){
 			e.preventDefault();
+			// Fix for nested .et-box-content triggering checkboxes multiple times.
+			e.stopPropagation();
 
 			var $click_area = $(this),
-				$box_content = $click_area.parents('.et-box-content'),
+				$box_content = $click_area.closest('.et-box-content'),
 				$checkbox    = $box_content.find('input[type="checkbox"]'),
 				$state       = $box_content.find('.et_pb_yes_no_button');
 
@@ -302,7 +304,7 @@
 			});
 		}
 
-		if ( typeof etCore !== 'undefined' ) {
+		if ( typeof etCore !== 'undefined' && typeof etCore.portability !== 'undefined' ) {
 			// Portability integration.
 			etCore.portability.save = function( callback ) {
 				epanel_save( callback, false );

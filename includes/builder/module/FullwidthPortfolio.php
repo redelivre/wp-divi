@@ -3,6 +3,7 @@
 class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostBased {
 	function init() {
 		$this->name       = esc_html__( 'Fullwidth Portfolio', 'et_builder' );
+		$this->plural     = esc_html__( 'Fullwidth Portfolios', 'et_builder' );
 		$this->slug       = 'et_pb_fullwidth_portfolio';
 		$this->vb_support = 'on';
 		$this->fullwidth  = true;
@@ -104,11 +105,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 				),
 			),
 			'box_shadow' => array(
-				'default' => array(
-					'css' => array(
-						'custom_style' => true,
-					),
-				),
+				'default' => array(),
 				'image'   => array(
 					'label'           => esc_html__( 'Image Box Shadow', 'et_builder' ),
 					'option_category' => 'layout',
@@ -116,7 +113,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 					'toggle_slug'     => 'image',
 					'css'             => array(
 						'main'         => '%%order_class%% .et_pb_portfolio_image',
-						'custom_style' => true,
+						'overlay' => 'inset',
 					),
 					'default_on_fronts'  => array(
 						'color'    => '',
@@ -135,6 +132,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 					),
 					'background_layout' => array(
 						'default_on_front' => 'light',
+						'hover' => 'tabs',
 					),
 				),
 			),
@@ -198,6 +196,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Title displayed above the portfolio.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'fullwidth' => array(
 				'label'             => esc_html__( 'Layout', 'et_builder' ),
@@ -365,7 +364,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 
 				$post_index++;
 			}
-		} else if ( wp_doing_ajax() ) {
+		} else if ( wp_doing_ajax() || et_core_is_fb_enabled() ) {
 			// This is for the VB
 			$posts  = '<div class="et_pb_row et_pb_no_results">';
 			$posts .= self::get_no_results_template();
@@ -379,20 +378,22 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$title               = $this->props['title'];
-		$fullwidth           = $this->props['fullwidth'];
-		$include_categories  = $this->props['include_categories'];
-		$posts_number        = $this->props['posts_number'];
-		$show_title          = $this->props['show_title'];
-		$show_date           = $this->props['show_date'];
-		$background_layout   = $this->props['background_layout'];
-		$auto                = $this->props['auto'];
-		$auto_speed          = $this->props['auto_speed'];
-		$zoom_icon_color     = $this->props['zoom_icon_color'];
-		$hover_overlay_color = $this->props['hover_overlay_color'];
-		$hover_icon          = $this->props['hover_icon'];
-		$header_level        = $this->props['title_level'];
-		$portfolio_header    = $this->props['portfolio_header_level'];
+		$title                           = $this->_esc_attr( 'title' );
+		$fullwidth                       = $this->props['fullwidth'];
+		$include_categories              = $this->props['include_categories'];
+		$posts_number                    = $this->props['posts_number'];
+		$show_title                      = $this->props['show_title'];
+		$show_date                       = $this->props['show_date'];
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$auto                            = $this->props['auto'];
+		$auto_speed                      = $this->props['auto_speed'];
+		$zoom_icon_color                 = $this->props['zoom_icon_color'];
+		$hover_overlay_color             = $this->props['hover_overlay_color'];
+		$hover_icon                      = $this->props['hover_icon'];
+		$header_level                    = $this->props['title_level'];
+		$portfolio_header                = $this->props['portfolio_header_level'];
 
 		$zoom_and_hover_selector = '.et_pb_fullwidth_portfolio%%order_class%% .et_pb_portfolio_image';
 
@@ -474,7 +475,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 
 									printf( '<span class="et_overlay%1$s"%2$s></span>',
 										( '' !== $hover_icon ? ' et_pb_inline_icon' : '' ),
-										$data_icon
+										et_core_esc_previously( $data_icon )
 									);
 								?>
 									<?php if ( 'on' === $show_title ) : ?>
@@ -513,7 +514,20 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 			) );
 		}
 
-		$portfolio_title = sprintf( '<%1$s class="et_pb_portfolio_title">%2$s</%1$s>', et_pb_process_header_level( $portfolio_header, 'h2' ), esc_html( $title ) );
+		$portfolio_title = sprintf( '<%1$s class="et_pb_portfolio_title">%2$s</%1$s>', et_pb_process_header_level( $portfolio_header, 'h2' ), et_core_esc_previously( $title ) );
+
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
 
 		// Module classnames
 		$this->add_classname( "et_pb_bg_layout_{$background_layout}" );
@@ -528,7 +542,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 		}
 
 		$output = sprintf(
-			'<div%3$s class="%1$s" data-auto-rotate="%4$s" data-auto-rotate-speed="%5$s">
+			'<div%3$s class="%1$s" data-auto-rotate="%4$s" data-auto-rotate-speed="%5$s"%9$s%10$s>
 				%8$s
 				%7$s
 				%6$s
@@ -540,10 +554,12 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 			$posts,
 			$this->module_id(),
 			( '' !== $auto && in_array( $auto, array('on', 'off') ) ? esc_attr( $auto ) : 'off' ),
-			( '' !== $auto_speed && is_numeric( $auto_speed ) ? esc_attr( $auto_speed ) : '7000' ),
+			( '' !== $auto_speed && is_numeric( $auto_speed ) ? esc_attr( $auto_speed ) : '7000' ), // #5
 			( '' !== $title ? $portfolio_title : '' ),
 			$video_background,
-			$parallax_image_background
+			$parallax_image_background,
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover ) // #10
 		);
 
 		return $output;

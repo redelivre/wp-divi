@@ -398,7 +398,7 @@ class ET_Core_API_Email_Fields {
 	/**
 	 * Get field definitions
 	 *
-	 * @since ??
+	 * @since 3.10
 	 *
 	 * @param string $type Accepts 'custom_field'
 	 * @param string $for Accepts 'builder', 'bloom'

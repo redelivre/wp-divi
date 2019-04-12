@@ -30,7 +30,7 @@
 								'<div class="et_main_video_container">
 									%1$s
 								</div>',
-								$first_video
+								et_core_esc_previously( $first_video )
 							);
 						elseif ( ! in_array( $post_format, array( 'gallery' ) ) && 'on' === et_get_option( 'divi_thumbnails_index', 'on' ) && '' !== $thumb ) : ?>
 							<a class="entry-featured-image-url" href="<?php the_permalink(); ?>">

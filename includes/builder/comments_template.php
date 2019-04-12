@@ -13,7 +13,7 @@
 <!-- You can start editing here. -->
 
 <section id="comment-wrap">
-	<<?php echo $et_comments_header_level_processed ?> id="comments" class="page_title"><?php comments_number( esc_html__( '0 Comments', 'et_builder' ), esc_html__( '1 Comment', 'et_builder' ), '% ' . esc_html__( 'Comments', 'et_builder' ) ); ?></<?php echo $et_comments_header_level_processed ?>>
+	<<?php echo et_core_intentionally_unescaped( $et_comments_header_level_processed, 'fixed_string' ); ?> id="comments" class="page_title"><?php comments_number( esc_html__( '0 Comments', 'et_builder' ), esc_html__( '1 Comment', 'et_builder' ), '% ' . esc_html__( 'Comments', 'et_builder' ) ); ?></<?php echo et_core_intentionally_unescaped( $et_comments_header_level_processed, 'fixed_string' ); ?>>
 	<?php if ( have_comments() ) : ?>
 		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
 			<div class="comment_navigation_top clearfix">
@@ -45,7 +45,7 @@
 		<?php endif; ?>
 	<?php else : // this is displayed if there are no comments so far ?>
 	   <div id="comment-section" class="nocomments">
-		  <?php if ('open' == $post->comment_status) : ?>
+		  <?php if ( 'open' === $post->comment_status ) : ?>
 			 <!-- If comments are open, but there are no comments. -->
 
 		  <?php else : // comments are closed ?>
@@ -54,7 +54,7 @@
 		  <?php endif; ?>
 	   </div>
 	<?php endif; ?>
-	<?php if ('open' == $post->comment_status) : ?>
+	<?php if ( 'open' === $post->comment_status ) : ?>
 		<?php comment_form( array('label_submit' => esc_attr__( 'Submit Comment', 'et_builder' ), 'title_reply' => '<span>' . esc_attr__( 'Submit a Comment', 'et_builder' ) . '</span>', 'title_reply_to' => esc_attr__( 'Leave a Reply to %s', 'et_builder' ), 'class_submit' => 'submit et_pb_button', 'comment_notes_after' => '', 'id_submit' => 'et_pb_submit' ) ); ?>
 	<?php else: ?>
 

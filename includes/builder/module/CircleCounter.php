@@ -3,6 +3,7 @@
 class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Circle Counter', 'et_builder' );
+		$this->plural     = esc_html__( 'Circle Counters', 'et_builder' );
 		$this->slug       = 'et_pb_circle_counter';
 		$this->vb_support = 'on';
 
@@ -13,7 +14,6 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 				'toggles' => array(
 					'main_content' => esc_html__( 'Text', 'et_builder' ),
 					'elements'     => esc_html__( 'Elements', 'et_builder' ),
-					'background'   => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -72,6 +72,9 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 			),
 			'text'                  => array(
 				'use_background_layout' => true,
+				'css' => array(
+					'main' => '%%order_class%% .percent p, %%order_class%% .et_pb_module_header'
+				),
 				'options' => array(
 					'text_orientation'  => array(
 						'default_on_front' => 'center',
@@ -120,6 +123,7 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input a title for the circle counter.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'number' => array(
 				'label'             => esc_html__( 'Number', 'et_builder' ),
@@ -165,9 +169,11 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 				'type'            => 'range',
 				'option_category' => 'configuration',
 				'range_settings'  => array(
-					'min'  => '0.1',
-					'max'  => '1.0',
-					'step' => '0.05',
+					'min'       => '0.1',
+					'max'       => '1.0',
+					'step'      => '0.05',
+					'min_limit' => '0.0',
+					'max_limit' => '1.0',
 				),
 				'tab_slug'        => 'advanced',
 				'toggle_slug'     => 'circle',
@@ -179,52 +185,20 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 
 	function render( $attrs, $content = null, $render_slug ) {
 		wp_enqueue_script( 'easypiechart' );
-		$number                      = $this->props['number'];
-		$percent_sign                = $this->props['percent_sign'];
-		$title                       = $this->props['title'];
-		$background_layout           = $this->props['background_layout'];
-		$bar_bg_color                = $this->props['bar_bg_color'];
-		$circle_color                = $this->props['circle_color'];
-		$circle_color_alpha          = $this->props['circle_color_alpha'];
-		$custom_padding              = $this->props['custom_padding'];
-		$custom_padding_tablet       = $this->props['custom_padding_tablet'];
-		$custom_padding_phone        = $this->props['custom_padding_phone'];
-		$header_level                = $this->props['title_level'];
 
-		if ( '' !== $custom_padding ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% canvas',
-				'declaration' => sprintf(
-					'top: %1$s; left: %2$s;',
-					esc_attr( et_pb_get_spacing( $custom_padding, 'top' ) ),
-					esc_attr( et_pb_get_spacing( $custom_padding, 'left' ) )
-				),
-			) );
-		}
-
-		if ( '' !== $custom_padding_tablet ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% canvas',
-				'declaration' => sprintf(
-					'top: %1$s; left: %2$s;',
-					esc_attr( et_pb_get_spacing( $custom_padding_tablet, 'top' ) ),
-					esc_attr( et_pb_get_spacing( $custom_padding_tablet, 'left' ) )
-				),
-				'media_query' => ET_Builder_Element::get_media_query( 'max_width_980' ),
-			) );
-		}
-
-		if ( '' !== $custom_padding_phone ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% canvas',
-				'declaration' => sprintf(
-					'top: %1$s; left: %2$s;',
-					esc_attr( et_pb_get_spacing( $custom_padding_phone, 'top' ) ),
-					esc_attr( et_pb_get_spacing( $custom_padding_phone, 'left' ) )
-				),
-				'media_query' => ET_Builder_Element::get_media_query( 'max_width_767' ),
-			) );
-		}
+		$number                          = $this->props['number'];
+		$percent_sign                    = $this->props['percent_sign'];
+		$title                           = $this->_esc_attr( 'title' );
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$bar_bg_color                    = $this->props['bar_bg_color'];
+		$circle_color                    = $this->props['circle_color'];
+		$circle_color_alpha              = $this->props['circle_color_alpha'];
+		$custom_padding                  = $this->props['custom_padding'];
+		$custom_padding_tablet           = $this->props['custom_padding_tablet'];
+		$custom_padding_phone            = $this->props['custom_padding_phone'];
+		$header_level                    = $this->props['title_level'];
 
 		$number = str_ireplace( '%', '', $number );
 
@@ -238,6 +212,19 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 			sprintf( ' data-alpha="%1$s"', esc_attr( $circle_color_alpha ) )
 			: '';
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
+
 		// Module classnames
 		$this->add_classname( array(
 			"et_pb_bg_layout_{$background_layout}",
@@ -250,22 +237,26 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 		}
 
 		$output = sprintf(
-			'<div%1$s class="%2$s" data-number-value="%3$s" data-bar-bg-color="%4$s"%7$s%8$s>
+			'<div%1$s class="%2$s"%11$s%12$s>
+				<div class="et_pb_circle_counter_inner" data-number-value="%3$s" data-bar-bg-color="%4$s"%7$s%8$s>
 				%10$s
 				%9$s
 					<div class="percent"><p><span class="percent-value"></span>%5$s</p></div>
 					%6$s
+				</div>
 			</div><!-- .et_pb_circle_counter -->',
 			$this->module_id(),
 			$this->module_classname( $render_slug ),
 			esc_attr( $number ),
 			esc_attr( $bar_bg_color ),
-			( 'on' == $percent_sign ? '%' : ''),
-			( '' !== $title ?  sprintf( '<%1$s class="et_pb_module_header">%2$s</%1$s>', et_pb_process_header_level( $header_level, 'h3' ), esc_html( $title ) ) : '' ),
+			( 'on' == $percent_sign ? '%' : ''), // #5
+			( '' !== $title ?  sprintf( '<%1$s class="et_pb_module_header">%2$s</%1$s>', et_pb_process_header_level( $header_level, 'h3' ), et_core_esc_previously( $title ) ) : '' ),
 			$circle_color_data,
 			$circle_color_alpha_data,
 			$video_background,
-			$parallax_image_background
+			$parallax_image_background, // #10
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover )
 		);
 
 		return $output;

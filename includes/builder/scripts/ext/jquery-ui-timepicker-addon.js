@@ -397,7 +397,7 @@
 					}
 					html += '</dd>';
 				}
-				
+
 				// Timezone
 				var showTz = o.showTimezone !== null ? o.showTimezone : this.support.timezone;
 				html += '<dt class="ui_tpicker_timezone_label"' + (showTz ? '' : noDisplay) + '>' + o.timezoneText + '</dt>';
@@ -412,7 +412,7 @@
 					$tp.prepend('<div class="ui-widget-header ui-helper-clearfix ui-corner-all">' + '<div class="ui-datepicker-title">' + o.timeOnlyTitle + '</div>' + '</div>');
 					$dp.find('.ui-datepicker-header, .ui-datepicker-calendar').hide();
 				}
-				
+
 				// add sliders, adjust grids, add events
 				for (i = 0, l = tp_inst.units.length; i < l; i++) {
 					litem = tp_inst.units[i];
@@ -447,7 +447,7 @@
 										}
 									}
 								}
-								
+
 								tp_inst.control.value(tp_inst, tp_inst[f + '_slider'], litem, n);
 
 								tp_inst._onTimeChange();
@@ -486,7 +486,7 @@
 					tp_inst._onSelectHandler();
 				});
 				// End timezone options
-				
+
 				// inject timepicker into datepicker
 				var $buttonPanel = $dp.find('.ui-datepicker-buttonpane');
 				if ($buttonPanel.length) {
@@ -508,7 +508,7 @@
 					var sliderAccessArgs = this._defaults.sliderAccessArgs,
 						rtl = this._defaults.isRTL;
 					sliderAccessArgs.isRTL = rtl;
-						
+
 					setTimeout(function () { // fix for inline mode
 						if ($tp.find('.ui-slider-access').length === 0) {
 							$tp.find('.ui-slider:visible').sliderAccess(sliderAccessArgs);
@@ -838,7 +838,7 @@
 				timeAvailable = dt !== null && this.timeDefined;
 			this.formattedDate = $.datepicker.formatDate(dateFmt, (dt === null ? new Date() : dt), formatCfg);
 			var formattedDateTime = this.formattedDate;
-			
+
 			// if a slider was changed but datepicker doesn't have a value yet, set it
 			if (dp_inst.lastVal === "") {
                 dp_inst.currentYear = dp_inst.selectedYear;
@@ -873,7 +873,7 @@
 				var altFormattedDateTime = '',
 					altSeparator = this._defaults.altSeparator ? this._defaults.altSeparator : this._defaults.separator,
 					altTimeSuffix = this._defaults.altTimeSuffix ? this._defaults.altTimeSuffix : this._defaults.timeSuffix;
-				
+
 				if (!this._defaults.timeOnly) {
 					if (this._defaults.altFormat) {
 						altFormattedDateTime = $.datepicker.formatDate(this._defaults.altFormat, (dt === null ? new Date() : dt), formatCfg);
@@ -1254,7 +1254,7 @@
 			}
 			return false;
 		}; // end looseParse
-		
+
 		if (typeof o.parse === "function") {
 			return o.parse(timeFormat, timeString, o);
 		}
@@ -1431,7 +1431,7 @@
 					altSeparator = tp_inst._defaults.altSeparator ? tp_inst._defaults.altSeparator : tp_inst._defaults.separator, 
 					altTimeSuffix = tp_inst._defaults.altTimeSuffix ? tp_inst._defaults.altTimeSuffix : tp_inst._defaults.timeSuffix,
 					altTimeFormat = tp_inst._defaults.altTimeFormat !== null ? tp_inst._defaults.altTimeFormat : tp_inst._defaults.timeFormat;
-				
+
 				altFormattedDateTime += $.datepicker.formatTime(altTimeFormat, tp_inst, tp_inst._defaults) + altTimeSuffix;
 				if (!tp_inst._defaults.timeOnly && !tp_inst._defaults.altFieldTimeOnly && date !== null) {
 					if (tp_inst._defaults.altFormat) {
@@ -1600,7 +1600,7 @@
 		} else {
 			tp_date = date;
 		}
-		
+
 		// This is important if you are using the timezone option, javascript's Date 
 		// object will only return the timezone offset for the current locale, so we 
 		// adjust it accordingly.  If not using timezone option this won't matter..
@@ -1776,7 +1776,7 @@
 		}
 		return this._base_optionDatepicker.call($.datepicker, target, name_clone || name, value);
 	};
-	
+
 	/*
 	* jQuery isEmptyObject does not check hasOwnProperty - if someone has added to the object prototype,
 	* it will return false for all objects
@@ -1934,7 +1934,7 @@
 			hours = (off - minutes) / 60,
 			iso = iso8601 ? ':' : '',
 			tz = (off >= 0 ? '+' : '-') + ('0' + Math.abs(hours)).slice(-2) + iso + ('0' + Math.abs(minutes)).slice(-2);
-		
+
 		if (tz === '+00:00') {
 			return 'Z';
 		}

@@ -70,7 +70,8 @@ var options = defaultOptions;
  */
 function initTest() {
 
-    var disableKeyboard = false;
+    // Disable keyboard in VB/BFB
+    var disableKeyboard = document.body.classList.contains('et-fb');
 
     // disable keyboard support if anything above requested it
     if (disableKeyboard) {
@@ -272,12 +273,17 @@ function wheel(event) {
 
     var target = event.target;
     var overflowing = overflowingAncestor(target);
+    var isVBTopWindowScroll = document.documentElement.className.split(' ').filter(function(className) {
+        return className === 'et-fb-preview--tablet' || className === 'et-fb-preview--phone' || className === 'et-fb-preview--zoom';
+    }).length > 0;
+
 
     // use default if there's no overflowing
     // element or default action is prevented
     if (!overflowing || event.defaultPrevented ||
         isNodeName(activeElement, "embed") ||
-       (isNodeName(target, "embed") && /\.pdf/i.test(target.src))) {
+       (isNodeName(target, "embed") && /\.pdf/i.test(target.src)) ||
+       isVBTopWindowScroll) {
         return true;
     }
 
@@ -531,7 +537,7 @@ else if ("onmousewheel" in document.createElement("div"))
 var isSmoothScrollActive = document.body.className.split(' ').filter( function( className ) { return className === 'et_smooth_scroll' } ).length > 0;
 
 if (wheelEvent && isChrome && isSmoothScrollActive) {
-	addEvent(wheelEvent, wheel);
+	window.addEventListener(wheelEvent, wheel, { passive: false });
 	addEvent("mousedown", mousedown);
 	addEvent("load", init);
 }

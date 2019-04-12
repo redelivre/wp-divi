@@ -4,18 +4,34 @@
  * @todo Rename this class to `ET_Builder_Module_Settings` so that its name clearly indicates its purpose.
  */
 class ET_Global_Settings {
-	private static $_settings = array();
+	private static $_settings      = array();
+	private static $_reinit_values = false;
 
 	public static function init() {
 		// The class can only be initialized once
-		if ( ! empty( self::$_settings ) ) {
+		if ( ! empty( self::$_settings ) && ! self::$_reinit_values ) {
 			return;
+		}
+
+		// Reset _reinit_values property. It should only used once for every reinit() method call
+		if ( self::$_reinit_values ) {
+			self::$_reinit_values = false;
 		}
 
 		self::set_values();
 	}
 
+	/**
+	 * Allow global settings value to be reinitialized. Initially added a to make global
+	 * settings modifieable during unit/integration testing which uses PHPUnit & wp-browser
+	 */
+	public static function reinit() {
+		self::$_reinit_values = true;
+	}
+
 	private static function set_values() {
+		$hover = et_pb_hover_options();
+
 		$font_defaults_h1 = array(
 			'size'           => '30px',
 			'letter_spacing' => '0px',
@@ -75,8 +91,8 @@ class ET_Global_Settings {
 			'all_buttons_border_radius'                              => '3',
 			'all_buttons_spacing'                                    => '0',
 			'all_buttons_font_style'                                 => '',
-			'all_buttons_border_radius_hover'                        => '3',
-			'all_buttons_spacing_hover'                              => '0',
+			$hover->get_hover_field( 'all_buttons_border_radius' )   => '3',
+			$hover->get_hover_field( 'all_buttons_spacing' )         => '0',
 			// Global: Background Gradients
 			'all_background_gradient_start'                          => $background_gradient_defaults['start'],
 			'all_background_gradient_end'                            => $background_gradient_defaults['end'],
@@ -578,7 +594,7 @@ class ET_Global_Settings {
 			'et_pb_toggle-background_blend'                          => $background_image_defaults['blend'],
 		);
 
-		if ( ! et_is_builder_plugin_active() ) {
+		if ( et_builder_has_limitation('forced_icon_color_default') ) {
 			$defaults['et_pb_gallery-zoom_icon_color']              = et_get_option( 'accent_color', '#2ea3f2' );
 			$defaults['et_pb_portfolio-zoom_icon_color']            = et_get_option( 'accent_color', '#2ea3f2' );
 			$defaults['et_pb_filterable_portfolio-zoom_icon_color'] = et_get_option( 'accent_color', '#2ea3f2' );
@@ -590,6 +606,7 @@ class ET_Global_Settings {
 				'default' => $default_value,
 			);
 
+			// Plugin don't have module specific customizer options like Divi theme, so $actual_value is always = ''
 			$actual_value = ! et_is_builder_plugin_active() ? et_get_option( $setting_name, '', '', true ) : '';
 			if ( '' !== $actual_value ) {
 				$defaults[ $setting_name ]['actual']  = $actual_value;

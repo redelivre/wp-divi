@@ -3,6 +3,7 @@
 class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Fullwidth Menu', 'et_builder' );
+		$this->plural     = esc_html__( 'Fullwidth Menus', 'et_builder' );
 		$this->slug       = 'et_pb_fullwidth_menu';
 		$this->vb_support = 'on';
 		$this->fullwidth  = true;
@@ -13,7 +14,6 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Content', 'et_builder' ),
-					'background'   => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -39,7 +39,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 					'label'    => esc_html__( 'Menu', 'et_builder' ),
 					'css'      => array(
 						'main' => "{$this->main_css_element} ul li a",
-						'plugin_main' => "{$this->main_css_element} ul li a, {$this->main_css_element} ul li",
+						'limited_main' => "{$this->main_css_element} ul li a, {$this->main_css_element} ul li",
 					),
 					'line_height' => array(
 						'default' => '1em',
@@ -74,7 +74,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'default' => array(
 					'css' => array(
 						'main' => '%%order_class%%, %%order_class%% .sub-menu',
-						'custom_style' => true,
+						'overlay' => 'inset',
 					),
 				),
 			),
@@ -87,6 +87,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 					),
 					'background_layout' => array(
 						'default_on_front' => 'light',
+						'hover' => 'tabs',
 					),
 				),
 			),
@@ -170,6 +171,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'links',
+				'hover'        => 'tabs',
 			),
 			'dropdown_menu_bg_color' => array(
 				'label'        => esc_html__( 'Dropdown Menu Background Color', 'et_builder' ),
@@ -177,6 +179,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'dropdown',
+				'hover'        => 'tabs',
 			),
 			'dropdown_menu_line_color' => array(
 				'label'        => esc_html__( 'Dropdown Menu Line Color', 'et_builder' ),
@@ -184,6 +187,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'dropdown',
+				'hover'        => 'tabs',
 			),
 			'dropdown_menu_text_color' => array(
 				'label'        => esc_html__( 'Dropdown Menu Text Color', 'et_builder' ),
@@ -191,6 +195,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'links',
+				'hover'        => 'tabs',
 			),
 			'mobile_menu_bg_color' => array(
 				'label'        => esc_html__( 'Mobile Menu Background Color', 'et_builder' ),
@@ -198,6 +203,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'dropdown',
+				'hover'        => 'tabs',
 			),
 			'mobile_menu_text_color' => array(
 				'label'        => esc_html__( 'Mobile Menu Text Color', 'et_builder' ),
@@ -205,6 +211,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				'custom_color' => true,
 				'tab_slug'     => 'advanced',
 				'toggle_slug'  => 'links',
+				'hover'        => 'tabs',
 			),
 			'__menu' => array(
 				'type'                => 'computed',
@@ -215,6 +222,15 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 				),
 			),
 		);
+
+		return $fields;
+	}
+
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['active_link_color'] = array( 'color' => '%%order_class%%.et_pb_fullwidth_menu ul li.current-menu-item a' );
+		$fields['dropdown_menu_text_color'] = array( 'color' => '%%order_class%%.et_pb_fullwidth_menu .nav li ul a' );
 
 		return $fields;
 	}
@@ -255,7 +271,8 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 
 		$menuClass = 'fullwidth-menu nav';
 
-		if ( ! et_is_builder_plugin_active() && 'on' == et_get_option( 'divi_disable_toptier' ) ) {
+		// divi_disable_toptier option available in Divi theme only
+		if ( ! et_is_builder_plugin_active() && 'on' === et_get_option( 'divi_disable_toptier' ) ) {
 			$menuClass .= ' et_disable_top_tier';
 		}
 		$menuClass .= ( '' !== $args['submenu_direction'] ? sprintf( ' %s', esc_attr( $args['submenu_direction'] ) ) : '' );
@@ -277,7 +294,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 
 		$primaryNav = wp_nav_menu( apply_filters( 'et_fullwidth_menu_args', $menu_args ) );
 
-		if ( '' == $primaryNav ) {
+		if ( empty( $primaryNav ) ) {
 			$menu .= sprintf(
 				'<ul class="%1$s">
 					%2$s',
@@ -319,25 +336,34 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$background_color  = $this->props['background_color'];
-		$background_layout = $this->props['background_layout'];
-		$menu_id           = $this->props['menu_id'];
-		$submenu_direction = $this->props['submenu_direction'];
-		$active_link_color        = $this->props['active_link_color'];
-		$dropdown_menu_bg_color   = $this->props['dropdown_menu_bg_color'];
-		$dropdown_menu_line_color = $this->props['dropdown_menu_line_color'];
-		$dropdown_menu_text_color = $this->props['dropdown_menu_text_color'];
-		$dropdown_menu_animation  = $this->props['dropdown_menu_animation'];
-		$mobile_menu_bg_color     = $this->props['mobile_menu_bg_color'];
-		$mobile_menu_text_color   = $this->props['mobile_menu_text_color'];
+		$background_color                = $this->props['background_color'];
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$menu_id                         = $this->props['menu_id'];
+		$submenu_direction               = $this->props['submenu_direction'];
+
+		$active_link_color               = $this->props['active_link_color'];
+		$active_link_color_hover         = $this->get_hover_value( 'active_link_color' );
+
+		$dropdown_menu_bg_color          = $this->props['dropdown_menu_bg_color'];
+		$dropdown_menu_bg_color_hover    = $this->get_hover_value( 'dropdown_menu_bg_color' );
+
+		$dropdown_menu_line_color        = $this->props['dropdown_menu_line_color'];
+		$dropdown_menu_line_color_hover  = $this->get_hover_value( 'dropdown_menu_line_color' );
+
+		$dropdown_menu_text_color        = $this->props['dropdown_menu_text_color'];
+		$dropdown_menu_text_color_hover  = $this->get_hover_value( 'dropdown_menu_text_color' );
+
+		$dropdown_menu_animation         = $this->props['dropdown_menu_animation'];
+
+		$mobile_menu_bg_color            = $this->props['mobile_menu_bg_color'];
+		$mobile_menu_bg_color_hover      = $this->get_hover_value( 'mobile_menu_bg_color' );
+
+		$mobile_menu_text_color          = $this->props['mobile_menu_text_color'];
+		$mobile_menu_text_color_hover    = $this->get_hover_value( 'mobile_menu_text_color' );
 
 		$style = '';
-
-		if ( '' !== $background_color ) {
-			$style .= sprintf( ' style="background-color: %s;"',
-				esc_attr( $background_color )
-			);
-		}
 
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
@@ -357,6 +383,16 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			) );
 		}
 
+		if ( et_builder_is_hover_enabled( 'active_link_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( '%%order_class%%.et_pb_fullwidth_menu ul li.current-menu-item a' ),
+				'declaration' => sprintf(
+					'color: %1$s !important;',
+					esc_html( $active_link_color_hover )
+				),
+			) );
+		}
+
 		if ( '' !== $background_color || '' !== $dropdown_menu_bg_color ) {
 			$et_menu_bg_color = '' !== $dropdown_menu_bg_color ? $dropdown_menu_bg_color : $background_color;
 
@@ -369,9 +405,19 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			) );
 		}
 
-		if ( '' !== $dropdown_menu_line_color ) {
+		if ( et_builder_is_hover_enabled( 'dropdown_menu_bg_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( '%%order_class%%.et_pb_fullwidth_menu .nav li ul' ),
+				'declaration' => sprintf(
+					'background-color: %1$s !important;',
+					esc_html( $dropdown_menu_bg_color_hover )
+				),
+			) );
+		}
 
-			$dropdown_menu_line_color_selector = 'upwards' === $submenu_direction ? '%%order_class%%.et_pb_fullwidth_menu .fullwidth-menu-nav > ul.upwards li ul' : '%%order_class%%.et_pb_fullwidth_menu .nav li ul';
+		$dropdown_menu_line_color_selector = 'upwards' === $submenu_direction ? '%%order_class%%.et_pb_fullwidth_menu .fullwidth-menu-nav > ul.upwards li ul' : '%%order_class%%.et_pb_fullwidth_menu .nav li ul';
+
+		if ( '' !== $dropdown_menu_line_color ) {
 
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => $dropdown_menu_line_color_selector,
@@ -390,12 +436,40 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			) );
 		}
 
+		if ( et_builder_is_hover_enabled( 'dropdown_menu_line_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( $dropdown_menu_line_color_selector ),
+				'declaration' => sprintf(
+					'border-color: %1$s;',
+					esc_html( $dropdown_menu_line_color_hover )
+				),
+			) );
+
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu' ),
+				'declaration' => sprintf(
+					'border-color: %1$s;',
+					esc_html( $dropdown_menu_line_color_hover )
+				),
+			) );
+		}
+
 		if ( '' !== $dropdown_menu_text_color ) {
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .nav li ul a',
 				'declaration' => sprintf(
 					'color: %1$s !important;',
 					esc_html( $dropdown_menu_text_color )
+				),
+			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'dropdown_menu_text_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( '%%order_class%%.et_pb_fullwidth_menu .nav li ul a' ),
+				'declaration' => sprintf(
+					'color: %1$s !important;',
+					esc_html( $dropdown_menu_text_color_hover )
 				),
 			) );
 		}
@@ -411,6 +485,16 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			) );
 		}
 
+		if ( et_builder_is_hover_enabled( 'mobile_menu_bg_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu, %%order_class%%.et_pb_fullwidth_menu .et_mobile_menu ul' ) . ', %%order_class%%.et_pb_fullwidth_menu .et_mobile_menu:hover ul',
+				'declaration' => sprintf(
+					'background-color: %1$s !important;',
+					esc_html( $mobile_menu_bg_color_hover )
+				),
+			) );
+		}
+
 		if ( '' !== $mobile_menu_text_color ) {
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu a',
@@ -419,6 +503,29 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 					esc_html( $mobile_menu_text_color )
 				),
 			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'mobile_menu_text_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $this->add_hover_to_selectors( '%%order_class%%.et_pb_fullwidth_menu .et_mobile_menu a' ),
+				'declaration' => sprintf(
+					'color: %1$s !important;',
+					esc_html( $mobile_menu_text_color_hover )
+				),
+			) );
+		}
+
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
 		}
 
 		// Module classnames
@@ -433,7 +540,7 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 		}
 
 		$output = sprintf(
-			'<div%4$s class="%3$s"%2$s>
+			'<div%4$s class="%3$s"%2$s%8$s%9$s>
 				%6$s
 				%5$s
 				<div class="et_pb_row clearfix">
@@ -449,9 +556,11 @@ class ET_Builder_Module_Fullwidth_Menu extends ET_Builder_Module {
 			$style,
 			$this->module_classname( $render_slug ),
 			$this->module_id(),
-			$video_background,
+			$video_background, // #5
 			$parallax_image_background,
-			'upwards' === $submenu_direction ? ' et_pb_mobile_menu_upwards' : ''
+			'upwards' === $submenu_direction ? ' et_pb_mobile_menu_upwards' : '',
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover )
 		);
 
 		return $output;

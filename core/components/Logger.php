@@ -18,13 +18,15 @@ class ET_Core_Logger {
 	/**
 	 * Writes a message to the debug log if it hasn't already been written once.
 	 *
-	 * @since ??
+	 * @since 3.10
 	 *
 	 * @param mixed $message
 	 * @param int   $bt_index
 	 * @param boolean $log_ajax Whether or not to log on AJAX calls.
 	 */
 	protected static function _maybe_write_log( $message, $bt_index = 4, $log_ajax = true ) {
+		global $ET_IS_TESTING_DEPRECATIONS;
+
 		if ( ! is_scalar( $message ) ) {
 			$message = print_r( $message, true );
 		}
@@ -36,7 +38,10 @@ class ET_Core_Logger {
 			return;
 		}
 
-		if ( getenv( 'CI' ) || ! in_array( $hash, self::$HISTORY ) ) {
+		if ( $ET_IS_TESTING_DEPRECATIONS ) {
+			trigger_error( $message );
+
+		} else if ( getenv( 'CI' ) || ! in_array( $hash, self::$HISTORY ) ) {
 			self::$HISTORY[] = $hash;
 
 			self::_write_log( $message, $bt_index );

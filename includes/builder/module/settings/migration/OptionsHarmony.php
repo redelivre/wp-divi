@@ -407,6 +407,7 @@ class ET_Builder_Module_Settings_Migration_OptionsHarmony extends ET_Builder_Mod
 
 			// Translating transparent_background into background_color
 			if ( 'background_color' === $field_name && in_array( $saved_field_name, array( 'transparent_background', 'transparent_background_fb' ) ) ) {
+				// Transparent is default for Builder Plugin, but not for theme
 				if ( 'on' === $current_value || ( et_is_builder_plugin_active() && 'default' === $current_value ) ) {
 					return 'rgba(255,255,255,0)';
 				} else {

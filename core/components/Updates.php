@@ -23,8 +23,8 @@ final class ET_Core_Updates {
 		// Don't allow more than one instance of the class
 		if ( isset( self::$_this ) ) {
 			wp_die( sprintf( esc_html__( '%s: You cannot create a second instance of this class.', 'et-core' ),
-				get_class( $this ) )
-			);
+				esc_html( get_class( $this ) )
+			) );
 		}
 
 		self::$_this = $this;
@@ -44,6 +44,10 @@ final class ET_Core_Updates {
 		add_filter( 'site_transient_update_themes', array( $this, 'add_themes_to_update_notification' ) );
 
 		add_filter( 'gettext', array( $this, 'update_notifications' ), 20, 3 );
+
+		add_filter( 'self_admin_url', array( $this, 'change_plugin_changelog_url' ), 10, 2 );
+		add_filter( 'admin_url', array( $this, 'change_plugin_changelog_url' ), 10, 2 );
+		add_filter( 'network_admin_url', array( $this, 'change_plugin_changelog_url' ), 10, 2 );
 
 		add_action( 'et_core_updates_before_request', array( $this, 'maybe_update_account_status' ) );
 
@@ -165,7 +169,7 @@ final class ET_Core_Updates {
 	function check_is_active_account() {
 		global $wp_version;
 
-		if ( ! isset( $this->options['username'] ) || '' == trim( $this->options['username'] ) ) {
+		if ( ! isset( $this->options['username'] ) || '' === trim( $this->options['username'] ) ) {
 			return;
 		}
 
@@ -187,7 +191,7 @@ final class ET_Core_Updates {
 			$request = wp_remote_post( 'https://cdn.elegantthemes.com/api/api_downloads.php', $options );
 		}
 
-		if ( ! is_wp_error( $request ) && wp_remote_retrieve_response_code( $request ) == 200 ){
+		if ( ! is_wp_error( $request ) && wp_remote_retrieve_response_code( $request ) === 200 ){
 			$response = wp_remote_retrieve_body( $request );
 
 			if ( ! empty( $response ) ) {
@@ -236,7 +240,7 @@ final class ET_Core_Updates {
 			$plugins_request = wp_remote_post( 'https://cdn.elegantthemes.com/api/api.php', $options );
 		}
 
-		if ( ! is_wp_error( $plugins_request ) && wp_remote_retrieve_response_code( $plugins_request ) == 200 ){
+		if ( ! is_wp_error( $plugins_request ) && wp_remote_retrieve_response_code( $plugins_request ) === 200 ){
 			$plugins_response = unserialize( wp_remote_retrieve_body( $plugins_request ) );
 
 			if ( ! empty( $plugins_response ) ) {
@@ -335,7 +339,7 @@ final class ET_Core_Updates {
 			$theme_request = wp_remote_post( 'https://cdn.elegantthemes.com/api/api.php', $options );
 		}
 
-		if ( ! is_wp_error( $theme_request ) && wp_remote_retrieve_response_code( $theme_request ) == 200 ){
+		if ( ! is_wp_error( $theme_request ) && wp_remote_retrieve_response_code( $theme_request ) === 200 ){
 			$theme_response = unserialize( wp_remote_retrieve_body( $theme_request ) );
 
 			if ( ! empty( $theme_response ) ) {
@@ -446,6 +450,58 @@ final class ET_Core_Updates {
 			</div>',
 			et_get_safe_localization( __( 'Your Elegant Themes subscription has expired. You must <a href="https://www.elegantthemes.com/members-area/" target="_blank">renew your account</a> to regain access to product updates and support. To ensure compatibility and security, it is important to always keep your themes and plugins updated.', 'et-core' ) )
 		);
+	}
+
+	function change_plugin_changelog_url( $url, $path ) {
+		if ( 0 !== strpos( $path, 'plugin-install.php?tab=plugin-information&plugin=' ) ) {
+			return $url;
+		}
+
+		$matches = array();
+
+		$update_transient = get_site_transient( 'et_update_all_plugins' );
+
+		if ( ! is_object( $update_transient ) || empty( $update_transient->response ) ) {
+			return $url;
+		}
+		
+		$et_updated_plugins_data = get_transient( 'et_updated_plugins_data' );
+		$has_last_checked        = ! empty( $update_transient->last_checked ) && ! empty( $et_updated_plugins_data->last_checked );
+
+		/*
+		 * Attempt to use a cached list of updated plugins.
+		 * Re-save the list, whenever the update transient last checked time changes.
+		 */
+		if ( false === $et_updated_plugins_data || ( $has_last_checked && $update_transient->last_checked !== $et_updated_plugins_data->last_checked ) ) {
+			$et_updated_plugins_data = new stdClass();
+
+			if ( ! empty( $update_transient->last_checked ) ) {
+				$et_updated_plugins_data->last_checked = $update_transient->last_checked;
+			}
+
+			foreach ( $update_transient->response as $response_plugin_settings ) {
+				$slug = sanitize_text_field( $response_plugin_settings->slug );
+
+				$et_updated_plugins_data->changelogs[ $slug ] = $response_plugin_settings->url . '?TB_iframe=true&width=1024&height=800';
+			}
+
+			set_transient( 'et_updated_plugins_data', $et_updated_plugins_data );
+		}
+
+		if ( empty( $et_updated_plugins_data->changelogs ) ) {
+			return $url;
+		}
+
+		preg_match( '/plugin=([^&]*)/', $path, $matches );
+
+		$current_plugin_slug = $matches[1];
+
+		// Check if we're dealing with a product that has a custom changelog URL
+		if ( ! empty( $et_updated_plugins_data->changelogs[ $current_plugin_slug ] ) ) {
+			$url = esc_url_raw( $et_updated_plugins_data->changelogs[ $current_plugin_slug ] );
+		}
+
+		return $url;
 	}
 }
 endif;

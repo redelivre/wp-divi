@@ -3,6 +3,7 @@
 class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 	function init() {
 		$this->name                        = esc_html__( 'Pricing Table', 'et_builder' );
+		$this->plural                      = esc_html__( 'Pricing Tables', 'et_builder' );
 		$this->slug                        = 'et_pb_pricing_table';
 		$this->vb_support                  = 'on';
 		$this->main_css_element            = '%%order_class%%';
@@ -15,7 +16,6 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 			'general'  => array(
 				'toggles' => array(
 					'main_content' => esc_html__( 'Text', 'et_builder' ),
-					'link'         => esc_html__( 'Link', 'et_builder' ),
 					'elements'     => esc_html__( 'Elements', 'et_builder' ),
 				),
 			),
@@ -70,7 +70,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 					'label'    => esc_html__( 'Body', 'et_builder' ),
 					'css'      => array(
 						'main' => "{$this->main_css_element} .et_pb_pricing li",
-						'plugin_main' => "{$this->main_css_element} .et_pb_pricing li, {$this->main_css_element} .et_pb_pricing li span, {$this->main_css_element} .et_pb_pricing li a",
+						'limited_main' => "{$this->main_css_element} .et_pb_pricing li, {$this->main_css_element} .et_pb_pricing li span, {$this->main_css_element} .et_pb_pricing li a",
 					),
 					'line_height' => array(
 						'range_settings' => array(
@@ -128,7 +128,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 					'label' => esc_html__( 'Button', 'et_builder' ),
 					'css'      => array(
 						'main' => ".et_pb_pricing {$this->main_css_element} .et_pb_button",
-						'plugin_main' => ".et_pb_pricing {$this->main_css_element} .et_pb_pricing_table_button.et_pb_button",
+						'limited_main' => ".et_pb_pricing {$this->main_css_element} .et_pb_pricing_table_button.et_pb_button",
 						'alignment' => ".et_pb_pricing {$this->main_css_element} .et_pb_button_wrapper"
 					),
 					'use_alignment' => true,
@@ -228,6 +228,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Define a title for the pricing table.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'subtitle' => array(
 				'label'           => esc_html__( 'Subtitle', 'et_builder' ),
@@ -235,6 +236,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Define a sub title for the table if desired.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'currency' => array(
 				'label'           => esc_html__( 'Currency', 'et_builder' ),
@@ -242,6 +244,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input your desired currency symbol here.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'per' => array(
 				'label'           => esc_html__( 'Per', 'et_builder' ),
@@ -249,6 +252,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'If your pricing is subscription based, input the subscription payment cycle here.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'sum' => array(
 				'label'           => esc_html__( 'Price', 'et_builder' ),
@@ -256,13 +260,27 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input the value of the product here.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'button_url' => array(
-				'label'           => esc_html__( 'Button URL', 'et_builder' ),
+				'label'           => esc_html__( 'Button Link URL', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Input the destination URL for the signup button.', 'et_builder' ),
-				'toggle_slug'     => 'link',
+				'toggle_slug'     => 'link_options',
+				'dynamic_content' => 'url',
+			),
+			'url_new_window' => array(
+				'label'            => esc_html__( 'Button Link Target', 'et_builder' ),
+				'type'             => 'select',
+				'option_category'  => 'configuration',
+				'options'          => array(
+					'off' => esc_html__( 'In The Same Window', 'et_builder' ),
+					'on'  => esc_html__( 'In The New Tab', 'et_builder' ),
+				),
+				'toggle_slug'      => 'link_options',
+				'description'      => esc_html__( 'Here you can choose whether or not your link opens in a new window', 'et_builder' ),
+				'default_on_front' => 'off',
 			),
 			'button_text' => array(
 				'label'           => esc_html__( 'Button Text', 'et_builder' ),
@@ -270,6 +288,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Adjust the text used from the signup button.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'content' => array(
 				'label'           => esc_html__( 'Content', 'et_builder' ),
@@ -282,6 +301,7 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 					esc_html__( 'Excluded option', 'et_builder' )
 				),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'pricing_item_excluded_color' => array(
 				'label'             => esc_html__( 'Excluded Item Color', 'et_builder' ),
@@ -290,27 +310,38 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'excluded',
 				'priority'          => 22,
+				'hover'             => 'tabs',
 			),
 		);
+		return $fields;
+	}
+
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['pricing_item_excluded_color'] = array( 'color' => '%%order_class%% ul.et_pb_pricing li.et_pb_not_available, %%order_class%% ul.et_pb_pricing li.et_pb_not_available span, %%order_class%% ul.et_pb_pricing li.et_pb_not_available a' );
+
 		return $fields;
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
 		global $et_pb_pricing_tables_num, $et_pb_pricing_tables_icon, $et_pb_pricing_tables_button_rel, $et_pb_pricing_tables_header_level;
 
-		$featured      = $this->props['featured'];
-		$title         = $this->props['title'];
-		$subtitle      = $this->props['subtitle'];
-		$currency      = $this->props['currency'];
-		$per           = $this->props['per'];
-		$sum           = $this->props['sum'];
-		$button_url    = $this->props['button_url'];
-		$button_rel    = $this->props['button_rel'];
-		$button_text   = $this->props['button_text'];
-		$button_custom = $this->props['custom_button'];
-		$custom_icon   = $this->props['button_icon'];
-		$header_level  = $this->props['header_level'];
-		$pricing_item_excluded_color = $this->props['pricing_item_excluded_color'];
+		$featured                          = $this->props['featured'];
+		$title                             = $this->_esc_attr( 'title' );
+		$subtitle                          = $this->_esc_attr( 'subtitle' );
+		$currency                          = $this->_esc_attr( 'currency' );
+		$per                               = $this->_esc_attr( 'per' );
+		$sum                               = $this->_esc_attr( 'sum' );
+		$button_url                        = $this->props['button_url'];
+		$button_rel                        = $this->props['button_rel'];
+		$button_text                       = $this->_esc_attr( 'button_text', 'limited' );
+		$url_new_window                    = $this->props['url_new_window'];
+		$button_custom                     = $this->props['custom_button'];
+		$custom_icon                       = $this->props['button_icon'];
+		$header_level                      = $this->props['header_level'];
+		$pricing_item_excluded_color       = $this->props['pricing_item_excluded_color'];
+		$pricing_item_excluded_color_hover = $this->get_hover_value( 'pricing_item_excluded_color' );
 
 		// Overwrite button rel with pricin tables' button_rel if needed
 		if ( in_array( $button_rel, array( '', 'off|off|off|off|off' ) ) && '' !== $et_pb_pricing_tables_button_rel ) {
@@ -322,7 +353,8 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 		$custom_table_icon = 'on' === $button_custom && '' !== $custom_icon ? $custom_icon : $et_pb_pricing_tables_icon;
 
 		if ( '' !== $pricing_item_excluded_color ) {
-			$pricing_item_excluded_color_selector = et_is_builder_plugin_active() ? '%%order_class%% ul.et_pb_pricing li.et_pb_not_available, %%order_class%% ul.et_pb_pricing li.et_pb_not_available span, %%order_class%% ul.et_pb_pricing li.et_pb_not_available a' : '%%order_class%% ul.et_pb_pricing li.et_pb_not_available';
+			$pricing_item_excluded_color_selector = et_builder_has_limitation( 'use_additional_limiting_styles' ) ? '%%order_class%% ul.et_pb_pricing li.et_pb_not_available, %%order_class%% ul.et_pb_pricing li.et_pb_not_available span, %%order_class%% ul.et_pb_pricing li.et_pb_not_available a' : '%%order_class%% ul.et_pb_pricing li.et_pb_not_available';
+
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => $pricing_item_excluded_color_selector,
 				'declaration' => sprintf(
@@ -332,16 +364,29 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 			) );
 		}
 
+		if ( et_builder_is_hover_enabled( 'pricing_item_excluded_color', $this->props ) ) {
+			$pricing_item_excluded_color_selector = et_is_builder_plugin_active() ? '%%order_class%% ul.et_pb_pricing:hover li.et_pb_not_available, %%order_class%% ul.et_pb_pricing:hover li.et_pb_not_available span, %%order_class%% ul.et_pb_pricing:hover li.et_pb_not_available a' : '%%order_class%% ul.et_pb_pricing:hover li.et_pb_not_available';
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => $pricing_item_excluded_color_selector,
+				'declaration' => sprintf(
+					'color: %1$s !important;',
+					esc_html( $pricing_item_excluded_color_hover )
+				),
+			) );
+		}
+
 		$button_url = trim( $button_url );
 
 		$button = $this->render_button( array(
-			'button_classname' => array( 'et_pb_pricing_table_button' ),
-			'button_custom'    => '' !== $custom_table_icon ? 'on' : 'off',
-			'button_rel'       => $button_rel,
-			'button_text'      => $button_text,
-			'button_url'       => $button_url,
-			'custom_icon'      => $custom_table_icon,
-			'display_button'   => ( '' !== $button_url && '' !== $button_text ),
+			'button_classname'    => array( 'et_pb_pricing_table_button' ),
+			'button_custom'       => '' !== $custom_table_icon ? 'on' : 'off',
+			'button_rel'          => $button_rel,
+			'button_text'         => $button_text,
+			'button_text_escaped' => true,
+			'button_url'          => $button_url,
+			'custom_icon'         => $custom_table_icon,
+			'url_new_window'      => $url_new_window,
+			'display_button'      => ( '' !== $button_url && '' !== $button_text ),
 		) );
 
 		$video_background = $this->video_background();
@@ -379,13 +424,13 @@ class ET_Builder_Module_Pricing_Tables_Item extends ET_Builder_Module {
 				%5$s
 			</div>',
 			$this->module_classname( $render_slug ),
-			( '' !== $title ? sprintf( '<%2$s class="et_pb_pricing_title">%1$s</%2$s>', esc_html( $title ), et_pb_process_header_level( $header_level, 'h2' ) ) : '' ),
-			( '' !== $subtitle ? sprintf( '<span class="et_pb_best_value">%1$s</span>', esc_html( $subtitle ) ) : '' ),
+			( '' !== $title ? sprintf( '<%2$s class="et_pb_pricing_title">%1$s</%2$s>', et_core_esc_previously( $title ), et_pb_process_header_level( $header_level, 'h2' ) ) : '' ),
+			( '' !== $subtitle ? sprintf( '<span class="et_pb_best_value">%1$s</span>', et_core_esc_previously( $subtitle ) ) : '' ),
 			do_shortcode( et_pb_fix_shortcodes( et_pb_extract_items( $content ) ) ),
 			$button,
-			( '' !== $currency ? sprintf( '<span class="et_pb_dollar_sign">%1$s</span>', esc_html( $currency ) ) : '' ),
-			( '' !== $sum ? sprintf( '<span class="et_pb_sum">%1$s</span>', esc_html( $sum ) ) : '' ),
-			( '' !== $per ? sprintf( '<span class="et_pb_frequency">/%1$s</span>', esc_html( $per ) ) : '' ),
+			( '' !== $currency ? sprintf( '<span class="et_pb_dollar_sign">%1$s</span>', et_core_esc_previously( $currency ) ) : '' ),
+			( '' !== $sum ? sprintf( '<span class="et_pb_sum">%1$s</span>', et_core_esc_previously( $sum ) ) : '' ),
+			( '' !== $per ? sprintf( '<span class="et_pb_frequency">/%1$s</span>', et_core_esc_previously( $per ) ) : '' ),
 			$video_background,
 			$parallax_image_background
 		);

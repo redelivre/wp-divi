@@ -3,6 +3,7 @@
 class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Sidebar', 'et_builder' );
+		$this->plural     = esc_html__( 'Sidebars', 'et_builder' );
 		$this->slug       = 'et_pb_sidebar';
 		$this->vb_support = 'on';
 
@@ -52,8 +53,12 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 				'options' => array(
 					'background_layout' => array(
 						'default' => 'light',
+						'hover' => 'tabs',
 					),
 				),
+				'css' => array(
+					'main' => '%%order_class%%, %%order_class%% .widgettitle'
+				)
 			),
 			'button'                => false,
 		);
@@ -176,10 +181,12 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$orientation       = $this->props['orientation'];
-		$area              = "" === $this->props['area'] ? self::get_default_area() : $this->props['area'];
-		$background_layout = $this->props['background_layout'];
-		$show_border       = $this->props['show_border'];
+		$orientation                     = $this->props['orientation'];
+		$area                            = "" === $this->props['area'] ? self::get_default_area() : $this->props['area'];
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$show_border                     = $this->props['show_border'];
 
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
@@ -188,8 +195,9 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 
 		ob_start();
 
-		if ( is_active_sidebar( $area ) )
+		if ( is_active_sidebar( $area ) ) {
 			dynamic_sidebar( $area );
+		}
 
 		$widgets = ob_get_contents();
 
@@ -213,8 +221,21 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 			$render_slug,
 		) );
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
+
 		$output = sprintf(
-			'<div%3$s class="%2$s">
+			'<div%3$s class="%2$s"%6$s%7$s>
 				%5$s
 				%4$s
 				%1$s
@@ -223,7 +244,9 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 			$this->module_classname( $render_slug ),
 			$this->module_id(),
 			$video_background,
-			$parallax_image_background
+			$parallax_image_background, // #5
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover )
 		);
 
 		return $output;

@@ -27,7 +27,7 @@ class ET_Builder_Module_Field_Template_Border_Radius extends ET_Builder_Module_F
 				<div class="et-pb-border-radius-preview">
 					<div class="et-pb-border-radius-wrap-link-button">
 						<a href="#" class="">
-							<?php echo $this->_render_icon( 'border-link' ) ?>
+							<?php echo et_core_esc_previously( $this->_render_icon( 'border-link' ) ) ?>
 						</a>
 					</div>
 				</div>
@@ -57,13 +57,13 @@ class ET_Builder_Module_Field_Template_Border_Radius extends ET_Builder_Module_F
 			$value_open_tag = "<%-";
 			$value_close_tag = "%>";
 		?>
-		<?php $attr_name = $render_helper->get_type() == 'child' ? 'data.' . esc_attr( $name ) : esc_attr( $name ) ?>
+		<?php $attr_name = $render_helper->get_type() === 'child' ? 'data.' . esc_attr( $name ) : esc_attr( $name ) ?>
 		<?php $default = isset( $field['default'] ) ? $field['default'] : 'on||||' ?>
 		<input id="<?php echo esc_attr( $name ) ?>"
 			type="hidden"
 			name="<?php echo esc_attr( $name ) ?>"
 			data-default="<?php echo esc_attr( $default ) ?>"
-			value="<?php echo $value_open_tag; ?> typeof( <?php echo esc_attr( $attr_name ) ?> ) !== 'undefined' ?  <?php echo esc_attr( $attr_name ) . '.replace(/%91/g, "[").replace(/%93/g, "]").replace(/%22/g, "\"")' ?> : '' <?php echo $value_close_tag; ?>"
+			value="<?php echo et_core_intentionally_unescaped( $value_open_tag, 'fixed_string' ); ?> typeof( <?php echo esc_attr( $attr_name ) ?> ) !== 'undefined' ?  <?php echo esc_attr( $attr_name ) . '.replace(/%91/g, "[").replace(/%93/g, "]").replace(/%22/g, "\"")' ?> : '' <?php echo et_core_intentionally_unescaped( $value_close_tag, 'fixed_string' ); ?>"
 			class="et-pb-main-setting"
 		/>
 		<?php

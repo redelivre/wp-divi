@@ -12,6 +12,7 @@ class ET_Builder_Module_Signup_Item extends ET_Builder_Module {
 
 	public function init() {
 		$this->name                        = esc_html__( 'Custom Field', 'et_builder' );
+		$this->plural                      = esc_html__( 'Custom Fields', 'et_builder' );
 		$this->advanced_setting_title_text = $this->name;
 		$this->settings_text               = esc_html__( 'Custom Field Settings', 'et_builder' );
 	}

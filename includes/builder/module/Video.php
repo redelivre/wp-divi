@@ -2,8 +2,9 @@
 
 class ET_Builder_Module_Video extends ET_Builder_Module {
 	function init() {
-		$this->name = esc_html__( 'Video', 'et_builder' );
-		$this->slug = 'et_pb_video';
+		$this->name       = esc_html__( 'Video', 'et_builder' );
+		$this->plural     = esc_html__( 'Videos', 'et_builder' );
+		$this->slug       = 'et_pb_video';
 		$this->vb_support = 'on';
 
 		$this->settings_modal_toggles = array(
@@ -48,7 +49,7 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 			'box_shadow'            => array(
 				'default' => array(
 					'css' => array(
-						'custom_style' => true,
+						'overlay' => 'inset',
 					),
 				),
 			),
@@ -65,6 +66,7 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 			'fonts'                 => false,
 			'text'                  => false,
 			'button'                => false,
+			'link_options'          => false,
 		);
 
 		$this->help_videos = array(
@@ -126,6 +128,7 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 				'computed_affects' => array(
 					'__video_cover_src',
 				),
+				'dynamic_content'   => 'image',
 			),
 			'play_icon_color' => array(
 				'label'             => esc_html__( 'Play Icon Color', 'et_builder' ),
@@ -133,6 +136,7 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'play_icon',
+				'hover'             => 'tabs',
 			),
 			'__video' => array(
 				'type'                => 'computed',
@@ -158,6 +162,14 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 			),
 
 		);
+		return $fields;
+	}
+
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['play_icon_color'] = array( 'color' => '%%order_class%% .et_pb_video_overlay .et_pb_video_play' );
+
 		return $fields;
 	}
 
@@ -191,11 +203,19 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 	}
 
 	static function get_video_cover_src( $args = array(), $conditional_tags = array(), $current_page = array() ) {
+		$post_id = isset( $current_page['id'] ) ? $current_page['id'] : self::get_current_post_id();
 		$defaults = array(
 			'image_src' => '',
 		);
 
 		$args = wp_parse_args( $args, $defaults );
+
+		if ( isset( $args['image_src'] ) ) {
+			$dynamic_value = et_builder_parse_dynamic_content( stripslashes( $args['image_src'] ) );
+			if ( $dynamic_value->is_dynamic() && current_user_can( 'edit_post', $post_id ) ) {
+				$args['image_src'] = $dynamic_value->resolve( $post_id );
+			}
+		}
 
 		$image_output = '';
 
@@ -207,10 +227,11 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$src             = $this->props['src'];
-		$src_webm        = $this->props['src_webm'];
-		$image_src       = $this->props['image_src'];
-		$play_icon_color = $this->props['play_icon_color'];
+		$src                   = $this->props['src'];
+		$src_webm              = $this->props['src_webm'];
+		$image_src             = $this->props['image_src'];
+		$play_icon_color       = $this->props['play_icon_color'];
+		$play_icon_color_hover = $this->get_hover_value( 'play_icon_color' );
 
 		$video_src       = self::get_video( array(
 			'src'      => $src,
@@ -230,6 +251,16 @@ class ET_Builder_Module_Video extends ET_Builder_Module {
 				'declaration' => sprintf(
 					'color: %1$s;',
 					esc_html( $play_icon_color )
+				),
+			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'play_icon_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector' => '%%order_class%% .et_pb_video_overlay .et_pb_video_play:hover',
+				'declaration' => sprintf(
+					'color: %1$s;',
+					esc_html( $play_icon_color_hover )
 				),
 			) );
 		}

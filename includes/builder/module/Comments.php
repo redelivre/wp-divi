@@ -3,6 +3,7 @@
 class ET_Builder_Module_Comments extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Comments', 'et_builder' );
+		$this->plural     = esc_html__( 'Comments', 'et_builder' );
 		$this->slug       = 'et_pb_comments';
 		$this->vb_support = 'on';
 
@@ -12,7 +13,6 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 			'general'  => array(
 				'toggles' => array(
 					'elements'   => esc_html__( 'Elements', 'et_builder' ),
-					'background' => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -105,7 +105,8 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 				'button' => array(
 					'label' => esc_html__( 'Button', 'et_builder' ),
 					'css' => array(
-						'plugin_main' => "{$this->main_css_element}.et_pb_comments_module .et_pb_button",
+						'main' => "{$this->main_css_element}.et_pb_comments_module .et_pb_button",
+						'limited_main' => "{$this->main_css_element}.et_pb_comments_module .et_pb_button",
 						'alignment' => "{$this->main_css_element} .form-submit",
 					),
 					'no_rel_attr' => true,
@@ -120,11 +121,13 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 			'text'                  => array(
 				'use_background_layout' => true,
 				'css' => array(
+					'main' => '%%order_class%% p, %%order_class%% .comment_postinfo *, %%order_class%% .page_title, %%order_class%% .comment-reply-title',
 					'text_shadow' => '%%order_class%% p, %%order_class%% .comment_postinfo, %%order_class%% .page_title, %%order_class%% .comment-reply-title',
 				),
 				'options' => array(
 					'background_layout' => array(
 						'default_on_front' => 'light',
+						'hover' => 'tabs',
 					),
 				),
 			),
@@ -294,16 +297,18 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$button_custom         = $this->props['custom_button'];
-		$custom_icon           = $this->props['button_icon'];
-		$form_background_color = $this->props['form_background_color'];
-		$show_avatar           = $this->props['show_avatar'];
-		$show_reply            = $this->props['show_reply'];
-		$show_count            = $this->props['show_count'];
-		$background_layout     = $this->props['background_layout'];
-		$header_level          = $this->props['header_level'];
-		$video_background          = $this->video_background();
-		$parallax_image_background = $this->get_parallax_image_background();
+		$button_custom                   = $this->props['custom_button'];
+		$custom_icon                     = $this->props['button_icon'];
+		$form_background_color           = $this->props['form_background_color'];
+		$show_avatar                     = $this->props['show_avatar'];
+		$show_reply                      = $this->props['show_reply'];
+		$show_count                      = $this->props['show_count'];
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$header_level                    = $this->props['header_level'];
+		$video_background                = $this->video_background();
+		$parallax_image_background       = $this->get_parallax_image_background();
 
 		$this->et_pb_unique_comments_module_class = ET_Builder_Element::get_module_order_class( $render_slug ); // use this variable to make the comments request unique for each module instance
 
@@ -335,6 +340,19 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 
 		$comments_custom_icon = 'on' === $button_custom ? $custom_icon : '';
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
+
 		// Module classname
 		$this->add_classname( array(
 			'et_pb_comments_module',
@@ -358,7 +376,7 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 		$this->remove_classname( $render_slug );
 
 		$output = sprintf(
-			'<div%3$s class="%2$s"%4$s>
+			'<div%3$s class="%2$s"%4$s%7$s%8$s>
 				%5$s
 				%6$s
 				%1$s
@@ -367,8 +385,10 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 			$this->module_classname( $render_slug ),
 			$this->module_id(),
 			'' !== $comments_custom_icon ? sprintf( ' data-icon="%1$s"', esc_attr( et_pb_process_font_icon( $comments_custom_icon ) ) ) : '',
-			$video_background,
-			$parallax_image_background
+			$video_background, // #5
+			$parallax_image_background,
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover )
 		);
 
 		return $output;

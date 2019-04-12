@@ -3,6 +3,7 @@
 class ET_Builder_Module_Login extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Login', 'et_builder' );
+		$this->plural     = esc_html__( 'Logins', 'et_builder' );
 		$this->slug       = 'et_pb_login';
 		$this->vb_support = 'on';
 
@@ -13,7 +14,6 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'toggles' => array(
 					'main_content' => esc_html__( 'Text', 'et_builder' ),
 					'redirect'     => esc_html__( 'Redirect', 'et_builder' ),
-					'background'   => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -57,7 +57,8 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'button' => array(
 					'label' => esc_html__( 'Button', 'et_builder' ),
 					'css' => array(
-						'plugin_main' => "{$this->main_css_element} .et_pb_newsletter_button.et_pb_button",
+						'main' => "{$this->main_css_element} .et_pb_newsletter_button.et_pb_button",
+						'limited_main' => "{$this->main_css_element} .et_pb_newsletter_button.et_pb_button",
 					),
 					'no_rel_attr' => true,
 					'box_shadow'  => array(
@@ -69,7 +70,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 			),
 			'background'            => array(
 				'has_background_color_toggle' => true,
-				'use_background_color' => 'fields_only',
+				'use_background_color' => true,
 				'options' => array(
 					'background_color' => array(
 						'depends_show_if'  => 'on',
@@ -175,16 +176,14 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				),
 				'fields_focus' => array(
 					'css'             => array(
-						'main' => array(
-							'border_radii' => "%%order_class%% .et_pb_newsletter_form input:focus",
-							'border_styles' => "%%order_class%% .et_pb_newsletter_form input:focus",
-						),
+						'main' => "%%order_class%% .et_pb_newsletter_form input:focus",
 					),
 					'label_prefix'    => esc_html__( 'Focus', 'et_builder' ),
 					'tab_slug'        => 'advanced',
 					'toggle_slug'     => 'fields',
-					'depends_on'      => array( 'use_focus_border_color' ),
-					'depends_show_if' => 'on',
+					'show_if'         => array(
+						'use_focus_border_color' => 'on',
+					),
 					'defaults'        => array(
 						'border_radii'  => 'on|3px|3px|3px|3px',
 						'border_styles' => array(
@@ -207,8 +206,16 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 					),
 					'background_layout' => array(
 						'default' => 'dark',
+						'hover' => 'tabs',
 					),
 				),
+				'css' => array(
+					'main' => implode( ', ', array(
+						'%%order_class%% .et_pb_module_header',
+						'%%order_class%% .et_pb_newsletter_description_content',
+						'%%order_class%% .et_pb_forgot_password a',
+					) )
+				)
 			),
 			'text_shadow'           => array(
 				'default' => array(),
@@ -220,6 +227,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 			),
 			'fields'                => array(
 				'css' => array(
+					'main' => "%%order_class%% .input",
 					'text_shadow' => "{$this->main_css_element} input",
 				),
 			),
@@ -265,6 +273,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Choose a title of your login box.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'current_page_redirect' => array(
 				'label'           => esc_html__( 'Redirect To The Current Page', 'et_builder' ),
@@ -284,6 +293,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'option_category'   => 'basic_option',
 				'description'       => esc_html__( 'Input the main text content for your module here.', 'et_builder' ),
 				'toggle_slug'       => 'main_content',
+				'dynamic_content'   => 'text',
 			),
 			'form_field_background_color' => array(
 				'label'             => esc_html__( 'Form Field Background Color', 'et_builder' ),
@@ -291,6 +301,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'fields',
+				'hover'             => 'tabs',
 			),
 			'form_field_text_color' => array(
 				'label'             => esc_html__( 'Form Field Text Color', 'et_builder' ),
@@ -298,6 +309,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'fields',
+				'hover'             => 'tabs',
 			),
 			'focus_background_color' => array(
 				'label'             => esc_html__( 'Focus Background Color', 'et_builder' ),
@@ -305,6 +317,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'fields',
+				'hover'             => 'tabs',
 			),
 			'focus_text_color' => array(
 				'label'             => esc_html__( 'Focus Text Color', 'et_builder' ),
@@ -312,28 +325,52 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'fields',
+				'hover'             => 'tabs',
 			),
 		);
 
 		return $fields;
 	}
 
+	public function get_transition_fields_css_props() {
+		$fields       = parent::get_transition_fields_css_props();
+		$selector     = self::$_->array_get( $this->advanced_fields, 'fields.css.main' );
+		$placeholders = "$selector::placeholder, $selector::-webkit-input-placeholder, $selector::-moz-placeholder, $selector::-ms-input-placeholder";
+
+		$fields["form_field_background_color"] = array( 'background-color' => $selector );
+		$fields["form_field_text_color"]       = array( 'color' => implode( ', ', array( $placeholders, $selector ) ) );
+		$fields["focus_field_background_color"] = array( 'background-color' => $selector );
+		$fields["focus_field_text_color"]       = array( 'color' => implode( ', ', array( $placeholders, $selector ) ) );
+
+		$fields = array_merge( $fields, $this->get_transition_borders_fields_css_props( 'fields' ) );
+		$fields = array_merge( $fields, $this->get_transition_box_shadow_fields_css_props( 'fields' ) );
+		$fields = array_merge( $fields, $this->get_transition_text_shadow_fields_css_props( 'fields' ) );
+
+		return $fields;
+	}
+
 	function render( $attrs, $content = null, $render_slug ) {
-		$module_id                   = $this->props['module_id'];
-		$title                       = $this->props['title'];
-		$background_color            = $this->props['background_color'];
-		$background_layout           = $this->props['background_layout'];
-		$use_background_color        = $this->props['use_background_color'];
-		$current_page_redirect       = $this->props['current_page_redirect'];
-		$form_field_background_color = $this->props['form_field_background_color'];
-		$form_field_text_color       = $this->props['form_field_text_color'];
-		$focus_background_color      = $this->props['focus_background_color'];
-		$focus_text_color            = $this->props['focus_text_color'];
-		$button_custom               = $this->props['custom_button'];
-		$custom_icon                 = $this->props['button_icon'];
-		$header_level                = $this->props['header_level'];
-		$content                     = $this->content;
-		$use_focus_border_color      = $this->props['use_focus_border_color'];
+		$module_id                         = $this->props['module_id'];
+		$title                             = $this->_esc_attr( 'title' );
+		$background_color                  = $this->props['background_color'];
+		$background_layout                 = $this->props['background_layout'];
+		$background_layout_hover           = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled   = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$use_background_color              = $this->props['use_background_color'];
+		$current_page_redirect             = $this->props['current_page_redirect'];
+		$form_field_background_color       = $this->props['form_field_background_color'];
+		$form_field_background_color_hover = $this->get_hover_value( 'form_field_background_color' );
+		$form_field_text_color             = $this->props['form_field_text_color'];
+		$form_field_text_color_hover       = $this->get_hover_value( 'form_field_text_color' );
+		$focus_background_color            = $this->props['focus_background_color'];
+		$focus_background_color_hover      = $this->get_hover_value( 'focus_background_color' );
+		$focus_text_color                  = $this->props['focus_text_color'];
+		$focus_text_color_hover            = $this->get_hover_value( 'focus_text_color' );
+		$button_custom                     = $this->props['custom_button'];
+		$custom_icon                       = $this->props['button_icon'];
+		$header_level                      = $this->props['header_level'];
+		$content                           = $this->content;
+		$use_focus_border_color            = $this->props['use_focus_border_color'];
 
 		if ( '' !== $focus_background_color ) {
 			ET_Builder_Element::set_style( $render_slug, array(
@@ -341,6 +378,17 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				'declaration' => sprintf(
 					'background-color: %1$s%2$s;',
 					esc_html( $focus_background_color ),
+					et_builder_has_limitation( 'force_use_global_important' ) ? ' !important' : ''
+				),
+			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'focus_background_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => '%%order_class%% .et_pb_newsletter_form p input:focus:hover',
+				'declaration' => sprintf(
+					'background-color: %1$s%2$s;',
+					esc_html( $focus_background_color_hover ),
 					et_is_builder_plugin_active() ? ' !important' : ''
 				),
 			) );
@@ -372,12 +420,49 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 			) );
 		}
 
+		if ( et_builder_is_hover_enabled( 'focus_text_color', $this->props ) ) {
+			$placeholder_selectors = array(
+				'%%order_class%% .et_pb_newsletter_form p input:focus:hover::-webkit-input-placeholder',
+				'%%order_class%% .et_pb_newsletter_form p input:focus:hover::-moz-placeholder',
+				'%%order_class%% .et_pb_newsletter_form p input:focus:hover:-ms-input-placeholder',
+			);
+
+			foreach ( $placeholder_selectors as $single_selector ) {
+				ET_Builder_Element::set_style( $render_slug, array(
+					'selector'    => $single_selector,
+					'declaration' => sprintf(
+						'color: %1$s;',
+						esc_html( $focus_text_color_hover )
+					),
+				) );
+			}
+
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => '%%order_class%% .et_pb_newsletter_form p input:focus:hover',
+				'declaration' => sprintf(
+					'color: %1$s;',
+					esc_html( $focus_text_color_hover )
+				),
+			) );
+		}
+
 		if ( '' !== $form_field_background_color ) {
 			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% input[type="text"], %%order_class%% textarea, %%order_class%% .input',
+				'selector'    => '%%order_class%% input[type="password"], %%order_class%% input[type="text"], %%order_class%% textarea, %%order_class%% .input',
 				'declaration' => sprintf(
 					'background-color: %1$s%2$s;',
 					esc_html( $form_field_background_color ),
+					et_builder_has_limitation( 'force_use_global_important' ) ? ' !important' : ''
+				),
+			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'form_field_background_color', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => '%%order_class%%:hover input[type="text"], %%order_class%%:hover textarea, %%order_class%%:hover .input',
+				'declaration' => sprintf(
+					'background-color: %1$s%2$s;',
+					esc_html( $form_field_background_color_hover ),
 					et_is_builder_plugin_active() ? ' !important' : ''
 				),
 			) );
@@ -401,10 +486,36 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 			}
 
 			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% input[type="text"], %%order_class%% textarea, %%order_class%% .input',
+				'selector'    => '%%order_class%% input[type="password"], %%order_class%% input[type="text"], %%order_class%% textarea, %%order_class%% .input',
 				'declaration' => sprintf(
 					'color: %1$s;',
 					esc_html( $form_field_text_color )
+				),
+			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'form_field_text_color', $this->props ) ) {
+			$placeholder_selectors = array(
+				'%%order_class%% .input:hover::-webkit-input-placeholder',
+				'%%order_class%% .input:hover::-moz-placeholder',
+				'%%order_class%% .input:hover:-ms-input-placeholder',
+			);
+
+			foreach ( $placeholder_selectors as $single_selector ) {
+				ET_Builder_Element::set_style( $render_slug, array(
+					'selector'    => $single_selector,
+					'declaration' => sprintf(
+						'color: %1$s;',
+						esc_html( $form_field_text_color_hover )
+					),
+				) );
+			}
+
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => '%%order_class%%:hover input[type="text"], %%order_class%%:hover textarea, %%order_class%%:hover .input',
+				'declaration' => sprintf(
+					'color: %1$s;',
+					esc_html( $form_field_text_color_hover )
 				),
 			) );
 		}
@@ -472,6 +583,18 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 			);
 		}
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
 		// Module classnames
 		$this->add_classname( array(
 			'et_pb_newsletter',
@@ -489,7 +612,7 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 		}
 
 		$output = sprintf(
-			'<div%6$s class="%4$s"%5$s>
+			'<div%6$s class="%4$s"%5$s%9$s%10$s>
 				%8$s
 				%7$s
 				<div class="et_pb_newsletter_description">
@@ -498,17 +621,16 @@ class ET_Builder_Module_Login extends ET_Builder_Module {
 				</div>
 				%3$s
 			</div>',
-			( '' !== $title ? sprintf( '<%1$s class="et_pb_module_header">%2$s</%1$s>', et_pb_process_header_level( $header_level, 'h2' ), esc_html( $title ) ) : '' ),
+			( '' !== $title ? sprintf( '<%1$s class="et_pb_module_header">%2$s</%1$s>', et_pb_process_header_level( $header_level, 'h2' ), et_core_esc_previously( $title ) ) : '' ),
 			( '' !== $content ? '<div class="et_pb_newsletter_description_content">' . $content . '</div>' : '' ),
 			$form,
 			$this->module_classname( $render_slug ),
-			( 'on' === $use_background_color
-				? sprintf( ' style="background-color: %1$s;"', esc_attr( $background_color ) )
-				: ''
-			),
+			'',
 			$this->module_id(),
 			$video_background,
-			$parallax_image_background
+			$parallax_image_background,
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover ) // #10
 		);
 
 		return $output;

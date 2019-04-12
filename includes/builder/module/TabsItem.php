@@ -3,6 +3,7 @@
 class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 	function init() {
 		$this->name                        = esc_html__( 'Tab', 'et_builder' );
+		$this->plural                      = esc_html__( 'Tabs', 'et_builder' );
 		$this->slug                        = 'et_pb_tab';
 		$this->vb_support                  = 'on';
 		$this->type                        = 'child';
@@ -42,7 +43,7 @@ class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 					'css'      => array(
 						'main' => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab",
 						'line_height' => ".et_pb_tabs {$this->main_css_element}.et_pb_tab p",
-						'plugin_main' => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab, .et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab p",
+						'limited_main' => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab, .et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab p",
 					),
 					'line_height' => array(
 						'range_settings' => array(
@@ -89,16 +90,18 @@ class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'title' => array(
-				'label'       => esc_html__( 'Title', 'et_builder' ),
-				'type'        => 'text',
-				'description' => esc_html__( 'The title will be used within the tab button for this tab.', 'et_builder' ),
-				'toggle_slug' => 'main_content',
+				'label'           => esc_html__( 'Title', 'et_builder' ),
+				'type'            => 'text',
+				'description'     => esc_html__( 'The title will be used within the tab button for this tab.', 'et_builder' ),
+				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 			'content' => array(
-				'label'       => esc_html__( 'Content', 'et_builder' ),
-				'type'        => 'tiny_mce',
-				'description' => esc_html__( 'Here you can define the content that will be placed within the current tab.', 'et_builder' ),
-				'toggle_slug' => 'main_content',
+				'label'           => esc_html__( 'Content', 'et_builder' ),
+				'type'            => 'tiny_mce',
+				'description'     => esc_html__( 'Here you can define the content that will be placed within the current tab.', 'et_builder' ),
+				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
 			),
 		);
 		return $fields;

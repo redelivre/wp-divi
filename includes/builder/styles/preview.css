@@ -9,7 +9,7 @@ body.et-pb-preview #page-container {
 	width: 100% !important;
 }
 
-body.et-pb-preview.et_divi_builder #page-container {
+body.et-pb-preview.et-db #page-container {
 	padding: 0 !important;
 	margin: 0;
 	border: none;
@@ -34,7 +34,7 @@ body.et-pb-preview {
 	border: none;
 }
 
-body.et-pb-preview.et_divi_builder {
+body.et-pb-preview.et-db {
 	color: #666;
 }
 
@@ -42,8 +42,8 @@ body.et-pb-preview:before {
 	box-shadow: none;
 }
 
-body.et-pb-preview.et_divi_builder #main-content > .container > div,
-body.et-pb-preview.et_divi_builder #main-content > .container > div > div {
+body.et-pb-preview.et-db #main-content > .container > div,
+body.et-pb-preview.et-db #main-content > .container > div > div {
 	margin: 0;
 	padding: 0;
 	background: none;

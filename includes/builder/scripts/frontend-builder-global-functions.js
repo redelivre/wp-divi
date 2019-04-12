@@ -26,7 +26,7 @@
 		}
 
 		$( 'html, body' ).animate( { scrollTop :  $scroll_position }, speed, easing );
-	}
+	};
 
 	window.et_pb_form_placeholders_init = function( $form ) {
 		$form.find('input:text, input[type="email"], input[type="url"], textarea').each(function(index,domEle){
@@ -50,7 +50,7 @@
 			if ( jQuery(this).siblings('span.required').length ) et_label_text += jQuery(this).siblings('span.required').text();
 			if (jQuery(this).val() === "") jQuery(this).val( et_label_text );
 		});
-	}
+	};
 
 	window.et_duplicate_menu = function( menu, append_to, menu_id, menu_class, menu_click_event ){
 		append_to.each( function() {
@@ -85,7 +85,7 @@
 		} );
 
 		$('#mobile_menu .centered-inline-logo-wrap').remove();
-	}
+	};
 
 	// remove placeholder text before form submission
 	window.et_pb_remove_placeholder_text = function( $form ) {
@@ -99,7 +99,7 @@
 					$et_current_input.val( '' );
 			}
 		});
-	}
+	};
 
 	window.et_fix_fullscreen_section = function() {
 		var $et_window = $(window);
@@ -111,24 +111,17 @@
 
 			$et_window.on( 'resize', $.proxy( et_calc_fullscreen_section, $this_section ) );
 		});
-	}
+	};
 
 	window.et_bar_counters_init = function( $bar_item ) {
 		if ( ! $bar_item.length ) {
 			return;
 		}
 
-		var $bar_container      = $bar_item.closest( '.et_pb_counter_container' ),
-			bar_item_width      = $bar_item.attr( 'data-width' ),
-			bar_item_padding    = Math.ceil( parseFloat( $bar_item.css('paddingLeft') ) ) + Math.ceil( parseFloat( $bar_item.css('paddingRight') ) ),
-			$bar_item_text      = $bar_item.children( '.et_pb_counter_amount_number' ),
-			calculated_width    = ( $bar_container.width() - $bar_item_text.innerWidth() ) / 100 * parseFloat( bar_item_width ),
-			bar_item_text_width = calculated_width + $bar_item_text.innerWidth();
-
 		$bar_item.css({
-			'width' : bar_item_text_width
+			'width' : parseFloat( $bar_item.attr( 'data-width' ) ) + '%'
 		});
-	}
+	};
 
 	window.et_fix_pricing_currency_position = function( $pricing_table ) {
 		var $all_pricing_tables = typeof $pricing_table !== 'undefined' ? $pricing_table : $( '.et_pb_pricing_table' );
@@ -150,7 +143,7 @@
 			// adjust the margin of currency sign to make sure it doesn't overflow the price
 			$currency.css( { 'marginLeft' : - $currency.width() + 'px' } );
 		});
-	}
+	};
 
 	window.et_pb_set_responsive_grid = function( $grid_items_container, single_item_selector ) {
 		setTimeout( function() {
@@ -206,7 +199,7 @@
 			// determine the height of the tallest tab
 			if ( $all_tabs.length ) {
 				// remove the height attribute if it was added to calculate the height correctly
-				$tab_controls.removeAttr( 'style' );
+				$tab_controls.children('li').removeAttr('style');
 
 				$all_tabs.each( function() {
 					var tab_height = $( this ).outerHeight();
@@ -223,10 +216,10 @@
 
 			if ( 0 !== max_height ) {
 				// set the height of tabs container based on the height of the tallest tab
-				$tab_controls.css( 'min-height', max_height );
+				$tab_controls.children('li').css('height', max_height);
 			}
 		});
-	}
+	};
 
 	window.et_pb_box_shadow_apply_overlay = function (el) {
 		var pointerEventsSupport = document.body.style.pointerEvents !== undefined
@@ -245,7 +238,7 @@
 		} else {
 			$(el).addClass('.et-box-shadow-no-overlay');
 		}
-	}
+	};
 
 	window.et_pb_init_nav_menu = function($et_menus) {
 		$et_menus.each(function() {
@@ -326,7 +319,7 @@
 			// mark the menu as ready
 			$et_menu.data('et-is-menu-ready', 'ready');
 		});
-	}
+	};
 
 	window.et_pb_toggle_nav_menu = function($element, state, delay) {
 		if ( 'open' === state ) {
@@ -345,7 +338,7 @@
 				}
 			}, closeDelay );
 		}
-	}
+	};
 
 	window.et_pb_apply_sticky_image_effect = function($sticky_image_el) {
 		var $row                = $sticky_image_el.closest('.et_pb_row');
@@ -379,5 +372,5 @@
 		if (! $section.hasClass(sticky_mobile_class) && $column.is($lastColumnInRow)) {
 			$section.addClass(sticky_mobile_class);
 		}
-	}
+	};
 })(jQuery);

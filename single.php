@@ -14,7 +14,7 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 			// load fullwidth page in Product Tour mode
 			while ( have_posts() ): the_post(); ?>
 
-				<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+				<article id="post-<?php the_ID(); ?>" <?php post_class( 'et_pb_post' ); ?>>
 					<div class="entry-content">
 					<?php
 						the_content();
@@ -30,7 +30,14 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 		<div id="content-area" class="clearfix">
 			<div id="left-area">
 			<?php while ( have_posts() ) : the_post(); ?>
-				<?php if (et_get_option('divi_integration_single_top') <> '' && et_get_option('divi_integrate_singletop_enable') == 'on') echo(et_get_option('divi_integration_single_top')); ?>
+				<?php
+				/**
+				 * Fires before the title and post meta on single posts.
+				 *
+				 * @since 3.18.8
+				 */
+				do_action( 'et_before_post' );
+				?>
 				<article id="post-<?php the_ID(); ?>" <?php post_class( 'et_pb_post' ); ?>>
 					<?php if ( ( 'off' !== $show_default_title && $is_page_builder_used ) || ! $is_page_builder_used ) { ?>
 						<div class="et_post_meta_wrapper">
@@ -58,7 +65,7 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 										'<div class="et_main_video_container">
 											%1$s
 										</div>',
-										$first_video
+										et_core_esc_previously( $first_video )
 									);
 								} else if ( ! in_array( $post_format, array( 'gallery', 'link', 'quote' ) ) && 'on' === et_get_option( 'divi_thumbnails', 'on' ) && '' !== $thumb ) {
 									print_thumbnail( $thumb, $thumbnail["use_timthumb"], $titletext, $width, $height );
@@ -82,8 +89,8 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 													%3$s
 												</div>',
 												esc_attr( $text_color_class ),
-												$inline_style,
-												$audio_player
+												et_core_esc_previously( $inline_style ),
+												et_core_esc_previously( $audio_player )
 											);
 										}
 
@@ -93,9 +100,9 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 											'<div class="et_quote_content%2$s"%3$s>
 												%1$s
 											</div> <!-- .et_quote_content -->',
-											et_get_blockquote_in_content(),
+											et_core_esc_previously( et_get_blockquote_in_content() ),
 											esc_attr( $text_color_class ),
-											$inline_style
+											et_core_esc_previously( $inline_style )
 										);
 
 										break;
@@ -107,7 +114,7 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 											esc_url( et_get_link_url() ),
 											esc_html( et_get_link_url() ),
 											esc_attr( $text_color_class ),
-											$inline_style
+											et_core_esc_previously( $inline_style )
 										);
 
 										break;
@@ -129,20 +136,23 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 					</div> <!-- .entry-content -->
 					<div class="et_post_meta_wrapper">
 					<?php
-					if ( et_get_option('divi_468_enable') == 'on' ){
+					if ( et_get_option('divi_468_enable') === 'on' ){
 						echo '<div class="et-single-post-ad">';
-						if ( et_get_option('divi_468_adsense') <> '' ) echo( et_get_option('divi_468_adsense') );
+						if ( et_get_option('divi_468_adsense') !== '' ) echo et_core_intentionally_unescaped( et_core_fix_unclosed_html_tags( et_get_option('divi_468_adsense') ), 'html' );
 						else { ?>
 							<a href="<?php echo esc_url(et_get_option('divi_468_url')); ?>"><img src="<?php echo esc_attr(et_get_option('divi_468_image')); ?>" alt="468" class="foursixeight" /></a>
 				<?php 	}
 						echo '</div> <!-- .et-single-post-ad -->';
 					}
-				?>
 
-					<?php if (et_get_option('divi_integration_single_bottom') <> '' && et_get_option('divi_integrate_singlebottom_enable') == 'on') echo(et_get_option('divi_integration_single_bottom')); ?>
+					/**
+					 * Fires after the post content on single posts.
+					 *
+					 * @since 3.18.8
+					 */
+					do_action( 'et_after_post' );
 
-					<?php
-						if ( ( comments_open() || get_comments_number() ) && 'on' == et_get_option( 'divi_show_postcomments', 'on' ) ) {
+						if ( ( comments_open() || get_comments_number() ) && 'on' === et_get_option( 'divi_show_postcomments', 'on' ) ) {
 							comments_template( '', true );
 						}
 					?>

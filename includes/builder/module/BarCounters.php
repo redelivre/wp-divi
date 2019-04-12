@@ -3,6 +3,7 @@
 class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 	function init() {
 		$this->name            = esc_html__( 'Bar Counters', 'et_builder' );
+		$this->plural          = esc_html__( 'Bar Counters', 'et_builder' );
 		$this->slug            = 'et_pb_counters';
 		$this->vb_support      = 'on';
 		$this->child_slug      = 'et_pb_counter';
@@ -14,7 +15,6 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 			'general'  => array(
 				'toggles' => array(
 					'elements'   => esc_html__( 'Elements', 'et_builder' ),
-					'background' => esc_html__( 'Background', 'et_builder' ),
 				),
 			),
 			'advanced' => array(
@@ -43,9 +43,8 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 			'box_shadow'            => array(
 				'default' => array(
 					'css' => array(
-						'main'         => '%%order_class%% .et_pb_counter_container',
-						'custom_style' => true,
-
+						'main'    => '%%order_class%% .et_pb_counter_container',
+						'overlay' => 'inset',
 					),
 				),
 			),
@@ -87,6 +86,7 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 				'options' => array(
 					'background_layout' => array(
 						'default_on_front' => 'light',
+						'hover' => 'tabs',
 					),
 				),
 			),
@@ -128,6 +128,7 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 				'type'              => 'color-alpha',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'bar',
+				'hover'             => 'tabs',
 				'description'       => esc_html__( 'This will change the fill color for the bar.', 'et_builder' ),
 				'default'           => et_builder_accent_color(),
 			),
@@ -143,6 +144,15 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 				'default_on_front'  => 'on',
 			),
 		);
+
+		return $fields;
+	}
+
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['background_layout'] = array( 'color' => '%%order_class%% .et_pb_counter_title' );
+		$fields['bar_bg_color'] = array( 'background-color' => '%%order_class%% .et_pb_counter_amount' );
 
 		return $fields;
 	}
@@ -165,6 +175,7 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 
 		$et_pb_counters_settings = array(
 			'background_color'          => $background_color,
+			'background_color_hover'    => self::get_hover_value( 'background_color' ),
 			'background_image'          => $background_image,
 			'parallax'                  => $parallax,
 			'parallax_method'           => $parallax_method,
@@ -180,8 +191,9 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$background_layout  = $this->props['background_layout'];
-
+		$background_layout               = $this->props['background_layout'];
+		$bar_bg_hover_color              = et_pb_hover_options()->get_value( 'bar_bg_color', $this->props );
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
 		$video_background = $this->video_background();
 
 		// Module classname
@@ -192,13 +204,37 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 
 		$this->add_classname( $this->get_text_orientation_classname() );
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+
+		if ( et_pb_hover_options()->is_enabled( 'background_layout', $this->props ) ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
+
+		if ( ! empty( $bar_bg_hover_color ) ) {
+			self::set_style( $render_slug,
+				array(
+					'selector'    => '%%order_class%%:hover .et_pb_counter_amount',
+					'declaration' => sprintf( 'background-color: %1$s;', esc_attr( $bar_bg_hover_color ) ),
+				) );
+		}
+
 		$output = sprintf(
-			'<ul%3$s class="%2$s">
+			'<ul%3$s class="%2$s"%4$s%5$s>
 				%1$s
 			</ul> <!-- .et_pb_counters -->',
 			$this->content,
 			$this->module_classname( $render_slug ),
-			$this->module_id()
+			$this->module_id(),
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover ) // #5
 		);
 
 		return $output;

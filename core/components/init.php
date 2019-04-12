@@ -131,6 +131,9 @@ function et_core_clear_wp_cache( $post_id = '' ) {
 			if ( is_object( $sg_cachepress_supercacher ) && method_exists( $sg_cachepress_supercacher, 'purge_cache' ) ) {
 				$sg_cachepress_supercacher->purge_cache( true );
 			}
+
+		} else if ( function_exists( 'sg_cachepress_purge_cache' ) ) {
+			sg_cachepress_purge_cache();
 		}
 
 		// WP Engine
@@ -214,11 +217,17 @@ if ( ! function_exists( 'et_core_page_resource_fallback' ) ):
  * Handles page resource fallback requests.
  */
 function et_core_page_resource_fallback() {
+	// phpcs:disable WordPress.Security.NonceVerification.NoNonceVerification
 	if ( ! isset( $_GET['et_core_page_resource'] ) ) {
 		return;
 	}
 
 	if ( is_admin() && ! is_customize_preview() ) {
+		return;
+	}
+
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
 		return;
 	}
 
@@ -238,6 +247,7 @@ function et_core_page_resource_fallback() {
 	status_header( 404 );
 	nocache_headers();
 	die();
+	// phpcs:enable
 }
 add_action( 'init', 'et_core_page_resource_fallback', 0 );
 endif;
@@ -280,6 +290,11 @@ function et_core_page_resource_maybe_output_fallback_script() {
 		return;
 	}
 
+	/** @see ET_Support_Center::toggle_safe_mode */
+	if ( et_core_is_safe_mode_active() ) {
+		return;
+	}
+
 	$IS_SINGULAR = et_core_page_resource_is_singular();
 	$POST_ID     = $IS_SINGULAR ? et_core_page_resource_get_the_ID() : 'global';
 
@@ -290,7 +305,11 @@ function et_core_page_resource_maybe_output_fallback_script() {
 	$SITE_URL = get_site_url();
 	$SCRIPT   = file_get_contents( ET_CORE_PATH . 'admin/js/page-resource-fallback.min.js' );
 
-	print( "<script>var et_site_url='{$SITE_URL}';var et_post_id='{$POST_ID}';{$SCRIPT}</script>" );
+	printf( "<script>var et_site_url='%s';var et_post_id='%d';%s</script>",
+		et_core_esc_previously( $SITE_URL ),
+		et_core_esc_previously( $POST_ID ),
+		et_core_esc_previously( $SCRIPT )
+	);
 }
 add_action( 'wp_head', 'et_core_page_resource_maybe_output_fallback_script', 0 );
 endif;

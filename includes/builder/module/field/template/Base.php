@@ -16,7 +16,7 @@ abstract class ET_Builder_Module_Field_Template_Base {
 
 	protected function _render_icon( $icon_name ) {
 		return '<div class="et-pb-icon">
-					<svg viewBox="0 0 28 28" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision"><%= et_builder_template_options.options_icons[ "' . $icon_name. '" ] %></svg>
+					<svg viewBox="0 0 28 28" preserveAspectRatio="xMidYMid meet" shapeRendering="geometricPrecision"><%= et_builder_template_options.options_icons[ "' . esc_attr( $icon_name ) . '" ] %></svg>
 				</div>';
 	}
 

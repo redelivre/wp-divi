@@ -5,13 +5,13 @@ if ( ! class_exists( 'ET_Core_LIB_SilentThemeUpgraderSkin' ) ):
 /**
  * Theme Upgrader skin which does not output feedback
  *
- * @since ??
+ * @since 3.10
  *
  * @private
  */
 class ET_Core_LIB_SilentThemeUpgraderSkin extends WP_Upgrader_Skin {
 	/**
-	 * @since ??
+	 * @since 3.10
 	 *
 	 * @private
 	 *

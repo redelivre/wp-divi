@@ -3,6 +3,7 @@
 class ET_Builder_Module_Divider extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Divider', 'et_builder' );
+		$this->plural     = esc_html__( 'Dividers', 'et_builder' );
 		$this->slug       = 'et_pb_divider';
 		$this->vb_support = 'on';
 
@@ -25,6 +26,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			'on'  => esc_html__( 'Yes', 'et_builder' ),
 		);
 
+		// Handle different default values for Builder Plugin
 		if ( ! et_is_builder_plugin_active() && true === et_get_option( 'et_pb_divider-show_divider', false ) ) {
 			$this->show_divider_options = array_reverse( $this->show_divider_options );
 		}
@@ -75,6 +77,7 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'description'     => esc_html__( 'This will adjust the color of the 1px divider line.', 'et_builder' ),
 				'depends_show_if' => 'on',
 				'toggle_slug'     => 'color',
+				'hover'           => 'tabs',
 			),
 			'show_divider' => array(
 				'default'           => 'on',
@@ -124,36 +127,51 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'toggle_slug'       => 'width',
 				'default_unit'      => 'px',
 				'default'           => $this->defaults['divider_weight'],
+				'hover'             => 'tabs',
 			),
 			'height' => array(
-				'label'           => esc_html__( 'Height', 'et_builder' ),
-				'type'            => 'range',
-				'option_category' => 'layout',
-				'tab_slug'        => 'advanced',
-				'toggle_slug'     => 'width',
-				'description'     => esc_html__( 'Define how much space should be added below the divider.', 'et_builder' ),
-				'default'         => '23px',
-				'default_unit'    => 'px',
+				'label'            => esc_html__( 'Height', 'et_builder' ),
+				'type'             => 'range',
+				'option_category'  => 'layout',
+				'tab_slug'         => 'advanced',
+				'toggle_slug'      => 'width',
+				'description'      => esc_html__( 'Define how much space should be added below the divider.', 'et_builder' ),
+				'default'          => '23px',
+				'default_unit'     => 'px',
 				'default_on_front' => '23px',
+				'hover'            => 'tabs',
 			),
 		);
 		return $fields;
 	}
 
+	public function get_transition_fields_css_props() {
+		$fields = parent::get_transition_fields_css_props();
+
+		$fields['color'] = array( 'border' => '%%order_class%%:before' );
+		$fields['divider_weight'] = array( 'border' => '%%order_class%%:before' );
+		$fields['height'] = array( 'height' => '%%order_class%%' );
+
+		return $fields;
+	}
+
 	function render( $attrs, $content = null, $render_slug ) {
-		$color            = $this->props['color'];
-		$show_divider     = $this->props['show_divider'];
-		$height           = $this->props['height'];
-		$divider_style    = $this->props['divider_style'];
-		$divider_position = $this->props['divider_position'];
+		$color                       = $this->props['color'];
+		$color_hover                 = $this->get_hover_value( 'color' );
+		$show_divider                = $this->props['show_divider'];
+		$height                      = $this->props['height'];
+		$height_hover                = $this->get_hover_value( 'height' );
+		$divider_style               = $this->props['divider_style'];
+		$divider_position            = $this->props['divider_position'];
 		$divider_position_customizer = ! et_is_builder_plugin_active() ? et_get_option( 'et_pb_divider-divider_position', 'top' ) : 'top';
-		$divider_weight   = $this->props['divider_weight'];
+		$divider_weight              = $this->props['divider_weight'];
+		$divider_weight_hover        = $this->get_hover_value( 'divider_weight' );
 		$custom_padding              = $this->props['custom_padding'];
 		$custom_padding_tablet       = $this->props['custom_padding_tablet'];
 		$custom_padding_phone        = $this->props['custom_padding_phone'];
 
-		$video_background          = $this->video_background();
-		$parallax_image_background = $this->get_parallax_image_background();
+		$video_background            = $this->video_background();
+		$parallax_image_background   = $this->get_parallax_image_background();
 
 		$style = '';
 
@@ -193,12 +211,46 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			}
 		}
 
+		// Hover styles
+		$hover_style = '';
+
+		if ( et_builder_is_hover_enabled( 'color', $this->props ) && 'on' === $show_divider ) {
+			$hover_style .= sprintf( ' border-top-color: %s;',
+				esc_attr( $color_hover )
+			);
+		}
+
+		if ( '' !== $divider_weight_hover && $divider_weight !== $divider_weight_hover ) {
+			$divider_weight_hover_processed = false === strpos( $divider_weight_hover, 'px' ) ? $divider_weight_hover . 'px' : $divider_weight_hover;
+
+			$hover_style .= sprintf( ' border-top-width: %1$s;',
+				esc_attr( $divider_weight_hover_processed )
+			);
+		}
+
+		if ( '' !== $hover_style ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => '%%order_class%%:hover:before',
+				'declaration' => ltrim( $hover_style )
+			) );
+		}
+
 		if ( '' !== $height ) {
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%',
 				'declaration' => sprintf(
 					'height: %s;',
 					esc_attr( et_builder_process_range_value( $height ) )
+				),
+			) );
+		}
+
+		if ( et_builder_is_hover_enabled( 'height', $this->props ) ) {
+			ET_Builder_Element::set_style( $render_slug, array(
+				'selector'    => '%%order_class%%:hover',
+				'declaration' => sprintf(
+					'height: %s;',
+					esc_attr( et_builder_process_range_value( $height_hover ) )
 				),
 			) );
 		}

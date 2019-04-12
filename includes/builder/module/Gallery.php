@@ -3,6 +3,7 @@
 class ET_Builder_Module_Gallery extends ET_Builder_Module {
 	function init() {
 		$this->name       = esc_html__( 'Gallery', 'et_builder' );
+		$this->plural     = esc_html__( 'Galleries', 'et_builder' );
 		$this->slug       = 'et_pb_gallery';
 		$this->vb_support = 'on';
 
@@ -108,10 +109,12 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 					'option_category' => 'layout',
 					'tab_slug'        => 'advanced',
 					'toggle_slug'     => 'image',
-					'depends_show_if' => 'off',
+					'show_if'         => array(
+						'fullwidth' => 'off',
+					),
 					'css' => array(
 						'main'         => '%%order_class%% .et_pb_gallery_image',
-						'custom_style' => true,
+						'overlay' => 'inset',
 					),
 					'default_on_fronts'  => array(
 						'color'    => '',
@@ -132,11 +135,18 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 			'text'                  => array(
 				'use_background_layout' => true,
 				'css'   => array(
+					'main' => implode(', ', array(
+						"{$this->main_css_element} .et_pb_gallery_title",
+						"{$this->main_css_element} .mfp-title",
+						"{$this->main_css_element} .et_pb_gallery_caption",
+						"{$this->main_css_element} .et_pb_gallery_pagination a",
+					)),
 					'text_shadow' => "{$this->main_css_element}.et_pb_gallery_grid",
 				),
 				'options' => array(
 					'background_layout' => array(
 						'default' => 'light',
+						'hover' => 'tabs',
 					),
 				),
 			),
@@ -154,7 +164,7 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 					'main' => '%%order_class%% .et_pb_gallery_image',
 				),
 			),
-			'button'                => false,
+			'button' => false,
 		);
 
 		$this->custom_css_fields = array(
@@ -208,10 +218,15 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 				'toggle_slug'      => 'main_content',
 			),
 			'gallery_orderby' => array(
-				'label' => esc_html__( 'Gallery Images', 'et_builder' ),
-				'type'  => 'hidden',
-				'class' => array( 'et-pb-gallery-ids-field' ),
-				'computed_affects'   => array(
+				'label'   => esc_html__( 'Order By', 'et_builder' ),
+				'type'    => $this->is_loading_bb_data() ? 'hidden' : 'select',
+				'options' => array(
+					''     => esc_html__( 'Default', 'et_builder' ),
+					'rand' => esc_html__( 'Random', 'et_builder' ),
+				),
+				'default' => 'off',
+				'class'   => array( 'et-pb-gallery-ids-field' ),
+				'computed_affects' => array(
 					'__gallery',
 				),
 				'toggle_slug' => 'main_content',
@@ -247,7 +262,6 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 					'show_title_and_caption',
 					'show_pagination',
 					'orientation',
-					'box_shadow_style_image',
 					'border_radii_image',
 					'border_styles_image',
 				),
@@ -430,21 +444,23 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$gallery_ids            = $this->props['gallery_ids'];
-		$fullwidth              = $this->props['fullwidth'];
-		$show_title_and_caption = $this->props['show_title_and_caption'];
-		$background_layout      = $this->props['background_layout'];
-		$posts_number           = $this->props['posts_number'];
-		$show_pagination        = $this->props['show_pagination'];
-		$gallery_orderby        = $this->props['gallery_orderby'];
-		$zoom_icon_color        = $this->props['zoom_icon_color'];
-		$hover_overlay_color    = $this->props['hover_overlay_color'];
-		$hover_icon             = $this->props['hover_icon'];
-		$auto                   = $this->props['auto'];
-		$auto_speed             = $this->props['auto_speed'];
-		$orientation            = $this->props['orientation'];
-		$pagination_text_align  = $this->get_pagination_alignment();
-		$header_level           = $this->props['title_level'];
+		$gallery_ids                     = $this->props['gallery_ids'];
+		$fullwidth                       = $this->props['fullwidth'];
+		$show_title_and_caption          = $this->props['show_title_and_caption'];
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$posts_number                    = $this->props['posts_number'];
+		$show_pagination                 = $this->props['show_pagination'];
+		$gallery_orderby                 = $this->props['gallery_orderby'];
+		$zoom_icon_color                 = $this->props['zoom_icon_color'];
+		$hover_overlay_color             = $this->props['hover_overlay_color'];
+		$hover_icon                      = $this->props['hover_icon'];
+		$auto                            = $this->props['auto'];
+		$auto_speed                      = $this->props['auto_speed'];
+		$orientation                     = $this->props['orientation'];
+		$pagination_text_align           = $this->get_pagination_alignment();
+		$header_level                    = $this->props['title_level'];
 
 		if ( '' !== $zoom_icon_color ) {
 			ET_Builder_Element::set_style( $render_slug, array(
@@ -509,12 +525,27 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 			) );
 		}
 
+		$data_background_layout       = '';
+		$data_background_layout_hover = '';
+		if ( $background_layout_hover_enabled ) {
+			$data_background_layout = sprintf(
+				' data-background-layout="%1$s"',
+				esc_attr( $background_layout )
+			);
+			$data_background_layout_hover = sprintf(
+				' data-background-layout-hover="%1$s"',
+				esc_attr( $background_layout_hover )
+			);
+		}
+
 		$output = sprintf(
-			'<div%1$s class="%2$s">
+			'<div%1$s class="%2$s"%4$s%5$s>
 				<div class="et_pb_gallery_items et_post_gallery clearfix" data-per_page="%3$d">',
 			$this->module_id(),
 			$this->module_classname( $render_slug ),
-			esc_attr( $posts_number )
+			esc_attr( $posts_number ),
+			et_core_esc_previously( $data_background_layout ),
+			et_core_esc_previously( $data_background_layout_hover ) // #5
 		);
 
 		$output .= $video_background;

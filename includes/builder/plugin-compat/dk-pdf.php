@@ -34,7 +34,7 @@ class ET_Builder_Plugin_Compat_DK_Pdf extends ET_Builder_Plugin_Compat_Base {
 
 		// If current page has pdf query string, it means that DK PDF re-route the request to
 		// display the pdf version of the page
-		if ( isset( $_GET['pdf'] ) ) {
+		if ( isset( $_GET['pdf'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
 			add_filter(
 				'et_pb_load_main_elements_priority',
 				array( $this, 'fix_load_main_elements_priority' )
