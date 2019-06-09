@@ -27,9 +27,26 @@ class ET_Builder_Error_Report {
 	}
 
 	/**
+	 * json_decode data and stripslashes if needed.
+	 *
+	 * @since 3.24
+	 *
+	 * @param string $data
+	 *
+	 * @return mixed
+	 */
+	public static function json_decode_maybe_stripslashes( $data ) {
+		$decoded = json_decode( $data, true );
+		if ( null === $decoded ) {
+			$decoded = json_decode( stripslashes( $data ), true );
+		}
+		return $decoded;
+	}
+
+	/**
 	 * Get the class instance.
 	 *
-	 * @since ??
+	 * @since 3.21.4
 	 *
 	 * @return ET_Builder_Error_Report
 	 */
@@ -46,7 +63,7 @@ class ET_Builder_Error_Report {
 	/**
 	 * Get information sent for error reporting
 	 *
-	 * @since ??
+	 * @since 3.21.4
 	 *
 	 * @return array
 	 */
@@ -60,12 +77,13 @@ class ET_Builder_Error_Report {
 				'error_message_stack',
 				'error_stack',
 				'component_info',
+				'notes',
 			),
 			'page' => array(
 				'post_type',
-				'builder_content',
 				'builder_settings',
 				'builder_history',
+				'preferences',
 			),
 			'installation' => array(
 				'product_name',
@@ -102,7 +120,7 @@ class ET_Builder_Error_Report {
 	/**
 	 * Get current product name
 	 *
-	 * @since ??
+	 * @since 3.21.4
 	 *
 	 * @return string|bool
 	 */
@@ -125,7 +143,7 @@ class ET_Builder_Error_Report {
 	/**
 	 * Get debug item value
 	 *
-	 * @since ??
+	 * @since 3.21.4
 	 *
 	 * @param string $info_name debug info item name
 	 * @param object $post      alias for $_POST
@@ -142,18 +160,29 @@ class ET_Builder_Error_Report {
 			case 'error_message':
 			case 'error_message_stack':
 			case 'error_stack':
+			case 'notes':
 			case 'post_type':
-				$value = esc_html( self::$_->array_get( $post, $info_name, '' ) );
+				// this will be saved into a text report, no need to convert entities.
+				$value = self::$_->array_get( $post, $info_name, '' );
 				break;
 
-			case 'builder_content':
-				$value = et_fb_process_to_shortcode( json_decode( stripslashes( self::$_->array_get( $post, 'builder_content', array() ) ), true ) );
+			case 'latest_content':
+			case 'loaded_content':
+				$value = et_fb_process_to_shortcode( self::$_->array_get( $post, $info_name, array() ) );
 				break;
 
 			case 'builder_settings':
 			case 'builder_history':
 			case 'component_info':
 				$value = wp_json_encode( self::$_->array_get( $post, $info_name, array() ) );
+				break;
+
+			case 'preferences':
+				$value = array();
+				foreach ( et_fb_app_preferences() as $name => $preference ) {
+					$value[ $name ] = $preference['value'];
+				}
+				$value = wp_json_encode( $value );
 				break;
 
 			case 'product_name':
@@ -186,7 +215,6 @@ class ET_Builder_Error_Report {
 				$active_plugins_saved = get_option( 'active_plugins' );
 				$active_plugins_keys  = is_array( $active_plugins_saved ) ? $active_plugins_saved : array();
 				$active_plugins       = array_intersect_key( $all_plugins, array_flip( $active_plugins_keys ) );
-
 				$value                = wp_json_encode( $active_plugins, true );
 				break;
 
@@ -219,13 +247,13 @@ class ET_Builder_Error_Report {
 	/**
 	 * Get error report content
 	 *
-	 * @since ??
+	 * @since 3.21.4
 	 *
-	 * @param string $format html|array
+	 * @param string $data
 	 *
 	 * @return string
 	 */
-	protected function get_report_content() {
+	protected function get_report_content( $data ) {
 		$report_content = '';
 
 		$debug_info     = self::get_debug_info();
@@ -239,7 +267,7 @@ class ET_Builder_Error_Report {
 			$report_content[ $item_key ] = $items_title;
 
 			foreach ( $debug_items as $debug_item ) {
-				$item_value = et_core_esc_previously( $this->get_debug_value( $debug_item, $_POST, 'array' ) );
+				$item_value = et_core_esc_previously( $this->get_debug_value( $debug_item, $data, 'array' ) );
 
 				$report_content[ $debug_item ] = $item_value;
 			}
@@ -251,27 +279,35 @@ class ET_Builder_Error_Report {
 	/**
 	 * Get attachment data as string to be passed into endpoint
 	 *
-	 * @since ??
+	 * @since 3.21.4
+	 *
+	 * @param string $data
+	 * @param string $field
 	 *
 	 * @return string
 	 */
-	protected function get_exported_layout_content() {
+	protected function get_exported_layout_content( $data, $field ) {
 		// Set faux $_POST value that is required by portability
 		$_POST['post']    = $_POST['post_id'];
-		$_POST['content'] = self::$_instance->get_debug_value( 'builder_content', $_POST );
+		$_POST['content'] = self::$_instance->get_debug_value( $field , $data );
 
 		// Remove page value if it is equal to `false`, avoiding paginated images not accidentally triggered
 		if ( isset( $_POST['page'] ) && false === $_POST['page'] ) {
 			unset( $_POST['page'] );
 		}
 
-		return et_core_portability_load( 'et_builder' )->export( true );
+		$portability = et_core_portability_load( 'et_builder' );
+		// Export the content
+		$result = $portability->export( true );
+		// Delete temp files or else the same content will be used for all exports.
+		$portability->delete_temp_files( 'et_core_export' );
+		return $result;
 	}
 
 	/**
 	 * Endpoint for sending error report request
 	 *
-	 * @since ??
+	 * @since 3.21.4
 	 */
 	static public function endpoint() {
 		// Check for valid permission. Only administrator role can send error report
@@ -288,6 +324,16 @@ class ET_Builder_Error_Report {
 		if ( ! $post_id ) {
 			wp_send_json_error( array(
 				'message' => esc_html__( 'No valid post id found', 'et_builder' ),
+			) );
+			wp_die();
+		}
+
+		// Check report data.
+		$data = self::$_->array_get( $_POST, 'data', false );
+
+		if ( ! $data ) {
+			wp_send_json_error( array(
+				'message' => esc_html__( 'No valid report data found', 'et_builder' ),
 			) );
 			wp_die();
 		}
@@ -314,21 +360,21 @@ class ET_Builder_Error_Report {
 			wp_die();
 		}
 
-		// Crafting reports
-		$report_subject    = esc_html__( 'Error Report', 'et_builder' );
-		$report_content    = self::$_instance->get_report_content();
-		$report_attachment = self::$_instance->get_exported_layout_content();
+		$data        = self::json_decode_maybe_stripslashes( $data );
+		$et_endpoint = apply_filters( 'et_builder_report_endpoint', 'https://www.elegantthemes.com/api/reportV2.php' );
 
-		$et_endpoint = 'https://www.elegantthemes.com/api/report.php';
-
-		// Send to endpoint
+		// Crafting reports and send to end endpoint.
 		$request_settings = array(
 			'timeout' => 30,
 			'body'    => array(
 				'username'     => $et_username,
 				'api_key'      => $et_api_key,
-				'error_report' => $report_content,
-				'attachment'   => $report_attachment,
+				'error_report' => self::$_instance->get_report_content( $data ),
+				'site_url'     => site_url(),
+				'attachments'  => array(
+					'latest' => self::$_instance->get_exported_layout_content( $data, 'latest_content' ),
+					'loaded' => self::$_instance->get_exported_layout_content( $data, 'loaded_content' ),
+				),
 			),
 		);
 

@@ -39,15 +39,29 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			),
 			'advanced' => array(
 				'toggles' => array(
-					'color'  => esc_html__( 'Color', 'et_builder' ),
-					'styles' => esc_html__( 'Styles', 'et_builder' ),
+					'line' => esc_html__( 'Line', 'et_builder' ),
 				),
 			),
 		);
 
 		$this->advanced_fields = array(
 			'borders'               => array(
-				'default' => false,
+				'default' => array(
+					'css'      => array(
+						'main' => array(
+							'border_radii'  => '%%order_class%%',
+							'border_styles' => '%%order_class%%',
+						),
+					),
+					'defaults' => array(
+						'border_radii'  => 'on||||',
+						'border_styles' => array(
+							'width' => '0px',
+							'color' => '#333333',
+							'style' => 'solid',
+						),
+					),
+				),
 			),
 			'margin_padding' => array(
 				'css' => array(
@@ -71,13 +85,14 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 		$fields = array(
 			'color' => array(
 				'default'         => et_builder_accent_color(),
-				'label'           => esc_html__( 'Color', 'et_builder' ),
+				'label'           => esc_html__( 'Line Color', 'et_builder' ),
 				'type'            => 'color-alpha',
 				'tab_slug'        => 'advanced',
 				'description'     => esc_html__( 'This will adjust the color of the 1px divider line.', 'et_builder' ),
 				'depends_show_if' => 'on',
-				'toggle_slug'     => 'color',
+				'toggle_slug'     => 'line',
 				'hover'           => 'tabs',
+				'mobile_options'  => true,
 			),
 			'show_divider' => array(
 				'default'           => 'on',
@@ -95,17 +110,20 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				'description'       => esc_html__( 'This settings turns on and off the 1px divider line, but does not affect the divider height.', 'et_builder' ),
 			),
 			'divider_style' => array(
-				'label'             => esc_html__( 'Divider Style', 'et_builder' ),
+				'label'             => esc_html__( 'Line Style', 'et_builder' ),
+				'description'       => esc_html__( 'Select the shape of the dividing line used for the divider.', 'et_builder' ),
 				'type'              => 'select',
 				'option_category'   => 'layout',
 				'options'           => et_builder_get_border_styles(),
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'styles',
+				'toggle_slug'       => 'line',
 				'default'           => $this->defaults['divider_style'],
+				'mobile_options'    => true,
 			),
 			'divider_position' => array(
-				'label'           => esc_html__( 'Divider Position', 'et_builder' ),
+				'label'           => esc_html__( 'Line Position', 'et_builder' ),
+				'description'     => esc_html__( 'The dividing line can be placed either above, below or in the center of the module.', 'et_builder' ),
 				'type'            => 'select',
 				'option_category' => 'layout',
 				'options'         => array(
@@ -115,34 +133,45 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 				),
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'styles',
+				'toggle_slug'       => 'line',
 				'default'           => $this->defaults['divider_position'],
+				'mobile_options'    => true,
 			),
 			'divider_weight' => array(
 				'label'             => esc_html__( 'Divider Weight', 'et_builder' ),
+				'description'       => esc_html__( 'Increasing the divider weight will increase the thickness of the dividing line.', 'et_builder' ),
 				'type'              => 'range',
 				'option_category'   => 'layout',
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'width',
+				'allowed_units'     => array( 'em', 'rem', 'px', 'cm', 'mm', 'in', 'pt', 'pc', 'ex', 'vh', 'vw' ),
 				'default_unit'      => 'px',
 				'default'           => $this->defaults['divider_weight'],
 				'hover'             => 'tabs',
-			),
-			'height' => array(
-				'label'            => esc_html__( 'Height', 'et_builder' ),
-				'type'             => 'range',
-				'option_category'  => 'layout',
-				'tab_slug'         => 'advanced',
-				'toggle_slug'      => 'width',
-				'description'      => esc_html__( 'Define how much space should be added below the divider.', 'et_builder' ),
-				'default'          => '23px',
-				'default_unit'     => 'px',
-				'default_on_front' => '23px',
-				'hover'            => 'tabs',
+				'mobile_options'    => true,
 			),
 		);
 		return $fields;
+	}
+
+	public function get_height_fields() {
+		$defaults = array(
+			'default' => '23px',
+			'min'     => '1',
+			'max'     => '100',
+		);
+
+		return ET_Builder_Module_Fields_Factory::get( 'Height' )->get_fields( $defaults );
+	}
+
+	public function get_max_height_fields() {
+		$defaults = array(
+			'min' => '1',
+			'max' => '100',
+		);
+
+		return ET_Builder_Module_Fields_Factory::get( 'MaxHeight' )->get_fields( $defaults );
 	}
 
 	public function get_transition_fields_css_props() {
@@ -150,22 +179,13 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 
 		$fields['color'] = array( 'border' => '%%order_class%%:before' );
 		$fields['divider_weight'] = array( 'border' => '%%order_class%%:before' );
-		$fields['height'] = array( 'height' => '%%order_class%%' );
 
 		return $fields;
 	}
 
 	function render( $attrs, $content = null, $render_slug ) {
-		$color                       = $this->props['color'];
-		$color_hover                 = $this->get_hover_value( 'color' );
 		$show_divider                = $this->props['show_divider'];
-		$height                      = $this->props['height'];
-		$height_hover                = $this->get_hover_value( 'height' );
-		$divider_style               = $this->props['divider_style'];
-		$divider_position            = $this->props['divider_position'];
 		$divider_position_customizer = ! et_is_builder_plugin_active() ? et_get_option( 'et_pb_divider-divider_position', 'top' ) : 'top';
-		$divider_weight              = $this->props['divider_weight'];
-		$divider_weight_hover        = $this->get_hover_value( 'divider_weight' );
 		$custom_padding              = $this->props['custom_padding'];
 		$custom_padding_tablet       = $this->props['custom_padding_tablet'];
 		$custom_padding_phone        = $this->props['custom_padding_phone'];
@@ -173,41 +193,93 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 		$video_background            = $this->video_background();
 		$parallax_image_background   = $this->get_parallax_image_background();
 
-		$style = '';
+		$color                       = $this->props['color'];
+		$color_hover                 = $this->get_hover_value( 'color' );
+		$color_values                = et_pb_responsive_options()->get_property_values( $this->props, 'color' );
+		$color_tablet                = isset( $color_values['tablet'] ) ? $color_values['tablet'] : '';
+		$color_phone                 = isset( $color_values['phone'] ) ? $color_values['phone'] : '';
 
-		if ( '' !== $color && 'on' === $show_divider ) {
-			$style .= sprintf( ' border-top-color: %s;',
-				esc_attr( $color )
-			);
+		$divider_style               = $this->props['divider_style'];
+		$divider_style_hover         = $this->get_hover_value( 'divider_style' );
+		$divider_style_values        = et_pb_responsive_options()->get_property_values( $this->props, 'divider_style' );
+		$divider_style_tablet        = isset( $divider_style_values['tablet'] ) ? $divider_style_values['tablet'] : '';
+		$divider_style_phone         = isset( $divider_style_values['phone'] ) ? $divider_style_values['phone'] : '';
 
-			if ( '' !== $divider_style && $this->defaults['divider_style'] !== $divider_style ) {
-				$style .= sprintf( ' border-top-style: %s;',
-					esc_attr( $divider_style )
+		$divider_weight              = $this->props['divider_weight'];
+		$divider_weight_hover        = $this->get_hover_value( 'divider_weight' );
+		$divider_weight_values       = et_pb_responsive_options()->get_property_values( $this->props, 'divider_weight' );
+		$divider_weight_tablet       = isset( $divider_weight_values['tablet'] ) ? $divider_weight_values['tablet'] : '';
+		$divider_weight_phone        = isset( $divider_weight_values['phone'] ) ? $divider_weight_values['phone'] : '';
+
+		$divider_position            = $this->props['divider_position'];
+		$divider_position_values     = et_pb_responsive_options()->get_property_values( $this->props, 'divider_position' );
+		$divider_position_tablet     = isset( $divider_position_values['tablet'] ) ? $divider_position_values['tablet'] : '';
+		$divider_position_phone      = isset( $divider_position_values['phone'] ) ? $divider_position_values['phone'] : '';
+
+		// In Divider module, divider color is really important. Basically, the divider won't be
+		// displayed, unless we set divider color for Desktop. Divider color on desktop mode is
+		// the key to display divider style and weight and set the position class.
+		// Desktop Color is not empty, means:
+		// - Render divider style and weight for all devices.
+		// - Render divider position class for all devices.
+		if ( 'on' === $show_divider ) {
+			// Responsive Color, Divider Style, and Divider Weight.
+			$divider_styles_values = array();
+
+			foreach ( et_pb_responsive_options()->get_modes() as $device ) {
+				$is_desktop = 'desktop' === $device;
+				$suffix     = ! $is_desktop ? "_{$device}" : '';
+
+				// Get divider color and set general color variables.
+				$divider_color_value = '';
+				if ( $is_desktop ) {
+					$divider_color_value = $color;
+				} else {
+					$divider_color_value = 'tablet' === $device ? $color_tablet : $color_phone;
+				}
+
+				// Ensure color value is not empty. At least desktop color.
+				if ( empty( $color ) && empty( $divider_color_value ) ) {
+					continue;
+				}
+
+				$divider_style_value  = '';
+				$divider_weight_value = '';
+				if ( $is_desktop ) {
+					$divider_style_value  = $divider_style;
+					$divider_weight_value = $divider_weight;
+				} else {
+					$divider_style_value  = 'tablet' === $device ? $divider_style_tablet : $divider_style_phone;
+					$divider_weight_value = 'tablet' === $device ? $divider_weight_tablet : $divider_weight_phone;
+				}
+
+				$divider_styles_values[ $device ] = array(
+					'border-top-color' => esc_attr( $divider_color_value ),
+					'border-top-style' => esc_attr( $divider_style_value ),
+					'border-top-width' => ! empty( $divider_weight_value ) ? esc_attr( et_sanitize_input_unit( $divider_weight_value ) ) : '',
 				);
 			}
 
-			if ( '' !== $divider_weight && $this->defaults['divider_weight'] !== $divider_weight ) {
-				$divider_weight_processed = false === strpos( $divider_weight, 'px' ) ? $divider_weight . 'px' : $divider_weight;
+			et_pb_responsive_options()->generate_responsive_css( $divider_styles_values, '%%order_class%%:before', '', $render_slug, '', 'border' );
 
-				$style .= sprintf( ' border-top-width: %1$s;',
-					esc_attr( $divider_weight_processed )
-				);
+			// Divider Position Class.
+			if ( ! empty( $color ) ) {
+				if ( $this->defaults['divider_position'] !== $divider_position ) {
+					$this->add_classname( "et_pb_divider_position_{$divider_position}" );
+				} elseif ( $this->defaults['divider_position'] !== $divider_position_customizer ) {
+					$this->add_classname( array(
+						"et_pb_divider_position_{$divider_position_customizer}",
+						'customized_et_pb_divider_position',
+					) );
+				}
 			}
 
-			if ( '' !== $style ) {
-				ET_Builder_Element::set_style( $render_slug, array(
-					'selector'    => '%%order_class%%:before',
-					'declaration' => ltrim( $style )
-				) );
+			if ( ! empty( $divider_position_tablet ) && ( ! empty( $color ) || ! empty( $color_tablet ) ) ) {
+				$this->add_classname( "et_pb_divider_position_{$divider_position_tablet}_tablet" );
 			}
 
-			if ( $this->defaults['divider_position'] !== $divider_position ) {
-				$this->add_classname( "et_pb_divider_position_{$divider_position}" );
-			} elseif ( $this->defaults['divider_position'] !== $divider_position_customizer ) {
-				$this->add_classname( array(
-					"et_pb_divider_position_{$divider_position_customizer}",
-					'customized_et_pb_divider_position',
-				) );
+			if ( ! empty( $divider_position_phone ) && ( ! empty( $color ) || ! empty( $color_phone ) ) ) {
+				$this->add_classname( "et_pb_divider_position_{$divider_position_phone}_phone" );
 			}
 		}
 
@@ -232,26 +304,6 @@ class ET_Builder_Module_Divider extends ET_Builder_Module {
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%:hover:before',
 				'declaration' => ltrim( $hover_style )
-			) );
-		}
-
-		if ( '' !== $height ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%%',
-				'declaration' => sprintf(
-					'height: %s;',
-					esc_attr( et_builder_process_range_value( $height ) )
-				),
-			) );
-		}
-
-		if ( et_builder_is_hover_enabled( 'height', $this->props ) ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%%:hover',
-				'declaration' => sprintf(
-					'height: %s;',
-					esc_attr( et_builder_process_range_value( $height_hover ) )
-				),
 			) );
 		}
 

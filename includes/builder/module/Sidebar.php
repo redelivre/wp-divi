@@ -37,7 +37,7 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 				'body'   => array(
 					'label'    => esc_html__( 'Body', 'et_builder' ),
 					'css'      => array(
-						'main' => "{$this->main_css_element}, {$this->main_css_element} li, {$this->main_css_element} li:before, {$this->main_css_element} a",
+						'main'        => "{$this->main_css_element}, {$this->main_css_element} li, {$this->main_css_element} li:before, {$this->main_css_element} a",
 						'line_height' => "{$this->main_css_element} p",
 					),
 				),
@@ -84,7 +84,7 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'orientation' => array(
-				'label'             => esc_html__( 'Orientation', 'et_builder' ),
+				'label'             => esc_html__( 'Alignment', 'et_builder' ),
 				'type'              => 'select',
 				'option_category'   => 'layout',
 				'options'           => array(
@@ -108,6 +108,7 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 			),
 			'show_border' => array(
 				'label'           => esc_html__( 'Show Border Separator', 'et_builder' ),
+				'description'     => esc_html__( 'Disabling the border separator will remove the solid line that appears to the left or right of sidebar widgets.', 'et_builder' ),
 				'type'            => 'yes_no_button',
 				'option_category' => 'layout',
 				'options'         => array(
@@ -183,10 +184,15 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 	function render( $attrs, $content = null, $render_slug ) {
 		$orientation                     = $this->props['orientation'];
 		$area                            = "" === $this->props['area'] ? self::get_default_area() : $this->props['area'];
+		$show_border                     = $this->props['show_border'];
+
+		// Background Layout.
 		$background_layout               = $this->props['background_layout'];
 		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
 		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
-		$show_border                     = $this->props['show_border'];
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
 
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
@@ -211,6 +217,14 @@ class ET_Builder_Module_Sidebar extends ET_Builder_Module {
 			"et_pb_widget_area_{$orientation}",
 			$this->get_text_orientation_classname(),
 		) );
+
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		if ( 'on' !== $show_border ) {
 			$this->add_classname( 'et_pb_sidebar_no_border' );

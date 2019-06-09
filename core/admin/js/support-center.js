@@ -58,6 +58,7 @@
           return;
         }
 
+        $('.et-remote-access-error').first().hide(showHideDelay);
         $save_message.addClass('et_loading').removeClass('success-animation');
         $save_message.fadeIn('fast');
       },
@@ -74,6 +75,11 @@
         }, removeDelay);
         var $msgExpiry = $('.et-support-user-expiry').first();
         if ('activate' === postData.support_update) {
+          if (response.error) {
+            $('.et-remote-access-error').first().text(response.error).show(showHideDelay);
+            return;
+          }
+          $('#et-remote-access-error').remove();
           $toggle.removeClass('et_pb_off_state').addClass('et_pb_on_state');
           $msgExpiry.attr('data-expiry', response.expiry);
           supportUserTimeToExpiry();

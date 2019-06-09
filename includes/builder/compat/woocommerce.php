@@ -56,6 +56,10 @@ function et_builder_wc_pre_get_posts( $query ) {
 		return;
 	}
 
+	if ( $query->is_search() ) {
+		return;
+	}
+
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		return;
 	}

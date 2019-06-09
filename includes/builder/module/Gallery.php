@@ -43,7 +43,8 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 				'title'   => array(
 					'label'    => esc_html__( 'Title', 'et_builder' ),
 					'css'      => array(
-						'main' => "{$this->main_css_element} .et_pb_gallery_title",
+						'main'  => "{$this->main_css_element} .et_pb_gallery_title",
+						'hover' => "{$this->main_css_element} .et_pb_gallery_title:hover",
 					),
 					'header_level' => array(
 						'default' => 'h3',
@@ -53,7 +54,8 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 					'label'    => esc_html__( 'Caption', 'et_builder' ),
 					'use_all_caps' => true,
 					'css'      => array(
-						'main' => "{$this->main_css_element} .mfp-title, {$this->main_css_element} .et_pb_gallery_caption",
+						'main'  => "{$this->main_css_element} .mfp-title, {$this->main_css_element} .et_pb_gallery_caption",
+						'hover' => "{$this->main_css_element} .mfp-title:hover, {$this->main_css_element} .et_pb_gallery_caption:hover",
 					),
 					'line_height' => array(
 						'range_settings' => array(
@@ -68,6 +70,7 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 					'label' => esc_html__( 'Pagination', 'et_builder' ),
 					'css' => array(
 						'main'       => "{$this->main_css_element} .et_pb_gallery_pagination a",
+						'hover'      => "{$this->main_css_element} .et_pb_gallery_pagination a:hover",
 						'text_align' => "{$this->main_css_element} .et_pb_gallery_pagination ul",
 					),
 					'text_align' => array(
@@ -209,7 +212,8 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'gallery_ids' => array(
-				'label'            => esc_html__( 'Gallery Images', 'et_builder' ),
+				'label'            => esc_html__( 'Images', 'et_builder' ),
+				'description'      => esc_html__( 'Choose the images that you would like to appear in the image gallery.', 'et_builder' ),
 				'type'             => 'upload-gallery',
 				'computed_affects' => array(
 					'__gallery',
@@ -218,18 +222,19 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 				'toggle_slug'      => 'main_content',
 			),
 			'gallery_orderby' => array(
-				'label'   => esc_html__( 'Order By', 'et_builder' ),
-				'type'    => $this->is_loading_bb_data() ? 'hidden' : 'select',
-				'options' => array(
+				'label'            => esc_html__( 'Image Order', 'et_builder' ),
+				'description'      => esc_html__( 'Select an ordering method for the gallery. This controls which gallery items appear first in the list.', 'et_builder' ),
+				'type'             => $this->is_loading_bb_data() ? 'hidden' : 'select',
+				'options'          => array(
 					''     => esc_html__( 'Default', 'et_builder' ),
 					'rand' => esc_html__( 'Random', 'et_builder' ),
 				),
-				'default' => 'off',
-				'class'   => array( 'et-pb-gallery-ids-field' ),
+				'default'          => 'off',
+				'class'            => array( 'et-pb-gallery-ids-field' ),
 				'computed_affects' => array(
 					'__gallery',
 				),
-				'toggle_slug' => 'main_content',
+				'toggle_slug'      => 'main_content',
 			),
 			'gallery_captions' => array(
 				'type'  => 'hidden',
@@ -273,7 +278,7 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 			),
 			'posts_number' => array(
 				'default'           => 4,
-				'label'             => esc_html__( 'Images Number', 'et_builder' ),
+				'label'             => esc_html__( 'Image Count', 'et_builder' ),
 				'type'              => 'text',
 				'option_category'   => 'configuration',
 				'description'       => esc_html__( 'Define the number of images that should be displayed per page.', 'et_builder' ),
@@ -333,28 +338,34 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 				),
 			),
 			'zoom_icon_color' => array(
-				'label'             => esc_html__( 'Zoom Icon Color', 'et_builder' ),
+				'label'             => esc_html__( 'Overlay Icon Color', 'et_builder' ),
+				'description'       => esc_html__( 'Here you can define a custom color for the zoom icon.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'depends_show_if'   => 'off',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
+				'mobile_options'    => true,
 			),
 			'hover_overlay_color' => array(
-				'label'             => esc_html__( 'Hover Overlay Color', 'et_builder' ),
+				'label'             => esc_html__( 'Overlay Background Color', 'et_builder' ),
+				'description'       => esc_html__( 'Here you can define a custom color for the overlay', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'depends_show_if'   => 'off',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
+				'mobile_options'    => true,
 			),
 			'hover_icon' => array(
-				'label'               => esc_html__( 'Hover Icon Picker', 'et_builder' ),
+				'label'               => esc_html__( 'Overlay Icon', 'et_builder' ),
+				'description'         => esc_html__( 'Here you can define a custom icon for the overlay', 'et_builder' ),
 				'type'                => 'select_icon',
 				'option_category'     => 'configuration',
 				'class'               => array( 'et-pb-font-icon' ),
 				'tab_slug'            => 'advanced',
 				'toggle_slug'         => 'overlay',
+				'mobile_options'      => true,
 			),
 			'__gallery' => array(
 				'type' => 'computed',
@@ -447,41 +458,35 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 		$gallery_ids                     = $this->props['gallery_ids'];
 		$fullwidth                       = $this->props['fullwidth'];
 		$show_title_and_caption          = $this->props['show_title_and_caption'];
-		$background_layout               = $this->props['background_layout'];
-		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
-		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
 		$posts_number                    = $this->props['posts_number'];
 		$show_pagination                 = $this->props['show_pagination'];
 		$gallery_orderby                 = $this->props['gallery_orderby'];
-		$zoom_icon_color                 = $this->props['zoom_icon_color'];
-		$hover_overlay_color             = $this->props['hover_overlay_color'];
-		$hover_icon                      = $this->props['hover_icon'];
 		$auto                            = $this->props['auto'];
 		$auto_speed                      = $this->props['auto_speed'];
 		$orientation                     = $this->props['orientation'];
 		$pagination_text_align           = $this->get_pagination_alignment();
 		$header_level                    = $this->props['title_level'];
+		$zoom_icon_color_values          = et_pb_responsive_options()->get_property_values( $this->props, 'zoom_icon_color' );
+		$hover_overlay_color_values      = et_pb_responsive_options()->get_property_values( $this->props, 'hover_overlay_color' );
 
-		if ( '' !== $zoom_icon_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% .et_overlay:before',
-				'declaration' => sprintf(
-					'color: %1$s !important;',
-					esc_html( $zoom_icon_color )
-				),
-			) );
-		}
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
 
-		if ( '' !== $hover_overlay_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% .et_overlay',
-				'declaration' => sprintf(
-					'background-color: %1$s;
-					border-color: %1$s;',
-					esc_html( $hover_overlay_color )
-				),
-			) );
-		}
+		$hover_icon                      = $this->props['hover_icon'];
+		$hover_icon_values               = et_pb_responsive_options()->get_property_values( $this->props, 'hover_icon' );
+		$hover_icon_tablet               = isset( $hover_icon_values['tablet'] ) ? $hover_icon_values['tablet'] : '';
+		$hover_icon_phone                = isset( $hover_icon_values['phone'] ) ? $hover_icon_values['phone'] : '';
+
+		// Zoom Icon Color.
+		et_pb_responsive_options()->generate_responsive_css( $zoom_icon_color_values, '%%order_class%% .et_overlay:before', 'color', $render_slug, ' !important;', 'color' );
+
+		// Hover Overlay Color.
+		et_pb_responsive_options()->generate_responsive_css( $hover_overlay_color_values, '%%order_class%% .et_overlay', 'background-color', $render_slug, '', 'color' );
+		et_pb_responsive_options()->generate_responsive_css( $hover_overlay_color_values, '%%order_class%% .et_overlay', 'border-color', $render_slug, '', 'color' );
 
 		// Get gallery item data
 		$attachments = self::get_gallery( array(
@@ -507,6 +512,14 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 			$background_class,
 			$this->get_text_orientation_classname(),
 		) );
+
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		if ( 'on' === $fullwidth ) {
 			$this->add_classname( array(
@@ -568,16 +581,34 @@ class ET_Builder_Module_Gallery extends ET_Builder_Module {
 				)
 				: '';
 
+			$data_icon_tablet = '' !== $hover_icon_tablet
+				? sprintf(
+					' data-icon-tablet="%1$s"',
+					esc_attr( et_pb_process_font_icon( $hover_icon_tablet ) )
+				)
+				: '';
+
+			$data_icon_phone = '' !== $hover_icon_phone
+				? sprintf(
+					' data-icon-phone="%1$s"',
+					esc_attr( et_pb_process_font_icon( $hover_icon_phone ) )
+				)
+				: '';
+
 			$image_output = sprintf(
 				'<a href="%1$s" title="%2$s">
 					<img src="%3$s" alt="%2$s" />
-					<span class="et_overlay%4$s"%5$s></span>
+					<span class="et_overlay%4$s%6$s%8$s"%5$s%7$s%9$s></span>
 				</a>',
 				esc_url( $attachment->image_src_full[0] ),
 				esc_attr( $attachment->post_title ),
 				esc_url( $attachment->image_src_thumb[0] ),
 				( '' !== $hover_icon ? ' et_pb_inline_icon' : '' ),
-				$data_icon
+				$data_icon,
+				( '' !== $hover_icon_tablet ? ' et_pb_inline_icon_tablet' : '' ),
+				$data_icon_tablet,
+				( '' !== $hover_icon_phone ? ' et_pb_inline_icon_phone' : '' ),
+				$data_icon_phone
 			);
 
 			$output .= sprintf(

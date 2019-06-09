@@ -258,27 +258,27 @@ body.rtl.et-db:not(.et-fb-no-rtl) button.et-core-button {
 .et-core-modal {
 	display: none;
 	z-index: 1000000001;
-	overflow: auto;
+	overflow: hidden;
 	position: fixed;
 	top: 20%;
 	bottom: 20%;
 	left: 50%;
-	width: 400px;
+	max-width: 400px;
+	width: 100%;
 	background: rgb(255, 255, 255);
-	margin-left: -200px;
-	box-sizing: border-box;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 100px;
+	-moz-transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
 	color: #32373c;
+	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-	-moz-box-shadow: 0px 0px 100px rgba(0, 160, 210, 0.20);
-	-webkit-box-shadow: 0px 0px 100px rgba(0, 160, 210, 0.20);
-	box-shadow: 0px 0px 100px rgba(0, 160, 210, 0.20);
+	box-shadow: 0 0 100px rgba(0, 160, 210, 0.20);
+	-moz-box-shadow: 0 0 100px rgba(0, 160, 210, 0.20);
+	-webkit-box-shadow: 0 0 100px rgba(0, 160, 210, 0.20);
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	overflow: hidden;
 }
 
 .et-core-modal,
@@ -289,14 +289,14 @@ body.rtl.et-db:not(.et-fb-no-rtl) button.et-core-button {
 
 .et-core-modal-overlay.et-core-active .et-core-modal {
 	display: block;
-	-webkit-animation: et-core-fade-in-scale .5s 1 cubic-bezier(0.77,0,.175,1);
-	animation: et-core-fade-in-scale .5s 1 cubic-bezier(0.77,0,.175,1);
+	-webkit-animation: et-core-fade-in-scale-center .5s 1 cubic-bezier(0.77,0,.175,1);
+	animation: et-core-fade-in-scale-center .5s 1 cubic-bezier(0.77,0,.175,1);
 }
 
 .et-core-modal-overlay.et-core-closing .et-core-modal {
 	opacity: 0;
-	-webkit-animation: et-core-fade-out-scale .5s 1 cubic-bezier(0.77,0,.175,1);
-	animation: et-core-fade-out-scale .5s 1 cubic-bezier(0.77,0,.175,1);
+	-webkit-animation: et-core-fade-out-scale-center .5s 1 cubic-bezier(0.77,0,.175,1);
+	animation: et-core-fade-out-scale-center .5s 1 cubic-bezier(0.77,0,.175,1);
 }
 
 .et-core-modal-header {
@@ -312,14 +312,13 @@ body.rtl.et-db:not(.et-fb-no-rtl) button.et-core-button {
 	font-size: 18px;
 	line-height: 17px;
 	color: rgb(255, 255, 255);
-	margin: 0px;
-	padding: 0;
+	margin: 0;
+	padding: 0 25px 0 0;
 	text-transform: none;
 	text-decoration: none;
 	font-style: normal;
 	font-family: 'Open Sans', Helvetica, Roboto, Arial, sans-serif;
 	letter-spacing: 0;
-	font-weight: 600;
 }
 
 .et-core-modal-close,
@@ -1003,5 +1002,84 @@ body.rtl.et-db:not(.et-fb-no-rtl) .et-core-tabs li.ui-state-default {
 	}
 	100% {
 		opacity: 0; transform: scale(.9,.9);
+	}
+}
+
+@-webkit-keyframes et-core-fade-in-scale-center {
+	0% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9);
+	}
+	100% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+}
+
+@-moz-keyframes et-core-fade-in-scale-center {
+	0% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9)
+	}
+	100% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+}
+
+@-o-keyframes et-core-fade-in-scale-center {
+	0% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9)
+	}
+	100% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+}
+
+@keyframes et-core-fade-in-scale-center {
+	0% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9);
+	}
+	100% {
+		opacity: 1; transform: translateX(-50%)scale(1,1);
+	}
+}
+
+@-webkit-keyframes et-core-fade-out-scale-center {
+	0% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+	100% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9);
+	}
+}
+
+@-moz-keyframes et-core-fade-out-scale-center {
+	0% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+	100% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9);
+	}
+}
+
+@-o-keyframes et-core-fade-out-scale-center {
+	0% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+	100% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9);
+	}
+}
+
+@keyframes et-core-fade-out-scale-center {
+	0% {
+		opacity: 1; transform: translateX(-50%) scale(1,1);
+	}
+	100% {
+		opacity: 0; transform: translateX(-50%) scale(.9,.9);
+	}
+}
+
+/* This media query is set to the modal default width */
+@media screen and ( max-width: 400px ) {
+	.et-core-modal {
+		width: calc(100% - 20px);
 	}
 }

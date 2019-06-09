@@ -107,7 +107,7 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'in_same_term' => array(
-				'label'           => esc_html__( 'In the same category', 'et_builder' ),
+				'label'           => esc_html__( 'Navigate Within Current Category', 'et_builder' ),
 				'type'            => 'yes_no_button',
 				'option_category' => 'configuration',
 				'options'         => array(
@@ -165,7 +165,7 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 				'description'       => esc_html__( 'Turn this on to show the next post link', 'et_builder' ),
 			),
 			'prev_text' => array(
-				'label'           => esc_html__( 'Previous Link Text', 'et_builder' ),
+				'label'           => esc_html__( 'Previous Link', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'configuration',
 				'depends_show_if' => 'on',
@@ -176,7 +176,7 @@ class ET_Builder_Module_Posts_Navigation extends ET_Builder_Module {
 				'toggle_slug'     => 'main_content',
 			),
 			'next_text' => array(
-				'label'           => esc_html__( 'Next Link Text', 'et_builder' ),
+				'label'           => esc_html__( 'Next Link', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'configuration',
 				'depends_show_if' => 'on',

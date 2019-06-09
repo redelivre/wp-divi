@@ -47,7 +47,7 @@ class ET_Builder_Module_Fullwidth_Code extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'raw_content' => array(
-				'label'           => esc_html__( 'Content', 'et_builder' ),
+				'label'           => esc_html__( 'Code', 'et_builder' ),
 				'type'            => 'codemirror',
 				'mode'            => 'html',
 				'option_category' => 'basic_option',

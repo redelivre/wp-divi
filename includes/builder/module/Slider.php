@@ -19,6 +19,9 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 			),
 			'advanced' => array(
 				'toggles' => array(
+					'overlay'    => esc_html__( 'Overlay', 'et_builder' ),
+					'navigation' => esc_html__( 'Navigation', 'et_builder' ),
+					'image'      => esc_html__( 'Image', 'et_builder' ),
 					'layout'     => esc_html__( 'Layout', 'et_builder' ),
 				),
 			),
@@ -58,12 +61,51 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 						'font_size_phone' => "{$this->main_css_element} .et_pb_slides .et_pb_slide_content",
 						'important' => array( 'size', 'font-size' ),
 					),
+					'block_elements' => array(
+						'tabbed_subtoggles' => true,
+					),
+				),
+			),
+			'borders'               => array(
+				'default' => array(),
+				'image'   => array(
+					'css'             => array(
+						'main' => array(
+							'border_radii'  => '%%order_class%% .et_pb_slide_image',
+							'border_styles' => '%%order_class%% .et_pb_slide_image',
+						)
+					),
+					'label_prefix'    => esc_html__( 'Image', 'et_builder' ),
+					'tab_slug'        => 'advanced',
+					'toggle_slug'     => 'image',
+					'depends_show_if' => 'off',
+					'defaults'        => array(
+						'border_radii'  => 'on||||',
+						'border_styles' => array(
+							'width' => '0px',
+							'color' => '#333333',
+							'style' => 'solid',
+						),
+					),
 				),
 			),
 			'box_shadow'            => array(
 				'default' => array(
 					'css' => array(
 						'overlay' => 'inset',
+					),
+				),
+				'image'   => array(
+					'label'             => esc_html__( 'Image Box Shadow', 'et_builder' ),
+					'option_category'   => 'layout',
+					'tab_slug'          => 'advanced',
+					'toggle_slug'       => 'image',
+					'css'               => array(
+						'main' => '%%order_class%% .et_pb_slide_image',
+					),
+					'default_on_fronts' => array(
+						'color'    => '',
+						'position' => '',
 					),
 				),
 			),
@@ -79,6 +121,11 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 					'box_shadow' => array(
 						'css' => array(
 							'main' => '%%order_class%% .et_pb_button',
+						),
+					),
+					'margin_padding' => array(
+						'css' => array(
+							'important' => 'all',
 						),
 					),
 				),
@@ -108,6 +155,19 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 				'options' => array(
 					'text_orientation'  => array(
 						'default'      => 'center',
+					),
+				),
+			),
+			'height' => array(
+				'css' => array(
+					'main' => '%%order_class%%, %%order_class%% .et_pb_slide',
+				)
+			),
+			'image'                 => array(
+				'css' => array(
+					'main' => array(
+						'%%order_class%% .et_pb_slide_image',
+						'%%order_class%% .et_pb_section_video_bg',
 					),
 				),
 			),
@@ -215,13 +275,105 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 				'tab_slug'        => 'custom_css',
 				'toggle_slug'     => 'visibility',
 			),
+			'use_bg_overlay'         => array(
+				'label'            => esc_html__( 'Use Background Overlay', 'et_builder' ),
+				'description'      => esc_html__( 'When enabled, a custom overlay color will be added above your background image and behind your slider content.', 'et_builder' ),
+				'type'             => 'yes_no_button',
+				'options'          => array(
+					'off' => esc_html__( 'No', 'et_builder' ),
+					'on'  => esc_html__( 'yes', 'et_builder' ),
+				),
+				'default_on_front' => '',
+				'affects'          => array(
+					'bg_overlay_color',
+				),
+				'tab_slug'         => 'advanced',
+				'toggle_slug'      => 'overlay',
+				'option_category'  => 'configuration',
+			),
+			'bg_overlay_color'       => array(
+				'label'           => esc_html__( 'Background Overlay Color', 'et_builder' ),
+				'description'     => esc_html__( 'Use the color picker to choose a color for the background overlay.', 'et_builder' ),
+				'type'            => 'color-alpha',
+				'custom_color'    => true,
+				'depends_show_if' => 'on',
+				'tab_slug'        => 'advanced',
+				'toggle_slug'     => 'overlay',
+				'option_category' => 'configuration',
+				'mobile_options'  => true,
+			),
+			'use_text_overlay'       => array(
+				'label'            => esc_html__( 'Use Text Overlay', 'et_builder' ),
+				'description'      => esc_html__( 'When enabled, a background color is added behind the slider text to make it more readable atop background images.', 'et_builder' ),
+				'type'             => 'yes_no_button',
+				'options'          => array(
+					'off' => esc_html__( 'No', 'et_builder' ),
+					'on'  => esc_html__( 'yes', 'et_builder' ),
+				),
+				'default_on_front' => '',
+				'affects'          => array(
+					'text_overlay_color',
+					'text_border_radius',
+				),
+				'tab_slug'         => 'advanced',
+				'toggle_slug'      => 'overlay',
+				'option_category'  => 'configuration',
+			),
+			'text_overlay_color'     => array(
+				'label'           => esc_html__( 'Text Overlay Color', 'et_builder' ),
+				'description'     => esc_html__( 'Use the color picker to choose a color for the text overlay.', 'et_builder' ),
+				'type'            => 'color-alpha',
+				'custom_color'    => true,
+				'depends_show_if' => 'on',
+				'tab_slug'        => 'advanced',
+				'toggle_slug'     => 'overlay',
+				'option_category' => 'configuration',
+				'mobile_options'  => true,
+			),
+			'text_border_radius'     => array(
+				'label'            => esc_html__( 'Text Overlay Border Radius', 'et_builder' ),
+				'description'      => esc_html__( 'Increasing the border radius will increase the roundness of the overlay corners. Setting this value to 0 will result in squared corners.', 'et_builder' ),
+				'type'             => 'range',
+				'option_category'  => 'layout',
+				'allowed_units'    => array( '%', 'em', 'rem', 'px', 'cm', 'mm', 'in', 'pt', 'pc', 'ex', 'vh', 'vw' ),
+				'default'          => '3',
+				'default_unit'     => 'px',
+				'default_on_front' => '',
+				'range_settings'   => array(
+					'min'  => '0',
+					'max'  => '100',
+					'step' => '1',
+				),
+				'depends_show_if'  => 'on',
+				'tab_slug'         => 'advanced',
+				'toggle_slug'      => 'overlay',
+				'mobile_options'   => true,
+			),
+			'arrows_custom_color'    => array(
+				'label'          => esc_html__( 'Arrow Color', 'et_builder' ),
+				'description'    => esc_html__( 'Pick a color to use for the slider arrows that are used to navigate through each slide.', 'et_builder' ),
+				'type'           => 'color-alpha',
+				'custom_color'   => true,
+				'tab_slug'       => 'advanced',
+				'toggle_slug'    => 'navigation',
+				'mobile_options' => true,
+			),
+			'dot_nav_custom_color'   => array(
+				'label'          => esc_html__( 'Dot Navigation Color', 'et_builder' ),
+				'description'    => esc_html__( 'Pick a color to use for the dot navigation that appears at the bottom of the slider to designate which slide is active.', 'et_builder' ),
+				'type'           => 'color-alpha',
+				'custom_color'   => true,
+				'tab_slug'       => 'advanced',
+				'toggle_slug'    => 'navigation',
+				'mobile_options' => true,
+			),
 		);
 
 		return $fields;
 	}
 
 	function before_render() {
-		global $et_pb_slider_has_video, $et_pb_slider_parallax, $et_pb_slider_parallax_method, $et_pb_slider_show_mobile, $et_pb_slider_custom_icon, $et_pb_slider_item_num, $et_pb_slider_button_rel;
+		global $et_pb_slider_has_video, $et_pb_slider_parallax, $et_pb_slider_parallax_method, $et_pb_slider_show_mobile, $et_pb_slider_custom_icon, $et_pb_slider_custom_icon_tablet, $et_pb_slider_custom_icon_phone, $et_pb_slider_item_num, $et_pb_slider_button_rel;
 
 		$et_pb_slider_item_num = 0;
 
@@ -231,7 +383,11 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 		$show_cta_on_mobile      = $this->props['show_cta_on_mobile'];
 		$button_rel              = $this->props['button_rel'];
 		$button_custom           = $this->props['custom_button'];
-		$custom_icon             = $this->props['button_icon'];
+
+		$custom_icon_values      = et_pb_responsive_options()->get_property_values( $this->props, 'button_icon' );
+		$custom_icon             = isset( $custom_icon_values['desktop'] ) ? $custom_icon_values['desktop'] : '';
+		$custom_icon_tablet      = isset( $custom_icon_values['tablet'] ) ? $custom_icon_values['tablet'] : '';
+		$custom_icon_phone       = isset( $custom_icon_values['phone'] ) ? $custom_icon_values['phone'] : '';
 
 		$et_pb_slider_has_video = false;
 
@@ -244,8 +400,41 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 			'show_cta_on_mobile'      => $show_cta_on_mobile,
 		);
 
-		$et_pb_slider_custom_icon = 'on' === $button_custom ? $custom_icon : '';
+		$et_pb_slider_custom_icon        = 'on' === $button_custom ? $custom_icon : '';
+		$et_pb_slider_custom_icon_tablet = 'on' === $button_custom ? $custom_icon_tablet : '';
+		$et_pb_slider_custom_icon_phone  = 'on' === $button_custom ? $custom_icon_phone : '';
+
 		$et_pb_slider_button_rel  = $button_rel;
+
+		// BG Overlay Color.
+		$bg_overlay_color        = $this->props['bg_overlay_color'];
+		$bg_overlay_color_values = et_pb_responsive_options()->get_property_values( $this->props, 'bg_overlay_color' );
+		$bg_overlay_color_tablet = isset( $bg_overlay_color_values['tablet'] ) ? $bg_overlay_color_values['tablet'] : '';
+		$bg_overlay_color_phone  = isset( $bg_overlay_color_values['phone'] ) ? $bg_overlay_color_values['phone'] : '';
+
+		// Text Overlay Color.
+		$text_overlay_color        = $this->props['text_overlay_color'];
+		$text_overlay_color_values = et_pb_responsive_options()->get_property_values( $this->props, 'text_overlay_color' );
+		$text_overlay_color_tablet = isset( $text_overlay_color_values['tablet'] ) ? $text_overlay_color_values['tablet'] : '';
+		$text_overlay_color_phone  = isset( $text_overlay_color_values['phone'] ) ? $text_overlay_color_values['phone'] : '';
+
+		// Text Border Radius.
+		$text_border_radius        = $this->props['text_border_radius'];
+		$text_border_radius_values = et_pb_responsive_options()->get_property_values( $this->props, 'text_border_radius' );
+		$text_border_radius_tablet = isset( $text_border_radius_values['tablet'] ) ? $text_border_radius_values['tablet'] : '';
+		$text_border_radius_phone  = isset( $text_border_radius_values['phone'] ) ? $text_border_radius_values['phone'] : '';
+
+		// Arrows Color.
+		$arrows_custom_color        = $this->props['arrows_custom_color'];
+		$arrows_custom_color_values = et_pb_responsive_options()->get_property_values( $this->props, 'arrows_custom_color' );
+		$arrows_custom_color_tablet = isset( $arrows_custom_color_values['tablet'] ) ? $arrows_custom_color_values['tablet'] : '';
+		$arrows_custom_color_phone  = isset( $arrows_custom_color_values['phone'] ) ? $arrows_custom_color_values['phone'] : '';
+
+		// Dot Nav Custom Color.
+		$dot_nav_custom_color        = $this->props['dot_nav_custom_color'];
+		$dot_nav_custom_color_values = et_pb_responsive_options()->get_property_values( $this->props, 'dot_nav_custom_color' );
+		$dot_nav_custom_color_tablet = isset( $dot_nav_custom_color_values['tablet'] ) ? $dot_nav_custom_color_values['tablet'] : '';
+		$dot_nav_custom_color_phone  = isset( $dot_nav_custom_color_values['phone'] ) ? $dot_nav_custom_color_values['phone'] : '';
 
 		// Pass Slider Module setting to Slide Item
 		global $et_pb_slider;
@@ -273,6 +462,28 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 			'background_video_width'                     => $this->props['background_video_width'],
 			'background_video_height'                    => $this->props['background_video_height'],
 			'header_level'                               => $this->props['header_level'],
+			'use_bg_overlay'                             => $this->props['use_bg_overlay'],
+			'bg_overlay_color'                           => $bg_overlay_color,
+			'bg_overlay_color_slider_last_edited'        => $this->props['bg_overlay_color_last_edited'],
+			'bg_overlay_color_tablet'                    => $bg_overlay_color_tablet,
+			'bg_overlay_color_phone'                     => $bg_overlay_color_phone,
+			'use_text_overlay'                           => $this->props['use_text_overlay'],
+			'text_overlay_color'                         => $text_overlay_color,
+			'text_overlay_color_slider_last_edited'      => $this->props['text_overlay_color_last_edited'],
+			'text_overlay_color_tablet'                  => $text_overlay_color_tablet,
+			'text_overlay_color_phone'                   => $text_overlay_color_phone,
+			'text_border_radius'                         => $text_border_radius,
+			'text_border_radius_slider_last_edited'      => $this->props['text_border_radius_last_edited'],
+			'text_border_radius_tablet'                  => $text_border_radius_tablet,
+			'text_border_radius_phone'                   => $text_border_radius_phone,
+			'arrows_custom_color'                        => $arrows_custom_color,
+			'arrows_custom_color_slider_last_edited'     => $this->props['arrows_custom_color_last_edited'],
+			'arrows_custom_color_tablet'                 => $arrows_custom_color_tablet,
+			'arrows_custom_color_phone'                  => $arrows_custom_color_phone,
+			'dot_nav_custom_color'                       => $dot_nav_custom_color,
+			'dot_nav_custom_color_slider_last_edited'    => $this->props['dot_nav_custom_color_last_edited'],
+			'dot_nav_custom_color_tablet'                => $dot_nav_custom_color_tablet,
+			'dot_nav_custom_color_phone'                 => $dot_nav_custom_color_phone,
 		);
 
 		// Hover Options attribute doesn't have field definition and rendered on the fly, thus the use of array_get()
@@ -298,7 +509,7 @@ class ET_Builder_Module_Slider extends ET_Builder_Module {
 		$background_position     = $this->props['background_position'];
 		$background_size         = $this->props['background_size'];
 
-		global $et_pb_slider_has_video, $et_pb_slider_parallax, $et_pb_slider_parallax_method, $et_pb_slider_show_mobile, $et_pb_slider_custom_icon, $et_pb_slider;
+		global $et_pb_slider_has_video, $et_pb_slider_parallax, $et_pb_slider_parallax_method, $et_pb_slider_show_mobile, $et_pb_slider_custom_icon, $et_pb_slider_custom_icon_tablet, $et_pb_slider_custom_icon_phone, $et_pb_slider;
 
 		$content = $this->content;
 

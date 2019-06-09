@@ -52,14 +52,17 @@ class ET_Builder_Module_Map_Item extends ET_Builder_Module {
 				'class'   => array( 'et_pb_zoom_level' ),
 				'default' => '18',
 				'default_on_front' => '',
+				'option_category'  => 'basic_option',
 			),
 			'pin_address_lat' => array(
 				'type'  => 'hidden',
 				'class' => array( 'et_pb_pin_address_lat' ),
+				'option_category' => 'basic_option',
 			),
 			'pin_address_lng' => array(
 				'type'  => 'hidden',
 				'class' => array( 'et_pb_pin_address_lng' ),
+				'option_category' => 'basic_option',
 			),
 			'map_center_map' => array(
 				'type'                  => 'center_map',
@@ -68,7 +71,7 @@ class ET_Builder_Module_Map_Item extends ET_Builder_Module {
 				'toggle_slug'           => 'map',
 			),
 			'content' => array(
-				'label'           => esc_html__( 'Content', 'et_builder' ),
+				'label'           => esc_html__( 'Body', 'et_builder' ),
 				'type'            => 'tiny_mce',
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Here you can define the content that will be placed within the infobox for the pin.', 'et_builder' ),

@@ -242,7 +242,7 @@
 			} );
 		},
 
-		exportFB: function( exportUrl, postId, content, fileName, importFile, page ) {
+		exportFB: function( exportUrl, postId, content, fileName, importFile, page, timestamp ) {
 			var $this = this;
 
 			page = typeof page === 'undefined' ? 1 : page;
@@ -254,7 +254,7 @@
 				data: {
 					action: 'et_core_portability_export',
 					content: content,
-					timestamp: 0,
+					timestamp: timestamp !== undefined ? timestamp : 0,
 					nonce: $this.nonces.export,
 					post: postId,
 					context: 'et_builder',
@@ -284,7 +284,7 @@
 							return;
 						}
 
-						return $this.exportFB(exportUrl, postId, content, fileName, importFile, (page + 1));
+						return $this.exportFB(exportUrl, postId, content, fileName, importFile, (page + 1), response.timestamp);
 					} else if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.message ) {
 						window.et_fb_export_layout_message = $this.text[response.data.message];
 						window.dispatchEvent( errorEvent );

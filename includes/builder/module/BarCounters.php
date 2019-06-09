@@ -24,7 +24,7 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 						'title'    => esc_html__( 'Text', 'et_builder' ),
 						'priority' => 49,
 					),
-					'bar' => esc_html__( 'Bar Counter', 'et_builder' ),
+					'bar'    => esc_html__( 'Bar', 'et_builder' ),
 				),
 			),
 		);
@@ -75,6 +75,7 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 				),
 			),
 			'margin_padding' => array(
+				'draggable_padding' => false,
 				'css'           => array(
 					'margin'    => "{$this->main_css_element}",
 					'padding'   => "{$this->main_css_element} .et_pb_counter_amount",
@@ -131,9 +132,11 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 				'hover'             => 'tabs',
 				'description'       => esc_html__( 'This will change the fill color for the bar.', 'et_builder' ),
 				'default'           => et_builder_accent_color(),
+				'mobile_options'    => true,
 			),
 			'use_percentages' => array(
-				'label'             => esc_html__( 'Use Percentages', 'et_builder' ),
+				'label'             => esc_html__( 'Show Percentage', 'et_builder' ),
+				'description'       => esc_html__( 'Turning off percentages will remove the percentage text from within the filled portion of the bar.', 'et_builder' ),
 				'type'              => 'yes_no_button',
 				'option_category'   => 'configuration',
 				'options'           => array(
@@ -169,7 +172,7 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 		$background_video_width    = $this->props['background_video_width'];
 		$background_video_height   = $this->props['background_video_height'];
 		$allow_player_pause        = $this->props['allow_player_pause'];
-		$bar_bg_color              = $this->props['bar_bg_color'];
+		$bar_bg_color_values       = et_pb_responsive_options()->get_property_values( $this->props, 'bar_bg_color' );
 		$use_percentages           = $this->props['use_percentages'];
 		$background_video_pause_outside_viewport = $this->props['background_video_pause_outside_viewport'];
 
@@ -184,7 +187,9 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 			'background_video_width'    => $background_video_width,
 			'background_video_height'   => $background_video_height,
 			'allow_player_pause'        => $allow_player_pause,
-			'bar_bg_color'              => $bar_bg_color,
+			'bar_bg_color'              => isset( $bar_bg_color_values['desktop'] ) ? $bar_bg_color_values['desktop'] : '',
+			'bar_bg_color_tablet'       => isset( $bar_bg_color_values['tablet'] ) ? $bar_bg_color_values['tablet'] : '',
+			'bar_bg_color_phone'        => isset( $bar_bg_color_values['phone'] ) ? $bar_bg_color_values['phone'] : '',
 			'use_percentages'           => $use_percentages,
 			'background_video_pause_outside_viewport' => $background_video_pause_outside_viewport,
 		);
@@ -192,8 +197,9 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 
 	function render( $attrs, $content = null, $render_slug ) {
 		$background_layout               = $this->props['background_layout'];
-		$bar_bg_hover_color              = et_pb_hover_options()->get_value( 'bar_bg_color', $this->props );
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
 		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$bar_bg_hover_color              = et_pb_hover_options()->get_value( 'bar_bg_color', $this->props );
 		$video_background = $this->video_background();
 
 		// Module classname
@@ -201,6 +207,16 @@ class ET_Builder_Module_Bar_Counters extends ET_Builder_Module {
 			'et-waypoint',
 			"et_pb_bg_layout_{$background_layout}",
 		) );
+		
+		$background_layout_tablet = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		$background_layout_phone = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		$this->add_classname( $this->get_text_orientation_classname() );
 

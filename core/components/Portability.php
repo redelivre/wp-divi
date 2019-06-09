@@ -22,6 +22,11 @@ class ET_Core_Portability {
 	public $instance;
 
 	/**
+	 * @var ET_Core_Data_Utils
+	 */
+	protected static $_;
+
+	/**
 	 * Whether or not an import is in progress.
 	 *
 	 * @since 3.0.99
@@ -37,6 +42,8 @@ class ET_Core_Portability {
 	 */
 	public function __construct( $context ) {
 		$this->instance = et_core_cache_get( $context, 'et_core_portability' );
+
+		self::$_ = ET_Core_Data_Utils::instance();
 
 		if ( $this->instance && $this->instance->view ) {
 			if ( et_core_is_fb_enabled() ) {
@@ -744,7 +751,7 @@ class ET_Core_Portability {
 			}
 
 			// Extract images from html or shortcodes.
-			if ( preg_match_all( '/(src|image_url|image|url|bg_img_?\d?)="(?P<src>\w+[^"]*)"/i', $value, $matches ) ) {
+			if ( preg_match_all( '/(src|image_url|background_image|image|url|bg_img_?\d?)="(?P<src>\w+[^"]*)"/i', $value, $matches ) ) {
 				foreach ( array_unique( $matches['src'] ) as $key => $src ) {
 					$images = array_merge( $images, $this->get_data_images( array( $key => $src ) ) );
 				}
@@ -777,6 +784,40 @@ class ET_Core_Portability {
 	}
 
 	/**
+	 * Get the attachment post id for the given url.
+	 *
+	 * @since 3.22.3
+	 *
+	 * @param string $url The url of an attachment file.
+	 *
+	 * @return int
+	 */
+	protected function _get_attachment_id_by_url( $url ) {
+		global $wpdb;
+
+		// Remove any thumbnail size suffix from the filename and use that as a fallback.
+		$fallback_url = preg_replace( '/-\d+x\d+(\.[^.]+)$/i', '$1', $url );
+
+		// Scenario: Trying to find the attachment for a file called x-150x150.jpg.
+		// 1. Since WordPress adds the -150x150 suffix for thumbnail sizes we cannot be
+		//    sure if this is an attachment or an attachment's generated thumbnail.
+		// 2. Since both x.jpg and x-150x150.jpg can be uploaded as separate attachments
+		//    we must decide which is a better match.
+		// 3. The above is why we order by guid length and use the first result.
+		$attachments_query = $wpdb->prepare( "
+			SELECT id
+			FROM $wpdb->posts
+			WHERE `post_type` = %s
+				AND `guid` IN ( %s, %s )
+			ORDER BY CHAR_LENGTH( `guid` ) DESC
+		", 'attachment', esc_url_raw( $url ), esc_url_raw( $fallback_url ) );
+
+		$attachment_id = (int) $wpdb->get_var( $attachments_query );
+
+		return $attachment_id;
+	}
+
+	/**
 	 * Encode image in a base64 format.
 	 *
 	 * @since 2.7.0
@@ -789,33 +830,109 @@ class ET_Core_Portability {
 		$encoded = array();
 
 		foreach ( $images as $url ) {
+			$id = 0;
+			$image = '';
 
 			if ( is_int( $url ) ) {
 				$id = $url;
-				$url = wp_get_attachment_url( $url );
+				$url = wp_get_attachment_url( $id );
+			} else {
+				$id = $this->_get_attachment_id_by_url( $url );
 			}
 
-			$request = wp_remote_get( esc_url_raw( $url ), array(
-				'timeout' => 2,
-				'redirection' => 2,
-			) );
+			if ( $id > 0 ) {
+				$image = $this->_encode_attachment_image( $id );
+			}
 
-			if ( is_array( $request ) && ! is_wp_error( $request ) ) {
-				if ( stripos( $request['headers']['content-type'], 'image' ) !== false && ( $image = wp_remote_retrieve_body( $request ) ) ) {
-					$encoded[$url] = array(
-						'encoded'  => base64_encode( $image ),
-						'url'      => $url,
-					);
+			if ( empty( $image ) ) {
+				// Case 1: No attachment found.
+				// Case 2: Attachment found, but file does not exist (may be stored on a CDN, for example).
+				$image = $this->_encode_remote_image( $url );
+			}
 
-					// Add image id for replacement purposes
-					if ( isset( $id ) ) {
-						$encoded[$url]['id'] = $id;
-					}
-				}
+			if ( empty( $image ) ) {
+				// All fetching methods have failed - bail on encoding.
+				continue;
+			}
+
+			$encoded[ $url ] = array(
+				'encoded' => $image,
+				'url'     => $url,
+			);
+
+			// Add image id for replacement purposes.
+			if ( $id > 0 ) {
+				$encoded[ $url ]['id'] = $id;
 			}
 		}
 
 		return $encoded;
+	}
+
+	/**
+	 * Encode an image attachment.
+	 *
+	 * @since 3.22.3
+	 *
+	 * @param int $id
+	 *
+	 * @return string
+	 */
+	protected function _encode_attachment_image( $id ) {
+		/**
+		 * @var WP_Filesystem_Base $wp_filesystem
+		 */
+		global $wp_filesystem;
+
+		if ( ! current_user_can( 'read_post', $id ) ) {
+			return '';
+		}
+
+		$file = get_attached_file( $id );
+
+		if ( ! $wp_filesystem->exists( $file ) ) {
+			return '';
+		}
+
+		$image = $wp_filesystem->get_contents( $file );
+
+		if ( empty( $image ) ) {
+			return '';
+		}
+
+		return base64_encode( $image );
+	}
+
+	/**
+	 * Encode a remote image.
+	 *
+	 * @since 3.22.3
+	 *
+	 * @param string $url
+	 *
+	 * @return string
+	 */
+	protected function _encode_remote_image( $url ) {
+		$request = wp_remote_get( esc_url_raw( $url ), array(
+			'timeout'     => 2,
+			'redirection' => 2,
+		) );
+
+		if ( ! is_array( $request ) || is_wp_error( $request ) ) {
+			return '';
+		}
+
+		if ( ! self::$_->includes( $request['headers']['content-type'], 'image' ) ) {
+			return '';
+		}
+
+		$image = wp_remote_retrieve_body( $request );
+
+		if ( ! $image ) {
+			return '';
+		}
+
+		return base64_encode( $image );
 	}
 
 	/**
@@ -837,6 +954,8 @@ class ET_Core_Portability {
 				'post_type'     => 'attachment',
 				'pagename'      => pathinfo( $basename, PATHINFO_FILENAME ),
 			) );
+			$id = 0;
+			$url = '';
 
 			// Avoid duplicates.
 			if ( ! is_wp_error( $attachment ) && ! empty( $attachment ) ) {
@@ -848,13 +967,14 @@ class ET_Core_Portability {
 				if ( $filename === $basename ) {
 					// Use existing image only if the basenames and content match.
 					if ( $filesystem->get_contents( $file ) === base64_decode( $image['encoded'] ) ) {
-						$url = isset( $image['id'] ) ? $attachment[0]->ID : $attachment_url;
+						$id = isset( $image['id'] ) ? $attachment[0]->ID : 0;
+						$url = $attachment_url;
 					}
 				}
 			}
 
 			// Create new image.
-			if ( ! isset( $url ) ) {
+			if ( empty( $url ) ) {
 				$temp_file = wp_tempnam();
 				$filesystem->put_contents( $temp_file, base64_decode( $image['encoded'] ) );
 				$filetype = wp_check_filetype_and_ext( $temp_file, $basename );
@@ -878,7 +998,8 @@ class ET_Core_Portability {
 
 				if ( ! is_wp_error( $upload ) ) {
 					// Set the replacement as an id if the original image was set as an id (for gallery).
-					$url = isset( $image['id'] ) ? $upload : wp_get_attachment_url( $upload );
+					$id = isset( $image['id'] ) ? $upload : 0;
+					$url = wp_get_attachment_url( $upload );
 				} else {
 					// Make sure the temporary file is removed if media_handle_sideload didn't take care of it.
 					$filesystem->delete( $temp_file );
@@ -886,7 +1007,11 @@ class ET_Core_Portability {
 			}
 
 			// Only declare the replace if a url is set.
-			if ( isset( $url ) ) {
+			if ( $id > 0 ) {
+				$images[$key]['replacement_id'] = $id;
+			}
+
+			if ( ! empty( $url ) ) {
 				$images[$key]['replacement_url'] = $url;
 			}
 
@@ -910,16 +1035,16 @@ class ET_Core_Portability {
 		$data = wp_json_encode( $data );
 
 		foreach ( $images as $image ) {
-			if ( isset( $image['replacement_url'] ) ) {
-				if ( isset( $image['id'] ) && is_int( $image['replacement_url'] ) ) {
-					$search = $image['id'];
-					$replacement = $image['replacement_url'];
-					$data = preg_replace( "/(gallery_ids=.*){$search}(.*\")/", "\${1}{$replacement}\${2}", $data );
-				} else {
-					$url = str_replace( '/', '\/', $image['url'] );
-					$replacement = str_replace( '/', '\/', $image['replacement_url'] );
-					$data = str_replace( $url, $replacement, $data );
-				}
+			if ( isset( $image['replacement_id'] ) && isset( $image['id'] ) ) {
+				$search = $image['id'];
+				$replacement = $image['replacement_id'];
+				$data = preg_replace( "/(gallery_ids=.*){$search}(.*\")/", "\${1}{$replacement}\${2}", $data );
+			}
+
+			if ( isset( $image['replacement_url'] ) && $image['url'] !== $image['replacement_url'] ) {
+				$search = str_replace( '/', '\/', $image['url'] );
+				$replacement = str_replace( '/', '\/', $image['replacement_url'] );
+				$data = str_replace( $search, $replacement, $data );
 			}
 		}
 

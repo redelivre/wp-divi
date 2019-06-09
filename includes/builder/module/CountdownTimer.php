@@ -48,6 +48,21 @@ class ET_Builder_Module_Countdown_Timer extends ET_Builder_Module {
 						),
 					),
 				),
+				'separator' => array(
+					'label'           => esc_html__( 'Separator', 'et_builder' ),
+					'css'             => array(
+						'main'      => ".et_pb_column {$this->main_css_element} .et_pb_countdown_timer_container .section.sep p",
+						'important' => 'all',
+					),
+					'line_height' => array(
+						'range_settings' => array(
+							'min'  => '1',
+							'max'  => '100',
+							'step' => '1',
+						),
+					),
+					'hide_text_align' => true,
+				),
 				'label' => array(
 					'label'    => esc_html__( 'Label', 'et_builder' ),
 					'css'      => array(
@@ -129,7 +144,7 @@ class ET_Builder_Module_Countdown_Timer extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'title' => array(
-				'label'           => esc_html__( 'Countdown Timer Title', 'et_builder' ),
+				'label'           => esc_html__( 'Title', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'This is the title displayed for the countdown timer.', 'et_builder' ),
@@ -137,7 +152,7 @@ class ET_Builder_Module_Countdown_Timer extends ET_Builder_Module {
 				'dynamic_content' => 'text',
 			),
 			'date_time' => array(
-				'label'           => esc_html__( 'Countdown To', 'et_builder' ),
+				'label'           => esc_html__( 'Date', 'et_builder' ),
 				'type'            => 'date_picker',
 				'option_category' => 'basic_option',
 				'description'     => et_get_safe_localization( sprintf( __( 'This is the date the countdown timer is counting down to. Your countdown timer is based on your timezone settings in your <a href="%1$s" target="_blank" title="WordPress General Settings">WordPress General Settings</a>', 'et_builder' ), esc_url( admin_url( 'options-general.php' ) ) ) ),
@@ -151,9 +166,6 @@ class ET_Builder_Module_Countdown_Timer extends ET_Builder_Module {
 	function render( $attrs, $content = null, $render_slug ) {
 		$title                           = $this->_esc_attr( 'title' );
 		$date_time                       = $this->props['date_time'];
-		$background_layout               = $this->props['background_layout'];
-		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
-		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
 		$use_background_color            = $this->props['use_background_color'];
 		$header_level                    = $this->props['header_level'];
 		$end_date                        = gmdate( 'M d, Y H:i:s', strtotime( $date_time ) );
@@ -162,6 +174,13 @@ class ET_Builder_Module_Countdown_Timer extends ET_Builder_Module {
 		$gmt_offset_hour                 = str_pad( abs( intval( $gmt_offset ) ), 2, "0", STR_PAD_LEFT );
 		$gmt_offset_minute               = str_pad( ( ( abs( $gmt_offset ) * 100 ) % 100 ) * ( 60 / 100 ), 2, "0", STR_PAD_LEFT );
 		$gmt                             = "GMT{$gmt_divider}{$gmt_offset_hour}{$gmt_offset_minute}";
+
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
 
 		if ( '' !== $title ) {
 			$title = sprintf(
@@ -191,6 +210,14 @@ class ET_Builder_Module_Countdown_Timer extends ET_Builder_Module {
 		$this->add_classname( array(
 			"et_pb_bg_layout_{$background_layout}",
 		) );
+
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		if ( 'on' !== $use_background_color ) {
 			$this->add_classname( 'et_pb_no_bg' );

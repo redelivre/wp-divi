@@ -353,9 +353,19 @@
   margin-right: 1em;
 }
 
+#et_support_center .et_pb_yes_no_button {
+  vertical-align: inherit;
+}
+
+#et_support_center .et-remote-access-error,
 #et_support_center .et-safe-mode-error {
   color: #EF5555;
   font-weight: 700;
+}
+
+#et_support_center .et-remote-access-error {
+  vertical-align: middle;
+  margin-left: 30px;
 }
 
 #et_support_center code {

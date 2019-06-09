@@ -41,6 +41,9 @@ class ET_Builder_Plugin_Compat_WPML_Multilingual_CMS extends ET_Builder_Plugin_C
 			10,
 			5
 		);
+		// Override the language code used in the AJAX request that checks if
+		// cached definitions/helpers needs to be updated.
+		add_filter( 'et_fb_current_page_params', array( $this, 'override_current_page_params' ) );
 	}
 
 	/**
@@ -147,6 +150,24 @@ class ET_Builder_Plugin_Compat_WPML_Multilingual_CMS extends ET_Builder_Plugin_C
 		}
 
 		return $shortcode_atts;
+	}
+
+	/**
+	 * Override the language code used in the AJAX request that checks if
+	 * cached definitions/helpers needs to be updated.
+	 *
+	 * @param array $params
+	 *
+	 * @return array
+	 */
+	public function override_current_page_params( $params ) {
+		$langCode = apply_filters( 'wpml_current_language', false );
+
+		if ( $langCode ) {
+			$params['langCode'] = $langCode;
+		}
+
+		return $params;
 	}
 }
 

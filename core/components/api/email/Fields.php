@@ -131,6 +131,7 @@ class ET_Core_API_Email_Fields {
 			),
 			'checkbox_checked' => array(
 				'label'           => esc_html__( 'Checked By Default', 'et_core' ),
+				'description'     => esc_html__( 'If enabled, the check mark will be automatically selected for the visitor. They can still deselect it.', 'et_core' ),
 				'type'            => 'hidden',
 				'option_category' => 'layout',
 				'default'         => 'off',
@@ -230,6 +231,7 @@ class ET_Core_API_Email_Fields {
 			),
 			'allowed_symbols'  => array(
 				'label'           => esc_html__( 'Allowed Symbols', 'et_core' ),
+				'description'     => esc_html__( 'You can validate certain types of information by disallowing certain symbols. Symbols added here will prevent the form from being submitted if added by the user.', 'et_core' ),
 				'type'            => 'select',
 				'default'         => 'all',
 				'options'         => array(
@@ -298,6 +300,7 @@ class ET_Core_API_Email_Fields {
 			$fields = array_merge( $fields, array(
 				'field_background_color'     => array(
 					'label'        => esc_html__( 'Field Background Color', 'et_core' ),
+					'description'  => esc_html__( "Pick a color to fill the module's input fields.", 'et_core' ),
 					'type'         => 'color-alpha',
 					'custom_color' => true,
 					'toggle_slug'  => 'form_field',
@@ -335,6 +338,7 @@ class ET_Core_API_Email_Fields {
 				),
 				'conditional_logic_rules'    => array(
 					'label'           => esc_html__( 'Rules', 'et_core' ),
+					'description'     => esc_html__( 'Conditional logic rules can be used to hide and display different input fields conditionally based on how the visitor has interacted with different inputs.', 'et_core' ),
 					'type'            => 'conditional_logic',
 					'option_category' => 'layout',
 					'depends_show_if' => 'on',

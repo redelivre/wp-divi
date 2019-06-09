@@ -1,5 +1,8 @@
 <?php
 
+require_once 'module/field/Factory.php';
+require_once 'module/helpers/Overflow.php';
+
 
 class ET_Builder_Settings {
 
@@ -299,10 +302,19 @@ class ET_Builder_Settings {
 
 	protected static function _get_page_settings_fields() {
 		$fields = array();
+		$overflow = ET_Builder_Module_Fields_Factory::get( 'Overflow' );
 
 		if ( et_pb_is_allowed( 'ab_testing' ) ) {
 			$fields = self::_get_ab_testing_fields();
 		}
+
+		$overflow_fields = $overflow->get_fields( array(
+			'prefix'      => 'et_pb_',
+			'tab_slug'    => 'advanced',
+			'toggle_slug' => 'visibility',
+		) );
+
+		$fields = array_merge( $fields, $overflow_fields );
 
 		$fields = array_merge( $fields, array(
 			'et_pb_custom_css'                    => array(
@@ -513,6 +525,8 @@ class ET_Builder_Settings {
 			return self::$_PAGE_SETTINGS_VALUES[ $post_id ];
 		}
 
+		$overflow = et_pb_overflow();
+		$OVERFLOW_DEFAULT = ET_Builder_Module_Helper_Overflow::OVERFLOW_DEFAULT;
 		$is_default = array();
 
 		// Page settings fields
@@ -557,6 +571,12 @@ class ET_Builder_Settings {
 		$et_pb_section_background_color      = '' !== $section_background_color ? $section_background_color : $default;
 		$is_default[]                        = strtolower( $et_pb_section_background_color ) === $default ? 'et_pb_section_background_color' : '';
 
+		$overflow_x                          = (string) get_post_meta( $post_id, $overflow->get_field_x( '_et_pb_' ), true );
+		$is_default[]                        = empty( $overflow_x ) || $overflow_x == $OVERFLOW_DEFAULT ? $overflow->get_field_x( 'et_pb_' ) : '';
+
+		$overflow_y                          = (string) get_post_meta( $post_id, $overflow->get_field_y( '_et_pb_' ), true );
+		$is_default[]                        = empty( $overflow_y ) || $overflow_y == $OVERFLOW_DEFAULT ? $overflow->get_field_y( 'et_pb_' ) : '';
+
 		$static_css_file       = get_post_meta( $post_id, '_et_pb_static_css_file', true );
 		$default               = $fields['et_pb_static_css_file']['default'];
 		$et_pb_static_css_file = '' !== $static_css_file ? $static_css_file : $default;
@@ -587,6 +607,8 @@ class ET_Builder_Settings {
 			'et_pb_post_settings_tags'               => self::_get_object_terms( $post_id, 'post_tag' ),
 			'et_pb_post_settings_project_categories' => self::_get_object_terms( $post_id, 'project_category' ),
 			'et_pb_post_settings_project_tags'       => self::_get_object_terms( $post_id, 'project_tag' ),
+			et_pb_overflow()->get_field_x( 'et_pb_' ) => $overflow_x,
+			et_pb_overflow()->get_field_y( 'et_pb_' ) => $overflow_y,
 		);
 		/**
 		 * Filters Divi Builder page settings values.
@@ -1017,6 +1039,7 @@ class ET_Builder_Settings {
 			'spacing'               => esc_html__( 'Spacing', 'et_builder' ),
 			'ab_testing'            => esc_html__( 'Split Testing', 'et_builder' ),
 			'text'                  => esc_html__( 'Text', 'et_builder' ),
+			'visibility'            => esc_html__( 'Visibility', 'et_builder' ),
 		);
 
 		/**

@@ -3,6 +3,21 @@
 class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 	private static $classes = array();
 
+	/**
+	 * @var ET_Builder_Module_Helper_ResponsiveOptions
+	 *
+	 * @since 3.23
+	 */
+	public static $responsive = null;
+
+	/**
+	 * Get box shadow fields.
+	 *
+	 * @since 3.23 Add support for responsive settings. Add allowed units for range fields.
+	 *
+	 * @param  array $args Box shadow settings args.
+	 * @return array       Box shadow fields.
+	 */
 	public function get_fields( array $args = array() ) {
 		$arguments = shortcode_atts( array(
 			'suffix'              => '',
@@ -49,9 +64,11 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 				),
 				'default'         => 0,
 				'validate_unit'   => true,
-				'fixed_unit'      => 'px',
+				'allowed_units'   => array( 'em', 'rem', 'px', 'cm', 'mm', 'in', 'pt', 'pc', 'ex', 'vh', 'vw' ),
+				'default_unit'    => 'px',
 				'fixed_range'     => true,
 				'hover'           => 'tabs',
+				'mobile_options'  => true,
 			)
 		);
 
@@ -92,6 +109,7 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 				'depends_on'          => $arguments['depends_on'],
 				'show_if'             => $arguments['show_if'],
 				'show_if_not'         => $arguments['show_if_not'],
+				'description'         => esc_html__( 'Pick a box shadow style to enable box shadow for this element. Once enabled, you will be able to customize your box shadow style further. To disable custom box shadow style, choose the None option.', 'et_builder' ),
 			)
 		);
 
@@ -120,11 +138,17 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 
 		$options[ $horizontal ] = array_merge(
 			$range,
-			array( 'label' => esc_html__( 'Box Shadow Horizontal Position', 'et_builder' ), )
+			array(
+				'label'       => esc_html__( 'Box Shadow Horizontal Position', 'et_builder' ),
+				'description' => esc_html__( 'Shadow\'s horizontal distance from the element. A negative value places the shadow to the left of the element.', 'et_builder' ),
+			)
 		);
 		$options[ $vertical ]   = array_merge(
 			$range,
-			array( 'label' => esc_html__( 'Box Shadow Vertical Position', 'et_builder' ), )
+			array(
+				'label'       => esc_html__( 'Box Shadow Vertical Position', 'et_builder' ),
+				'description' => esc_html__( 'Shadow\'s vertical distance from the element. A negative value places the shadow above the element.', 'et_builder' ),
+			)
 		);
 		$options[ $blur ]       = array_merge(
 			$range,
@@ -135,11 +159,15 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 					'max'  => 80,
 					'step' => 1,
 				),
+				'description'    => esc_html__( 'The higher the value, the bigger the blur, the shadow becomes wider and lighter.', 'et_builder' ),
 			)
 		);
 		$options[ $spread ]     = array_merge(
 			$range,
-			array( 'label' => esc_html__( 'Box Shadow Spread Strength', 'et_builder' ), )
+			array(
+				'label'       => esc_html__( 'Box Shadow Spread Strength', 'et_builder' ),
+				'description' => esc_html__( 'Increasing the spread strength will increase the density of the box shadow. Higher density results in a more intense shadow.', 'et_builder' ),
+			)
 		);
 		$options[ $color ]      = array_merge(
 			$option,
@@ -149,6 +177,8 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 				'hover'          => 'tabs',
 				'default'        => 'rgba(0,0,0,0.3)',
 				'field_template' => 'color',
+				'mobile_options' => true,
+				'description'    => esc_html__( 'The color of the shadow.', 'et_builder' ),
 			)
 		);
 
@@ -160,12 +190,14 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 			$option,
 			array(
 				'label'   => esc_html__( 'Box Shadow Position', 'et_builder' ),
+				'description' => esc_html__( 'Choose whether you would like the shadow to appear outside your module, lifting the module up from the page, or inside the module, setting the module downwards within the page.', 'et_builder' ),
 				'type'    => 'select',
 				'default' => 'outer',
 				'options' => array(
 					'outer' => esc_html__( 'Outer Shadow', 'et_builder' ),
 					'inner' => esc_html__( 'Inner Shadow', 'et_builder' ),
 				),
+				'mobile_options' => true,
 			)
 		);
 
@@ -191,20 +223,36 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 		return $options;
 	}
 
+	/**
+	 * Get box-shadow declaration style.
+	 *
+	 * @since 3.23 Add support for responsive settings.
+	 *
+	 * @param  array  $atts Module attributes.
+	 * @param  array  $args Box-shadow arguments.
+	 * @return string       Box shadow CSS declaration.
+	 */
 	public function get_value( $atts, array $args = array() ) {
-		$args      = shortcode_atts( array( 'suffix' => '', 'important' => false, 'hover' => false), $args );
+		$args      = shortcode_atts( array(
+			'suffix'    => '',
+			'important' => false,
+			'hover'     => false,
+			'device'    => 'desktop',
+		), $args );
 		$suffix    = $args['suffix'];
 		$important = $args['important'] ? '!important' : '';
 		$hover     = $args['hover'];
+		$device    = $args['device'];
 		$style     = $this->get_key_value( "style$suffix", $atts );
 
 		if ( empty($style) || 'none' === $style ) {
 			return '';
 		}
 
-
+		// 1. Get preset styles as default.
 		$preset = $this->get_preset( $style );
 
+		// 2. Get current device properties value.
 		$atts   = array_merge( array(
 			"box_shadow_position{$suffix}"   => $preset['position'],
 			"box_shadow_horizontal{$suffix}" => $preset['horizontal'],
@@ -212,15 +260,18 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 			"box_shadow_blur{$suffix}"       => $preset['blur'],
 			"box_shadow_spread{$suffix}"     => $preset['spread'],
 			"box_shadow_color{$suffix}"      => 'rgba(0,0,0,0.3)',
-		), array_filter($atts, 'strlen') );
+		), array_filter( $atts, 'strlen' ) );
 
-		$position   = $this->get_key_value( "position{$suffix}", $atts ) == 'inner' ? 'inset' : '';
-		$horizontal = rtrim( $this->get_key_value( "horizontal{$suffix}", $atts, $hover ), 'px' ) . 'px';
-		$vertical   = rtrim( $this->get_key_value( "vertical{$suffix}", $atts, $hover ), 'px' ) . 'px';
-		$blur       = rtrim( $this->get_key_value( "blur{$suffix}", $atts, $hover ), 'px' ) . 'px';
-		$strength   = rtrim( $this->get_key_value( "spread{$suffix}", $atts, $hover ), 'px' ) . 'px';
-		$color      = $this->get_key_value("color{$suffix}", $atts, $hover );
-		$value      = sprintf(
+		// All the values below sometime return null.
+		$position   = $this->get_key_value( "position{$suffix}", $atts, false, $device ) == 'inner' ? 'inset' : '';
+		$horizontal = $this->get_key_value( "horizontal{$suffix}", $atts, $hover, $device );
+		$vertical   = $this->get_key_value( "vertical{$suffix}", $atts, $hover, $device );
+		$blur       = $this->get_key_value( "blur{$suffix}", $atts, $hover, $device );
+		$strength   = $this->get_key_value( "spread{$suffix}", $atts, $hover, $device );
+		$color      = $this->get_key_value( "color{$suffix}", $atts, $hover, $device );
+
+		// CSS declaration.
+		$value = sprintf(
 			'box-shadow: %1$s %2$s %3$s %4$s %5$s %6$s %7$s;',
 			$position,
 			$horizontal,
@@ -409,13 +460,48 @@ class ET_Builder_Module_Field_BoxShadow extends ET_Builder_Module_Field_Base {
 		return $preset[ $field ];
 	}
 
-	protected function get_key_value( $key, $atts = array(), $hover = false ) {
+	/**
+	 * Get box shadow property value based on current active device.
+	 *
+	 * @since 3.23 Add responsive support. Check last edited value first for tablet/phone.
+	 *
+	 * @param  string  $key    Box shadow property.
+	 * @param  array   $atts   All module attributes.
+	 * @param  boolean $hover  Hover mode status.
+	 * @param  string  $device Current device.
+	 * @return string          Box shadow property value.
+	 */
+	protected function get_key_value( $key, $atts = array(), $hover = false, $device = 'desktop' ) {
 		$utils = ET_Core_Data_Utils::instance();
 		$Hover = et_pb_hover_options();
 
-		return $hover
-			? $Hover->get_value( "box_shadow_{$key}", $atts, $utils->array_get( $atts, "box_shadow_{$key}") )
-			: $utils->array_get( $atts, "box_shadow_{$key}" );
+		// Add device name as suffix.
+		$is_desktop    = 'desktop' === $device;
+		$device_suffix = '';
+		if ( ! $hover && ! $is_desktop ) {
+			$device_suffix = "_{$device}";
+		}
+
+		// Get current active device value.
+		$attr_value = et_pb_responsive_options()->get_any_value( $atts, "box_shadow_{$key}{$device_suffix}", '', true );
+
+		// Bail early if current mode is hover or desktop mode.
+		if ( $hover ) {
+			return $Hover->get_value( "box_shadow_{$key}", $atts, $attr_value );
+		} else if ( $is_desktop ) {
+			return $attr_value;
+		}
+
+		// Ensure responsive settings is enabled before return tablet/phone value.
+		$is_responsive = et_pb_responsive_options()->is_responsive_enabled( $atts, "box_shadow_{$key}" );
+		if ( ! $is_responsive ) {
+			// To avoid any issue when no box shadow defined on tablet and phone, we should return
+			// desktop value instead. By doing this, tablet and phone box shadow will be identical
+			// with desktop box shadow value.
+			return et_pb_responsive_options()->get_any_value( $atts, "box_shadow_{$key}" );
+		}
+
+		return $attr_value;
 	}
 }
 

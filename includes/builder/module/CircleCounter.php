@@ -51,6 +51,9 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 				'css' => array(
 					'important' => array( 'custom_margin' ),
 				),
+				'custom_margin' => array(
+					'default' => '0px|auto|30px|auto|false|false',
+				),
 			),
 			'max_width'             => array(
 				'options' => array(
@@ -151,21 +154,25 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 			),
 			'bar_bg_color' => array(
 				'default'           => et_builder_accent_color(),
-				'label'             => esc_html__( 'Bar Background Color', 'et_builder' ),
+				'label'             => esc_html__( 'Circle Color', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'circle',
 				'description'       => esc_html__( 'This will change the fill color for the bar.', 'et_builder' ),
+				'mobile_options'    => true,
 			),
 			'circle_color' => array(
-				'label'             => esc_html__( 'Circle Color', 'et_builder' ),
+				'label'             => esc_html__( 'Circle Background Color', 'et_builder' ),
+				'description'       => esc_html__( 'Pick a color to be used in the unfilled space of the circle.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'circle',
+				'mobile_options'    => true,
 			),
 			'circle_color_alpha' => array(
-				'label'           => esc_html__( 'Circle Color Opacity', 'et_builder' ),
+				'label'           => esc_html__( 'Circle Background Opacity', 'et_builder' ),
+				'description'     => esc_html__( 'Decrease the opacity of the unfilled space of the circle to make the color fade into the background.', 'et_builder' ),
 				'type'            => 'range',
 				'option_category' => 'configuration',
 				'range_settings'  => array(
@@ -178,6 +185,7 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 				'tab_slug'        => 'advanced',
 				'toggle_slug'     => 'circle',
 				'unitless'        => true,
+				'mobile_options'  => true,
 			),
 		);
 		return $fields;
@@ -189,27 +197,63 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 		$number                          = $this->props['number'];
 		$percent_sign                    = $this->props['percent_sign'];
 		$title                           = $this->_esc_attr( 'title' );
-		$background_layout               = $this->props['background_layout'];
-		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
-		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
-		$bar_bg_color                    = $this->props['bar_bg_color'];
-		$circle_color                    = $this->props['circle_color'];
-		$circle_color_alpha              = $this->props['circle_color_alpha'];
 		$custom_padding                  = $this->props['custom_padding'];
 		$custom_padding_tablet           = $this->props['custom_padding_tablet'];
 		$custom_padding_phone            = $this->props['custom_padding_phone'];
 		$header_level                    = $this->props['title_level'];
+
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
+
+		$bar_bg_color                    = $this->props['bar_bg_color'];
+		$bar_bg_color_values             = et_pb_responsive_options()->get_property_values( $this->props, 'bar_bg_color' );
+		$bar_bg_color_tablet             = isset( $bar_bg_color_values['tablet'] ) ? $bar_bg_color_values['tablet'] : '';
+		$bar_bg_color_phone              = isset( $bar_bg_color_values['phone'] ) ? $bar_bg_color_values['phone'] : '';
+
+		$circle_color                    = $this->props['circle_color'];
+		$circle_color_values             = et_pb_responsive_options()->get_property_values( $this->props, 'circle_color' );
+		$circle_color_tablet             = isset( $circle_color_values['tablet'] ) ? $circle_color_values['tablet'] : '';
+		$circle_color_phone              = isset( $circle_color_values['phone'] ) ? $circle_color_values['phone'] : '';
+
+		$circle_color_alpha              = $this->props['circle_color_alpha'];
+		$circle_color_alpha_values       = et_pb_responsive_options()->get_property_values( $this->props, 'circle_color_alpha' );
+		$circle_color_alpha_tablet       = isset( $circle_color_alpha_values['tablet'] ) ? $circle_color_alpha_values['tablet'] : '';
+		$circle_color_alpha_phone        = isset( $circle_color_alpha_values['phone'] ) ? $circle_color_alpha_values['phone'] : '';
 
 		$number = str_ireplace( '%', '', $number );
 
 		$video_background = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
-		$circle_color_data = '' !== $circle_color ?
+		$bar_bg_color_data_tablet = '' !== $bar_bg_color_tablet ?
+			sprintf( ' data-bar-bg-color-tablet="%1$s"', esc_attr( $bar_bg_color_tablet ) )
+			: '';
+		$bar_bg_color_data_phone  = '' !== $bar_bg_color_phone ?
+			sprintf( ' data-bar-bg-color-phone="%1$s"', esc_attr( $bar_bg_color_phone ) )
+			: '';
+
+		$circle_color_data        = '' !== $circle_color ?
 			sprintf( ' data-color="%1$s"', esc_attr( $circle_color ) )
 			: '';
-		$circle_color_alpha_data = '' !== $circle_color_alpha ?
+		$circle_color_data_tablet = '' !== $circle_color_tablet ?
+			sprintf( ' data-color-tablet="%1$s"', esc_attr( $circle_color_tablet ) )
+			: '';
+		$circle_color_data_phone  = '' !== $circle_color_phone ?
+			sprintf( ' data-color-phone="%1$s"', esc_attr( $circle_color_phone ) )
+			: '';
+
+		$circle_color_alpha_data        = '' !== $circle_color_alpha ?
 			sprintf( ' data-alpha="%1$s"', esc_attr( $circle_color_alpha ) )
+			: '';
+		$circle_color_alpha_data_tablet = '' !== $circle_color_alpha_tablet ?
+			sprintf( ' data-alpha-tablet="%1$s"', esc_attr( $circle_color_alpha_tablet ) )
+			: '';
+		$circle_color_alpha_data_phone  = '' !== $circle_color_alpha_phone ?
+			sprintf( ' data-alpha-phone="%1$s"', esc_attr( $circle_color_alpha_phone ) )
 			: '';
 
 		$data_background_layout       = '';
@@ -232,13 +276,21 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 			$this->get_text_orientation_classname(),
 		) );
 
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
+
 		if ( '' !== $title ) {
 			$this->add_classname( 'et_pb_with_title' );
 		}
 
 		$output = sprintf(
 			'<div%1$s class="%2$s"%11$s%12$s>
-				<div class="et_pb_circle_counter_inner" data-number-value="%3$s" data-bar-bg-color="%4$s"%7$s%8$s>
+				<div class="et_pb_circle_counter_inner" data-number-value="%3$s" data-bar-bg-color="%4$s"%7$s%8$s%13$s%14$s%15$s%16$s%17$s%18$s>
 				%10$s
 				%9$s
 					<div class="percent"><p><span class="percent-value"></span>%5$s</p></div>
@@ -256,7 +308,13 @@ class ET_Builder_Module_Circle_Counter extends ET_Builder_Module {
 			$video_background,
 			$parallax_image_background, // #10
 			et_core_esc_previously( $data_background_layout ),
-			et_core_esc_previously( $data_background_layout_hover )
+			et_core_esc_previously( $data_background_layout_hover ),
+			$bar_bg_color_data_tablet,
+			$bar_bg_color_data_phone,
+			$circle_color_data_tablet, // #15
+			$circle_color_data_phone,
+			$circle_color_alpha_data_tablet,
+			$circle_color_alpha_data_phone
 		);
 
 		return $output;

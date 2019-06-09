@@ -2142,7 +2142,7 @@
 				$phone_number = $( '#et-info-phone' );
 			}
 
-			if ( to !== '' ) {
+			if ( to.trim() !== '' ) {
 				$phone_number.show().html( to );
 			} else {
 				$phone_number.hide();
@@ -2167,7 +2167,7 @@
 				$email = $( '#et-info-email' );
 			}
 
-			if ( to !== '' ) {
+			if ( to.trim() !== '' ) {
 				$email.show().text( to );
 			} else {
 				$email.hide();

@@ -16,6 +16,82 @@ function et_setup_builder() {
 }
 add_action( 'init', 'et_setup_builder', 0 );
 
+if ( ! function_exists( 'et_divi_maybe_adjust_row_advanced_options_config' ) ):
+function et_divi_maybe_adjust_row_advanced_options_config( $advanced_options ) {
+	$modules = ET_Builder_Element::get_modules();
+	$module  = array_pop( $modules );
+
+	if ( $module && 'post' === $module->get_post_type() ) {
+		$selector = implode( ', ', array(
+			'%%order_class%%',
+			'body #page-container .et-db #et-boc %%order_class%%.et_pb_row',
+			'body.et_pb_pagebuilder_layout.single #page-container #et-boc %%order_class%%.et_pb_row',
+			'body.et_pb_pagebuilder_layout.single.et_full_width_page #page-container #et-boc %%order_class%%.et_pb_row',
+			'body.et_pb_pagebuilder_layout.single.et_full_width_portfolio_page #page-container #et-boc %%order_class%%.et_pb_row',
+		) );
+
+		et_()->array_set( $advanced_options, 'max_width.css.width', $selector );
+		et_()->array_set( $advanced_options, 'max_width.css.max_width', $selector );
+	}
+
+	et_()->array_set( $advanced_options, 'max_width.options.max_width.default', et_divi_get_content_width() . 'px' );
+
+	if ( ! et_divi_is_boxed_layout() ) {
+		return $advanced_options;
+	}
+
+	$selector = implode( ', ', array(
+		'%%order_class%%',
+		'body.et_boxed_layout #page-container %%order_class%%.et_pb_row',
+		'body.et_boxed_layout.et_pb_pagebuilder_layout.single #page-container #et-boc %%order_class%%.et_pb_row',
+		'body.et_boxed_layout.et_pb_pagebuilder_layout.single.et_full_width_page #page-container #et-boc %%order_class%%.et_pb_row',
+		'body.et_boxed_layout.et_pb_pagebuilder_layout.single.et_full_width_portfolio_page #page-container #et-boc %%order_class%%.et_pb_row',
+	) );
+
+	et_()->array_set( $advanced_options, 'max_width.css.width', $selector );
+	et_()->array_set( $advanced_options, 'max_width.css.max_width', $selector );
+	et_()->array_set( $advanced_options, 'max_width.options.width.default', '90%' );
+
+	return $advanced_options;
+}
+add_filter( 'et_pb_row_advanced_fields', 'et_divi_maybe_adjust_row_advanced_options_config' );
+endif;
+
+if ( ! function_exists( 'et_divi_maybe_adjust_section_advanced_options_config' ) ):
+function et_divi_maybe_adjust_section_advanced_options_config( $advanced_options ) {
+	$is_post_type = is_singular( 'post' ) || ( 'et_fb_update_builder_assets' === et_()->array_get( $_POST, 'action' ) && 'post' === et_()->array_get( $_POST, 'et_post_type' ) );
+
+	et_()->array_set( $advanced_options, 'max_width.extra.inner.options.max_width.default', et_divi_get_content_width() . 'px' );
+
+	if ( et_divi_is_boxed_layout() ) {
+		$selector = implode( ', ', array(
+			'%%order_class%% > .et_pb_row',
+			'body.et_boxed_layout #page-container %%order_class%% > .et_pb_row',
+			'body.et_boxed_layout.et_pb_pagebuilder_layout.single #page-container #et-boc %%order_class%% > .et_pb_row',
+			'body.et_boxed_layout.et_pb_pagebuilder_layout.single.et_full_width_page #page-container #et-boc %%order_class%% > .et_pb_row',
+			'body.et_boxed_layout.et_pb_pagebuilder_layout.single.et_full_width_portfolio_page #page-container #et-boc %%order_class%% > .et_pb_row',
+		) );
+
+		et_()->array_set( $advanced_options, 'max_width.extra.inner.options.width.default', '90%' );
+		et_()->array_set( $advanced_options, 'max_width.extra.inner.css.main', $selector );
+	} else if ( $is_post_type ) {
+		$selector = implode( ', ', array(
+			'%%order_class%% > .et_pb_row',
+			'body #page-container .et-db #et-boc %%order_class%% > .et_pb_row',
+			'body.et_pb_pagebuilder_layout.single #page-container #et-boc %%order_class%% > .et_pb_row',
+			'body.et_pb_pagebuilder_layout.single.et_full_width_page #page-container #et-boc %%order_class%% > .et_pb_row',
+			'body.et_pb_pagebuilder_layout.single.et_full_width_portfolio_page #page-container #et-boc %%order_class%% > .et_pb_row',
+		) );
+		et_()->array_set( $advanced_options, 'max_width.extra.inner.css.main', $selector );
+	}
+
+	et_()->array_set( $advanced_options, 'margin_padding.css.main', '%%order_class%%.et_pb_section' );
+
+	return $advanced_options;
+}
+add_filter( 'et_pb_section_advanced_fields', 'et_divi_maybe_adjust_section_advanced_options_config' );
+endif;
+
 /**
  * Added custom data attribute to builder's section
  * @param array  initial custom data-* attributes for builder's section

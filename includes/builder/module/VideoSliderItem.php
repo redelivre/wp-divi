@@ -55,6 +55,7 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 			'background'            => false,
 			'fonts'                 => false,
 			'max_width'             => false,
+			'height'                => false,
 			'margin_padding' => false,
 			'button'                => false,
 			'link_options'          => false,
@@ -223,10 +224,15 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 		$src                             = $this->props['src'];
 		$src_webm                        = $this->props['src_webm'];
 		$image_src                       = $this->props['image_src'];
+		$video_src                       = '';
+
+		// Responsive background layout.
 		$background_layout               = $this->props['background_layout'];
 		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
 		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
-		$video_src                       = '';
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
 
 		global $et_pb_slider_image_overlay;
 
@@ -292,6 +298,14 @@ class ET_Builder_Module_Video_Slider_Item extends ET_Builder_Module {
 			'et_pb_slide',
 			"et_pb_bg_layout_{$background_layout}",
 		) );
+
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		// Remove automatically added classnames
 		$this->remove_classname( array(

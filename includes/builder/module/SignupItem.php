@@ -25,16 +25,58 @@ class ET_Builder_Module_Signup_Item extends ET_Builder_Module {
 				),
 			),
 			'borders'        => array(
-				'default' => array(
+				'default'      => array(
 					'css'          => array(
 						'main'      => array(
-							'border_radii'  => sprintf( '%1$s .input, %1$s .input[type="checkbox"] + label i, %1$s .input[type="radio"] + label i', $this->main_css_element ),
-							'border_styles' => sprintf( '%1$s .input, %1$s .input[type="checkbox"] + label i, %1$s .input[type="radio"] + label i', $this->main_css_element ),
+							'border_radii'  => sprintf( '%1$s .input, %1$s .input[type="checkbox"] + label i, %1$s .input[type="radio"] + label i', '.et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%%' ),
+							'border_styles' => sprintf( '%1$s .input, %1$s .input[type="checkbox"] + label i, %1$s .input[type="radio"] + label i', '.et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%%' ),
 						),
 						'important' => 'plugin_only',
 					),
 					'label_prefix' => esc_html__( 'Input', 'et_builder' ),
 					'defaults'     => array(
+						'border_radii'  => 'on|3px|3px|3px|3px',
+						'border_styles' => array(
+							'width' => '0px',
+							'color' => '#333333',
+							'style' => 'solid',
+						),
+					),
+					'fields_after'    => array(
+						'use_focus_border_color' => array(
+							'label'           => esc_html__( 'Use Focus Borders', 'et_builder' ),
+							'description'     => esc_html__( 'Enabling this option will add borders to input fields when focused.', 'et_builder' ),
+							'type'            => 'yes_no_button',
+							'option_category' => 'color_option',
+							'options'         => array(
+								'off' => esc_html__( 'No', 'et_builder' ),
+								'on'  => esc_html__( 'Yes', 'et_builder' ),
+							),
+							'affects'         => array(
+								"border_radii_focus",
+								"border_styles_focus",
+							),
+							'tab_slug'        => 'advanced',
+							'toggle_slug'     => 'border',
+							'default_on_front'=> 'off',
+						),
+					),
+				),
+				'focus' => array(
+					'label_prefix'    => esc_html__( 'Input Focus', 'et_builder' ),
+					'css'             => array(
+						'main'      => array(
+							'border_radii'  => sprintf( '%1$s .input:focus, %1$s .input[type="checkbox"]:focus + label i, %1$s .input[type="radio"]:focus + label i', '.et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%%' ),
+							'border_styles' => sprintf( '%1$s .input:focus, %1$s .input[type="checkbox"]:focus + label i, %1$s .input[type="radio"]:focus + label i', '.et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%%' ),
+						),
+						'important' => 'plugin_only',
+					),
+					'option_category' => 'border',
+					'tab_slug'        => 'advanced',
+					'toggle_slug'     => 'border',
+					'depends_on'      => array( 'use_focus_border_color' ),
+					'depends_show_if' => 'on',
+					'defaults'        => array(
 						'border_radii'  => 'on|3px|3px|3px|3px',
 						'border_styles' => array(
 							'width' => '0px',
@@ -66,26 +108,10 @@ class ET_Builder_Module_Signup_Item extends ET_Builder_Module {
 					),
 				),
 			),
-			'fonts'          => array(
-				'form_field' => array(
-					'label' => esc_html__( 'Field', 'et_builder' ),
-					'css'   => array(
-						'main'      => array(
-							"%%order_class%%.et_pb_contact_field .et_pb_contact_field_options_title",
-							"{$this->main_css_element} .input",
-							"{$this->main_css_element} .input::-webkit-input-placeholder",
-							"{$this->main_css_element} .input::-moz-placeholder",
-							"{$this->main_css_element} .input:-ms-input-placeholder",
-							"{$this->main_css_element} .input[type=checkbox] + label",
-							"{$this->main_css_element} .input[type=radio] + label",
-						),
-						'important' => 'plugin_only',
-					),
-				),
-			),
 			'margin_padding' => array(
 				'css' => array(
-					'padding'   => 'p%%order_class%%',
+					'main'      => ".et_pb_newsletter_form p%%order_class%%",
+					'padding'   => ".et_pb_newsletter_form p%%order_class%%.et_pb_newsletter_field.et_pb_signup_custom_field",
 					'important' => array( 'custom_margin' ), // needed to overwrite last module margin-bottom styling
 				),
 			),
@@ -98,11 +124,61 @@ class ET_Builder_Module_Signup_Item extends ET_Builder_Module {
 				// Don't add text-shadow fields since they already are via font-options
 				'default' => false,
 			),
+			'form_field'     => array(
+				'form_field' => array(
+					'label'          => esc_html__( 'Field', 'et_builder' ),
+					'css'            => array(
+						'main'                   => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input',
+						'background_color'       => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% input[type="text"], .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% select, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input[type="checkbox"] + label i, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input[type="radio"] + label i',
+						'background_color_hover' => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% input[type="text"]:hover, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea:hover, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% select:hover, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input[type="checkbox"] + label:hover i, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input[type="radio"] + label:hover i',
+						'focus_background_color' => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% input.input:focus, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea:focus, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% select:focus',
+						'form_text_color'        => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% input[type="text"], .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% select, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input[type="checkbox"] + label i:before',
+						'form_text_color_hover'  => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% input[type="text"]:hover, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea:hover, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% select:hover, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input[type="checkbox"] + label:hover i:before',
+						'focus_text_color'       => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input:focus',
+						'placeholder_focus'      => '.et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input:focus::-webkit-input-placeholder, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input:focus::-moz-placeholder, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% .input:focus:-ms-input-placeholder, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea:focus::-webkit-input-placeholder, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea:focus::-moz-placeholder, .et_pb_newsletter_form .et_pb_newsletter_fields %%order_class%% textarea:focus:-ms-input-placeholder',
+						'important'              => array( 'form_text_color', 'padding', 'margin' ),
+					),
+					'margin_padding' => false,
+					'box_shadow'     => false,
+					'border_styles'  => false,
+					'font_field'     => array(
+						'css' => array(
+							'main'      => array(
+								"%%order_class%%.et_pb_contact_field .et_pb_contact_field_options_title",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input::-webkit-input-placeholder",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input::-moz-placeholder",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input:-ms-input-placeholder",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input[type=checkbox] + label",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input[type=radio] + label",
+							),
+							'hover'     => array(
+								"%%order_class%%.et_pb_contact_field .et_pb_contact_field_options_title:hover",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input:hover",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input:hover::-webkit-input-placeholder",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input:hover::-moz-placeholder",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input:hover:-ms-input-placeholder",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input[type=checkbox] + label:hover",
+								".et_pb_newsletter_form .et_pb_newsletter_fields p%%order_class%% .input[type=radio] + label:hover",
+							),
+							'important' => 'plugin_only',
+						),
+					),
+				),
+			),
 		);
 	}
 
 	public function get_fields() {
-		return ET_Core_API_Email_Fields::get_definitions( 'builder' );
+		$fields = ET_Core_API_Email_Fields::get_definitions( 'builder' );
+
+		// Remove field background color because we already have one that support responsive settings
+		// on Form Field element.
+		if ( isset( $fields['field_background_color'] ) ) {
+			unset( $fields['field_background_color'] );
+		}
+
+		return $fields;
 	}
 
 	public function get_settings_modal_toggles() {

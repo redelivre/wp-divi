@@ -146,32 +146,49 @@
 	};
 
 	window.et_pb_set_responsive_grid = function( $grid_items_container, single_item_selector ) {
-		setTimeout( function() {
-			var container_width = $grid_items_container.innerWidth(),
-				$grid_items = $grid_items_container.find( single_item_selector ),
-				item_width = $grid_items.outerWidth( true ),
-				last_item_margin = item_width - $grid_items.outerWidth(),
-				columns_count = Math.round( ( container_width + last_item_margin ) / item_width ),
-				counter = 1,
-				first_in_row = 1;
+		setTimeout(function () {
+			var container_width = $grid_items_container.innerWidth();
+			var $grid_items = $grid_items_container.find(single_item_selector);
+			var item_width = $grid_items.outerWidth(true);
+			var last_item_margin = item_width - $grid_items.outerWidth();
+			var columns_count = Math.round((container_width + last_item_margin) / item_width);
+			var counter = 1;
+			var first_in_row = 1;
+			var $first_in_last_row = $();
 
-			$grid_items.removeClass( 'last_in_row first_in_row' );
-			$grid_items.filter(':visible').each( function() {
-				var $this_el = $( this );
+			$grid_items.removeClass('last_in_row first_in_row on_last_row');
+			$grid_items.filter(':visible').each(function () {
+				var $this_element = $(this);
 
-				if ( ! $this_el.hasClass( 'inactive' ) ) {
-					if ( first_in_row === counter ) {
-						$this_el.addClass( 'first_in_row' );
-					}
-
-					if ( 0 === counter % columns_count ) {
-						$this_el.addClass( 'last_in_row' );
+				if (!$this_element.hasClass('inactive')) {
+					if (first_in_row === counter) {
+						$this_element.addClass('first_in_row');
+						$first_in_last_row = $this_element;
+					} else if (0 === counter % columns_count) {
+						$this_element.addClass('last_in_row');
 						first_in_row = counter + 1;
 					}
 					counter++;
 				}
 			});
-		}, 1 ); // need this timeout to make sure all the css applied before calculating sizes
+			if ($first_in_last_row.length) {
+				var $module = $first_in_last_row.parents('.et_pb_module');
+				//set margin bottom to 0 if the gallery is the last module on the column
+				if ($module.is(':last-child')) {
+					var column = $first_in_last_row.parents('.et_pb_column')[0];
+					$(column).find('.et_pb_grid_item').removeClass('on_last_row');
+					// keep gutter margin if gallery has pagination
+					var pagination = $module.find('.et_pb_gallery_pagination');
+					if (0 === pagination.length) {
+						pagination = $module.find('.et_pb_portofolio_pagination');
+					}
+					if (0 === pagination.length || (pagination.length > 0 && !pagination.is(':visible'))) {
+						$first_in_last_row.addClass('on_last_row');
+						$first_in_last_row.nextAll().addClass('on_last_row');
+					}
+				}
+			}
+		}, 1); // need this timeout to make sure all the css applied before calculating sizes
 	};
 
 	window.et_pb_set_tabs_height = function( $tabs_module ) {

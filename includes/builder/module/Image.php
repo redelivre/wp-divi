@@ -64,9 +64,17 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 			),
 			'max_width'             => array(
 				'options' => array(
+					'width'     => array(
+						'depends_show_if' => 'off',
+					),
 					'max_width' => array(
 						'depends_show_if' => 'off',
 					),
+				),
+			),
+			'height'                => array(
+				'css' => array(
+					'main' => '%%order_class%% .et_pb_image_wrap img',
 				),
 			),
 			'fonts'                 => false,
@@ -228,6 +236,7 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'margin_padding',
 				'description'       => esc_html__( 'Here you can choose whether or not the image should have a space below it.', 'et_builder' ),
+				'mobile_options'   => true,
 			),
 			'align' => array(
 				'label'           => esc_html__( 'Image Alignment', 'et_builder' ),
@@ -239,9 +248,11 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 				'toggle_slug'     => 'alignment',
 				'description'     => esc_html__( 'Here you can choose the image alignment.', 'et_builder' ),
 				'options_icon'    => 'module_align',
+				'mobile_options'  => true,
 			),
 			'force_fullwidth' => array(
 				'label'             => esc_html__( 'Force Fullwidth', 'et_builder' ),
+				'description'       => esc_html__( "When enabled, this will force your image to extend 100% of the width of the column it's in.", 'et_builder' ),
 				'type'              => 'yes_no_button',
 				'option_category'   => 'layout',
 				'options'           => array(
@@ -253,27 +264,22 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 				'toggle_slug' => 'width',
 				'affects' => array(
 					'max_width',
+					'width',
 				),
-			),
-			'always_center_on_mobile' => array(
-				'label'             => esc_html__( 'Always Center Image On Mobile', 'et_builder' ),
-				'type'              => 'yes_no_button',
-				'option_category'   => 'layout',
-				'options'           => array(
-					'on'  => esc_html__( 'Yes', 'et_builder' ),
-					'off' => esc_html__( 'No', 'et_builder' ),
-				),
-				'default_on_front' => 'on',
-				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'alignment',
 			),
 		);
 
 		return $fields;
 	}
 
-	public function get_alignment() {
-		$alignment = isset( $this->props['align'] ) ? $this->props['align'] : '';
+	public function get_alignment( $device = 'desktop' ) {
+		$is_desktop = 'desktop' === $device;
+		$suffix     = ! $is_desktop ? "_{$device}" : '';
+		$alignment  = $is_desktop && isset( $this->props["align"] ) ? $this->props["align"] : '';
+
+		if ( ! $is_desktop && et_pb_responsive_options()->is_responsive_enabled( $this->props, 'align' ) ) {
+			$alignment = et_pb_responsive_options()->get_any_value( $this->props, "align{$suffix}" );
+		}
 
 		return et_pb_get_alignment( $alignment );
 	}
@@ -285,10 +291,10 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 		$url                     = $this->props['url'];
 		$url_new_window          = $this->props['url_new_window'];
 		$show_in_lightbox        = $this->props['show_in_lightbox'];
-		$show_bottom_space       = $this->props['show_bottom_space'];
 		$align                   = $this->get_alignment();
+		$align_tablet            = $this->get_alignment( 'tablet' );
+		$align_phone             = $this->get_alignment( 'phone' );
 		$force_fullwidth         = $this->props['force_fullwidth'];
-		$always_center_on_mobile = $this->props['always_center_on_mobile'];
 		$overlay_icon_color      = $this->props['overlay_icon_color'];
 		$hover_overlay_color     = $this->props['hover_overlay_color'];
 		$hover_icon              = $this->props['hover_icon'];
@@ -298,6 +304,11 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
+
+		$show_bottom_space         = $this->props['show_bottom_space'];
+		$show_bottom_space_values  = et_pb_responsive_options()->get_property_values( $this->props, 'show_bottom_space' );
+		$show_bottom_space_tablet  = isset( $show_bottom_space_values['tablet'] ) ? $show_bottom_space_values['tablet'] : '';
+		$show_bottom_space_phone   = isset( $show_bottom_space_values['phone'] ) ? $show_bottom_space_values['phone'] : '';
 
 		// Handle svg image behaviour
 		$src_pathinfo = pathinfo( $src );
@@ -309,7 +320,7 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 		if ( 'on' === $force_fullwidth ) {
 			ET_Builder_Element::set_style( $render_slug, array(
 				'selector'    => '%%order_class%%',
-				'declaration' => 'max-width: 100% !important;',
+				'declaration' => 'width: 100%; max-width: 100% !important;',
 			) );
 
 			ET_Builder_Element::set_style( $render_slug, array(
@@ -318,25 +329,31 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 			) );
 		}
 
-		if ( ! $this->_is_field_default( 'align', $align ) ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%%',
-				'declaration' => sprintf(
-					'text-align: %1$s;',
-					esc_html( $align )
-				),
-			) );
-		}
+		// Responsive Image Alignment.
+		// Set CSS properties and values for the image alignment.
+		// 1. Text Align is necessary, just set it from current image alignment value.
+		// 2. Margin {Side} is optional. Used to pull the image to right/left side.
+		// 3. Margin Left and Right are optional. Used by Center to reset custom margin of point 2.
+		$align_values = array(
+			'desktop' => array(
+				'text-align'      => esc_html( $align ),
+				"margin-{$align}" => ! empty( $align ) && 'center' !== $align ? '0' : '',
+			),
+			'tablet'  => array(
+				'text-align'             => esc_html( $align_tablet ),
+				'margin-left'            => 'left' !== $align_tablet ? 'auto' : '',
+				'margin-right'           => 'left' !== $align_tablet ? 'auto' : '',
+				"margin-{$align_tablet}" => ! empty( $align_tablet ) && 'center' !== $align_tablet ? '0' : '',
+			),
+			'phone'   => array(
+				'text-align'            => esc_html( $align_phone ),
+				'margin-left'           => 'left' !== $align_phone ? 'auto' : '',
+				'margin-right'          => 'left' !== $align_phone ? 'auto' : '',
+				"margin-{$align_phone}" => ! empty( $align_phone ) && 'center' !== $align_phone ? '0' : '',
+			),
+		);
 
-		if ( 'center' !== $align ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%%',
-				'declaration' => sprintf(
-					'margin-%1$s: 0;',
-					esc_html( $align )
-				),
-			) );
-		}
+		et_pb_responsive_options()->generate_responsive_css( $align_values, '%%order_class%%', '', $render_slug, '', 'alignment' );
 
 		if ( 'on' === $is_overlay_applied ) {
 			if ( '' !== $overlay_icon_color ) {
@@ -422,12 +439,24 @@ class ET_Builder_Module_Image extends ET_Builder_Module {
 			$this->add_classname( 'et_pb_image_sticky' );
 		}
 
-		if ( 'on' === $is_overlay_applied ) {
-			$this->add_classname( 'et_pb_has_overlay' );
+		if ( ! empty( $show_bottom_space_tablet ) ) {
+			if ( 'on' === $show_bottom_space_tablet ) {
+				$this->add_classname( 'et_pb_image_bottom_space_tablet' );
+			} elseif ( 'off' === $show_bottom_space_tablet ) {
+				$this->add_classname( 'et_pb_image_sticky_tablet' );
+			}
 		}
 
-		if ( 'on' === $always_center_on_mobile ) {
-			$this->add_classname( 'et_always_center_on_mobile' );
+		if ( ! empty( $show_bottom_space_phone ) ) {
+			if ( 'on' === $show_bottom_space_phone ) {
+				$this->add_classname( 'et_pb_image_bottom_space_phone' );
+			} elseif ( 'off' === $show_bottom_space_phone ) {
+				$this->add_classname( 'et_pb_image_sticky_phone' );
+			}
+		}
+
+		if ( 'on' === $is_overlay_applied ) {
+			$this->add_classname( 'et_pb_has_overlay' );
 		}
 
 		$output = sprintf(

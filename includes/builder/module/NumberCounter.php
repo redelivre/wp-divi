@@ -158,10 +158,16 @@ class ET_Builder_Module_Number_Counter extends ET_Builder_Module {
 		$percent_sign                    = $this->props['percent_sign'];
 		$title                           = $this->_esc_attr( 'title' );
 		$counter_color                   = $this->props['counter_color'];
+		$header_level                    = $this->props['title_level'];
+
+		// Background Layout.
 		$background_layout               = $this->props['background_layout'];
 		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
 		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
-		$header_level                    = $this->props['title_level'];
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
+
 
 		if ( et_builder_has_limitation( 'register_fittext_script' ) ) {
 			wp_enqueue_script( 'fittext' );
@@ -177,6 +183,14 @@ class ET_Builder_Module_Number_Counter extends ET_Builder_Module {
 			"et_pb_bg_layout_{$background_layout}",
 			$this->get_text_orientation_classname(),
 		) );
+
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		if ( '' !== $title ) {
 			$this->add_classname( 'et_pb_with_title' );

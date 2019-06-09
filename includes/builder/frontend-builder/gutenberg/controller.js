@@ -1,3 +1,5 @@
+/* eslint-disable yoda */
+
 import React from 'react';
 import placeholder from 'gutenberg/blocks/placeholder';
 import { isBuilderUsed, isScriptDebug, canToggle, isEnabled, getVBUrl } from 'gutenberg/utils/helpers';
@@ -169,7 +171,11 @@ class Controller {
         const title = getEditedPostAttribute('title');
         // Restore GB content and title (without saving)
         this.setupEditor(placeholder.unwrap(content), title);
-        unregisterPlaceholder();
+        // WP 5.2 GB requires setupEditor to be called twice....
+        setTimeout(() => {
+          this.setupEditor(placeholder.unwrap(content), title);
+          unregisterPlaceholder();
+        }, 0);
 
         toggleMetaSettings(false);
       }
@@ -209,6 +215,16 @@ class Controller {
     document.dispatchEvent(event);
   }
 
+  /**
+   * Prevent typing ENTER in the title block from creating blocks when placeholder is active
+   */
+  preventOnEnterAddBlock = (event) => {
+    if (hasPlaceholder() && 13 === event.keyCode) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+
   onEditorContentChange = () => {
     const post = getCurrentPost();
     if (isEmpty(post) || !this.unsubscribe) {
@@ -220,6 +236,9 @@ class Controller {
     }
 
     this.fireEditorReadyEvent();
+
+    // Add a keydown listener to the title block when it comes up.
+    jQuery('body').on('keydown', '.editor-post-title__input', this.preventOnEnterAddBlock);
 
     // We only need to do this step once
     this.unsubscribe();

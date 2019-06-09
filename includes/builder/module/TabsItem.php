@@ -22,7 +22,25 @@ class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 
 		$this->advanced_fields = array(
 			'fonts'                 => array(
-				'tab' => array(
+				'body'   => array(
+					'label'          => esc_html__( 'Body', 'et_builder' ),
+					'css'            => array(
+						'main'         => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab",
+						'line_height'  => ".et_pb_tabs {$this->main_css_element}.et_pb_tab p",
+						'limited_main' => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab, .et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab p",
+					),
+					'line_height'    => array(
+						'range_settings' => array(
+							'min'  => '1',
+							'max'  => '100',
+							'step' => '1',
+						),
+					),
+					'block_elements' => array(
+						'tabbed_subtoggles' => true,
+					),
+				),
+				'tab'   => array(
 					'label'    => esc_html__( 'Tab', 'et_builder' ),
 					'css'      => array(
 						'main'      => ".et_pb_tabs .et_pb_tabs_controls li{$this->main_css_element}, .et_pb_tabs .et_pb_tabs_controls li{$this->main_css_element} a",
@@ -37,21 +55,6 @@ class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 						),
 					),
 					'hide_text_align' => true,
-				),
-				'body'   => array(
-					'label'    => esc_html__( 'Body', 'et_builder' ),
-					'css'      => array(
-						'main' => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab",
-						'line_height' => ".et_pb_tabs {$this->main_css_element}.et_pb_tab p",
-						'limited_main' => ".et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab, .et_pb_tabs .et_pb_all_tabs {$this->main_css_element}.et_pb_tab p",
-					),
-					'line_height' => array(
-						'range_settings' => array(
-							'min'  => '1',
-							'max'  => '100',
-							'step' => '1',
-						),
-					),
 				),
 			),
 			'background'            => array(
@@ -76,6 +79,7 @@ class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 			),
 			'text'                  => false,
 			'max_width'             => false,
+			'height'                => false,
 			'button'                => false,
 		);
 
@@ -95,13 +99,15 @@ class ET_Builder_Module_Tabs_Item extends ET_Builder_Module {
 				'description'     => esc_html__( 'The title will be used within the tab button for this tab.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
 				'dynamic_content' => 'text',
+				'option_category' => 'basic_option',
 			),
 			'content' => array(
-				'label'           => esc_html__( 'Content', 'et_builder' ),
+				'label'           => esc_html__( 'Body', 'et_builder' ),
 				'type'            => 'tiny_mce',
 				'description'     => esc_html__( 'Here you can define the content that will be placed within the current tab.', 'et_builder' ),
 				'toggle_slug'     => 'main_content',
 				'dynamic_content' => 'text',
+				'option_category' => 'basic_option',
 			),
 		);
 		return $fields;

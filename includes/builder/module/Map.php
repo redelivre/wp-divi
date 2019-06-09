@@ -44,13 +44,26 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 					'main' => '%%order_class%%',
 				),
 				'child_filters_target' => array(
-					'tab_slug' => 'advanced',
+					'tab_slug'    => 'advanced',
 					'toggle_slug' => 'child_filters',
+					'label'       => esc_html__( 'Map', 'et_builder' ),
 				),
 			),
 			'child_filters'         => array(
 				'css' => array(
 					'main' => '%%order_class%% .gm-style>div>div>div>div>div>img',
+				),
+			),
+			'height'                => array(
+				'css' => array(
+					'main'    => '%%order_class%% > .et_pb_map',
+				),
+				'options' => array(
+					'height' => array(
+						'default'         => '440px',
+						'default_tablet'  => '350px',
+						'default_phone'   => '200px',
+					),
 				),
 			),
 			'fonts'                 => false,
@@ -142,7 +155,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				'default_on_front' => 'on',
 			),
 			'mobile_dragging' => array(
-				'label'           => esc_html__( 'Draggable on Mobile', 'et_builder' ),
+				'label'           => esc_html__( 'Draggable On Mobile', 'et_builder' ),
 				'type'            => 'yes_no_button',
 				'option_category' => 'configuration',
 				'options'         => array(
@@ -156,6 +169,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 			),
 			'use_grayscale_filter' => array(
 				'label'           => esc_html__( 'Use Grayscale Filter', 'et_builder' ),
+				'description'     => esc_html__( 'Applying the grayscale filter will change the map colors to black and white.', 'et_builder' ),
 				'type'            => 'yes_no_button',
 				'option_category' => 'configuration',
 				'options'         => array(
@@ -171,6 +185,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 			),
 			'grayscale_filter_amount' => array(
 				'label'           => esc_html__( 'Grayscale Filter Amount (%)', 'et_builder' ),
+				'description'     => esc_html__( 'Adjusting the grayscale filter will allow you to change the color saturation of the map.', 'et_builder' ),
 				'type'            => 'range',
 				'default'         => '0',
 				'option_category' => 'configuration',
@@ -178,6 +193,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 				'toggle_slug'     => 'child_filters',
 				'depends_show_if' => 'on',
 				'unitless'        => false,
+				'mobile_options'  => true,
 			),
 		);
 		return $fields;
@@ -197,7 +213,12 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 		$mouse_wheel             = $this->props['mouse_wheel'];
 		$mobile_dragging         = $this->props['mobile_dragging'];
 		$use_grayscale_filter    = $this->props['use_grayscale_filter'];
-		$grayscale_filter_amount = $this->props['grayscale_filter_amount'];
+
+		// Grayscale Filter.
+		$grayscale_filter_amount_values = et_pb_responsive_options()->get_property_values( $this->props, 'grayscale_filter_amount' );
+		$grayscale_filter_amount        = isset( $grayscale_filter_amount_values['desktop'] ) ? $grayscale_filter_amount_values['desktop'] : '';
+		$grayscale_filter_amount_tablet = isset( $grayscale_filter_amount_values['tablet'] ) ? $grayscale_filter_amount_values['tablet'] : '';
+		$grayscale_filter_amount_phone  = isset( $grayscale_filter_amount_values['phone'] ) ? $grayscale_filter_amount_values['phone'] : '';
 
 		if ( et_pb_enqueue_google_maps_script() ) {
 			wp_enqueue_script( 'google-maps-api' );
@@ -208,9 +229,21 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 
 		$all_pins_content = $this->content;
 
-		$grayscale_filter_data = '';
-		if ( 'on' === $use_grayscale_filter && '' !== $grayscale_filter_amount ) {
-			$grayscale_filter_data = sprintf( ' data-grayscale="%1$s"', esc_attr( $grayscale_filter_amount ) );
+		$grayscale_filter_data        = '';
+		$grayscale_filter_data_tablet = '';
+		$grayscale_filter_data_phone  = '';
+		if ( 'on' === $use_grayscale_filter ) {
+			if ( '' !== $grayscale_filter_amount ) {
+				$grayscale_filter_data = sprintf( ' data-grayscale="%1$s"', esc_attr( $grayscale_filter_amount ) );
+			}
+
+			if ( '' !== $grayscale_filter_amount_tablet ) {
+				$grayscale_filter_data_tablet = sprintf( ' data-grayscale-tablet="%1$s"', esc_attr( $grayscale_filter_amount_tablet ) );
+			}
+
+			if ( '' !== $grayscale_filter_amount_phone ) {
+				$grayscale_filter_data_phone = sprintf( ' data-grayscale-phone="%1$s"', esc_attr( $grayscale_filter_amount_phone ) );
+			}
 		}
 
 		// Map Tiles: Add CSS Filters and Mix Blend Mode rules (if set)
@@ -230,7 +263,7 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 		$this->remove_classname( $render_slug );
 
 		$output = sprintf(
-			'<div%5$s class="%6$s"%8$s>
+			'<div%5$s class="%6$s"%8$s%12$s%13$s>
 				%11$s
 				%10$s
 				<div class="et_pb_map" data-center-lat="%1$s" data-center-lng="%2$s" data-zoom="%3$d" data-mouse-wheel="%7$s" data-mobile-dragging="%9$s"></div>
@@ -240,13 +273,16 @@ class ET_Builder_Module_Map extends ET_Builder_Module {
 			esc_attr( $address_lng ),
 			esc_attr( $zoom_level ),
 			$all_pins_content,
-			$this->module_id(),
+			$this->module_id(), // #5
 			$this->module_classname( $render_slug ),
 			esc_attr( $mouse_wheel ),
 			$grayscale_filter_data,
 			esc_attr( $mobile_dragging ),
-			$video_background,
-			$parallax_image_background
+			$video_background, // #10
+			$parallax_image_background,
+			$grayscale_filter_data_tablet,
+			$grayscale_filter_data_phone
+
 		);
 
 		return $output;

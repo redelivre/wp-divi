@@ -18,7 +18,7 @@ abstract class ET_Builder_Module_Settings_Migration {
 
 	public static $last_hook_checked;
 	public static $last_hook_check_decision;
-	public static $max_version = '3.17.3';
+	public static $max_version = '3.23';
 	public static $migrated    = array();
 	public static $migrations = array(
 		'3.0.48'  => 'BackgroundUI',
@@ -37,6 +37,10 @@ abstract class ET_Builder_Module_Settings_Migration {
 		'3.12.3'  => 'TeamMemberIconHover',
 		'3.16'    => 'HoverOptions',
 		'3.17.3'  => 'DiscontinueHtmlEncoding',
+		'3.22'    => 'RowCustomWidthToSizing',
+		'3.22.3'  => 'RowZeroGutter',
+		'3.23'    => 'OptionsHarmony2',
+		'3.23.4'  => 'DividerHeight',
 	);
 
 	public static $migrations_by_version = array();

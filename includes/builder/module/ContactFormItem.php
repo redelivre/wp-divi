@@ -56,24 +56,6 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 					),
 				),
 			),
-			'fonts'          => array(
-				'form_field' => array(
-					'label' => esc_html__( 'Field', 'et_builder' ),
-					'css'   => array(
-						'main'      => implode( ',', array(
-							"%%order_class%%.et_pb_contact_field .et_pb_contact_field_options_title",
-							"{$this->main_css_element} .input",
-							"{$this->main_css_element} .input::placeholder",
-							"{$this->main_css_element} .input::-webkit-input-placeholder",
-							"{$this->main_css_element} .input::-moz-placeholder",
-							"{$this->main_css_element} .input:-ms-input-placeholder",
-							"{$this->main_css_element} .input[type=checkbox] + label",
-							"{$this->main_css_element} .input[type=radio] + label",
-						) ),
-						'important' => 'plugin_only',
-					),
-				),
-			),
 			'background'     => array(
 				'css' => array(
 					'main' => '%%order_class%%',
@@ -104,6 +86,49 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				),
 			),
 			'button'         => false,
+			'form_field'    => array(
+				'form_field' => array(
+					'label'          => esc_html__( 'Field', 'et_builder' ),
+					'css'            => array(
+						'main'                         => '%%order_class%%.et_pb_contact_field .input',
+						'background_color'             => '%%order_class%%.et_pb_contact_field .input, %%order_class%%.et_pb_contact_field .input + label i',
+						'background_color_hover'       => '%%order_class%%.et_pb_contact_field .input:hover, %%order_class%%.et_pb_contact_field .input + label:hover i',
+						'focus_background_color'       => '%%order_class%%.et_pb_contact_field .input:focus, %%order_class%%.et_pb_contact_field .input:focus + label i',
+						'focus_background_color_hover' => '%%order_class%%.et_pb_contact_field .input:focus:hover, %%order_class%%.et_pb_contact_field .input:focus + label:hover i',
+					),
+					'margin_padding' => false,
+					'box_shadow'     => false,
+					'border_styles'  => false,
+					'font_field'     => array(
+						'css' => array(
+							'main'      => implode( ',', array(
+								'%%order_class%%.et_pb_contact_field .et_pb_contact_field_options_title',
+								"{$this->main_css_element} .input",
+								"{$this->main_css_element} .input::placeholder",
+								"{$this->main_css_element} .input::-webkit-input-placeholder",
+								"{$this->main_css_element} .input::-moz-placeholder",
+								"{$this->main_css_element} .input:-ms-input-placeholder",
+								"{$this->main_css_element} .input[type=checkbox] + label",
+								"{$this->main_css_element} .input[type=radio] + label",
+							) ),
+							'important' => 'plugin_only',
+						),
+					),
+				),
+			),
+			'height'                => array(
+				'css' => array(
+					'main' => implode(', ', array(
+						'%%order_class%% input[type=text]',
+						'%%order_class%% input[type=email]',
+						'%%order_class%% textarea',
+						'%%order_class%%[data-type=checkbox]',
+						'%%order_class%%[data-type=radio]',
+						'%%order_class%%[data-type=select]',
+						'%%order_class%%[data-type=select] select',
+					))
+				)
+			),
 		);
 	}
 
@@ -123,6 +148,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				'description'      => esc_html__( 'Define the unique ID of this field. You should use only English characters without special characters and spaces.', 'et_builder' ),
 				'toggle_slug'      => 'main_content',
 				'default_on_front' => '',
+				'option_category'  => 'basic_option',
 			),
 			'field_title' => array(
 				'label'       => esc_html__( 'Title', 'et_builder' ),
@@ -130,6 +156,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				'description' => esc_html__( 'Here you can define the content that will be placed within the current tab.', 'et_builder' ),
 				'toggle_slug' => 'main_content',
 				'default_on_front' => esc_html__( 'New Field', 'et_builder' ),
+				'option_category'  => 'basic_option',
 			),
 			'field_type' => array(
 				'label'       => esc_html__( 'Type', 'et_builder' ),
@@ -157,6 +184,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 			),
 			'checkbox_checked' => array(
 				'label'           => esc_html__( 'Checked By Default', 'et_builder' ),
+				'description'     => esc_html__( 'If enabled, the check mark will be automatically selected for the visitor. They can still deselected it.', 'et_builder' ),
 				'type'            => 'hidden',
 				'option_category' => 'layout',
 				'default'         => 'off',
@@ -298,14 +326,6 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 				'depends_show_if' => 'on',
 				'toggle_slug'     => 'conditional_logic',
 			),
-			'field_background_color' => array(
-				'label'             => esc_html__( 'Field Background Color', 'et_builder' ),
-				'type'              => 'color-alpha',
-				'custom_color'      => true,
-				'toggle_slug'       => 'form_field',
-				'hover'             => 'tabs',
-				'tab_slug'          => 'advanced',
-			),
 		);
 
 		return $fields;
@@ -314,7 +334,7 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 	public function get_transition_fields_css_props() {
 		$fields = parent::get_transition_fields_css_props();
 
-		$fields['field_background_color'] = array(
+		$fields['form_field_background_color'] = array(
 			'background' => implode( ', ', array(
 				'%%order_class%%.et_pb_contact_field .input',
 				'%%order_class%%.et_pb_contact_field .input + label:hover i'
@@ -335,8 +355,6 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 		$required_mark              = $this->props['required_mark'];
 		$fullwidth_field            = $this->props['fullwidth_field'];
 		$form_field_text_color      = $this->props['form_field_text_color'];
-		$field_background_color     = $this->props['field_background_color'];
-		$field_bg_color_hover       = et_pb_hover_options()->get_value( 'field_background_color', $this->props );
 		$checkbox_checked           = $this->props['checkbox_checked'];
 		$checkbox_options           = $this->props['checkbox_options'];
 		$radio_options              = $this->props['radio_options'];
@@ -405,38 +423,6 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 			}
 		}
 
-		if ( '' !== $field_background_color ) {
-			$input_selector = '%%order_class%%.et_pb_contact_field .input';
-
-			if ( in_array( $field_type, array( 'checkbox', 'radio' ) ) ) {
-				$input_selector = '%%order_class%%.et_pb_contact_field .input + label i';
-			}
-
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => $input_selector,
-				'declaration' => sprintf(
-					'background-color: %1$s !important;',
-					esc_html( $field_background_color )
-				),
-			) );
-		}
-
-		if ( !empty( $field_bg_color_hover ) && et_pb_hover_options()->is_enabled( 'field_background_color', $this->props ) ) {
-			$input_selector = '%%order_class%% .input:hover';
-
-			if ( in_array( $field_type, array( 'checkbox', 'radio' ) ) ) {
-				$input_selector = '%%order_class%% .input + label:hover i';
-			}
-
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => $input_selector,
-				'declaration' => sprintf(
-					'background-color: %1$s !important;',
-					esc_html( $field_bg_color_hover )
-				),
-			) );
-		}
-
 		$pattern         = '';
 		$title           = '';
 		$min_length      = intval( $min_length );
@@ -448,15 +434,15 @@ class ET_Builder_Module_Contact_Form_Item extends ET_Builder_Module {
 		if ( in_array( $allowed_symbols, array( 'letters', 'numbers', 'alphanumeric' ) ) ) {
 			switch ( $allowed_symbols ) {
 				case 'letters':
-					$symbols_pattern = '[A-Z|a-z]';
+					$symbols_pattern = '[A-Z|a-z|\s-]';
 					$title           = __( 'Only letters allowed.', 'et_builder' );
 					break;
 				case 'numbers':
-					$symbols_pattern = '[0-9]';
+					$symbols_pattern = '[0-9\s-]';
 					$title           = __( 'Only numbers allowed.', 'et_builder' );
 					break;
 				case 'alphanumeric':
-					$symbols_pattern = '[A-Z|a-z|0-9]';
+					$symbols_pattern = '[\w\s-]';
 					$title           = __( 'Only letters and numbers allowed.', 'et_builder' );
 					break;
 			}

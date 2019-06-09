@@ -365,7 +365,7 @@ function keydown(event) {
             y = clientHeight * 0.9;
             break;
         case key.home:
-            y = -elem.scrollTop;
+            y = -window.pageYOffset;
             break;
         case key.end:
             var damt = elem.scrollHeight - elem.scrollTop - clientHeight;

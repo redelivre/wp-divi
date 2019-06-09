@@ -19,7 +19,6 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 			'advanced' => array(
 				'toggles' => array(
 					'overlay' => esc_html__( 'Overlay', 'et_builder' ),
-					'badge'   => esc_html__( 'Sale Badge', 'et_builder' ),
 					'image'   => esc_html__( 'Image', 'et_builder' ),
 				),
 			),
@@ -40,6 +39,40 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 						'main' => "{$this->main_css_element} .woocommerce ul.products li.product .price, {$this->main_css_element} .woocommerce ul.products li.product .price .amount",
 					),
 					'line_height' => array(
+						'range_settings' => array(
+							'min'  => '1',
+							'max'  => '100',
+							'step' => '1',
+						),
+					),
+				),
+				'sale_badge' => array(
+					'label'           => esc_html__( 'Sale Badge', 'et_builder' ),
+					'css'             => array(
+						'main'      => "{$this->main_css_element} .woocommerce ul.products li.product .onsale",
+						'important' => array( 'line-height', 'font', 'text-shadow' ),
+					),
+					'hide_text_align' => true,
+					'line_height'     => array(
+						'default' => '1.3em',
+					),
+					'font_size'       => array(
+						'default' => '20px',
+					),
+					'letter_spacing'  => array(
+						'default' => '0px',
+					),
+				),
+				'sale_price' => array(
+					'label'           => esc_html__( 'Sale Price', 'et_builder' ),
+					'css'             => array(
+						'main'    => "{$this->main_css_element} .woocommerce ul.products li.product .price ins .amount",
+					),
+					'hide_text_align' => true,
+					'font'            => array(
+						'default' => '|700|||||||',
+					),
+					'line_height'     => array(
 						'range_settings' => array(
 							'min'  => '1',
 							'max'  => '100',
@@ -243,7 +276,7 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 	function get_fields() {
 		$fields = array(
 			'type' => array(
-				'label'           => esc_html__( 'Type', 'et_builder' ),
+				'label'           => esc_html__( 'Product Type', 'et_builder' ),
 				'type'            => 'select',
 				'option_category' => 'basic_option',
 				'options'         => array(
@@ -291,7 +324,7 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 				'toggle_slug'      => 'elements',
 			),
 			'include_categories'   => array(
-				'label'            => esc_html__( 'Include Categories', 'et_builder' ),
+				'label'            => esc_html__( 'Included Categories', 'et_builder' ),
 				'type'             => 'categories',
 				'meta_categories'  => array(
 					'all'     => esc_html__( 'All Categories', 'et_builder' ),
@@ -310,7 +343,7 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 				),
 			),
 			'columns_number' => array(
-				'label'             => esc_html__( 'Columns Number', 'et_builder' ),
+				'label'             => esc_html__( 'Column Layout', 'et_builder' ),
 				'type'              => 'select',
 				'option_category'   => 'layout',
 				'options'           => array(
@@ -330,7 +363,7 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 				'toggle_slug'       => 'main_content',
 			),
 			'orderby' => array(
-				'label'             => esc_html__( 'Order By', 'et_builder' ),
+				'label'             => esc_html__( 'Order', 'et_builder' ),
 				'type'              => 'select',
 				'option_category'   => 'configuration',
 				'options'           => array(
@@ -351,33 +384,41 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 			),
 			'sale_badge_color' => array(
 				'label'             => esc_html__( 'Sale Badge Color', 'et_builder' ),
+				'description'       => esc_html__( 'Pick a color to use for the sales bade that appears on products that are on sale.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'badge',
+				'toggle_slug'       => 'sale_badge',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
 			),
 			'icon_hover_color' => array(
-				'label'             => esc_html__( 'Icon Hover Color', 'et_builder' ),
+				'label'             => esc_html__( 'Overlay Icon Color', 'et_builder' ),
+				'description'       => esc_html__( 'Pick a color to use for the icon that appears when hovering over a product.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
+				'mobile_options'    => true,
 			),
 			'hover_overlay_color' => array(
-				'label'             => esc_html__( 'Hover Overlay Color', 'et_builder' ),
+				'label'             => esc_html__( 'Overlay Background Color', 'et_builder' ),
+				'description'       => esc_html__( 'Here you can define a custom color for the overlay', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
+				'mobile_options'    => true,
 			),
 			'hover_icon' => array(
-				'label'               => esc_html__( 'Hover Icon Picker', 'et_builder' ),
+				'label'               => esc_html__( 'Overlay Icon', 'et_builder' ),
+				'description'         => esc_html__( 'Here you can define a custom icon for the overlay', 'et_builder' ),
 				'type'                => 'select_icon',
 				'option_category'     => 'configuration',
 				'class'               => array( 'et-pb-font-icon' ),
 				'tab_slug'            => 'advanced',
 				'toggle_slug'         => 'overlay',
+				'mobile_options'      => true,
 			),
 			'__shop' => array(
 				'type'                => 'computed',
@@ -615,24 +656,22 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 		$posts_number            = $this->props['posts_number'];
 		$orderby                 = $this->props['orderby'];
 		$columns                 = $this->props['columns_number'];
-		$sale_badge_color        = $this->props['sale_badge_color'];
-		$sale_badge_color_hover  = $this->get_hover_value( 'sale_badge_color' );
-		$icon_hover_color        = $this->props['icon_hover_color'];
-		$hover_overlay_color     = $this->props['hover_overlay_color'];
-		$hover_icon              = $this->props['hover_icon'];
 
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
 
-		if ( '' !== $sale_badge_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% span.onsale',
-				'declaration' => sprintf(
-					'background-color: %1$s !important;',
-					esc_html( $sale_badge_color )
-				),
-			) );
-		}
+		$sale_badge_color_hover    = $this->get_hover_value( 'sale_badge_color' );
+		$sale_badge_color_values   = et_pb_responsive_options()->get_property_values( $this->props, 'sale_badge_color' );
+		$icon_hover_color_values   = et_pb_responsive_options()->get_property_values( $this->props, 'icon_hover_color' );
+		$hover_overlay_color_value = et_pb_responsive_options()->get_property_values( $this->props, 'hover_overlay_color' );
+
+		$hover_icon                = $this->props['hover_icon'];
+		$hover_icon_values         = et_pb_responsive_options()->get_property_values( $this->props, 'hover_icon' );
+		$hover_icon_tablet         = isset( $hover_icon_values['tablet'] ) ? $hover_icon_values['tablet'] : '';
+		$hover_icon_phone          = isset( $hover_icon_values['phone'] ) ? $hover_icon_values['phone'] : '';
+
+		// Sale Badge Color.
+		et_pb_responsive_options()->generate_responsive_css( $sale_badge_color_values, '%%order_class%% span.onsale', 'background-color', $render_slug, ' !important;', 'color' );
 
 		if ( et_builder_is_hover_enabled( 'sale_badge_color', $this->props ) ) {
 			ET_Builder_Element::set_style( $render_slug, array(
@@ -644,26 +683,11 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 			) );
 		}
 
-		if ( '' !== $icon_hover_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% .et_overlay:before',
-				'declaration' => sprintf(
-					'color: %1$s !important;',
-					esc_html( $icon_hover_color )
-				),
-			) );
-		}
+		// Icon Hover Color.
+		et_pb_responsive_options()->generate_responsive_css( $icon_hover_color_values, '%%order_class%% .et_overlay:before', 'color', $render_slug, ' !important;', 'color' );
 
-		if ( '' !== $hover_overlay_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% .et_overlay',
-				'declaration' => sprintf(
-					'background-color: %1$s !important;
-					border-color: %1$s;',
-					esc_html( $hover_overlay_color )
-				),
-			) );
-		}
+		// Hover Overlay Color.
+		et_pb_responsive_options()->generate_responsive_css( $hover_overlay_color_value, '%%order_class%% .et_overlay', array( 'background-color', 'border-color' ), $render_slug, ' !important;', 'color' );
 
 		// Images: Add CSS Filters and Mix Blend Mode rules (if set)
 		if ( array_key_exists( 'image', $this->advanced_fields ) && array_key_exists( 'css', $this->advanced_fields['image'] ) ) {
@@ -681,6 +705,20 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 			)
 			: '';
 
+		$data_icon_tablet = '' !== $hover_icon_tablet
+			? sprintf(
+				' data-icon-tablet="%1$s"',
+				esc_attr( et_pb_process_font_icon( $hover_icon_tablet ) )
+			)
+			: '';
+
+		$data_icon_phone = '' !== $hover_icon_phone
+			? sprintf(
+				' data-icon-phone="%1$s"',
+				esc_attr( et_pb_process_font_icon( $hover_icon_phone ) )
+			)
+			: '';
+
 		// Module classnames
 		$this->add_classname( array(
 			$this->get_text_orientation_classname(),
@@ -691,7 +729,7 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 		}
 
 		$output = sprintf(
-			'<div%2$s class="%3$s"%4$s>
+			'<div%2$s class="%3$s"%4$s%7$s%8$s>
 				%6$s
 				%5$s
 				%1$s
@@ -701,7 +739,9 @@ class ET_Builder_Module_Shop extends ET_Builder_Module_Type_PostBased {
 			$this->module_classname( $render_slug ),
 			$data_icon,
 			$video_background,
-			$parallax_image_background
+			$parallax_image_background,
+			$data_icon_tablet,
+			$data_icon_phone
 		);
 
 		return $output;

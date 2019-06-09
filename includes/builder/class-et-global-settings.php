@@ -158,6 +158,8 @@ class ET_Global_Settings {
 			'et_pb_blog_masonry-header_font_style'                   => '',
 			'et_pb_blog_masonry-meta_font_size'                      => '14',
 			'et_pb_blog_masonry-meta_font_style'                     => '',
+			'et_pb_blog-read_more_font_size'                         => '14px',
+			'et_pb_blog-read_more_line_height'                       => $font_defaults['line_height'],
 			// Module: Blurb
 			'et_pb_blurb-header_font_size'                           => '18',
 			'et_pb_blurb-header_color'                               => '#333333',
@@ -209,6 +211,9 @@ class ET_Global_Settings {
 			'et_pb_countdown_timer-numbers_font_size'                => '54px',
 			'et_pb_countdown_timer-numbers_line_height'              => '54px',
 			'et_pb_countdown_timer-numbers_letter_spacing'           => $font_defaults['letter_spacing'],
+			'et_pb_countdown_timer-separator_font_size'              => '54px',
+			'et_pb_countdown_timer-separator_line_height'            => '54px',
+			'et_pb_countdown_timer-separator_letter_spacing'         => $font_defaults['letter_spacing'],
 			'et_pb_countdown_timer-label_line_height'                => '25px',
 			'et_pb_countdown_timer-label_letter_spacing'             => $font_defaults['letter_spacing'],
 			'et_pb_countdown_timer-label_font_size'                  => $font_defaults['size'],
@@ -419,6 +424,8 @@ class ET_Global_Settings {
 			'et_pb_pricing_table-background_position'                => $background_image_defaults['position'],
 			'et_pb_pricing_table-background_repeat'                  => $background_image_defaults['repeat'],
 			'et_pb_pricing_table-background_blend'                   => $background_image_defaults['blend'],
+			'et_pb_pricing_table-excluded_letter_spacing'            => '0px',
+			'et_pb_pricing_table-excluded_line_height'               => '1.7em',
 			// Module: Pricing Tables
 			'et_pb_pricing_tables-header_font_size'                  => '22',
 			'et_pb_pricing_tables-header_font_style'                 => '',
@@ -440,6 +447,8 @@ class ET_Global_Settings {
 			'et_pb_pricing_tables-background_position'               => $background_image_defaults['position'],
 			'et_pb_pricing_tables-background_repeat'                 => $background_image_defaults['repeat'],
 			'et_pb_pricing_tables-background_blend'                  => $background_image_defaults['blend'],
+			'et_pb_pricing_tables-excluded_letter_spacing'           => '0px',
+			'et_pb_pricing_tables-excluded_line_height'              => '1.7em',
 			// Module: Shop
 			'et_pb_shop-title_font_size'                             => '16',
 			'et_pb_shop-title_font_style'                            => '',
@@ -592,6 +601,14 @@ class ET_Global_Settings {
 			'et_pb_toggle-background_position'                       => $background_image_defaults['position'],
 			'et_pb_toggle-background_repeat'                         => $background_image_defaults['repeat'],
 			'et_pb_toggle-background_blend'                          => $background_image_defaults['blend'],
+			// Global: Field Input
+			'all_field_font_size'                                    => '16',
+			'all_field_border_width'                                 => '0',
+			'all_field_border_radius'                                => '3',
+			'all_field_spacing'                                      => '0',
+			'all_field_font_style'                                   => '',
+			$hover->get_hover_field( 'all_field_border_radius' )     => '3',
+			$hover->get_hover_field( 'all_field_spacing' )           => '0',
 		);
 
 		if ( et_builder_has_limitation('forced_icon_color_default') ) {

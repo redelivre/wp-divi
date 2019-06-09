@@ -45,7 +45,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 		$this->advanced_fields = array(
 			'fonts'      => array(
 				'portfolio_header'   => array(
-					'label'    => esc_html__( 'Portfolio Title', 'et_builder' ),
+					'label'    => esc_html__( 'Title', 'et_builder' ),
 					'css'      => array(
 						'main' => "{$this->main_css_element} .et_pb_portfolio_title",
 						'important' => 'all',
@@ -215,7 +215,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 				'description'       => esc_html__( 'Choose your desired portfolio layout style.', 'et_builder' ),
 			),
 			'include_categories' => array(
-				'label'            => esc_html__( 'Include Categories', 'et_builder' ),
+				'label'            => esc_html__( 'Included Categories', 'et_builder' ),
 				'type'             => 'categories',
 				'option_category'  => 'basic_option',
 				'description'      => esc_html__( 'Select the categories that you would like to include in the feed.', 'et_builder' ),
@@ -226,7 +226,7 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 				'toggle_slug'      => 'main_content',
 			),
 			'posts_number' => array(
-				'label'            => esc_html__( 'Posts Number', 'et_builder' ),
+				'label'            => esc_html__( 'Post Count', 'et_builder' ),
 				'type'             => 'text',
 				'option_category'  => 'configuration',
 				'description'      => esc_html__( 'Control how many projects are displayed. Leave blank or use 0 to not limit the amount.', 'et_builder' ),
@@ -260,21 +260,26 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 				'description'       => esc_html__( 'Turn the date display on or off.', 'et_builder' ),
 			),
 			'zoom_icon_color' => array(
-				'label'             => esc_html__( 'Zoom Icon Color', 'et_builder' ),
+				'label'             => esc_html__( 'Overlay Icon Color', 'et_builder' ),
+				'description'       => esc_html__( 'Here you can define a custom color for the zoom icon.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
+				'mobile_options'    => true,
 			),
 			'hover_overlay_color' => array(
-				'label'             => esc_html__( 'Hover Overlay Color', 'et_builder' ),
+				'label'             => esc_html__( 'Overlay Background Color', 'et_builder' ),
+				'description'       => esc_html__( 'Pick a color to use for the icon that appears when hovering over a portfolio item.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'overlay',
+				'mobile_options'    => true,
 			),
 			'hover_icon' => array(
-				'label'               => esc_html__( 'Hover Icon Picker', 'et_builder' ),
+				'label'               => esc_html__( 'Overlay Icon', 'et_builder' ),
+				'description'         => esc_html__( 'Select an icon to appear when hovering over a portfolio item.', 'et_builder' ),
 				'type'                => 'select_icon',
 				'option_category'     => 'configuration',
 				'class'               => array( 'et-pb-font-icon' ),
@@ -389,34 +394,26 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
 		$auto                            = $this->props['auto'];
 		$auto_speed                      = $this->props['auto_speed'];
-		$zoom_icon_color                 = $this->props['zoom_icon_color'];
-		$hover_overlay_color             = $this->props['hover_overlay_color'];
 		$hover_icon                      = $this->props['hover_icon'];
 		$header_level                    = $this->props['title_level'];
 		$portfolio_header                = $this->props['portfolio_header_level'];
+		$zoom_icon_color_values          = et_pb_responsive_options()->get_property_values( $this->props, 'zoom_icon_color' );
+		$hover_overlay_color_values      = et_pb_responsive_options()->get_property_values( $this->props, 'hover_overlay_color' );
+
+		$background_layout               = $this->props['background_layout'];
+		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
+		$background_layout_hover_enabled = et_pb_hover_options()->is_enabled( 'background_layout', $this->props );
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
+		$background_layout_tablet        = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		$background_layout_phone         = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
 
 		$zoom_and_hover_selector = '.et_pb_fullwidth_portfolio%%order_class%% .et_pb_portfolio_image';
 
-		if ( '' !== $zoom_icon_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => "{$zoom_and_hover_selector} .et_overlay:before",
-				'declaration' => sprintf(
-					'color: %1$s !important;',
-					esc_html( $zoom_icon_color )
-				),
-			) );
-		}
+		// Zoom Icon color.
+		et_pb_responsive_options()->generate_responsive_css( $zoom_icon_color_values, "{$zoom_and_hover_selector} .et_overlay:before", 'color', $render_slug, ' !important;', 'color' );
 
-		if ( '' !== $hover_overlay_color ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => "{$zoom_and_hover_selector} .et_overlay",
-				'declaration' => sprintf(
-					'background-color: %1$s;
-					border-color: %1$s;',
-					esc_html( $hover_overlay_color )
-				),
-			) );
-		}
+		// Hover Overlay color.
+		et_pb_responsive_options()->generate_responsive_css( $hover_overlay_color_values, "{$zoom_and_hover_selector} .et_overlay", array( 'background-color', 'border-color' ), $render_slug, '', 'color' );
 
 		$args = array();
 		if ( is_numeric( $posts_number ) && $posts_number > 0 ) {
@@ -531,6 +528,14 @@ class ET_Builder_Module_Fullwidth_Portfolio extends ET_Builder_Module_Type_PostB
 
 		// Module classnames
 		$this->add_classname( "et_pb_bg_layout_{$background_layout}" );
+
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+		}
+
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+		}
 
 		if ( 'on' === $fullwidth ) {
 			$this->add_classname( 'et_pb_fullwidth_portfolio_carousel' );

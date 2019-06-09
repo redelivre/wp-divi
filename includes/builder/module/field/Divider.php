@@ -27,6 +27,13 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 	public static $data_utils = null;
 
 	/**
+	 * @var ET_Builder_Module_Helper_ResponsiveOptions
+	 *
+	 * @since 3.23
+	 */
+	public static $responsive = null;
+
+	/**
 	 * Constructor for the class. This is done so that the divider options could be filtered
 	 * by a child theme or plugin.
 	 */
@@ -105,7 +112,10 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 
 	/**
 	 * Retrieves fields for divider settings.
-	 * @param  array  $args Associative array for settings.
+	 *
+	 * @since 3.23 Add responsive settings on Divider Style. Add allowed units on some range fields.
+	 *
+	 * @param  array $args Associative array for settings.
 	 * @return array       Option settings.
 	 */
 	public function get_fields( array $args = array() ) {
@@ -119,6 +129,7 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 				'controls' => array(
 					"{$placement}_divider_style"       => array(
 						'label'   => esc_html__( 'Divider Style', 'et_builder' ),
+						'description' => esc_html__( 'Select the divider shape that you would like to use. Shapes are represented visually within the list.', 'et_builder' ),
 						'type'    => 'divider',
 						'options' => array(
 							'none'        => esc_html__( 'None', 'et_builder' ),
@@ -151,17 +162,21 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 						),
 						'default' => 'none',
 						'flip'    => '',
+						'mobile_options' => true,
 					),
 					"{$placement}_divider_color"       => array(
 						'label'       => esc_html__( 'Divider Color', 'et_builder' ),
+						'description' => esc_html__( 'Pick a color to use for the section divider. By default, it will assume the color of the section above or below this section to ensure a smooth transition.', 'et_builder' ),
 						'type'        => 'color-alpha',
 						'default'     => '',
 						'show_if_not' => array(
 							"{$placement}_divider_style" => 'none',
 						),
+						'mobile_options' => true,
 					),
 					"{$placement}_divider_height"      => array(
 						'label'          => esc_html__( 'Divider Height', 'et_builder' ),
+						'description'    => esc_html__( 'Increase or decrease the height of the shape divider.', 'et_builder' ),
 						'type'           => 'range',
 						'range_settings' => array(
 							'min'  => 0,
@@ -170,6 +185,7 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 						),
 						'default'        => '100px',
 						'hover'          => 'tabs',
+						'allowed_units'  => array( '%', 'em', 'rem', 'px', 'cm', 'mm', 'in', 'pt', 'pc', 'ex', 'vh', 'vw' ),
 						'default_unit'   => 'px',
 						'show_if_not'    => array(
 							"{$placement}_divider_style" => 'none',
@@ -178,6 +194,7 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 					),
 					"{$placement}_divider_repeat"      => array(
 						'label'          => esc_html__( 'Divider Horizontal Repeat', 'et_builder' ),
+						'description'    => esc_html__( 'Choose how many times the shape divider should repeat. Setting to 1x will remove all repetition.', 'et_builder' ),
 						'type'           => 'range',
 						'range_settings' => array(
 							'min'  => 1,
@@ -194,6 +211,7 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 					),
 					"{$placement}_divider_flip"        => array(
 						'label'       => esc_html__( 'Divider Flip', 'et_builder' ),
+						'description' => esc_html__( 'Flip the divider horizontally or vertically to change the shape and its direction.', 'et_builder' ),
 						'type'        => 'multiple_buttons',
 						'options'     => array(
 							'horizontal' => array(
@@ -211,9 +229,11 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 						'show_if_not'  => array(
 							"{$placement}_divider_style" => 'none',
 						),
+						'mobile_options'  => true,
 					),
 					"{$placement}_divider_arrangement" => array(
 						'label'       => esc_html__( 'Divider Arrangement', 'et_builder' ),
+						'description' => esc_html__( 'Dividers can be placed either above or below section content. If placed above section content, then modules and rows within the section will be hidden behind the divider when they overlap.', 'et_builder' ),
 						'type'        => 'select',
 						'options'     => array(
 							'above_content' => esc_html__( 'On Top Of Section Content', 'et_builder' ),
@@ -224,6 +244,7 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 							"{$placement}_divider_style" => 'none',
 							'fullwidth'                  => 'on',
 						),
+						'mobile_options' => true,
 					),
 				),
 			);
@@ -260,6 +281,7 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 
 		$additional_options['divider_settings'] = array(
 			'label'               => esc_html__( 'Dividers', 'et_builder' ),
+			'description'         => esc_html__( 'Section dividers allow you to add creative shape transitions between different sections on your page.', 'et_builder' ),
 			'tab_slug'            => $args['tab_slug'],
 			'toggle_slug'         => $args['toggle_slug'],
 			'attr_suffix'         => '',
@@ -277,12 +299,16 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 	 *
 	 * Adds a CSS class to the section, determines orientaion of the SVG, encodes an SVG to use as data
 	 * for the background-image property.
+	 *
+	 * @since 3.23 Pass values parameter to support responsive settings.
+	 *
 	 * @param  string $placement Whether it is the top or bottom divider.
 	 * @param  array $atts      Associative array of shortcode and their
 	 *                          respective values.
 	 * @param  string $breakpoint ''|tablet|phone
+	 * @param  array  $values     Existing responsive values.
 	 */
-	public function process_svg( $placement, $atts, $breakpoint = '' ) {
+	public function process_svg( $placement, $atts, $breakpoint = '', $values = array() ) {
 		// add a class to the section.
 		$this->classes[] = sprintf( 'et_pb_%s_divider', esc_attr( $placement ) );
 
@@ -298,31 +324,30 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 		$repeat           = ! empty( $atts[ "{$placement}_divider_repeat" ] ) ? floatval( $atts[ "{$placement}_divider_repeat" ] ) : 1;
 		$flip             = ( '' !== $atts[ "{$placement}_divider_flip" ] ) ? explode( '|', $atts[ "{$placement}_divider_flip" ] ) : array();
 		$arrangement      = ! empty( $atts[ "{$placement}_divider_arrangement" ] ) ? $atts[ "{$placement}_divider_arrangement" ] : 'below_content';
-		$style            = $atts[ "{$placement}_divider_style" ] . "-{$placement}";
+		$divider_style    = et_pb_responsive_options()->get_any_value( $atts, "{$placement}_divider_style", '', true, $breakpoint );
+		$style            = $divider_style . "-{$placement}";
 		$fullwidth        = $atts['fullwidth'];
 
 		// Apply adjustment for responsive styling
 		if ( '' !== $breakpoint ) {
-			// Check if responsive height is actually active
-			$is_responsive_height_active = et_pb_get_responsive_status( self::$data_utils->array_get( $atts, "{$placement}_divider_height_last_edited", '' ) );
+			// Get all responsive unique value.
+			$values = et_pb_responsive_options()->get_any_responsive_values( $atts, array(
+        		"{$placement}_divider_color"       => '',
+        		"{$placement}_divider_height"      => '',
+        		"{$placement}_divider_repeat"      => '',
+        		"{$placement}_divider_flip"        => '',
+        		"{$placement}_divider_arrangement" => '',
+        	), true, $breakpoint );
 
-			// adjust height for responsive styling
-			$responsive_height = self::$data_utils->array_get( $atts, "{$placement}_divider_height_${breakpoint}", false );
-
-			if ( $is_responsive_height_active && $responsive_height && '' !== $responsive_height ) {
-				$height = $responsive_height;
-			}
-
-
-			// Check if responsive repeat is actually active
-			$is_responsive_repeat_active = et_pb_get_responsive_status( self::$data_utils->array_get( $atts, "{$placement}_divider_repeat_last_edited", '' ) );
-
-			// adjust repeat for responsive styling
-			$responsive_repeat = self::$data_utils->array_get( $atts, "{$placement}_divider_repeat_${breakpoint}", false );
-
-			if ( $is_responsive_repeat_active && $responsive_repeat && '' !== $responsive_repeat ) {
-				// Divider repeat contains 'x' suffix on the value. We should convert it into float.
-				$repeat = floatval( $responsive_repeat );
+        	// Replace all default values.
+        	$color       = ! empty( $values["{$placement}_divider_color"] ) ? $values["{$placement}_divider_color"] : $color;
+        	$height      = ! empty( $values["{$placement}_divider_height"] ) ? $values["{$placement}_divider_height"] : $height;
+        	$repeat      = ! empty( $values["{$placement}_divider_repeat"] ) ? floatval( $values["{$placement}_divider_repeat"] ) : $repeat;
+        	$flip        = ! empty( $values["{$placement}_divider_flip"] ) ? explode( '|', $values["{$placement}_divider_flip"] ) : $flip;
+			$arrangement = ! empty( $values["{$placement}_divider_arrangement"] ) ? $values[ "{$placement}_divider_arrangement" ] : $arrangement;
+			
+			if ( ! empty( $values["{$placement}_divider_flip"] ) && 'none' === $values["{$placement}_divider_flip"] ) {
+				$flip = array();
 			}
 		}
 
@@ -336,10 +361,10 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 		if ( in_array( 'vertical', $flip ) ) {
 			switch ( $placement ) {
 				case 'top':
-					$style = $atts[ "{$placement}_divider_style" ] . '-bottom';
+					$style = $divider_style . '-bottom';
 					break;
 				case 'bottom':
-					$style = $atts[ "{$placement}_divider_style" ] . '-top';
+					$style = $divider_style . '-top';
 					break;
 			}
 		}
@@ -367,7 +392,9 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 				break;
 		}
 
-		$svg = sprintf( $svg_markup, $height, $color, $this->dividers[ $style ] );
+		$divider_style = isset( $this->dividers[ $style ] ) ? $this->dividers[ $style ] : '';
+
+		$svg = sprintf( $svg_markup, $height, $color, $divider_style );
 
 		// encode the SVG so we can use it as data for background-image.
 		$this->svg = base64_encode( $svg ); // phpcs:ignore
@@ -413,9 +440,14 @@ class ET_Builder_Module_Field_Divider extends ET_Builder_Module_Field_Base {
 		// flipping the svg x|y
 		if ( in_array( 'horizontal', $flip ) ) {
 			$flip_styles[] = 'rotateY(180deg)';
+		} elseif ( '' !== $breakpoint ) {
+			$flip_styles[] = 'rotateY(0)';
 		}
+
 		if ( in_array( 'vertical', $flip ) ) {
 			$flip_styles[] = 'rotateX(180deg)';
+		} elseif ( '' !== $breakpoint ) {
+			$flip_styles[] = 'rotateX(0)';
 		}
 
 		if ( ! empty( $flip_styles ) ) {

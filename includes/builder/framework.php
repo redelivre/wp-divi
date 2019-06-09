@@ -540,6 +540,9 @@ add_filter( 'body_class', 'et_builder_body_classes' );
 
 if ( ! function_exists( 'et_builder_add_main_elements' ) ) :
 function et_builder_add_main_elements() {
+	if ( ET_BUILDER_CACHE_MODULES ) {
+		ET_Builder_Element::init_cache();
+	}
 	require_once ET_BUILDER_DIR . 'main-structure-elements.php';
 	require_once ET_BUILDER_DIR . 'main-modules.php';
 	do_action( 'et_builder_ready' );

@@ -19,13 +19,11 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 			),
 			'advanced' => array(
 				'toggles' => array(
-					'text' => array(
-						'title'    => esc_html__( 'Text', 'et_builder' ),
-						'priority' => 49,
-					),
 					'image' => array(
 						'title' => esc_html__( 'Image', 'et_builder' ),
-						'priority' => 51,
+					),
+					'text'  => array(
+						'title' => esc_html__( 'Text', 'et_builder' ),
 					),
 				),
 			),
@@ -65,10 +63,38 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 					),
 				),
 			),
+			'borders'               => array(
+				'default' => array(),
+				'image'   => array(
+					'css'          => array(
+						'main' => array(
+							'border_radii'  => '%%order_class%% .et_pb_audio_cover_art',
+							'border_styles' => '%%order_class%% .et_pb_audio_cover_art',
+						)
+					),
+					'label_prefix' => esc_html__( 'Image', 'et_builder' ),
+					'tab_slug'     => 'advanced',
+					'toggle_slug'  => 'image',
+				),
+			),
 			'box_shadow'            => array(
 				'default' => array(
 					'css' => array(
 						'overlay' => 'inset',
+					),
+				),
+				'image'   => array(
+					'label'             => esc_html__( 'Image Box Shadow', 'et_builder' ),
+					'option_category'   => 'layout',
+					'tab_slug'          => 'advanced',
+					'toggle_slug'       => 'image',
+					'css'               => array(
+						'main'    => '%%order_class%% .et_pb_audio_cover_art',
+						'overlay' => 'inset',
+					),
+					'default_on_fronts' => array(
+						'color'    => '',
+						'position' => '',
 					),
 				),
 			),
@@ -139,7 +165,7 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 			),
 			'audio_timer' => array(
 				'label'    => esc_html__( 'Player Timer', 'et_builder' ),
-				'selector' => '.mejs-time.mejs-currenttime-container.custom',
+				'selector' => '.mejs-time.mejs-duration-container .mejs-duration',
 			),
 			'audio_sliders' => array(
 				'label'    => esc_html__( 'Player Sliders', 'et_builder' ),
@@ -200,7 +226,7 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 	function get_fields() {
 		$fields = array(
 			'audio' => array(
-				'label'              => esc_html__( 'Audio', 'et_builder' ),
+				'label'              => esc_html__( 'Audio File', 'et_builder' ),
 				'type'               => 'upload',
 				'option_category'    => 'basic_option',
 				'data_type'          => 'audio',
@@ -222,7 +248,7 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 				'dynamic_content' => 'text',
 			),
 			'artist_name' => array(
-				'label'           => esc_html__( 'Artist Name', 'et_builder' ),
+				'label'           => esc_html__( 'Artist', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Define an artist name.', 'et_builder' ),
@@ -230,7 +256,7 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 				'dynamic_content' => 'text',
 			),
 			'album_name' => array(
-				'label'           => esc_html__( 'Album name', 'et_builder' ),
+				'label'           => esc_html__( 'Album', 'et_builder' ),
 				'type'            => 'text',
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Define an album name.', 'et_builder' ),
@@ -238,7 +264,7 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 				'dynamic_content' => 'text',
 			),
 			'image_url' => array(
-				'label'              => esc_html__( 'Cover Art Image URL', 'et_builder' ),
+				'label'              => esc_html__( 'Image', 'et_builder' ),
 				'type'               => 'upload',
 				'option_category'    => 'basic_option',
 				'upload_button_text' => esc_attr__( 'Upload an image', 'et_builder' ),
@@ -289,9 +315,10 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 		$artist_name                     = $this->_esc_attr( 'artist_name' );
 		$album_name                      = $this->_esc_attr( 'album_name' );
 		$image_url                       = $this->props['image_url'];
+		$header_level                    = $this->props['title_level'];
 		$background_layout               = $this->props['background_layout'];
 		$background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
-		$header_level                    = $this->props['title_level'];
+		$background_layout_values        = et_pb_responsive_options()->get_property_values( $this->props, 'background_layout' );
 
 		$meta = $cover_art = '';
 
@@ -359,6 +386,22 @@ class ET_Builder_Module_Audio extends ET_Builder_Module {
 
 		if ( 'light' === $background_layout ) {
 			$this->add_classname( 'et_pb_text_color_dark' );
+		}
+
+		$background_layout_tablet = isset( $background_layout_values['tablet'] ) ? $background_layout_values['tablet'] : '';
+		if ( ! empty( $background_layout_tablet ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_tablet}_tablet" );
+			if ( 'light' === $background_layout_tablet ) {
+				$this->add_classname( 'et_pb_text_color_dark_tablet' );
+			}
+		}
+
+		$background_layout_phone = isset( $background_layout_values['phone'] ) ? $background_layout_values['phone'] : '';
+		if ( ! empty( $background_layout_phone ) ) {
+			$this->add_classname( "et_pb_bg_layout_{$background_layout_phone}_phone" );
+			if ( 'light' === $background_layout_phone ) {
+				$this->add_classname( 'et_pb_text_color_dark_phone' );
+			}
 		}
 
 		if ( '' === $image_url ) {

@@ -93,14 +93,14 @@ function et_fb_get_dynamic_asset( $prefix, $post_type = false, $update = false )
 		$post_type = isset( $post->post_type ) ? $post->post_type : 'post';
 	}
 
-	$post_type = sanitize_text_field( $post_type );
+	$post_type = sanitize_file_name( $post_type );
 
 	if ( ! in_array( $prefix, array( 'helpers', 'definitions' ) ) ) {
 		$prefix = '';
 	}
 
 	// Per language Cache due to definitions/helpers being localized.
-	$lang   = get_user_locale();
+	$lang   = sanitize_file_name( get_user_locale() );
 	$cache  = sprintf( '%s/%s', ET_Core_PageResource::get_cache_directory(), $lang );
 	$files  = glob( sprintf( '%s/%s-%s-*.js', $cache, $prefix, $post_type ) );
 	$exists = is_array( $files ) && count( $files ) > 0;

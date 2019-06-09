@@ -270,11 +270,13 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 			'text_bg_color' => array(
 				'default'           => 'rgba(255,255,255,0.9)',
 				'label'             => esc_html__( 'Text Background Color', 'et_builder' ),
+				'description'       => esc_html__( "Pick a color to use behind the post title text. Reducing the color's opacity will allow the background image to show through while still increasing text readability.", 'et_builder' ),
 				'type'              => 'color-alpha',
 				'depends_show_if'   => 'on',
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'text',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
 			),
 		);
 
@@ -306,8 +308,8 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 		$text_color         = $this->props['text_color'];
 		$text_color_hover   = et_pb_hover_options()->get_value( 'text_color', $this->props );
 		$text_background    = $this->props['text_background'];
-		$text_bg_color      = $this->props['text_bg_color'];
 		$header_level       = $this->props['title_level'];
+		$text_bg_colors     = et_pb_responsive_options()->get_property_values( $this->props, 'text_bg_color' );
 
 		// display the shortcode only on singlular pages
 		if ( ! is_singular() ) {
@@ -353,13 +355,8 @@ class ET_Builder_Module_Fullwidth_Post_Title extends ET_Builder_Module {
 		}
 
 		if ( 'on' === $text_background ) {
-			ET_Builder_Element::set_style( $render_slug, array(
-				'selector'    => '%%order_class%% .et_pb_title_container',
-				'declaration' => sprintf(
-					'background-color: %1$s; padding: 1em 1.5em;',
-					esc_html( $text_bg_color )
-				),
-			) );
+			// Text Background Color.
+			et_pb_responsive_options()->generate_responsive_css( $text_bg_colors, '%%order_class%% .et_pb_title_container', 'background-color', $render_slug, '; padding: 1em 1.5em;', 'color' );
 
 			if ( et_pb_hover_options()->is_enabled( 'text_bg_color', $this->props ) ) {
 				ET_Builder_Element::set_style( $render_slug, array(

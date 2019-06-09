@@ -1,6 +1,6 @@
 <?php
 
-define( 'ET_BUILDER_ENABLE_BFB_OPTIN_MODAL', false );
+define( 'ET_BUILDER_ENABLE_BFB_OPTIN_MODAL', true );
 
 
 if ( ! function_exists( 'et_builder_add_filters' ) ):
@@ -45,7 +45,7 @@ function et_builder_should_load_framework() {
 	$required_admin_pages = array( 'edit.php', 'post.php', 'post-new.php', 'admin.php', 'customize.php', 'edit-tags.php', 'admin-ajax.php', 'export.php', 'options-permalink.php', 'themes.php', 'revision.php' ); // list of admin pages where we need to load builder files
 	$specific_filter_pages = array( 'edit.php', 'post.php', 'post-new.php', 'admin.php', 'edit-tags.php' ); // list of admin pages where we need more specific filtering
 	$post_id = (int) et_()->array_get( $_GET, 'post', 0 );
-	
+
 	$bfb_settings = get_option( 'et_bfb_settings' );
 	$is_bfb = et_pb_is_allowed( 'use_visual_builder' ) && isset( $bfb_settings['enable_bfb'] ) && 'on' === $bfb_settings['enable_bfb'];
 	$is_bfb_used = 'on' === get_post_meta( $post_id, '_et_pb_use_builder', true ) && $is_bfb;
@@ -4620,7 +4620,7 @@ if ( ! function_exists( 'et_fb_get_builder_url' ) ) :
 
 			$args['from_post']   = $duplicate_content && $from_post_id ? $from_post_id : $duplicate_fallback;
 			$args['is_new_page'] = '1';
-			
+
 			if ( $custom_page_id ) {
 				$args['custom_page_id'] = $custom_page_id;
 			}
@@ -4984,7 +4984,7 @@ if ( ! function_exists( 'et_builder_filter_show_bfb_optin_modal') ):
  *
  * @return bool
  */
-function et_builder_filter_show_bfb_optin_modal( $default ) {
+function et_builder_filter_show_bfb_optin_modal( $default = true ) {
 	global $shortname;
 
 	// Only admin users should see the modal
@@ -4995,7 +4995,7 @@ function et_builder_filter_show_bfb_optin_modal( $default ) {
 	$shown = et_get_option( $shortname . '_bfb_optin_modal_shown', 'unset' );
 
 	// $shown === 'no' - modal is queued to be shown, but has not had the chance yet.
-	return 'unset' === $shown ? $default : $shown === 'no';
+	return 'unset' === $shown ? (bool) $default : $shown === 'no';
 }
 endif;
 
@@ -5051,8 +5051,13 @@ function et_builder_show_bfb_optin_modal() {
 	if ( 'post.php' !== $pagenow ) {
 		return;
 	}
+	
+	// Exit if no pagebuilder enabled or BFB activated already.
+	if ( ! et_pb_is_pagebuilder_used() || et_builder_bfb_enabled() ) {
+		return;
+	}
 
-	if ( apply_filters( 'et_builder_show_bfb_optin_modal', false ) === false ) {
+	if ( false === apply_filters( 'et_builder_show_bfb_optin_modal', true ) ) {
 		return;
 	}
 
@@ -5072,9 +5077,8 @@ function et_builder_show_bfb_optin_modal() {
 			</div>
 
 			<div class="et-core-modal-content">
-				<p><?php esc_html_e( 'A new and improved Divi Builder experience is now available. This new experience brings various interface enchancements as well as visual editing capabilities to the back end. You can try the new experience today, or you can continue using the classic builder for a limited time. Once the new experience has been activated, you can still switch back to the classic editor at any time - no worries!', 'et_builder' ); ?></p>
-				<?php // TODO add link to docs ?>
-				<p><a href="#" target="_blank"><?php esc_html_e( 'Learn more about the new experience here.', 'et_builder' ); ?></a></p>
+				<p><?php esc_html_e( 'A new and improved Divi Builder experience is now available. This new experience brings various interface enhancements as well as visual editing capabilities to the back end. You can try the new experience today, or you can continue using the classic builder for now. Once the new experience has been activated, you can still switch back to the classic editor at any time.', 'et_builder' ); ?></p>
+				<p><a href="https://www.elegantthemes.com/blog/theme-releases/introducing-the-new-divi-builder-experience" target="_blank"><?php esc_html_e( 'Learn more about the new experience here.', 'et_builder' ); ?></a></p>
 			</div>
 
 			<div class="et_pb_prompt_buttons">
@@ -5115,7 +5119,7 @@ function et_builder_show_bfb_welcome_modal() {
 			</div>
 
 			<div class="et-core-modal-content">
-				<p><?php esc_html_e( 'You are now using the new Divi Builder experience! This new version of the builder comes with a lot of great interface enhancements that were previously only available in the Visual Builder. If you run into problems, you can always switch back to the classic builder using the button at the top of the page.', 'et_builder' ); ?></p>
+				<p><?php esc_html_e( 'You are now using the new Divi Builder experience! This new version of the builder comes with a lot of great interface enhancements that were previously only available in the Visual Builder. If you run into problems, you can always switch back to the classic builder using the button at the bottom of the page.', 'et_builder' ); ?></p>
 			</div>
 
 			<div class="et_pb_prompt_buttons">
@@ -5133,7 +5137,7 @@ function et_builder_show_bfb_welcome_modal() {
 endif;
 add_action( 'admin_footer', 'et_builder_show_bfb_welcome_modal' );
 
-if ( ! function_exists( 'et_builder_maybe_queue_bfb_optin_modal') ):
+if ( ! function_exists( 'et_builder_prepare_bfb') ):
 /**
  * Maybe queue BFB opt-in modal.
  *
@@ -5438,12 +5442,15 @@ function et_fb_delete_builder_assets() {
 	$new_files = glob( sprintf( '%s/*/*.js', $cache ) );
 	$new_files = is_array( $new_files ) ? $new_files : array();
 
-	foreach ( array_merge( $old_files, $new_files ) as $file ) {
+	// Modules cache
+	$modules_files = glob( sprintf( '%s/*/*.data', $cache ) );
+	$modules_files = is_array( $modules_files ) ? $modules_files : array();
+
+	foreach ( array_merge( $old_files, $new_files, $modules_files ) as $file ) {
 		@unlink( $file );
 	}
 }
 endif;
-
 
 if ( ! function_exists( 'et_fb_enqueue_open_sans' ) ):
 function et_fb_enqueue_open_sans() {

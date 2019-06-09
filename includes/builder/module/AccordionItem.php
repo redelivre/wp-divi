@@ -19,17 +19,60 @@ class ET_Builder_Module_Accordion_Item extends ET_Builder_Module {
 			),
 			'advanced' => array(
 				'toggles' => array(
-					'icon' => esc_html__( 'Icon', 'et_builder' ),
-					'text' => array(
+					'icon'          => esc_html__( 'Icon', 'et_builder' ),
+					'toggle_layout' => esc_html__( 'Toggle', 'et_builder' ),
+					'text'          => array(
 						'title'    => esc_html__( 'Text', 'et_builder' ),
 						'priority' => 49,
 					),
-					'toggle' => esc_html__( 'Toggle', 'et_builder' ),
 				),
 			),
 		);
 
 		$this->advanced_fields = array(
+			'fonts'                 => array(
+				'toggle'        => array(
+					'label'            => esc_html__( 'Title', 'et_builder' ),
+					'css'              => array(
+						'main'      => "{$this->main_css_element} h5.et_pb_toggle_title, {$this->main_css_element} h1.et_pb_toggle_title, {$this->main_css_element} h2.et_pb_toggle_title, {$this->main_css_element} h3.et_pb_toggle_title, {$this->main_css_element} h4.et_pb_toggle_title, {$this->main_css_element} h6.et_pb_toggle_title",
+						'important' => 'plugin_only',
+					),
+					'header_level'     => array(
+						'default' => 'h5',
+					),
+					'options_priority' => array(
+						'toggle_text_color' => 9,
+					),
+				),
+				'closed_toggle' => array(
+					'label'           => esc_html__( 'Closed Toggle', 'et_builder' ),
+					'css'             => array(
+						'main'      => "{$this->main_css_element} .et_pb_toggle_close h5.et_pb_toggle_title, {$this->main_css_element} .et_pb_toggle_close h1.et_pb_toggle_title, {$this->main_css_element} .et_pb_toggle_close h2.et_pb_toggle_title, {$this->main_css_element} .et_pb_toggle_close h3.et_pb_toggle_title, {$this->main_css_element} .et_pb_toggle_close h4.et_pb_toggle_title, {$this->main_css_element} .et_pb_toggle_close h6.et_pb_toggle_title",
+						'important' => 'plugin_only',
+					),
+					'hide_text_color' => true,
+					'line_height'     => array(
+						'default' => '1.7em',
+					),
+					'font_size'       => array(
+						'default' => '16px',
+					),
+					'letter_spacing'  => array(
+						'default' => '0px',
+					),
+				),
+				'body'          => array(
+					'label'          => esc_html__( 'Body', 'et_builder' ),
+					'css'            => array(
+						'main'         => "{$this->main_css_element} .et_pb_toggle_content",
+						'limited_main' => "{$this->main_css_element} .et_pb_toggle_content, {$this->main_css_element} .et_pb_toggle_content p",
+						'line_height'  => "{$this->main_css_element} .et_pb_toggle_content p",
+					),
+					'block_elements' => array(
+						'tabbed_subtoggles' => true,
+					),
+				),
+			),
 			'borders'               => array(
 				'default' => array(
 					'css' => array(
@@ -56,13 +99,15 @@ class ET_Builder_Module_Accordion_Item extends ET_Builder_Module {
 					),
 				),
 			),
-			'margin_padding' => array(
+			'margin_padding'        => array(
+				'draggable_margin'  => false,
+				'draggable_padding' => false,
 				'css' => array(
 					'important' => 'all',
 				),
 			),
 			'max_width'             => array(
-				'css' => array(
+				'css'                  => array(
 					'module_alignment' => "%%order_class%%.et_pb_toggle",
 				),
 			),
@@ -71,8 +116,12 @@ class ET_Builder_Module_Accordion_Item extends ET_Builder_Module {
 					'text_orientation' => '%%order_class%%',
 				),
 			),
-			'fonts'                 => false,
 			'button'                => false,
+			'height'                => array(
+				'css' => array(
+					'main' => '%%order_class%% .et_pb_toggle_content'
+				)
+			),
 		);
 
 		$this->custom_css_fields = array(
@@ -117,7 +166,7 @@ class ET_Builder_Module_Accordion_Item extends ET_Builder_Module {
 				'dynamic_content' => 'text',
 			),
 			'content' => array(
-				'label'           => esc_html__( 'Content', 'et_builder' ),
+				'label'           => esc_html__( 'Body', 'et_builder' ),
 				'type'            => 'tiny_mce',
 				'option_category' => 'basic_option',
 				'description'     => esc_html__( 'Here you can define the content that will be placed within the current tab.', 'et_builder' ),
@@ -125,44 +174,90 @@ class ET_Builder_Module_Accordion_Item extends ET_Builder_Module {
 				'dynamic_content' => 'text',
 			),
 			'open_toggle_text_color' => array(
-				'label'             => esc_html__( 'Open Toggle Text Color', 'et_builder' ),
+				'label'             => esc_html__( 'Open Title Text Color', 'et_builder' ),
+				'description'       => esc_html__( 'You can pick unique text colors for toggle titles when they are open and closed. Choose the open state title color here.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'toggle',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
 			),
 			'open_toggle_background_color' => array(
 				'label'             => esc_html__( 'Open Toggle Background Color', 'et_builder' ),
+				'description'       => esc_html__( 'You can pick unique background colors for toggles when they are in their open and closed states. Choose the open state background color here.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'toggle',
+				'toggle_slug'       => 'toggle_layout',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
 			),
 			'closed_toggle_text_color' => array(
-				'label'             => esc_html__( 'Closed Toggle Text Color', 'et_builder' ),
+				'label'             => esc_html__( 'Closed Title Text Color', 'et_builder' ),
+				'description'       => esc_html__( 'You can pick unique text colors for toggle titles when they are open and closed. Choose the closed state title color here.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'toggle',
+				'toggle_slug'       => 'closed_toggle',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
 			),
 			'closed_toggle_background_color' => array(
 				'label'             => esc_html__( 'Closed Toggle Background Color', 'et_builder' ),
+				'description'       => esc_html__( 'You can pick unique background colors for toggles when they are in their open and closed states. Choose the closed state background color here.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
-				'toggle_slug'       => 'toggle',
+				'toggle_slug'       => 'toggle_layout',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
 			),
 			'icon_color' => array(
 				'label'             => esc_html__( 'Icon Color', 'et_builder' ),
+				'description'       => esc_html__( 'Here you can define a custom color for the toggle icon.', 'et_builder' ),
 				'type'              => 'color-alpha',
 				'custom_color'      => true,
 				'tab_slug'          => 'advanced',
 				'toggle_slug'       => 'icon',
 				'hover'             => 'tabs',
+				'mobile_options'    => true,
+			),
+			'use_icon_font_size'             => array(
+				'label'            => esc_html__( 'Use Icon Font Size', 'et_builder' ),
+				'description'      => esc_html__( 'If you would like to control the size of the icon, you must first enable this option.', 'et_builder' ),
+				'type'             => 'yes_no_button',
+				'options'          => array(
+					'off' => esc_html__( 'No', 'et_builder' ),
+					'on'  => esc_html__( 'Yes', 'et_builder' ),
+				),
+				'default_on_front' => 'off',
+				'affects'          => array(
+					'icon_font_size',
+				),
+				'depends_show_if'  => 'on',
+				'tab_slug'         => 'advanced',
+				'toggle_slug'      => 'icon',
+				'option_category'  => 'font_option',
+			),
+			'icon_font_size'                  => array(
+				'label'            => esc_html__( 'Icon Font Size', 'et_builder' ),
+				'description'      => esc_html__( 'Control the size of the icon by increasing or decreasing the font size.', 'et_builder' ),
+				'type'             => 'range',
+				'option_category'  => 'font_option',
+				'tab_slug'         => 'advanced',
+				'toggle_slug'      => 'icon',
+				'default'          => '16px',
+				'default_unit'     => 'px',
+				'default_on_front' => '',
+				'range_settings'   => array(
+					'min'  => '1',
+					'max'  => '120',
+					'step' => '1',
+				),
+				'mobile_options'   => true,
+				'depends_show_if'  => 'on',
+				'hover'            => 'tabs',
 			),
 		);
 		return $fields;
